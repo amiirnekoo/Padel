@@ -32,3 +32,9 @@ Desktop.ini
 # Logs and Scratch
 *.log
 scratch/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+.pytest_cache/
+define-padel-tennis-mvp-antigravity/
