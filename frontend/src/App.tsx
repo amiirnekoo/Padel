@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import rallyLogo from './assets/rally-logo.jpg';
 import './App.css';
 
 export type SlotStatus = 'AVAILABLE' | 'HOLD_SINGLE' | 'HOLD_SPLIT' | 'BOOKED' | 'BLOCKED';
@@ -248,10 +249,10 @@ export const App: React.FC = () => {
       <header className="app-header">
         <div className="header-content">
           <div className="brand-section">
-            <div className="brand-icon">P+</div>
+            <img src={rallyLogo} alt="Rally Padel Logo" className="brand-logo-img" />
             <div>
-              <div className="brand-title">پدل‌پلاس تهران | PadelPlus</div>
-              <div className="brand-subtitle">سامانه رزرو اتمیک، تضمین برابری قیمت و پرداخت دنگی</div>
+              <div className="brand-title">رالی پدل | RALLY PADEL</div>
+              <div className="brand-subtitle">سامانه هوشمند رزرو اتمیک • برابری نرخ باجه • پرداخت دنگی</div>
             </div>
           </div>
 
@@ -284,9 +285,9 @@ export const App: React.FC = () => {
         {/* Hero Banner */}
         <section className="hero-banner">
           <div className="hero-text">
-            <h1>برنامه سانس‌های امروز (تهران)</h1>
+            <h1>سانس‌های امروز کورت‌های پدل تهران</h1>
             <p>
-              رزرو مستقیم بدون کارمزد اضافه — قیمت سامانه دقیقاً برابر با نرخ حضوری باجه باشگاه (۲,۰۰۰,۰۰۰ تومان).
+              رزرو مستقیم و قطعی در رالی — نرخ اعلامی دقیقاً معادل نرخ حضوری باجه باشگاه است (۲,۰۰۰,۰۰۰ تومان).
             </p>
           </div>
           <div className="hero-stats">
