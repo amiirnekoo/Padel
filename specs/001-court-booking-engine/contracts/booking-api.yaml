@@ -1,0 +1,300 @@
+openapi: 3.0.3
+info:
+  title: Padel & Racquet Sports Court Booking Engine API
+  version: 1.0.0
+  description: API contracts for Court Booking Engine, Atomic Hold, Live Club Calendar, and Shaparak Payment.
+paths:
+  /api/v1/auth/otp/request:
+    post:
+      summary: درخواست ارسال رمز یکبارمصرف پیامکی
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [phone_number]
+              properties:
+                phone_number:
+                  type: string
+                  example: "09123456789"
+      responses:
+        '200':
+          description: کد پیامک شد
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  expires_in_seconds:
+                    type: integer
+                    example: 120
+
+  /api/v1/auth/otp/verify:
+    post:
+      summary: اعتبارسنجی کد پیامکی و صدور توکن بازیکن
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [phone_number, code]
+              properties:
+                phone_number:
+                  type: string
+                  example: "09123456789"
+                code:
+                  type: string
+                  example: "123456"
+      responses:
+        '200':
+          description: ورود موفق
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                  token_type:
+                    type: string
+                    example: "bearer"
+                  user_id:
+                    type: string
+
+  /api/v1/auth/operator/login:
+    post:
+      summary: ورود متصدی و کادر باشگاه با رمز عبور
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [phone_number, password]
+              properties:
+                phone_number:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: ورود موفق متصدی
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                  club_id:
+                    type: string
+
+  /api/v1/clubs/{club_id}/calendar:
+    get:
+      summary: دریافت تقویم زنده روزانه باشگاه به تفکیک زمین‌ها و سانس‌ها
+      parameters:
+        - name: club_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+            example: "2026-09-25"
+      responses:
+        '200':
+          description: فهرست سانس‌ها با وضعیت لحظه‌ای
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  club_id:
+                    type: string
+                  date:
+                    type: string
+                  courts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        court_id:
+                          type: string
+                        court_name:
+                          type: string
+                        sport_type:
+                          type: string
+                          enum: [PADEL, TENNIS]
+                        slots:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              slot_id:
+                                type: string
+                              start_time:
+                                type: string
+                                example: "18:00"
+                              end_time:
+                                type: string
+                                example: "19:30"
+                              price:
+                                type: integer
+                                example: 2000000
+                              status:
+                                type: string
+                                enum: [AVAILABLE, HOLD, BOOKED, BLOCKED, TOURNAMENT]
+
+  /api/v1/slots/{slot_id}/hold:
+    post:
+      summary: ایجاد قفل موقت اتمیک ۱۰ دقیقه‌ای برای رزرو آنلاین
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: slot_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: قفل موقت با موفقیت ایجاد شد
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  booking_id:
+                    type: string
+                  slot_id:
+                    type: string
+                  hold_expires_at:
+                    type: string
+                    format: date-time
+                  price:
+                    type: integer
+                  tracking_code:
+                    type: string
+        '409':
+          description: سانس هم‌اکنون توسط کاربر دیگری قفل یا رزرو شده است
+
+  /api/v1/bookings/{booking_id}/checkout:
+    post:
+      summary: ایجاد درخواست پرداخت و هدایت به درگاه شاپرک
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: booking_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: آدرس انتقال به درگاه
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  payment_url:
+                    type: string
+                  gateway_token:
+                    type: string
+                  idempotency_key:
+                    type: string
+
+  /api/v1/payments/callback:
+    post:
+      summary: وب‌هوک و کال‌بک درگاه بانکی شاپرک پس از اتمام پرداخت
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                RefId:
+                  type: string
+                ResCode:
+                  type: string
+                SaleOrderId:
+                  type: string
+      responses:
+        '200':
+          description: پردازش پرداخت (تأیید نهایی یا بازگشت ۱۰۰٪ وجه در صورت تأخیر)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [CONFIRMED, REVERSED_EXPIRED, FAILED]
+                  tracking_code:
+                    type: string
+
+  /api/v1/bookings/{booking_id}/cancel:
+    post:
+      summary: لغو رزرو توسط بازیکن طبق قاعده ۲۴ ساعته
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: booking_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: نتیجه لغو و ثبت استرداد مالی
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "CANCELLED"
+                  refund_amount:
+                    type: integer
+                  penalty_amount:
+                    type: integer
+
+  /api/v1/operator/slots/{slot_id}/block:
+    post:
+      summary: مسدودسازی دستی سانس توسط متصدی باجه (رزرو تلفنی/حضوری)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: slot_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: سانس با موفقیت مسدود شد
+
+  /api/v1/operator/slots/{slot_id}/unblock:
+    post:
+      summary: آزادسازی سانس مسدودشده توسط متصدی باجه
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: slot_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: سانس با موفقیت آزاد شد
