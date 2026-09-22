@@ -5,6 +5,8 @@ from backend.app.models.slot import TimeSlot
 from backend.app.models.booking import Booking
 from backend.app.models.payment import PaymentAttempt
 from backend.app.models.refund import Refund
+from backend.app.models.coach import CoachProfile
+from backend.app.models.trainee import CoachTrainee
 
 __all__ = [
     "Base",
@@ -18,4 +20,6 @@ __all__ = [
     "Booking",
     "PaymentAttempt",
     "Refund",
+    "CoachProfile",
+    "CoachTrainee",
 ]

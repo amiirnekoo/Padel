@@ -38,3 +38,51 @@ export interface CheckoutResult {
   idempotency_key: string;
   amount: number;
 }
+
+export type UserRole = "PLAYER" | "COACH" | "CLUB_MANAGER" | "CLUB_OPERATOR" | "ADMIN";
+
+export interface UserProfile {
+  id: string;
+  phone_number: string;
+  full_name: string | null;
+  role: UserRole;
+  skill_level?: "BEGINNER" | "INTERMEDIATE" | "ADVANCED" | "PRO";
+  emergency_phone?: string | null;
+}
+
+export interface CoachProfileData {
+  id: string;
+  user_id: string;
+  full_name?: string;
+  certification_id: string;
+  sport_types: string;
+  bio?: string | null;
+  hourly_rate: number;
+  is_verified: boolean;
+}
+
+export interface TraineeConnection {
+  connection_id: string;
+  coach_id: string;
+  trainee_id: string;
+  trainee_name: string;
+  phone_number: string;
+  package_type: string;
+  total_sessions: number;
+  completed_sessions: number;
+  status: "ACTIVE" | "COMPLETED" | "CANCELLED";
+}
+
+export interface ClubAnalyticsData {
+  club_id: string;
+  club_name: string;
+  date: string;
+  total_courts: number;
+  total_slots: number;
+  available_slots: number;
+  booked_slots: number;
+  hold_slots: number;
+  blocked_slots: number;
+  tournament_slots: number;
+  commission_rate: number;
+}

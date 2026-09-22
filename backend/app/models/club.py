@@ -12,6 +12,8 @@ class Club(Base):
     city: Mapped[str] = mapped_column(String(50), nullable=False, default="تهران")
     address: Mapped[str] = mapped_column(Text, nullable=False)
     phone: Mapped[str] = mapped_column(String(20), nullable=False)
+    manager_id: Mapped[str | None] = mapped_column(String(36), ForeignKey("users.id"), nullable=True)
+    iban: Mapped[str | None] = mapped_column(String(30), nullable=True)
     commission_rate: Mapped[float] = mapped_column(Numeric(5, 2), nullable=False, default=3.00)
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
