@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.app.core.config import settings
 from backend.app.models.base import engine, Base
-from backend.app.api.v1 import auth, calendar, booking, payments, operator, venues, crm, wallet, settlements
+from backend.app.api.v1 import auth, calendar, booking, payments, operator, venues, crm, wallet, settlements, notifications
 from backend.app.services.cleanup_worker import run_periodic_cleanup
 
 @asynccontextmanager
@@ -59,6 +59,7 @@ app.include_router(venues.router, prefix=settings.API_V1_STR)
 app.include_router(crm.router, prefix=settings.API_V1_STR)
 app.include_router(wallet.router, prefix=settings.API_V1_STR)
 app.include_router(settlements.router, prefix=settings.API_V1_STR)
+app.include_router(notifications.router, prefix=settings.API_V1_STR)
 
 @app.get("/health")
 async def health_check():

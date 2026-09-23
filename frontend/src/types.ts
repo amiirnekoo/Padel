@@ -175,3 +175,16 @@ export interface SettlementBatchData {
   created_at: string | null;
   items_count: number;
 }
+
+export interface NotificationLogData {
+  id: string;
+  recipient: string;
+  event_type: string;
+  template_name: string;
+  provider: string;
+  tokens: string;
+  status: "DELIVERED" | "FAILED" | "PENDING";
+  message_id: string | null;
+  error_message: string | null;
+  created_at: string | null;
+}

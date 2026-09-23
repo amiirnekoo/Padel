@@ -4,11 +4,12 @@ import { OperatorPage } from './pages/OperatorPage';
 import { VenueOnboardingPage } from './pages/VenueOnboardingPage';
 import { CrmCustomersPage } from './pages/CrmCustomersPage';
 import { ClubSettlementsPage } from './pages/ClubSettlementsPage';
+import { NotificationLogsPage } from './pages/NotificationLogsPage';
 import { WalletModal } from './components/WalletModal';
-import { Trophy, CalendarCheck, ShieldCheck, UserCheck, Building2, Users, CreditCard, Wallet } from 'lucide-react';
+import { Trophy, CalendarCheck, ShieldCheck, UserCheck, Building2, Users, CreditCard, Wallet, MessageSquare } from 'lucide-react';
 
 export const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'player' | 'operator' | 'venue' | 'crm' | 'settlements'>('player');
+  const [activeTab, setActiveTab] = useState<'player' | 'operator' | 'venue' | 'crm' | 'settlements' | 'notifications'>('player');
   const [isWalletOpen, setIsWalletOpen] = useState(false);
   const [walletBalance, setWalletBalance] = useState<number>(0);
 
@@ -175,6 +176,23 @@ export const App: React.FC = () => {
                 <Users size={14} />
                 هوش مشتریان
               </button>
+              <button
+                onClick={() => setActiveTab('notifications')}
+                style={{
+                  padding: '7px 12px',
+                  borderRadius: '8px',
+                  background: activeTab === 'notifications' ? '#0ea5e9' : 'transparent',
+                  color: activeTab === 'notifications' ? '#ffffff' : '#94a3b8',
+                  fontWeight: 700,
+                  fontSize: '0.82rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                <MessageSquare size={14} />
+                مانیتورینگ پیامک
+              </button>
             </div>
           </div>
         </div>
@@ -187,6 +205,7 @@ export const App: React.FC = () => {
         {activeTab === 'venue' && <VenueOnboardingPage />}
         {activeTab === 'settlements' && <ClubSettlementsPage />}
         {activeTab === 'crm' && <CrmCustomersPage />}
+        {activeTab === 'notifications' && <NotificationLogsPage />}
       </main>
 
       <WalletModal
