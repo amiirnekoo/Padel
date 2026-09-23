@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { ClubCalendarPage } from './pages/ClubCalendarPage';
 import { OperatorPage } from './pages/OperatorPage';
 import { VenueOnboardingPage } from './pages/VenueOnboardingPage';
@@ -8,7 +9,8 @@ import { NotificationLogsPage } from './pages/NotificationLogsPage';
 import { WalletModal } from './components/WalletModal';
 import { AuthModal, UserSession } from './components/AuthModal';
 import { AppHeader, TabType } from './components/AppHeader';
-import { ShieldCheck } from 'lucide-react';
+import { PlatformHeroBanner } from './components/PlatformHeroBanner';
+import { AppFooter } from './components/AppFooter';
 
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>('player');
@@ -33,7 +35,7 @@ export const App: React.FC = () => {
         setWalletBalance(data.balance);
       }
     } catch {
-      // offline
+      // offline / mock mode fallback
     }
   };
 
@@ -44,8 +46,8 @@ export const App: React.FC = () => {
   const currentUserId = userSession?.userId || 'user-1';
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      {/* Extracted Modular Header */}
+    <div className="min-h-screen flex flex-col bg-rally-dark-bg text-slate-100 selection:bg-rally-accent selection:text-slate-950">
+      {/* High-End Sticky Header */}
       <AppHeader
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -55,51 +57,61 @@ export const App: React.FC = () => {
         onOpenWallet={() => setIsWalletOpen(true)}
       />
 
-      {/* Main Content Area */}
-      <main style={{ flex: 1 }}>
-        {activeTab === 'player' && (
-          <ClubCalendarPage
-            userId={currentUserId}
-            walletBalance={walletBalance}
-            onRefreshWallet={refreshWalletBalance}
-          />
-        )}
-        {activeTab === 'operator' && <OperatorPage />}
-        {activeTab === 'venue' && <VenueOnboardingPage />}
-        {activeTab === 'settlements' && <ClubSettlementsPage />}
-        {activeTab === 'crm' && <CrmCustomersPage />}
-        {activeTab === 'notifications' && <NotificationLogsPage />}
+      {/* Platform Architecture & Hero Pillar */}
+      <PlatformHeroBanner />
+
+      {/* Main Dynamic Viewport with Framer Motion Tab Transitions */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.22, ease: 'easeOut' }}
+            className="w-full"
+          >
+            {activeTab === 'player' && (
+              <ClubCalendarPage
+                userId={currentUserId}
+                walletBalance={walletBalance}
+                onRefreshWallet={refreshWalletBalance}
+              />
+            )}
+            {activeTab === 'operator' && <OperatorPage />}
+            {activeTab === 'venue' && <VenueOnboardingPage />}
+            {activeTab === 'settlements' && <ClubSettlementsPage />}
+            {activeTab === 'crm' && <CrmCustomersPage />}
+            {activeTab === 'notifications' && <NotificationLogsPage />}
+          </motion.div>
+        </AnimatePresence>
       </main>
 
-      {/* Modals */}
+      {/* Interactive Modals */}
       <WalletModal
         userId={currentUserId}
         isOpen={isWalletOpen}
         onClose={() => setIsWalletOpen(false)}
-        onBalanceUpdated={b => setWalletBalance(b)}
+        onBalanceUpdated={(b) => setWalletBalance(b)}
       />
 
       <AuthModal
         isOpen={isAuthOpen}
         currentUser={userSession}
         onClose={() => setIsAuthOpen(false)}
-        onLoginSuccess={u => { setUserSession(u); refreshWalletBalance(); }}
-        onLogout={() => { localStorage.removeItem('padel_auth'); setUserSession(null); setWalletBalance(0); }}
+        onLoginSuccess={(u) => {
+          setUserSession(u);
+          refreshWalletBalance();
+        }}
+        onLogout={() => {
+          localStorage.removeItem('padel_auth');
+          setUserSession(null);
+          setWalletBalance(0);
+        }}
       />
 
-      {/* Footer */}
-      <footer style={{ borderTop: '1px solid var(--border-subtle)', padding: '24px 16px', background: 'rgba(10, 14, 23, 0.95)', marginTop: 'auto' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '16px', fontSize: '0.85rem', color: '#64748b' }}>
-          <div>
-            <span>© ۲۰۲۶ پدل‌سنتر ایران — تمامی قیمت‌ها مطابق با نرخ مصوب باشگاه (بدون کارمزد مازاد بازیکن) می‌باشد.</span>
-          </div>
-          <div style={{ display: 'flex', gap: '20px' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#10b981' }}>
-              <ShieldCheck size={16} /> تضمین بازگشت وجه طبق قوانین ۲۴ ساعته
-            </span>
-          </div>
-        </div>
-      </footer>
+      {/* Luxury Multi-Column Footer */}
+      <AppFooter />
     </div>
   );
 };

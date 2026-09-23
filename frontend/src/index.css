@@ -61,6 +61,15 @@ input, select {
   outline: none;
 }
 
+/* Utilities for smooth horizontal scrollbars */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* High-Performance Card Container (Zero Backdrop Blur) */
 .glass-panel {
   background: #0f172a;

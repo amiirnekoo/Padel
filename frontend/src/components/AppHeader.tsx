@@ -1,6 +1,19 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { UserSession } from './AuthModal';
-import { Trophy, CalendarCheck, UserCheck, Building2, Users, CreditCard, Wallet, MessageSquare, LogIn } from 'lucide-react';
+import {
+  Trophy,
+  CalendarCheck,
+  UserCheck,
+  Building2,
+  Users,
+  CreditCard,
+  Wallet,
+  MessageSquare,
+  LogIn,
+  PlusCircle,
+  Activity
+} from 'lucide-react';
 
 export type TabType = 'player' | 'operator' | 'venue' | 'crm' | 'settlements' | 'notifications';
 
@@ -14,13 +27,13 @@ interface AppHeaderProps {
 }
 
 const NAV_TABS = [
-  { id: 'player', label: 'رزرو بازیکنان', icon: CalendarCheck, activeColor: '#10b981' },
-  { id: 'operator', label: 'باجه متصدی', icon: UserCheck, activeColor: '#ef4444' },
-  { id: 'venue', label: 'مالکان باشگاه', icon: Building2, activeColor: '#0284c7' },
-  { id: 'settlements', label: 'تسویه پایا (۹۷٪)', icon: CreditCard, activeColor: '#059669' },
-  { id: 'crm', label: 'هوش مشتریان', icon: Users, activeColor: '#8b5cf6' },
-  { id: 'notifications', label: 'مانیتورینگ پیامک', icon: MessageSquare, activeColor: '#0ea5e9' },
-] as const;
+  { id: 'player' as const, label: 'رزرو سانس‌ها', icon: CalendarCheck, badge: 'زنده' },
+  { id: 'operator' as const, label: 'باجه متصدی', icon: UserCheck, badge: 'مدیریت' },
+  { id: 'venue' as const, label: 'مالکان باشگاه', icon: Building2, badge: 'پذیرش' },
+  { id: 'settlements' as const, label: 'تسویه پایا (۹۷٪)', icon: CreditCard, badge: 'مالی' },
+  { id: 'crm' as const, label: 'هوش مشتریان', icon: Users, badge: 'تحلیل' },
+  { id: 'notifications' as const, label: 'مانیتورینگ پیامک', icon: MessageSquare, badge: 'OTP' },
+];
 
 export const AppHeader: React.FC<AppHeaderProps> = ({
   activeTab,
@@ -31,128 +44,118 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
   onOpenWallet,
 }) => {
   return (
-    <header className="app-header">
-      <div
-        style={{
-          maxWidth: '1200px',
-          margin: '0 auto',
-          padding: '16px 24px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '16px'
-        }}
-      >
-        {/* Brand & Logo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div
-            style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '10px',
-              background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 4px 14px rgba(16, 185, 129, 0.4)'
-            }}
+    <header className="sticky top-0 z-50 w-full bg-rally-dark-bg border-b border-rally-border-subtle shadow-rally-card">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-4">
+        
+        {/* Brand Identity & Logo */}
+        <div className="flex items-center gap-3">
+          <motion.div
+            whileHover={{ scale: 1.05, rotate: 3 }}
+            whileTap={{ scale: 0.95 }}
+            className="w-10 h-10 rounded-lg bg-rally-primary border border-rally-accent/30 flex items-center justify-center shadow-rally-glow cursor-pointer"
           >
-            <Trophy size={22} color="#ffffff" />
-          </div>
+            <Trophy className="w-5 h-5 text-rally-accent" />
+          </motion.div>
+          
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '1.25rem', fontWeight: 900, color: '#f8fafc', letterSpacing: '-0.02em' }}>
-                پدل و تنیس سنتر ایران
+            <div className="flex items-center gap-2">
+              <span className="text-lg font-black text-white tracking-tight">
+                رالی پدل
               </span>
-              <span style={{ fontSize: '0.7rem', padding: '2px 6px', borderRadius: '4px', background: 'rgba(16, 185, 129, 0.2)', color: '#34d399', fontWeight: 700 }}>
-                نسخه ۲.۲
+              <span className="text-xs font-bold text-rally-accent bg-rally-accent/10 border border-rally-accent/30 px-2 py-0.5 rounded-pill">
+                RALLY ELITE
+              </span>
+              <span className="hidden sm:inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-400 bg-emerald-950/60 border border-emerald-800/40 px-2 py-0.5 rounded-pill">
+                <Activity className="w-3 h-3 animate-pulse" />
+                آنلاین
               </span>
             </div>
-            <p style={{ fontSize: '0.75rem', color: '#94a3b8' }}>موتور رزرو اتمیک، تسویه خودکار پایا و ورود پیامکی OTP</p>
+            <p className="text-xs text-slate-400 font-medium">
+              پلتفرم سراسری رزرواسیون، مدیریت باجه و تسویه آنی کلوپ‌های پدل و تنیس
+            </p>
           </div>
         </div>
 
-        {/* Right Header Controls: Auth + Wallet + Nav Switcher */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-          <button
+        {/* Right Controls: Auth + Wallet Button */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* User Auth Button */}
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             onClick={onOpenAuth}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              background: userSession ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255, 255, 255, 0.08)',
-              border: userSession ? '1px solid #38bdf8' : '1px solid var(--border-subtle)',
-              padding: '7px 12px',
-              borderRadius: '10px',
-              color: userSession ? '#7dd3fc' : '#cbd5e1',
-              fontWeight: 700,
-              fontSize: '0.82rem',
-              cursor: 'pointer'
-            }}
+            className={`flex items-center gap-2 px-3 py-2 rounded text-xs font-bold transition-colors ${
+              userSession
+                ? 'bg-sky-950/80 border border-sky-500/50 text-sky-300'
+                : 'bg-rally-dark-card border border-rally-border-subtle text-slate-300 hover:text-white hover:border-rally-border-active'
+            }`}
           >
-            {userSession ? <UserCheck size={16} color="#38bdf8" /> : <LogIn size={16} />}
-            <span>{userSession ? (userSession.fullName || userSession.phoneNumber) : 'ورود / OTP'}</span>
-          </button>
+            {userSession ? (
+              <UserCheck className="w-4 h-4 text-sky-400" />
+            ) : (
+              <LogIn className="w-4 h-4 text-rally-accent" />
+            )}
+            <span>{userSession ? (userSession.fullName || userSession.phoneNumber) : 'ورود / عضویت OTP'}</span>
+          </motion.button>
 
-          <button
+          {/* Wallet Balance Widget */}
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             onClick={onOpenWallet}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              background: '#064e3b',
-              border: '1px solid #059669',
-              padding: '7px 14px',
-              borderRadius: '10px',
-              color: '#a7f3d0',
-              fontWeight: 700,
-              fontSize: '0.85rem',
-              cursor: 'pointer'
-            }}
+            className="flex items-center gap-2 px-3 py-2 rounded bg-rally-primary/80 border border-rally-accent/40 text-rally-accent hover:bg-rally-primary hover:border-rally-accent transition-colors shadow-rally-glow"
           >
-            <Wallet size={16} color="#34d399" />
-            <span>کیف پول: {Math.floor(walletBalance / 10).toLocaleString('fa-IR')} تومان</span>
-          </button>
+            <Wallet className="w-4 h-4 text-rally-accent" />
+            <div className="flex items-center gap-1 text-xs font-extrabold text-white">
+              <span>کیف پول:</span>
+              <span className="text-rally-accent font-black">
+                {Math.floor(walletBalance / 10).toLocaleString('fa-IR')}
+              </span>
+              <span className="text-[11px] text-slate-300 font-medium">تومان</span>
+            </div>
+            <PlusCircle className="w-3.5 h-3.5 text-rally-accent ml-0.5" />
+          </motion.button>
+        </div>
+      </div>
 
-          {/* Navigation Pill Switcher */}
-          <div
-            style={{
-              display: 'flex',
-              background: 'rgba(255, 255, 255, 0.05)',
-              padding: '4px',
-              borderRadius: '12px',
-              border: '1px solid var(--border-subtle)',
-              flexWrap: 'wrap',
-              gap: '4px'
-            }}
-          >
-            {NAV_TABS.map(tab => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id as TabType)}
-                  style={{
-                    padding: '7px 12px',
-                    borderRadius: '8px',
-                    background: isActive ? tab.activeColor : 'transparent',
-                    color: isActive ? '#ffffff' : '#94a3b8',
-                    fontWeight: 700,
-                    fontSize: '0.82rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    cursor: 'pointer'
-                  }}
-                >
-                  <Icon size={14} />
-                  {tab.label}
-                </button>
-              );
-            })}
-          </div>
+      {/* Navigation Segmented Control Bar (8px Grid & Framer Motion Pill) */}
+      <div className="w-full bg-slate-950/90 border-t border-rally-border-subtle overflow-x-auto no-scrollbar">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1.5 flex items-center gap-1 min-w-max">
+          {NAV_TABS.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`relative px-3.5 py-2 rounded text-xs font-bold flex items-center gap-2 transition-colors cursor-pointer select-none ${
+                  isActive ? 'text-white' : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                {isActive && (
+                  <motion.div
+                    layoutId="activeNavPill"
+                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                    className="absolute inset-0 bg-rally-primary rounded border border-rally-accent/40 shadow-rally-green"
+                  />
+                )}
+                <span className="relative z-10 flex items-center gap-1.5">
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-rally-accent' : 'text-slate-400'}`} />
+                  <span>{tab.label}</span>
+                  {tab.badge && (
+                    <span
+                      className={`text-[10px] px-1.5 py-0.2 rounded-pill font-bold ${
+                        isActive
+                          ? 'bg-rally-accent/20 text-rally-accent'
+                          : 'bg-slate-800 text-slate-400'
+                      }`}
+                    >
+                      {tab.badge}
+                    </span>
+                  )}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
     </header>
