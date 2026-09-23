@@ -14,6 +14,7 @@ class TopUpRequest(BaseModel):
 class PayBookingRequest(BaseModel):
     user_id: str = Field(..., description="شناسه کاربر")
     slot_id: str = Field(..., description="شناسه سانس انتخابی")
+    booking_id: str | None = Field(None, description="شناسه سفارش رزرو در صورت قفل موقت قبلی")
 
 @router.get("/balance")
 async def get_wallet_balance(user_id: str = Query(..., description="شناسه کاربر"), db: AsyncSession = Depends(get_db)):
@@ -54,7 +55,8 @@ async def pay_booking_from_wallet(payload: PayBookingRequest, db: AsyncSession =
         booking = await WalletService.pay_booking_with_wallet(
             db,
             user_id=payload.user_id,
-            slot_id=payload.slot_id
+            slot_id=payload.slot_id,
+            booking_id=payload.booking_id
         )
         return {
             "success": True,

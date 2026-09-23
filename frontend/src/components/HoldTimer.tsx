@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { Clock, ShieldCheck, AlertCircle, ExternalLink } from 'lucide-react';
+import { Clock, ShieldCheck, AlertCircle, ExternalLink, Wallet } from 'lucide-react';
 import { Booking } from '../types';
 
 interface HoldTimerProps {
   booking: Booking;
+  walletBalance?: number;
   onProceedToPayment: () => void;
+  onPayWithWallet?: () => void;
   onCancelHold: () => void;
   isLoading?: boolean;
 }
 
 export const HoldTimer: React.FC<HoldTimerProps> = ({
   booking,
+  walletBalance = 0,
   onProceedToPayment,
+  onPayWithWallet,
   onCancelHold,
   isLoading = false,
 }) => {
@@ -100,18 +104,48 @@ export const HoldTimer: React.FC<HoldTimerProps> = ({
         </div>
       )}
 
-      <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginTop: '16px' }}>
+        {onPayWithWallet && (
+          <button
+            disabled={isExpired || isLoading || walletBalance < booking.amount}
+            onClick={onPayWithWallet}
+            title={walletBalance < booking.amount ? 'موجودی کیف پول برای پرداخت این سانس کافی نیست' : 'پرداخت آنی و بدون نیاز به ورود به شاپرک'}
+            style={{
+              flex: '1 1 200px',
+              padding: '12px',
+              borderRadius: '10px',
+              background: (isExpired || walletBalance < booking.amount)
+                ? 'rgba(255, 255, 255, 0.05)'
+                : 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+              color: (isExpired || walletBalance < booking.amount) ? '#64748b' : '#ffffff',
+              border: (isExpired || walletBalance < booking.amount) ? '1px solid var(--border-subtle)' : 'none',
+              fontWeight: 700,
+              fontSize: '0.95rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              cursor: (isExpired || walletBalance < booking.amount) ? 'not-allowed' : 'pointer',
+              boxShadow: (isExpired || walletBalance < booking.amount) ? 'none' : '0 4px 14px rgba(5, 150, 105, 0.4)'
+            }}
+          >
+            <Wallet size={18} />
+            <span>پرداخت آنی با کیف پول</span>
+            <span style={{ fontSize: '0.75rem', opacity: 0.85 }}>({Math.floor(walletBalance / 10).toLocaleString('fa-IR')} ت)</span>
+          </button>
+        )}
+
         <button
           disabled={isExpired || isLoading}
           onClick={onProceedToPayment}
           style={{
-            flex: 2,
+            flex: '1 1 200px',
             padding: '12px',
             borderRadius: '10px',
             background: isExpired ? '#475569' : 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
             color: '#ffffff',
             fontWeight: 700,
-            fontSize: '1rem',
+            fontSize: '0.95rem',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -121,7 +155,7 @@ export const HoldTimer: React.FC<HoldTimerProps> = ({
           }}
         >
           <ShieldCheck size={18} />
-          {isLoading ? 'در حال انتقال به شاپرک...' : 'پرداخت امن شاپرک'}
+          {isLoading ? 'در حال اتصال...' : 'درگاه امن شاپرک'}
           <ExternalLink size={16} />
         </button>
 
@@ -129,13 +163,14 @@ export const HoldTimer: React.FC<HoldTimerProps> = ({
           disabled={isLoading}
           onClick={onCancelHold}
           style={{
-            flex: 1,
+            flex: '0 1 100px',
             padding: '12px',
             borderRadius: '10px',
             background: 'rgba(255, 255, 255, 0.06)',
             color: '#94a3b8',
             fontWeight: 600,
             fontSize: '0.9rem',
+            cursor: 'pointer'
           }}
         >
           انصراف

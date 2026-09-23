@@ -19,8 +19,8 @@ export const CrmCustomersPage: React.FC = () => {
       if (selectedCity) params.append('city', selectedCity);
 
       const [custRes, kpiRes] = await Promise.all([
-        fetch(`http://localhost:8000/api/v1/crm/customers?${params.toString()}`),
-        fetch('http://localhost:8000/api/v1/crm/analytics')
+        fetch(`/api/v1/crm/customers?${params.toString()}`),
+        fetch('/api/v1/crm/analytics')
       ]);
 
       if (custRes.ok) setCustomers(await custRes.json());

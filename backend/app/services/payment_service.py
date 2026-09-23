@@ -7,6 +7,9 @@ from backend.app.models.booking import Booking
 from backend.app.models.payment import PaymentAttempt
 from backend.app.models.slot import TimeSlot
 from backend.app.models.refund import Refund
+from backend.app.models.user import User
+from backend.app.models.club import Club, Court
+from backend.app.services.notification_service import NotificationService
 
 class PaymentService:
     @staticmethod
@@ -139,6 +142,49 @@ class PaymentService:
         slot.hold_expires_at = None
 
         await db.commit()
+
+        # Send instant confirmation SMS to player and alert to club operator
+        try:
+            user_stmt = select(User).where(User.id == booking.user_id)
+            user_res = await db.execute(user_stmt)
+            user = user_res.scalar_one_or_none()
+
+            court_stmt = select(Court).where(Court.id == slot.court_id)
+            court_res = await db.execute(court_stmt)
+            court = court_res.scalar_one_or_none()
+
+            if court:
+                club_stmt = select(Club).where(Club.id == court.club_id)
+                club_res = await db.execute(club_stmt)
+                club = club_res.scalar_one_or_none()
+            else:
+                club = None
+
+            if user and court and club:
+                # 1. Player SMS
+                await NotificationService.send_booking_confirmation(
+                    db=db,
+                    booking=booking,
+                    slot=slot,
+                    court=court,
+                    club=club,
+                    recipient_phone=user.phone_number
+                )
+                # 2. Operator Alert SMS
+                op_phone = club.phone or "09120000000"
+                await NotificationService.send_operator_booking_alert(
+                    db=db,
+                    booking=booking,
+                    slot=slot,
+                    court=court,
+                    player_name=user.full_name,
+                    player_phone=user.phone_number,
+                    operator_phone=op_phone
+                )
+        except Exception:
+            # Notifications must not break transaction response
+            pass
+
         return {
             "status": "CONFIRMED",
             "tracking_code": booking.tracking_code,

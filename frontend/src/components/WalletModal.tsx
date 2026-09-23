@@ -19,8 +19,8 @@ export const WalletModal: React.FC<WalletModalProps> = ({ userId, isOpen, onClos
   const fetchWallet = async () => {
     try {
       const [wRes, txRes] = await Promise.all([
-        fetch(`http://localhost:8000/api/v1/wallet/balance?user_id=${userId}`),
-        fetch(`http://localhost:8000/api/v1/wallet/transactions?user_id=${userId}`)
+        fetch(`/api/v1/wallet/balance?user_id=${userId}`),
+        fetch(`/api/v1/wallet/transactions?user_id=${userId}`)
       ]);
       if (wRes.ok) {
         const wData = await wRes.json();
@@ -44,7 +44,7 @@ export const WalletModal: React.FC<WalletModalProps> = ({ userId, isOpen, onClos
     setLoading(true);
     setSuccessMsg(null);
     try {
-      const res = await fetch('http://localhost:8000/api/v1/wallet/topup', {
+      const res = await fetch('/api/v1/wallet/topup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

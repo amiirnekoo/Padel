@@ -50,7 +50,11 @@ async def verify_otp(payload: OTPVerify, db: AsyncSession = Depends(get_db_sessi
     return {
         "access_token": token,
         "token_type": "bearer",
-        "user_id": user.id
+        "user_id": user.id,
+        "phone_number": user.phone_number,
+        "role": user.role,
+        "full_name": user.full_name or "ورزشکار",
+        "club_id": user.club_id
     }
 
 @router.post("/operator/login")

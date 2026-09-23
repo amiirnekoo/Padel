@@ -15,7 +15,7 @@ export const NotificationLogsPage: React.FC = () => {
       if (recipient) params.append('recipient', recipient);
       if (eventType) params.append('event_type', eventType);
 
-      const res = await fetch(`http://localhost:8000/api/v1/notifications/logs?${params.toString()}`);
+      const res = await fetch(`/api/v1/notifications/logs?${params.toString()}`);
       if (res.ok) setLogs(await res.json());
     } catch {
       // Fallback

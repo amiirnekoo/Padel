@@ -12,7 +12,7 @@ export const ClubSettlementsPage: React.FC = () => {
   const fetchSettlements = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:8000/api/v1/settlements/club/${clubId}`);
+      const res = await fetch(`/api/v1/settlements/club/${clubId}`);
       if (res.ok) setBatches(await res.json());
     } catch {
       // Fallback
@@ -29,7 +29,7 @@ export const ClubSettlementsPage: React.FC = () => {
     setGenerating(true);
     setMsg(null);
     try {
-      const res = await fetch('http://localhost:8000/api/v1/settlements/generate', {
+      const res = await fetch('/api/v1/settlements/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ club_id: clubId })

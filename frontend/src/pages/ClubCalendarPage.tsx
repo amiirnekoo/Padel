@@ -2,111 +2,100 @@ import React, { useState, useEffect } from 'react';
 import { ClubCalendarData, TimeSlot, Booking, CheckoutResult } from '../types';
 import { CalendarGrid } from '../components/CalendarGrid';
 import { HoldTimer } from '../components/HoldTimer';
-import { Calendar, AlertCircle, CheckCircle2, Trophy, MapPin, Phone } from 'lucide-react';
+import { ClubSelector, VenueSummary } from '../components/ClubSelector';
+import { Calendar, AlertCircle, CheckCircle2 } from 'lucide-react';
 
-export const ClubCalendarPage: React.FC = () => {
+interface ClubCalendarPageProps {
+  userId?: string;
+  walletBalance?: number;
+  onRefreshWallet?: () => void;
+}
+
+export const ClubCalendarPage: React.FC<ClubCalendarPageProps> = ({
+  userId = 'user-1',
+  walletBalance = 0,
+  onRefreshWallet
+}) => {
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toISOString().split('T')[0]
   );
+  const [clubId, setClubId] = useState<string>('club-enghelab');
   const [calendarData, setCalendarData] = useState<ClubCalendarData | null>(null);
   const [activeBooking, setActiveBooking] = useState<Booking | null>(null);
+  const [activeSlotId, setActiveSlotId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [notification, setNotification] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
 
-  // Mock initial club ID for Tehran Padel Club
-  const clubId = "club-enghelab";
-
-  const fetchCalendar = async (date: string) => {
+  const fetchCalendar = async (date: string, cId: string) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/v1/clubs/${clubId}/calendar?date=${date}`);
+      const response = await fetch(`/api/v1/clubs/${cId}/calendar?date=${date}`);
       if (response.ok) {
         const data = await response.json();
         setCalendarData(data);
       } else {
-        // Fallback demo data for immediate visual responsiveness
+        // Fallback demo data
         setCalendarData({
-          club_id: clubId,
+          club_id: cId,
           date: date,
           courts: [
             {
               court_id: "court-1",
-              court_name: "کورت سنترال پدل (انقلاب)",
+              court_name: "کورت سنترال پدل",
               sport_type: "PADEL",
               is_indoor: true,
               slots: [
                 { slot_id: "s-1", start_time: "08:00", end_time: "09:30", price: 1800000, status: "AVAILABLE", hold_expires_at: null },
                 { slot_id: "s-2", start_time: "09:30", end_time: "11:00", price: 1800000, status: "BOOKED", hold_expires_at: null },
-                { slot_id: "s-3", start_time: "11:00", end_time: "12:30", price: 2000000, status: "HOLD", hold_expires_at: new Date(Date.now() + 8 * 60 * 1000).toISOString() },
                 { slot_id: "s-4", start_time: "18:00", end_time: "19:30", price: 2400000, status: "AVAILABLE", hold_expires_at: null },
                 { slot_id: "s-5", start_time: "19:30", end_time: "21:00", price: 2400000, status: "AVAILABLE", hold_expires_at: null },
-              ]
-            },
-            {
-              court_id: "court-2",
-              court_name: "کورت تنیس شماره ۱ خاکی",
-              sport_type: "TENNIS",
-              is_indoor: false,
-              slots: [
-                { slot_id: "s-6", start_time: "08:00", end_time: "09:30", price: 1200000, status: "AVAILABLE", hold_expires_at: null },
-                { slot_id: "s-7", start_time: "10:00", end_time: "11:30", price: 1200000, status: "TOURNAMENT_HOLD", hold_expires_at: null },
-                { slot_id: "s-8", start_time: "17:00", end_time: "18:30", price: 1600000, status: "AVAILABLE", hold_expires_at: null },
               ]
             }
           ]
         });
       }
-    } catch (err) {
-      console.warn("Using offline fallback calendar:", err);
-      // set offline fallback
-      setCalendarData({
-        club_id: clubId,
-        date: date,
-        courts: [
-          {
-            court_id: "court-1",
-            court_name: "کورت سنترال پدل (انقلاب)",
-            sport_type: "PADEL",
-            is_indoor: true,
-            slots: [
-              { slot_id: "s-1", start_time: "08:00", end_time: "09:30", price: 1800000, status: "AVAILABLE", hold_expires_at: null },
-              { slot_id: "s-4", start_time: "18:00", end_time: "19:30", price: 2400000, status: "AVAILABLE", hold_expires_at: null },
-              { slot_id: "s-5", start_time: "19:30", end_time: "21:00", price: 2400000, status: "AVAILABLE", hold_expires_at: null },
-            ]
-          }
-        ]
-      });
+    } catch {
+      // offline fallback
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchCalendar(selectedDate);
-  }, [selectedDate]);
+    fetchCalendar(selectedDate, clubId);
+  }, [selectedDate, clubId]);
 
   const handleSelectSlot = async (slot: TimeSlot) => {
     setIsLoading(true);
     setNotification(null);
+    setActiveSlotId(slot.slot_id);
     try {
-      const res = await fetch('/api/v1/bookings/hold', {
+      const res = await fetch(`/api/v1/slots/${slot.slot_id}/hold`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slot_id: slot.slot_id })
+        headers: {
+          'Content-Type': 'application/json',
+          'x-user-id': userId
+        }
       });
 
       if (res.ok) {
-        const booking: Booking = await res.json();
+        const data = await res.json();
+        const booking: Booking = {
+          booking_id: data.booking_id,
+          tracking_code: data.tracking_code,
+          amount: data.price,
+          status: data.status,
+          hold_expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString()
+        };
         setActiveBooking(booking);
         setNotification({ type: 'success', message: 'سانس با موفقیت برای ۱۰ دقیقه به نام شما قفل اتمیک شد.' });
-        fetchCalendar(selectedDate);
+        fetchCalendar(selectedDate, clubId);
       } else {
         const error = await res.json();
         setNotification({ type: 'error', message: error.detail || 'این سانس توسط کاربر دیگری رزرو شد' });
-        fetchCalendar(selectedDate);
+        fetchCalendar(selectedDate, clubId);
       }
     } catch {
-      // Local simulation for visual inspection
       const simulatedBooking: Booking = {
         booking_id: `b-${Date.now()}`,
         tracking_code: `PAD-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
@@ -126,11 +115,11 @@ export const ClubCalendarPage: React.FC = () => {
     setIsLoading(true);
     try {
       const res = await fetch(`/api/v1/bookings/${activeBooking.booking_id}/checkout`, {
-        method: 'POST'
+        method: 'POST',
+        headers: { 'x-user-id': userId }
       });
       if (res.ok) {
         const data: CheckoutResult = await res.json();
-        // In actual flow: window.location.href = data.payment_url;
         setNotification({ type: 'info', message: `انتقال به درگاه شاپرک با توکن: ${data.gateway_token}` });
       } else {
         setNotification({ type: 'error', message: 'خطا در اتصال به درگاه پرداخت' });
@@ -138,7 +127,39 @@ export const ClubCalendarPage: React.FC = () => {
     } catch {
       setNotification({ type: 'success', message: 'تأیید شبیه‌ساز پرداخت شاپرک؛ رزرو شما قطعی شد!' });
       setActiveBooking(null);
-      fetchCalendar(selectedDate);
+      fetchCalendar(selectedDate, clubId);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handlePayWithWallet = async () => {
+    if (!activeBooking) return;
+    setIsLoading(true);
+    try {
+      const res = await fetch('/api/v1/wallet/pay-booking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: userId,
+          slot_id: activeSlotId || 'slot-1',
+          booking_id: activeBooking.booking_id
+        })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setNotification({
+          type: 'success',
+          message: `رزرو شما با موفقیت از طریق کیف پول قطعی شد! کد پیگیری: ${data.tracking_code}`
+        });
+        setActiveBooking(null);
+        if (onRefreshWallet) onRefreshWallet();
+        fetchCalendar(selectedDate, clubId);
+      } else {
+        setNotification({ type: 'error', message: data.detail || 'خطا در پرداخت از کیف پول' });
+      }
+    } catch {
+      setNotification({ type: 'error', message: 'خطا در اتصال به کیف پول' });
     } finally {
       setIsLoading(false);
     }
@@ -147,32 +168,25 @@ export const ClubCalendarPage: React.FC = () => {
   const handleCancelHold = () => {
     setActiveBooking(null);
     setNotification({ type: 'info', message: 'قفل موقت سانس لغو و در تقویم آزاد شد.' });
-    fetchCalendar(selectedDate);
+    fetchCalendar(selectedDate, clubId);
   };
 
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px 16px' }}>
-      {/* Club Hero Card */}
-      <div className="glass-panel" style={{ padding: '28px', marginBottom: '28px', position: 'relative', overflow: 'hidden' }}>
+      {/* Club Selector & Date Filter Panel */}
+      <div className="glass-panel" style={{ padding: '24px', marginBottom: '24px', background: '#0f172a' }}>
         <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '20px' }}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-              <span className="badge badge-available">🎾 باشگاه اختصاصی پدل و تنیس</span>
-              <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>نرخ مصوب با تضمین برابری قیمت</span>
-            </div>
-            <h1 style={{ fontSize: '1.8rem', fontWeight: 900, color: '#f8fafc', marginBottom: '10px' }}>
-              مجموعه ورزشی پدل و تنیس انقلاب تهران
-            </h1>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', color: '#94a3b8', fontSize: '0.85rem' }}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><MapPin size={15} color="#10b981" /> تهران، اتوبان نیایش، مجموعه انقلاب</span>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Phone size={15} color="#38bdf8" /> ۰۲۱-۲۲۰۰۱۱۰۰</span>
-            </div>
+          <div style={{ flex: '1 1 500px' }}>
+            <ClubSelector
+              selectedClubId={clubId}
+              onSelectClub={(v: VenueSummary) => setClubId(v.id)}
+            />
           </div>
 
           {/* Date Picker */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(255, 255, 255, 0.04)', padding: '10px 16px', borderRadius: '12px', border: '1px solid var(--border-subtle)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', background: '#1e293b', padding: '10px 16px', borderRadius: '12px', border: '1px solid var(--border-subtle)' }}>
             <Calendar size={18} color="#10b981" />
-            <label style={{ fontSize: '0.85rem', color: '#94a3b8' }}>انتخاب تاریخ:</label>
+            <label style={{ fontSize: '0.85rem', color: '#94a3b8' }}>تاریخ سانس:</label>
             <input
               type="date"
               value={selectedDate}
@@ -190,7 +204,7 @@ export const ClubCalendarPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Notifications */}
+      {/* Notifications Banner */}
       {notification && (
         <div
           style={{
@@ -211,12 +225,14 @@ export const ClubCalendarPage: React.FC = () => {
         </div>
       )}
 
-      {/* Active 10-Minute Hold Sticky Bar */}
+      {/* Active 10-Minute Hold Sticky Bar with 1-Click Wallet Checkout */}
       {activeBooking && (
         <div style={{ marginBottom: '28px' }}>
           <HoldTimer
             booking={activeBooking}
+            walletBalance={walletBalance}
             onProceedToPayment={handleProceedToPayment}
+            onPayWithWallet={handlePayWithWallet}
             onCancelHold={handleCancelHold}
             isLoading={isLoading}
           />

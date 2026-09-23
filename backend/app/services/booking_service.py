@@ -11,6 +11,9 @@ from backend.app.models.slot import TimeSlot
 from backend.app.models.booking import Booking
 from backend.app.models.club import Court, Club
 from backend.app.models.refund import Refund
+from backend.app.models.user import User
+from backend.app.services.wallet_service import WalletService
+from backend.app.services.notification_service import NotificationService
 
 class BookingService:
     @staticmethod
@@ -185,4 +188,29 @@ class BookingService:
         db.add(refund)
         await db.commit()
         await db.refresh(refund)
+
+        # Wire to user wallet and send notification if refund amount is positive
+        if refund_amount > 0:
+            wallet = await WalletService.refund_to_wallet(
+                db=db,
+                user_id=booking.user_id,
+                booking_id=booking.id,
+                refund_amount=refund_amount,
+                description=f"استرداد وجه لغو رزرو با کد پیگیری {booking.tracking_code}"
+            )
+            try:
+                user_stmt = select(User).where(User.id == booking.user_id)
+                user_res = await db.execute(user_stmt)
+                user = user_res.scalar_one_or_none()
+                if user:
+                    await NotificationService.send_cancellation_refund_notice(
+                        db=db,
+                        tracking_code=booking.tracking_code,
+                        refund_toman=refund_amount // 10,
+                        current_balance_toman=wallet.balance // 10,
+                        recipient_phone=user.phone_number
+                    )
+            except Exception:
+                pass
+
         return refund

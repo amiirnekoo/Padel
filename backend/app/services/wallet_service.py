@@ -5,6 +5,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from backend.app.models.wallet import Wallet, WalletTransaction
 from backend.app.models.slot import TimeSlot
 from backend.app.models.booking import Booking
+from backend.app.models.user import User
+from backend.app.models.club import Club, Court
+from backend.app.services.notification_service import NotificationService
 
 class WalletService:
     @staticmethod
@@ -62,7 +65,8 @@ class WalletService:
     async def pay_booking_with_wallet(
         db: AsyncSession,
         user_id: str,
-        slot_id: str
+        slot_id: str,
+        booking_id: str | None = None
     ) -> Booking:
         """
         Executes instant 1-click booking payment via wallet balance.
@@ -92,20 +96,46 @@ class WalletService:
         slot.status = "BOOKED"
         slot.hold_expires_at = None
 
-        # Create confirmed booking
-        tracking_code = f"WLT-{datetime.utcnow().strftime('%y%m%d%H%M')}-{uuid.uuid4().hex[:6].upper()}"
-        booking = Booking(
-            id=str(uuid.uuid4()),
-            tracking_code=tracking_code,
-            user_id=user_id,
-            timeslot_id=slot.id,
-            amount_paid=slot.price,
-            status="CONFIRMED",
-            payment_method="WALLET",
-            settlement_status="UNSETTLED",
-            confirmed_at=datetime.utcnow()
-        )
-        db.add(booking)
+        now = datetime.utcnow()
+        booking = None
+        if booking_id:
+            b_stmt = select(Booking).where(Booking.id == booking_id)
+            b_res = await db.execute(b_stmt)
+            booking = b_res.scalar_one_or_none()
+
+        if booking and booking.status == "PENDING_PAYMENT":
+            booking.status = "CONFIRMED"
+            booking.payment_method = "WALLET"
+            booking.confirmed_at = now
+        else:
+            # Check if there is an existing pending booking for this user and slot
+            existing_stmt = select(Booking).where(
+                Booking.timeslot_id == slot.id,
+                Booking.user_id == user_id,
+                Booking.status == "PENDING_PAYMENT"
+            )
+            existing_res = await db.execute(existing_stmt)
+            existing_booking = existing_res.scalar_one_or_none()
+
+            if existing_booking:
+                booking = existing_booking
+                booking.status = "CONFIRMED"
+                booking.payment_method = "WALLET"
+                booking.confirmed_at = now
+            else:
+                tracking_code = f"WLT-{now.strftime('%y%m%d%H%M')}-{uuid.uuid4().hex[:6].upper()}"
+                booking = Booking(
+                    id=str(uuid.uuid4()),
+                    tracking_code=tracking_code,
+                    user_id=user_id,
+                    timeslot_id=slot.id,
+                    amount_paid=slot.price,
+                    status="CONFIRMED",
+                    payment_method="WALLET",
+                    settlement_status="UNSETTLED",
+                    confirmed_at=now
+                )
+                db.add(booking)
 
         # Record debit transaction
         tx = WalletTransaction(
@@ -121,6 +151,46 @@ class WalletService:
 
         await db.commit()
         await db.refresh(booking)
+
+        # Send instant SMS confirmation
+        try:
+            user_stmt = select(User).where(User.id == booking.user_id)
+            user_res = await db.execute(user_stmt)
+            user = user_res.scalar_one_or_none()
+
+            court_stmt = select(Court).where(Court.id == slot.court_id)
+            court_res = await db.execute(court_stmt)
+            court = court_res.scalar_one_or_none()
+
+            if court:
+                club_stmt = select(Club).where(Club.id == court.club_id)
+                club_res = await db.execute(club_stmt)
+                club = club_res.scalar_one_or_none()
+            else:
+                club = None
+
+            if user and court and club:
+                await NotificationService.send_booking_confirmation(
+                    db=db,
+                    booking=booking,
+                    slot=slot,
+                    court=court,
+                    club=club,
+                    recipient_phone=user.phone_number
+                )
+                op_phone = club.phone or "09120000000"
+                await NotificationService.send_operator_booking_alert(
+                    db=db,
+                    booking=booking,
+                    slot=slot,
+                    court=court,
+                    player_name=user.full_name,
+                    player_phone=user.phone_number,
+                    operator_phone=op_phone
+                )
+        except Exception:
+            pass
+
         return booking
 
     @staticmethod

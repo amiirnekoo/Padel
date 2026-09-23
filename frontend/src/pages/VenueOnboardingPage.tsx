@@ -26,7 +26,7 @@ export const VenueOnboardingPage: React.FC = () => {
 
   const fetchMyVenues = async () => {
     try {
-      const res = await fetch('http://localhost:8000/api/v1/venues/my-venues?owner_id=user-owner-demo');
+      const res = await fetch('/api/v1/venues/my-venues?owner_id=user-owner-demo');
       if (res.ok) {
         setMyVenues(await res.json());
       }
@@ -62,7 +62,7 @@ export const VenueOnboardingPage: React.FC = () => {
     };
 
     try {
-      const res = await fetch('http://localhost:8000/api/v1/venues/onboard', {
+      const res = await fetch('/api/v1/venues/onboard', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
