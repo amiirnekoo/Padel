@@ -7,6 +7,8 @@ from backend.app.models.payment import PaymentAttempt
 from backend.app.models.refund import Refund
 from backend.app.models.coach import CoachProfile
 from backend.app.models.trainee import CoachTrainee
+from backend.app.models.wallet import Wallet, WalletTransaction
+from backend.app.models.settlement import SettlementBatch, SettlementItem
 
 __all__ = [
     "Base",
@@ -22,4 +24,8 @@ __all__ = [
     "Refund",
     "CoachProfile",
     "CoachTrainee",
+    "Wallet",
+    "WalletTransaction",
+    "SettlementBatch",
+    "SettlementItem",
 ]

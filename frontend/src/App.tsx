@@ -3,10 +3,14 @@ import { ClubCalendarPage } from './pages/ClubCalendarPage';
 import { OperatorPage } from './pages/OperatorPage';
 import { VenueOnboardingPage } from './pages/VenueOnboardingPage';
 import { CrmCustomersPage } from './pages/CrmCustomersPage';
-import { Trophy, CalendarCheck, ShieldCheck, UserCheck, Building2, Users } from 'lucide-react';
+import { ClubSettlementsPage } from './pages/ClubSettlementsPage';
+import { WalletModal } from './components/WalletModal';
+import { Trophy, CalendarCheck, ShieldCheck, UserCheck, Building2, Users, CreditCard, Wallet } from 'lucide-react';
 
 export const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'player' | 'operator' | 'venue' | 'crm'>('player');
+  const [activeTab, setActiveTab] = useState<'player' | 'operator' | 'venue' | 'crm' | 'settlements'>('player');
+  const [isWalletOpen, setIsWalletOpen] = useState(false);
+  const [walletBalance, setWalletBalance] = useState<number>(0);
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -45,93 +49,133 @@ export const App: React.FC = () => {
                   پدل و تنیس سنتر ایران
                 </span>
                 <span style={{ fontSize: '0.7rem', padding: '2px 6px', borderRadius: '4px', background: 'rgba(16, 185, 129, 0.2)', color: '#34d399', fontWeight: 700 }}>
-                  نسخه جامع ۲.۰
+                  نسخه جامع ۲.۱
                 </span>
               </div>
-              <p style={{ fontSize: '0.75rem', color: '#94a3b8' }}>سامانه یکپارچه رزرواسیون، آنبوردینگ مالکان و هوش داده مشتریان سراسر کشور</p>
+              <p style={{ fontSize: '0.75rem', color: '#94a3b8' }}>موتور رزرو اتمیک، تسویه خودکار پایا و کیف پول هوشمند</p>
             </div>
           </div>
 
-          {/* Navigation Pill Switcher */}
-          <div
-            style={{
-              display: 'flex',
-              background: 'rgba(255, 255, 255, 0.05)',
-              padding: '4px',
-              borderRadius: '12px',
-              border: '1px solid var(--border-subtle)',
-              flexWrap: 'wrap',
-              gap: '4px'
-            }}
-          >
+          {/* Right Header Controls: Wallet + Navigation Switcher */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
             <button
-              onClick={() => setActiveTab('player')}
+              onClick={() => setIsWalletOpen(true)}
               style={{
-                padding: '8px 14px',
-                borderRadius: '8px',
-                background: activeTab === 'player' ? '#10b981' : 'transparent',
-                color: activeTab === 'player' ? '#ffffff' : '#94a3b8',
-                fontWeight: 700,
-                fontSize: '0.85rem',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px'
-              }}
-            >
-              <CalendarCheck size={16} />
-              رزرو بازیکنان
-            </button>
-            <button
-              onClick={() => setActiveTab('operator')}
-              style={{
-                padding: '8px 14px',
-                borderRadius: '8px',
-                background: activeTab === 'operator' ? '#ef4444' : 'transparent',
-                color: activeTab === 'operator' ? '#ffffff' : '#94a3b8',
+                gap: '8px',
+                background: '#064e3b',
+                border: '1px solid #059669',
+                padding: '7px 14px',
+                borderRadius: '10px',
+                color: '#a7f3d0',
                 fontWeight: 700,
                 fontSize: '0.85rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px'
+                cursor: 'pointer'
               }}
             >
-              <UserCheck size={16} />
-              باجه متصدی
+              <Wallet size={16} color="#34d399" />
+              <span>کیف پول: {(walletBalance / 10).toLocaleString('fa-IR')} تومان</span>
             </button>
-            <button
-              onClick={() => setActiveTab('venue')}
+
+            {/* Navigation Pill Switcher */}
+            <div
               style={{
-                padding: '8px 14px',
-                borderRadius: '8px',
-                background: activeTab === 'venue' ? '#0284c7' : 'transparent',
-                color: activeTab === 'venue' ? '#ffffff' : '#94a3b8',
-                fontWeight: 700,
-                fontSize: '0.85rem',
                 display: 'flex',
-                alignItems: 'center',
-                gap: '6px'
+                background: 'rgba(255, 255, 255, 0.05)',
+                padding: '4px',
+                borderRadius: '12px',
+                border: '1px solid var(--border-subtle)',
+                flexWrap: 'wrap',
+                gap: '4px'
               }}
             >
-              <Building2 size={16} />
-              ثبت و پنل مالکان باشگاه
-            </button>
-            <button
-              onClick={() => setActiveTab('crm')}
-              style={{
-                padding: '8px 14px',
-                borderRadius: '8px',
-                background: activeTab === 'crm' ? '#8b5cf6' : 'transparent',
-                color: activeTab === 'crm' ? '#ffffff' : '#94a3b8',
-                fontWeight: 700,
-                fontSize: '0.85rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px'
-              }}
-            >
-              <Users size={16} />
-              هوش مشتریان و CRM
-            </button>
+              <button
+                onClick={() => setActiveTab('player')}
+                style={{
+                  padding: '7px 12px',
+                  borderRadius: '8px',
+                  background: activeTab === 'player' ? '#10b981' : 'transparent',
+                  color: activeTab === 'player' ? '#ffffff' : '#94a3b8',
+                  fontWeight: 700,
+                  fontSize: '0.82rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                <CalendarCheck size={14} />
+                رزرو بازیکنان
+              </button>
+              <button
+                onClick={() => setActiveTab('operator')}
+                style={{
+                  padding: '7px 12px',
+                  borderRadius: '8px',
+                  background: activeTab === 'operator' ? '#ef4444' : 'transparent',
+                  color: activeTab === 'operator' ? '#ffffff' : '#94a3b8',
+                  fontWeight: 700,
+                  fontSize: '0.82rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                <UserCheck size={14} />
+                باجه متصدی
+              </button>
+              <button
+                onClick={() => setActiveTab('venue')}
+                style={{
+                  padding: '7px 12px',
+                  borderRadius: '8px',
+                  background: activeTab === 'venue' ? '#0284c7' : 'transparent',
+                  color: activeTab === 'venue' ? '#ffffff' : '#94a3b8',
+                  fontWeight: 700,
+                  fontSize: '0.82rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                <Building2 size={14} />
+                مالکان باشگاه
+              </button>
+              <button
+                onClick={() => setActiveTab('settlements')}
+                style={{
+                  padding: '7px 12px',
+                  borderRadius: '8px',
+                  background: activeTab === 'settlements' ? '#059669' : 'transparent',
+                  color: activeTab === 'settlements' ? '#ffffff' : '#94a3b8',
+                  fontWeight: 700,
+                  fontSize: '0.82rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                <CreditCard size={14} />
+                تسویه پایا (۹۷٪)
+              </button>
+              <button
+                onClick={() => setActiveTab('crm')}
+                style={{
+                  padding: '7px 12px',
+                  borderRadius: '8px',
+                  background: activeTab === 'crm' ? '#8b5cf6' : 'transparent',
+                  color: activeTab === 'crm' ? '#ffffff' : '#94a3b8',
+                  fontWeight: 700,
+                  fontSize: '0.82rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                <Users size={14} />
+                هوش مشتریان
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -141,8 +185,16 @@ export const App: React.FC = () => {
         {activeTab === 'player' && <ClubCalendarPage />}
         {activeTab === 'operator' && <OperatorPage />}
         {activeTab === 'venue' && <VenueOnboardingPage />}
+        {activeTab === 'settlements' && <ClubSettlementsPage />}
         {activeTab === 'crm' && <CrmCustomersPage />}
       </main>
+
+      <WalletModal
+        userId="user-1"
+        isOpen={isWalletOpen}
+        onClose={() => setIsWalletOpen(false)}
+        onBalanceUpdated={b => setWalletBalance(b)}
+      />
 
       {/* Footer */}
       <footer style={{ borderTop: '1px solid var(--border-subtle)', padding: '24px 16px', background: 'rgba(10, 14, 23, 0.95)', marginTop: 'auto' }}>

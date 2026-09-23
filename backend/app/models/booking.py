@@ -13,6 +13,8 @@ class Booking(Base):
     timeslot_id: Mapped[str] = mapped_column(String(36), ForeignKey("time_slots.id"), nullable=False, index=True)
     amount_paid: Mapped[int] = mapped_column(BigInteger, nullable=False)
     status: Mapped[str] = mapped_column(String(30), nullable=False, default="PENDING_PAYMENT", index=True)  # PENDING_PAYMENT, CONFIRMED, CANCELLED_BY_USER, CANCELLED_BY_CLUB, EXPIRED
+    payment_method: Mapped[str] = mapped_column(String(30), nullable=False, default="DIRECT_GATEWAY")  # DIRECT_GATEWAY, WALLET
+    settlement_status: Mapped[str] = mapped_column(String(20), nullable=False, default="UNSETTLED")  # UNSETTLED, SETTLED
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     confirmed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     cancelled_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)

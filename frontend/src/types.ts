@@ -140,3 +140,38 @@ export interface PlatformKpisData {
   venues_count: number;
   total_platform_revenue: number;
 }
+
+export interface WalletData {
+  wallet_id: string;
+  user_id: string;
+  balance: number;
+  balance_toman: number;
+  currency: string;
+  is_locked: boolean;
+}
+
+export interface WalletTransactionData {
+  id: string;
+  amount: number;
+  amount_toman: number;
+  transaction_type: "CREDIT" | "DEBIT";
+  category: "TOPUP" | "BOOKING_PAYMENT" | "REFUND" | "WITHDRAWAL";
+  reference_id: string | null;
+  description: string | null;
+  created_at: string | null;
+}
+
+export interface SettlementBatchData {
+  id: string;
+  batch_number: string;
+  total_bookings_amount: number;
+  platform_commission: number;
+  club_payout_amount: number;
+  club_payout_toman: number;
+  status: "PROCESSING" | "PAID" | "CANCELLED";
+  iban: string;
+  paya_reference: string | null;
+  paid_at: string | null;
+  created_at: string | null;
+  items_count: number;
+}
