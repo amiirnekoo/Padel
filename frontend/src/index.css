@@ -1,14 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap');
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --bg-main: #0a0e17;
-  --bg-card: rgba(18, 24, 38, 0.75);
-  --bg-card-hover: rgba(26, 35, 54, 0.85);
+  --bg-card: #0f172a;
+  --bg-card-hover: #1e293b;
   --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-glow: rgba(16, 185, 129, 0.3);
+  --border-glow: rgba(215, 237, 104, 0.3);
   
-  --color-primary: #10b981;
-  --color-primary-glow: rgba(16, 185, 129, 0.25);
+  --color-primary: #16483D;
+  --color-primary-light: #1e5e50;
+  --color-accent: #D7ED68;
+  --color-accent-glow: rgba(215, 237, 104, 0.25);
+  
   --color-hold: #f59e0b;
   --color-hold-glow: rgba(245, 158, 11, 0.25);
   --color-booked: #64748b;
