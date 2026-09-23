@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { ClubCalendarPage } from './pages/ClubCalendarPage';
 import { OperatorPage } from './pages/OperatorPage';
-import { Trophy, CalendarCheck, ShieldCheck, UserCheck } from 'lucide-react';
+import { VenueOnboardingPage } from './pages/VenueOnboardingPage';
+import { CrmCustomersPage } from './pages/CrmCustomersPage';
+import { Trophy, CalendarCheck, ShieldCheck, UserCheck, Building2, Users } from 'lucide-react';
 
 export const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'player' | 'operator'>('player');
+  const [activeTab, setActiveTab] = useState<'player' | 'operator' | 'venue' | 'crm'>('player');
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -40,13 +42,13 @@ export const App: React.FC = () => {
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '1.25rem', fontWeight: 900, color: '#f8fafc', letterSpacing: '-0.02em' }}>
-                  پدل‌سنتر تهران
+                  پدل و تنیس سنتر ایران
                 </span>
                 <span style={{ fontSize: '0.7rem', padding: '2px 6px', borderRadius: '4px', background: 'rgba(16, 185, 129, 0.2)', color: '#34d399', fontWeight: 700 }}>
-                  MVP
+                  نسخه جامع ۲.۰
                 </span>
               </div>
-              <p style={{ fontSize: '0.75rem', color: '#94a3b8' }}>موتور رزرو هوشمند کورت با قفل اتمیک و پرداخت شاپرک</p>
+              <p style={{ fontSize: '0.75rem', color: '#94a3b8' }}>سامانه یکپارچه رزرواسیون، آنبوردینگ مالکان و هوش داده مشتریان سراسر کشور</p>
             </div>
           </div>
 
@@ -57,42 +59,78 @@ export const App: React.FC = () => {
               background: 'rgba(255, 255, 255, 0.05)',
               padding: '4px',
               borderRadius: '12px',
-              border: '1px solid var(--border-subtle)'
+              border: '1px solid var(--border-subtle)',
+              flexWrap: 'wrap',
+              gap: '4px'
             }}
           >
             <button
               onClick={() => setActiveTab('player')}
               style={{
-                padding: '8px 18px',
+                padding: '8px 14px',
                 borderRadius: '8px',
                 background: activeTab === 'player' ? '#10b981' : 'transparent',
                 color: activeTab === 'player' ? '#ffffff' : '#94a3b8',
                 fontWeight: 700,
-                fontSize: '0.9rem',
+                fontSize: '0.85rem',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px'
+                gap: '6px'
               }}
             >
               <CalendarCheck size={16} />
-              تقویم و رزرو بازیکنان
+              رزرو بازیکنان
             </button>
             <button
               onClick={() => setActiveTab('operator')}
               style={{
-                padding: '8px 18px',
+                padding: '8px 14px',
                 borderRadius: '8px',
                 background: activeTab === 'operator' ? '#ef4444' : 'transparent',
                 color: activeTab === 'operator' ? '#ffffff' : '#94a3b8',
                 fontWeight: 700,
-                fontSize: '0.9rem',
+                fontSize: '0.85rem',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px'
+                gap: '6px'
               }}
             >
               <UserCheck size={16} />
-              میز باجه متصدی
+              باجه متصدی
+            </button>
+            <button
+              onClick={() => setActiveTab('venue')}
+              style={{
+                padding: '8px 14px',
+                borderRadius: '8px',
+                background: activeTab === 'venue' ? '#0284c7' : 'transparent',
+                color: activeTab === 'venue' ? '#ffffff' : '#94a3b8',
+                fontWeight: 700,
+                fontSize: '0.85rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              <Building2 size={16} />
+              ثبت و پنل مالکان باشگاه
+            </button>
+            <button
+              onClick={() => setActiveTab('crm')}
+              style={{
+                padding: '8px 14px',
+                borderRadius: '8px',
+                background: activeTab === 'crm' ? '#8b5cf6' : 'transparent',
+                color: activeTab === 'crm' ? '#ffffff' : '#94a3b8',
+                fontWeight: 700,
+                fontSize: '0.85rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              <Users size={16} />
+              هوش مشتریان و CRM
             </button>
           </div>
         </div>
@@ -100,7 +138,10 @@ export const App: React.FC = () => {
 
       {/* Main Content Area */}
       <main style={{ flex: 1 }}>
-        {activeTab === 'player' ? <ClubCalendarPage /> : <OperatorPage />}
+        {activeTab === 'player' && <ClubCalendarPage />}
+        {activeTab === 'operator' && <OperatorPage />}
+        {activeTab === 'venue' && <VenueOnboardingPage />}
+        {activeTab === 'crm' && <CrmCustomersPage />}
       </main>
 
       {/* Footer */}

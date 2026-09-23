@@ -86,3 +86,57 @@ export interface ClubAnalyticsData {
   tournament_slots: number;
   commission_rate: number;
 }
+
+export interface VenueOnboardPayload {
+  owner_id: string;
+  name: string;
+  province: string;
+  city: string;
+  address: string;
+  phone: string;
+  sports_supported: string;
+  amenities?: string;
+  courts_count: number;
+  default_hourly_rate: number;
+  iban?: string;
+  description?: string;
+}
+
+export interface VenueData {
+  id: string;
+  name: string;
+  province: string;
+  city: string;
+  address: string;
+  sports_supported: string;
+  default_hourly_rate: number;
+  approval_status: "PENDING_APPROVAL" | "APPROVED" | "REJECTED";
+  is_active: boolean;
+  created_at?: string;
+}
+
+export interface CustomerIntelligenceData {
+  id: string;
+  phone_number: string;
+  full_name: string;
+  role: UserRole;
+  city: string;
+  province: string;
+  skill_level: string;
+  tags: string[];
+  kyc_status: "UNVERIFIED" | "PENDING" | "VERIFIED";
+  notes: string | null;
+  created_at: string | null;
+  total_bookings: number;
+  lifetime_value: number;
+  owned_venues: Array<{ name: string; city: string }>;
+  coach_profile?: { is_verified: boolean; hourly_rate: number; sport_types: string } | null;
+}
+
+export interface PlatformKpisData {
+  total_customers: number;
+  roles_distribution: Record<string, number>;
+  cities_distribution: Record<string, number>;
+  venues_count: number;
+  total_platform_revenue: number;
+}

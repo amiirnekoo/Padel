@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from sqlalchemy import String, Boolean, DateTime
+from sqlalchemy import String, Boolean, DateTime, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from backend.app.models.base import Base
 
@@ -15,6 +15,11 @@ class User(Base):
     club_id: Mapped[str] = mapped_column(String(36), nullable=True)  # for CLUB_OPERATOR / CLUB_MANAGER
     skill_level: Mapped[str | None] = mapped_column(String(20), nullable=True, default="BEGINNER")  # BEGINNER, INTERMEDIATE, ADVANCED, PRO
     emergency_phone: Mapped[str | None] = mapped_column(String(15), nullable=True)
+    city: Mapped[str | None] = mapped_column(String(50), nullable=True, default="تهران")
+    province: Mapped[str | None] = mapped_column(String(50), nullable=True, default="تهران")
+    tags: Mapped[str | None] = mapped_column(String(255), nullable=True, default="NEW_LEAD")
+    kyc_status: Mapped[str] = mapped_column(String(20), nullable=False, default="UNVERIFIED")  # UNVERIFIED, PENDING, VERIFIED
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
