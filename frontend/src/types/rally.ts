@@ -95,3 +95,65 @@ export interface BookingReceipt {
   userPhone: string;
   cancellationTerms: string;
 }
+
+export type ProductCategory =
+  | 'ALL'
+  | 'PADEL_RACKET'
+  | 'TENNIS_RACKET'
+  | 'BALLS'
+  | 'BAGS'
+  | 'ACCESSORIES'
+  | 'SHOES';
+
+export interface ShopProduct {
+  id: string;
+  name_fa: string;
+  name_en: string;
+  brand: string;
+  category: ProductCategory;
+  sport: SportType;
+  level: StudentLevel;
+  original_price: number; // Tomans
+  discount_percent: number;
+  price: number; // Tomans
+  stock: number;
+  weight: string;
+  balance: string;
+  shape: string;
+  surface: string;
+  core: string;
+  warranty: string;
+  image_url: string;
+  rating: number;
+  reviews_count: number;
+  description: string;
+  tags?: string[];
+}
+
+export interface CartItem {
+  product: ShopProduct;
+  quantity: number;
+  selectedOption?: string;
+}
+
+export interface ShopOrderReceipt {
+  orderId: string;
+  trackingCode: string;
+  items: {
+    productId: string;
+    nameFa: string;
+    quantity: number;
+    unitPrice: number;
+    totalPrice: number;
+  }[];
+  subtotal: number;
+  discountAmount: number;
+  shippingFee: number;
+  totalAmount: number;
+  receiverName: string;
+  receiverPhone: string;
+  deliveryAddress: string;
+  paymentMethod: 'WALLET' | 'SHAPARAK';
+  createdAt: string;
+}
+

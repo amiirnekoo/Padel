@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, CalendarCheck, Award, Users2, User } from 'lucide-react';
+import { Home, CalendarCheck, Award, Users2, ShoppingBag, User } from 'lucide-react';
 import { RallyPageTab } from './RallyHeader';
 
 interface MobileBottomNavProps {
@@ -20,12 +20,13 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
     { id: 'courts' as RallyPageTab, label: 'زمین‌ها', icon: CalendarCheck },
     { id: 'coaches' as RallyPageTab, label: 'مربیان', icon: Award },
     { id: 'tournaments' as RallyPageTab, label: 'مسابقات', icon: Users2 },
+    { id: 'shop' as RallyPageTab, label: 'فروشگاه', icon: ShoppingBag },
     { id: 'account' as const, label: 'حساب من', icon: User }
   ];
 
   return (
     <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-lg px-2 py-1 safe-area-pb">
-      <div className="grid grid-cols-5 items-center max-w-md mx-auto">
+      <div className="grid grid-cols-6 items-center max-w-md mx-auto">
         {ITEMS.map((item) => {
           const Icon = item.icon;
           const isAccount = item.id === 'account';

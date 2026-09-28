@@ -230,3 +230,35 @@ class WalletService:
         )
         res = await db.execute(stmt)
         return list(res.scalars().all())
+
+    @staticmethod
+    async def deduct_balance(
+        db: AsyncSession,
+        user_id: str,
+        amount: int,
+        category: str = "PURCHASE",
+        description: str = "کسر از موجودی کیف پول"
+    ) -> Wallet:
+        """Deducts balance from user wallet with transaction recording."""
+        if amount <= 0:
+            raise ValueError("مبلغ کسر باید بزرگتر از صفر باشد")
+        wallet = await WalletService.get_or_create_wallet(db, user_id)
+        if wallet.is_locked:
+            raise ValueError("کیف پول شما مسدود است")
+        if wallet.balance < amount:
+            raise ValueError("موجودی کیف پول کافی نیست")
+        wallet.balance -= amount
+        tx = WalletTransaction(
+            id=str(uuid.uuid4()),
+            wallet_id=wallet.id,
+            amount=amount,
+            transaction_type="DEBIT",
+            category=category,
+            reference_id=str(uuid.uuid4())[:8],
+            description=description
+        )
+        db.add(tx)
+        await db.commit()
+        await db.refresh(wallet)
+        return wallet
+

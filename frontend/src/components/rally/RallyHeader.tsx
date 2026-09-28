@@ -9,6 +9,7 @@ import {
   Award,
   Users2,
   Handshake,
+  ShoppingBag,
   ChevronDown
 } from 'lucide-react';
 
@@ -17,6 +18,7 @@ export type RallyPageTab =
   | 'courts'
   | 'coaches'
   | 'tournaments'
+  | 'shop'
   | 'partners'
   | 'sponsors';
 
@@ -29,6 +31,8 @@ interface RallyHeaderProps {
   onOpenWallet: () => void;
   onOpenAuth: () => void;
   userName?: string;
+  cartItemsCount?: number;
+  onOpenCart?: () => void;
 }
 
 export const RallyHeader: React.FC<RallyHeaderProps> = ({
@@ -39,7 +43,9 @@ export const RallyHeader: React.FC<RallyHeaderProps> = ({
   walletBalance,
   onOpenWallet,
   onOpenAuth,
-  userName
+  userName,
+  cartItemsCount = 0,
+  onOpenCart
 }) => {
   const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
 
@@ -49,9 +55,11 @@ export const RallyHeader: React.FC<RallyHeaderProps> = ({
     { id: 'courts', label: 'زمین‌ها', icon: CalendarCheck },
     { id: 'coaches', label: 'مربیان', icon: Award },
     { id: 'tournaments', label: 'مسابقات', icon: Users2 },
+    { id: 'shop', label: 'فروشگاه تجهیزات', icon: ShoppingBag },
     { id: 'partners', label: 'پنل همکاران', icon: Building2 },
     { id: 'sponsors', label: 'همکاری با رالی', icon: Handshake }
   ];
+
 
   return (
     <header className="sticky top-0 z-40 w-full bg-white border-b border-gray-200 shadow-sm transition-all">
@@ -147,8 +155,23 @@ export const RallyHeader: React.FC<RallyHeaderProps> = ({
           })}
         </nav>
 
-        {/* Right side Actions: Wallet + Profile/Login */}
+        {/* Right side Actions: Cart + Wallet + Profile/Login */}
         <div className="flex items-center gap-2 sm:gap-3">
+          {/* Cart trigger button */}
+          <button
+            onClick={onOpenCart}
+            className="relative flex items-center justify-center p-2 sm:px-3 sm:py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-700 hover:border-rally-primary hover:text-rally-primary transition-all cursor-pointer shadow-sm"
+            title="سبد خرید تجهیزات"
+          >
+            <ShoppingBag className="w-4 h-4 text-rally-primary" />
+            <span className="hidden md:inline mr-1.5 text-xs font-bold text-gray-800">سبد</span>
+            {cartItemsCount > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 bg-emerald-600 text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow">
+                {cartItemsCount}
+              </span>
+            )}
+          </button>
+
           {/* Wallet button */}
           <button
             onClick={onOpenWallet}
