@@ -19,7 +19,7 @@ export const ScenarioTesterBar: React.FC<ScenarioTesterBarProps> = ({
   const [isOpen, setIsOpen] = useState(true);
 
   return (
-    <div className="fixed bottom-14 lg:bottom-4 left-4 z-40 max-w-sm w-full bg-rally-charcoal text-white rounded-2xl shadow-2xl border border-white/20 p-3 sm:p-4 text-xs select-none">
+    <div className="fixed bottom-16 sm:bottom-14 lg:bottom-4 left-3 sm:left-4 z-40 max-w-[calc(100vw-24px)] sm:max-w-sm w-full bg-rally-charcoal text-white rounded-2xl shadow-2xl border border-white/20 p-3 sm:p-4 text-xs select-none">
       <div className="flex items-center justify-between pb-2 border-b border-white/10">
         <div className="flex items-center gap-1.5 font-bold text-rally-accent">
           <Sparkles className="w-4 h-4 text-rally-accent" />

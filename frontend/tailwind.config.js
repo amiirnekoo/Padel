@@ -59,6 +59,20 @@ export default {
         'rally-glow': '0 0 20px rgba(56, 189, 248, 0.25)',
         'rally-blue': '0 4px 16px rgba(2, 132, 199, 0.35)'
       },
+      screens: {
+        'xs': '400px',
+        'sm': '640px',
+        'md': '768px',
+        'lg': '1024px',
+        'xl': '1280px',
+        '2xl': '1536px',
+        '3xl': '1920px',
+      },
+      maxWidth: {
+        '8xl': '88rem',
+        '9xl': '96rem',
+        'ultra': '114rem'
+      },
       fontFamily: {
         sans: ['Vazirmatn', 'Inter', 'system-ui', 'sans-serif'],
       },

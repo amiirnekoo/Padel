@@ -62,35 +62,33 @@ export const RallyHeader: React.FC<RallyHeaderProps> = ({
 
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-white border-b border-gray-200 shadow-sm transition-all">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between gap-4">
+    <header className="sticky top-0 z-40 w-full bg-white border-b border-gray-200 shadow-xs transition-all">
+      <div className="max-w-7xl 2xl:max-w-[1600px] 3xl:max-w-[1800px] mx-auto px-3 sm:px-6 lg:px-8 2xl:px-12 h-16 sm:h-18 flex items-center justify-between gap-2 sm:gap-4">
         
         {/* Brand identity: Name + Logo motif */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-3 sm:gap-6">
           <button
             onClick={() => onSelectTab('home')}
-            className="flex items-center gap-3 text-right group focus:outline-none"
+            className="flex items-center gap-2 sm:gap-3 text-right group focus:outline-none cursor-pointer"
           >
-            {/* Minimal iconic symbol: Deep Green circle with ball trajectory arc & lime dot */}
-            <div className="relative w-10 h-10 rounded-xl bg-rally-primary flex items-center justify-center shadow-md transition-transform group-hover:scale-105">
-              <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+            <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-rally-primary flex items-center justify-center shadow-md transition-transform group-hover:scale-105 shrink-0">
+              <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                 <path d="M4 18 C 9 6, 15 6, 20 18" strokeLinecap="round" />
               </svg>
-              {/* Lime trajectory ball */}
-              <span className="absolute top-2.5 right-2 w-2.5 h-2.5 rounded-full bg-rally-accent shadow-rally-glow ring-2 ring-rally-primary" />
+              <span className="absolute top-2 right-1.5 sm:top-2.5 sm:right-2 w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-rally-accent shadow-rally-glow ring-2 ring-rally-primary" />
             </div>
 
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="text-xl font-black text-rally-charcoal tracking-tight">
+                <span className="text-lg sm:text-xl font-black text-rally-charcoal tracking-tight">
                   رالی
                 </span>
-                <span className="text-[11px] font-bold text-rally-primary bg-rally-primary/10 px-2 py-0.5 rounded-full">
+                <span className="text-[10px] sm:text-[11px] font-bold text-rally-primary bg-rally-primary/10 px-1.5 sm:px-2 py-0.5 rounded-full">
                   RALLY
                 </span>
               </div>
-              <p className="text-[11px] text-gray-500 font-medium hidden sm:block">
-                سامانه هوشمند رزرو زمین، مربی و مسابقات
+              <p className="text-[10px] sm:text-[11px] text-gray-500 font-medium hidden md:block">
+                سامانه هوشمند رزرو زمین، مربی، مسابقات و فروشگاه پدل
               </p>
             </div>
           </button>
@@ -99,7 +97,7 @@ export const RallyHeader: React.FC<RallyHeaderProps> = ({
           <div className="relative hidden md:block">
             <button
               onClick={() => setIsCityDropdownOpen(!isCityDropdownOpen)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-gray-50 text-xs font-bold text-gray-700 hover:bg-gray-100 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-gray-50 text-xs font-bold text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer"
             >
               <MapPin className="w-3.5 h-3.5 text-rally-primary" />
               <span>{selectedCity}</span>
@@ -115,7 +113,7 @@ export const RallyHeader: React.FC<RallyHeaderProps> = ({
                       onSelectCity(c);
                       setIsCityDropdownOpen(false);
                     }}
-                    className={`w-full text-right px-3 py-1.5 text-xs font-medium hover:bg-rally-primary/5 transition-colors ${
+                    className={`w-full text-right px-3 py-1.5 text-xs font-medium hover:bg-rally-primary/5 transition-colors cursor-pointer ${
                       selectedCity === c ? 'text-rally-primary font-bold bg-rally-primary/10' : 'text-gray-600'
                     }`}
                   >
@@ -136,14 +134,14 @@ export const RallyHeader: React.FC<RallyHeaderProps> = ({
               <button
                 key={item.id}
                 onClick={() => onSelectTab(item.id)}
-                className={`relative px-3.5 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors ${
+                className={`relative px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
                   isActive
                     ? 'text-rally-primary bg-rally-primary/10'
                     : 'text-gray-600 hover:text-rally-charcoal hover:bg-gray-100'
                 }`}
               >
                 <Icon className={`w-4 h-4 ${isActive ? 'text-rally-primary' : 'text-gray-400'}`} />
-                <span>{item.label}</span>
+                <span className="whitespace-nowrap">{item.label}</span>
                 {isActive && (
                   <motion.div
                     layoutId="activeRallyNavIndicator"
@@ -156,15 +154,15 @@ export const RallyHeader: React.FC<RallyHeaderProps> = ({
         </nav>
 
         {/* Right side Actions: Cart + Wallet + Profile/Login */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-2.5">
           {/* Cart trigger button */}
           <button
             onClick={onOpenCart}
-            className="relative flex items-center justify-center p-2 sm:px-3 sm:py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-700 hover:border-rally-primary hover:text-rally-primary transition-all cursor-pointer shadow-sm"
+            className="relative flex items-center justify-center p-2 sm:px-3 sm:py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-700 hover:border-rally-primary hover:text-rally-primary transition-all cursor-pointer shadow-2xs"
             title="سبد خرید تجهیزات"
           >
             <ShoppingBag className="w-4 h-4 text-rally-primary" />
-            <span className="hidden md:inline mr-1.5 text-xs font-bold text-gray-800">سبد</span>
+            <span className="hidden xl:inline mr-1.5 text-xs font-bold text-gray-800">سبد خرید</span>
             {cartItemsCount > 0 && (
               <span className="absolute -top-1.5 -right-1.5 bg-sky-600 text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow">
                 {cartItemsCount}
@@ -175,27 +173,29 @@ export const RallyHeader: React.FC<RallyHeaderProps> = ({
           {/* Wallet button */}
           <button
             onClick={onOpenWallet}
-            className="flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-xs font-bold text-rally-charcoal hover:border-rally-primary/40 transition-colors"
+            className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-xs font-bold text-rally-charcoal hover:border-rally-primary/40 transition-colors cursor-pointer"
           >
-            <Wallet className="w-4 h-4 text-rally-primary" />
-            <span className="hidden sm:inline text-gray-500 font-normal">موجودی:</span>
-            <span className="font-black text-rally-primary">
+            <Wallet className="w-4 h-4 text-rally-primary shrink-0" />
+            <span className="hidden md:inline text-gray-500 font-normal">کیف پول:</span>
+            <span className="font-black text-rally-primary whitespace-nowrap">
               {(walletBalance / 10).toLocaleString('fa-IR')}
             </span>
-            <span className="text-[10px] text-gray-500">تومان</span>
+            <span className="text-[10px] text-gray-500 hidden sm:inline">تومان</span>
           </button>
 
           {/* User auth button */}
           <button
             onClick={onOpenAuth}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+            className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
               userName
                 ? 'bg-rally-primary/10 text-rally-primary border border-rally-primary/20'
-                : 'bg-rally-primary text-white hover:bg-rally-primary-light shadow-sm'
+                : 'bg-rally-primary text-white hover:bg-rally-primary-hover shadow-xs'
             }`}
           >
-            <User className="w-4 h-4" />
-            <span>{userName ? userName : 'ورود / عضویت'}</span>
+            <User className="w-4 h-4 shrink-0" />
+            <span className="truncate max-w-[80px] xs:max-w-[120px] sm:max-w-none">
+              {userName ? userName : 'ورود'}
+            </span>
           </button>
         </div>
       </div>

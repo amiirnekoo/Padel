@@ -72,13 +72,13 @@ export const RallyShopPage: React.FC<RallyShopPageProps> = ({
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent z-0" />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+        <div className="relative z-10 max-w-7xl 2xl:max-w-[1600px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-10 sm:py-16">
           <div className="max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rally-accent/20 border border-rally-accent/30 text-rally-accent text-xs font-bold mb-3">
               <Sparkles className="w-3.5 h-3.5" />
               <span>فروشگاه رسمی و تخصصی تجهیزات رالی</span>
             </div>
-            <h1 className="text-2xl sm:text-4xl font-black text-white leading-tight mb-3">
+            <h1 className="text-2xl sm:text-4xl 2xl:text-5xl font-black text-white leading-tight mb-3">
               راکت‌های اورجینال پدل و تنیس با گارانتی سلامت رالی
             </h1>
             <p className="text-xs sm:text-sm text-gray-300 leading-relaxed mb-6">
@@ -86,7 +86,7 @@ export const RallyShopPage: React.FC<RallyShopPageProps> = ({
             </p>
 
             {/* Badges bar */}
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 xs:grid-cols-3 gap-2.5 sm:gap-3">
               <div className="flex items-center gap-2 bg-slate-900/90 border border-slate-800 p-2.5 rounded-xl text-xs">
                 <ShieldCheck className="w-4 h-4 text-emerald-400 flex-shrink-0" />
                 <span className="text-gray-200 font-medium">ضمانت اصالت فیزیکی</span>
@@ -105,7 +105,7 @@ export const RallyShopPage: React.FC<RallyShopPageProps> = ({
       </section>
 
       {/* Main Catalog & Filters */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl 2xl:max-w-[1600px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-8">
         
         {/* Search & Top Controls */}
         <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-sm mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
@@ -210,7 +210,7 @@ export const RallyShopPage: React.FC<RallyShopPageProps> = ({
             <p className="text-xs text-gray-400 mt-1">لطفاً فیلترها را تغییر داده یا دسته‌بندی دیگری را انتخاب کنید.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 sm:gap-5 2xl:gap-6">
             {filteredProducts.map((product) => (
               <ProductCard
                 key={product.id}

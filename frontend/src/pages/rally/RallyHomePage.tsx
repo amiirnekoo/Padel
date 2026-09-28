@@ -44,7 +44,7 @@ export const RallyHomePage: React.FC<RallyHomePageProps> = ({
       />
 
       {/* Curated Recommendations and Trust Elements */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl 2xl:max-w-[1600px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12">
         <FeaturedSections
           featuredClubs={MOCK_CLUBS}
           coaches={MOCK_COACHES}

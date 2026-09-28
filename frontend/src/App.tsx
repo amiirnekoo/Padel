@@ -118,17 +118,17 @@ export const App: React.FC = () => {
               />
             )}
             {activeTab === 'courts' && (
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+              <div className="max-w-7xl 2xl:max-w-[1600px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-6">
                 <RallyCourtsPage initialFilters={courtFilterParam} onSelectClub={setSelectedClub} onSelectDirectSlot={(club, slot) => setBookingSlot({ club, slot })} />
               </div>
             )}
             {activeTab === 'coaches' && (
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+              <div className="max-w-7xl 2xl:max-w-[1600px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-6">
                 <RallyCoachesPage initialFilters={coachFilterParam} onSelectCoach={setSelectedCoach} />
               </div>
             )}
             {activeTab === 'tournaments' && (
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+              <div className="max-w-7xl 2xl:max-w-[1600px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-6">
                 <RallyTournamentsPage onSelectTournament={setSelectedTournament} />
               </div>
             )}
@@ -142,12 +142,12 @@ export const App: React.FC = () => {
               />
             )}
             {activeTab === 'partners' && (
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+              <div className="max-w-7xl 2xl:max-w-[1600px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-6">
                 <RallyPartnerHubPage />
               </div>
             )}
             {activeTab === 'sponsors' && (
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+              <div className="max-w-7xl 2xl:max-w-[1600px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-6">
                 <RallySponsorsPage />
               </div>
             )}
@@ -281,7 +281,7 @@ export const App: React.FC = () => {
         isLoggedIn={!!userSession}
       />
       <footer className="w-full bg-white border-t border-gray-200 py-8 text-xs text-gray-500">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="max-w-7xl 2xl:max-w-[1600px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <span className="font-black text-rally-charcoal text-sm">رالی</span>
             <span>— سامانه هوشمند رزرو زمین، مربیان، مسابقات و فروشگاه تخصصی پدل و تنیس</span>

@@ -184,3 +184,20 @@ input, select {
   border-color: rgba(139, 92, 246, 0.35);
   background: rgba(139, 92, 246, 0.05);
 }
+
+/* Mobile & Notch Safe Areas */
+.safe-area-pb {
+  padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
+}
+
+.safe-area-pt {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Prevent unwanted mobile font enlargement */
+@media (max-width: 640px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+

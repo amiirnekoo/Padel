@@ -54,7 +54,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
                   <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-rally-accent ring-2 ring-white" />
                 )}
               </div>
-              <span className="text-[11px] mt-1 tracking-tight">
+              <span className="text-[10px] xs:text-[11px] mt-1 tracking-tight truncate max-w-full">
                 {isAccount && isLoggedIn ? 'پروفایل' : item.label}
               </span>
             </button>
