@@ -90,7 +90,7 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
             </span>
           </div>
 
-          <div className="mt-2 flex items-center gap-1.5 text-xs text-emerald-700 font-medium">
+          <div className="mt-2 flex items-center gap-1.5 text-xs text-sky-700 font-medium">
             <ShieldCheck className="w-3.5 h-3.5 flex-shrink-0" />
             <span className="truncate">{product.warranty}</span>
           </div>
@@ -114,7 +114,7 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
             </div>
           </div>
 
-          <span className="text-[11px] font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">
+          <span className="text-[11px] font-medium text-sky-700 bg-sky-50 px-2 py-0.5 rounded">
             ارسال سریع
           </span>
         </div>
@@ -123,8 +123,8 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
           onClick={handleAdd}
           className={`w-full py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm ${
             justAdded || isInCart
-              ? 'bg-emerald-600 text-white hover:bg-emerald-700'
-              : 'bg-rally-primary text-white hover:bg-slate-800'
+              ? 'bg-sky-600 text-white hover:bg-sky-700'
+              : 'bg-rally-primary text-white hover:bg-rally-primary-dark'
           }`}
         >
           {justAdded ? (

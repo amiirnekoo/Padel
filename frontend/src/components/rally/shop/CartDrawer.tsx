@@ -118,10 +118,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         </div>
 
         {/* Free shipping progress */}
-        <div className="px-4 py-2.5 bg-emerald-50 border-b border-emerald-100 flex items-center justify-between text-xs text-emerald-800">
+        <div className="px-4 py-2.5 bg-sky-50 border-b border-sky-100 flex items-center justify-between text-xs text-sky-900">
           {isFreeShipping ? (
             <span className="font-bold flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+              <CheckCircle2 className="w-4 h-4 text-sky-600" />
               ارسال اکسپرس این سفارش کاملاً رایگان است!
             </span>
           ) : (
@@ -174,7 +174,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               </button>
             </form>
             {appliedCoupon && (
-              <div className="text-[11px] text-emerald-600 font-bold flex items-center gap-1">
+              <div className="text-[11px] text-sky-600 font-bold flex items-center gap-1">
                 <Tag className="w-3.5 h-3.5" />
                 <span>کد {appliedCoupon} اعمال شد.</span>
               </div>
@@ -245,7 +245,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               </div>
               <div className="flex justify-between text-sm font-black text-gray-900 pt-1.5 border-t border-gray-200">
                 <span>مبلغ قابل پرداخت:</span>
-                <span className="text-emerald-700 font-black">{totalAmount.toLocaleString('fa-IR')} تومان</span>
+                <span className="text-sky-600 font-black">{totalAmount.toLocaleString('fa-IR')} تومان</span>
               </div>
             </div>
 
@@ -253,7 +253,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             <button
               onClick={handleCheckout}
               disabled={isSubmitting}
-              className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all disabled:opacity-50"
+              className="w-full py-3 bg-rally-primary hover:bg-rally-primary-hover text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all disabled:opacity-50"
             >
               {isSubmitting ? (
                 <span>در حال ثبت سفارش...</span>

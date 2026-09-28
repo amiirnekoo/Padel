@@ -76,9 +76,9 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
               )}
             </div>
 
-            <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-100 flex items-center gap-2.5">
-              <ShieldCheck className="w-5 h-5 text-emerald-600 flex-shrink-0" />
-              <div className="text-xs text-emerald-800">
+            <div className="p-3 bg-sky-50 rounded-xl border border-sky-100 flex items-center gap-2.5">
+              <ShieldCheck className="w-5 h-5 text-sky-600 flex-shrink-0" />
+              <div className="text-xs text-sky-900">
                 <span className="font-bold">تضمین ۱۰۰٪ اصالت کالا:</span> امکان مرجوعی تا ۷ روز در صورت عدم تأیید اصالت توسط مربیان.
               </div>
             </div>
@@ -185,8 +185,8 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                   onClick={handleAdd}
                   className={`py-3 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition-all ${
                     isAdded
-                      ? 'bg-emerald-600 text-white'
-                      : 'bg-rally-primary text-white hover:bg-slate-800'
+                      ? 'bg-sky-600 text-white'
+                      : 'bg-rally-primary text-white hover:bg-rally-primary-dark'
                   }`}
                 >
                   {isAdded ? (
@@ -207,7 +207,7 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                     handleAdd();
                     onOpenCart();
                   }}
-                  className="py-3 px-4 rounded-xl font-bold text-xs bg-emerald-600 text-white hover:bg-emerald-700 flex items-center justify-center gap-2 cursor-pointer transition-all"
+                  className="py-3 px-4 rounded-xl font-bold text-xs bg-sky-600 text-white hover:bg-sky-700 flex items-center justify-center gap-2 cursor-pointer transition-all shadow-md"
                 >
                   <Flame className="w-4 h-4" />
                   <span>تکمیل سفارش و تسویه</span>

@@ -166,7 +166,7 @@ export const RallyHeader: React.FC<RallyHeaderProps> = ({
             <ShoppingBag className="w-4 h-4 text-rally-primary" />
             <span className="hidden md:inline mr-1.5 text-xs font-bold text-gray-800">سبد</span>
             {cartItemsCount > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 bg-emerald-600 text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow">
+              <span className="absolute -top-1.5 -right-1.5 bg-sky-600 text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow">
                 {cartItemsCount}
               </span>
             )}

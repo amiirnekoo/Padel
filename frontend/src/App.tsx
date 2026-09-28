@@ -217,7 +217,7 @@ export const App: React.FC = () => {
       {shopReceipt && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 text-center shadow-2xl border border-gray-200">
-            <CheckCircle2 className="w-16 h-16 text-emerald-500 mx-auto mb-3" />
+            <CheckCircle2 className="w-16 h-16 text-sky-500 mx-auto mb-3" />
             <h3 className="text-lg font-black text-gray-900 mb-1">سفارش شما با موفقیت ثبت شد</h3>
             <p className="text-xs text-gray-500 mb-4">
               کد پیگیری انحصاری مرسوله: <span className="font-mono font-bold text-rally-primary">{shopReceipt.trackingCode}</span>
@@ -229,7 +229,7 @@ export const App: React.FC = () => {
               </div>
               <div className="flex justify-between font-bold">
                 <span>مبلغ پرداخت‌شده:</span>
-                <span className="text-emerald-700 font-black">{shopReceipt.totalAmount.toLocaleString('fa-IR')} تومان</span>
+                <span className="text-sky-600 font-black">{shopReceipt.totalAmount.toLocaleString('fa-IR')} تومان</span>
               </div>
               <div className="flex justify-between">
                 <span>روش پرداخت:</span>

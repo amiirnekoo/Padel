@@ -9,38 +9,38 @@ export default {
       colors: {
         rally: {
           primary: {
-            DEFAULT: '#16483D',
-            light: '#1e5e50',
-            dark: '#0e332b',
-            hover: '#123c32'
+            DEFAULT: '#0284C7', // Padel Cobalt Court Blue
+            light: '#0EA5E9',   // Electric Sky Blue
+            dark: '#0369A1',    // Deep Court Navy
+            hover: '#0274B3'
           },
           accent: {
-            DEFAULT: '#D7ED68',
-            hover: '#c6dc53',
-            muted: '#a3b83b',
-            glow: 'rgba(215, 237, 104, 0.25)'
+            DEFAULT: '#38BDF8', // Court Line Cyan Accent
+            hover: '#0EA5E9',
+            muted: '#7DD3FC',
+            glow: 'rgba(56, 189, 248, 0.25)'
           },
           charcoal: {
-            DEFAULT: '#1D2523',
-            muted: '#4B5563',
-            light: '#6B7280'
+            DEFAULT: '#0F172A', // Midnight Slate
+            muted: '#334155',
+            light: '#64748B'
           },
           dark: {
-            bg: '#16483D',
-            card: '#0e332b',
-            subtle: '#1a4f43',
-            hover: '#226052'
+            bg: '#0F172A',
+            card: '#1E293B',
+            subtle: '#1E3A8A',
+            hover: '#1D4ED8'
           },
           light: {
-            bg: '#F5F7F6',
-            card: '#ffffff',
-            subtle: '#e2e8f0',
-            border: '#e5e7eb'
+            bg: '#F8FAFC',     // Clean Ice/Court White
+            card: '#FFFFFF',    // Crisp White
+            subtle: '#F0F9FF',  // Subtle Ice Blue Tint
+            border: '#E2E8F0'
           },
           border: {
-            subtle: '#E5E7EB',
-            active: '#D7ED68',
-            strong: '#16483D'
+            subtle: '#E2E8F0',
+            active: '#38BDF8',
+            strong: '#0284C7'
           }
         }
       },
@@ -54,10 +54,10 @@ export default {
         'pill': '9999px'
       },
       boxShadow: {
-        'rally-card': '0 4px 20px rgba(0, 0, 0, 0.08)',
-        'rally-hover': '0 8px 30px rgba(0, 0, 0, 0.12)',
-        'rally-glow': '0 0 20px rgba(215, 237, 104, 0.25)',
-        'rally-green': '0 4px 16px rgba(22, 72, 61, 0.3)'
+        'rally-card': '0 4px 20px rgba(2, 132, 199, 0.08)',
+        'rally-hover': '0 8px 30px rgba(2, 132, 199, 0.16)',
+        'rally-glow': '0 0 20px rgba(56, 189, 248, 0.25)',
+        'rally-blue': '0 4px 16px rgba(2, 132, 199, 0.35)'
       },
       fontFamily: {
         sans: ['Vazirmatn', 'Inter', 'system-ui', 'sans-serif'],
