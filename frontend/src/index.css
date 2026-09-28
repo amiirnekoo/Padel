@@ -5,26 +5,27 @@
 @tailwind utilities;
 
 :root {
-  --bg-main: #0a0e17;
-  --bg-card: #0f172a;
-  --bg-card-hover: #1e293b;
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-glow: rgba(215, 237, 104, 0.3);
+  --bg-main: #F5F7F6;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #F8FAFC;
+  --border-subtle: #E5E7EB;
+  --border-glow: rgba(215, 237, 104, 0.5);
   
   --color-primary: #16483D;
   --color-primary-light: #1e5e50;
+  --color-primary-dark: #0e332b;
   --color-accent: #D7ED68;
-  --color-accent-glow: rgba(215, 237, 104, 0.25);
+  --color-accent-glow: rgba(215, 237, 104, 0.35);
   
-  --color-hold: #f59e0b;
-  --color-hold-glow: rgba(245, 158, 11, 0.25);
-  --color-booked: #64748b;
-  --color-blocked: #ef4444;
-  --color-tournament: #8b5cf6;
+  --color-hold: #d97706;
+  --color-hold-glow: rgba(217, 119, 6, 0.2);
+  --color-booked: #94a3b8;
+  --color-blocked: #dc2626;
+  --color-tournament: #7c3aed;
   
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --text-dim: #64748b;
+  --text-main: #1D2523;
+  --text-muted: #4B5563;
+  --text-dim: #6B7280;
 
   --font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
@@ -37,10 +38,6 @@
 
 body {
   background-color: var(--bg-main);
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.08) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.08) 0px, transparent 50%);
-  background-attachment: fixed;
   color: var(--text-main);
   font-family: var(--font-family);
   direction: rtl;

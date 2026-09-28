@@ -20,21 +20,27 @@ export default {
             muted: '#a3b83b',
             glow: 'rgba(215, 237, 104, 0.25)'
           },
+          charcoal: {
+            DEFAULT: '#1D2523',
+            muted: '#4B5563',
+            light: '#6B7280'
+          },
           dark: {
-            bg: '#0a0e17',
-            card: '#0f172a',
-            subtle: '#1e293b',
-            hover: '#273549'
+            bg: '#16483D',
+            card: '#0e332b',
+            subtle: '#1a4f43',
+            hover: '#226052'
           },
           light: {
             bg: '#F5F7F6',
             card: '#ffffff',
-            subtle: '#e2e8f0'
+            subtle: '#e2e8f0',
+            border: '#e5e7eb'
           },
           border: {
-            subtle: 'rgba(255, 255, 255, 0.08)',
-            active: 'rgba(215, 237, 104, 0.4)',
-            strong: 'rgba(255, 255, 255, 0.16)'
+            subtle: '#E5E7EB',
+            active: '#D7ED68',
+            strong: '#16483D'
           }
         }
       },
@@ -48,10 +54,10 @@ export default {
         'pill': '9999px'
       },
       boxShadow: {
-        'rally-card': '0 4px 20px rgba(0, 0, 0, 0.35)',
-        'rally-hover': '0 8px 30px rgba(0, 0, 0, 0.5)',
+        'rally-card': '0 4px 20px rgba(0, 0, 0, 0.08)',
+        'rally-hover': '0 8px 30px rgba(0, 0, 0, 0.12)',
         'rally-glow': '0 0 20px rgba(215, 237, 104, 0.25)',
-        'rally-green': '0 4px 16px rgba(22, 72, 61, 0.4)'
+        'rally-green': '0 4px 16px rgba(22, 72, 61, 0.3)'
       },
       fontFamily: {
         sans: ['Vazirmatn', 'Inter', 'system-ui', 'sans-serif'],
