@@ -1,7 +1,7 @@
 import uuid
 import random
 import string
-from datetime import datetime, date, timedelta
+from datetime import datetime, date, time, timedelta
 from typing import Optional
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -97,6 +97,38 @@ class BookingService:
             )
             slots_result = await db.execute(slots_stmt)
             slots = slots_result.scalars().all()
+
+            if not slots and slot_date >= date.today():
+                default_hours = [
+                    (time(8, 0), time(9, 30), 1600000),
+                    (time(9, 30), time(11, 0), 1800000),
+                    (time(11, 0), time(12, 30), 1800000),
+                    (time(16, 30), time(18, 0), 2200000),
+                    (time(18, 0), time(19, 30), 2400000),
+                    (time(19, 30), time(21, 0), 2400000),
+                    (time(21, 0), time(22, 30), 2200000),
+                ]
+                new_slots = []
+                for idx, (st, et, price) in enumerate(default_hours):
+                    s_id = f"slot-{court.id}-{slot_date.strftime('%Y%m%d')}-{idx}"
+                    s = TimeSlot(
+                        id=s_id,
+                        court_id=court.id,
+                        slot_date=slot_date,
+                        start_time=st,
+                        end_time=et,
+                        price=price,
+                        status="AVAILABLE"
+                    )
+                    db.add(s)
+                    new_slots.append(s)
+                try:
+                    await db.commit()
+                    slots = new_slots
+                except Exception:
+                    await db.rollback()
+                    slots_result = await db.execute(slots_stmt)
+                    slots = slots_result.scalars().all()
 
             court_slots = []
             for slot in slots:

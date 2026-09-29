@@ -27,7 +27,7 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
   return (
     <div
       onClick={() => onSelectProduct(product)}
-      className="group bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-rally-primary hover:shadow-lg transition-all duration-200 flex flex-col justify-between cursor-pointer"
+      className="group bg-white rounded-[24px] border border-black/[0.05] overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_10px_28px_rgba(0,0,0,0.07)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between cursor-pointer"
     >
       <div>
         {/* Image Container with Badges */}
@@ -121,7 +121,7 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
 
         <button
           onClick={handleAdd}
-          className={`w-full py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm ${
+          className={`w-full py-2.5 px-4 rounded-full font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs active:scale-95 ${
             justAdded || isInCart
               ? 'bg-sky-600 text-white hover:bg-sky-700'
               : 'bg-rally-primary text-white hover:bg-rally-primary-dark'

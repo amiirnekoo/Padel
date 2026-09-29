@@ -32,7 +32,7 @@ export default {
             hover: '#1D4ED8'
           },
           light: {
-            bg: '#F8FAFC',     // Clean Ice/Court White
+            bg: '#F5F5F7',     // Apple Store Signature Clean Off-White
             card: '#FFFFFF',    // Crisp White
             subtle: '#F0F9FF',  // Subtle Ice Blue Tint
             border: '#E2E8F0'
@@ -51,6 +51,7 @@ export default {
         'lg': '16px',
         'xl': '20px',
         '2xl': '24px',
+        '3xl': '28px',
         'pill': '9999px'
       },
       boxShadow: {

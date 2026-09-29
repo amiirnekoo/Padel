@@ -104,4 +104,34 @@ export const rallyApi = {
       return { success: false, error: err?.message || 'خطا در ارتباط با سرور مالی' };
     }
   },
+  /**
+   * دریافت لیست عمومی باشگاه‌های تایید شده سراسر ایران
+   */
+  async getPublicVenues(city?: string, sport?: string) {
+    try {
+      const params = new URLSearchParams();
+      if (city && city !== 'ALL' && city !== 'همه شهرها') params.append('city', city);
+      if (sport && sport !== 'ALL') params.append('sport', sport);
+      const url = `${API_BASE}/venues/public${params.toString() ? `?${params.toString()}` : ''}`;
+      const res = await fetch(url);
+      if (!res.ok) return null;
+      return await res.json();
+    } catch {
+      return null;
+    }
+  },
+
+  /**
+   * دریافت تقویم زنده سانس‌های کورت‌های یک باشگاه برای تاریخ مشخص
+   */
+  async getClubCalendar(clubId: string, dateStr?: string) {
+    try {
+      const url = `${API_BASE}/clubs/${clubId}/calendar${dateStr ? `?date=${dateStr}` : ''}`;
+      const res = await fetch(url);
+      if (!res.ok) return null;
+      return await res.json();
+    } catch {
+      return null;
+    }
+  },
 };
