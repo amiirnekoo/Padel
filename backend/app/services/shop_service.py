@@ -26,7 +26,7 @@ CATALOG_PRODUCTS: List[Dict[str, Any]] = [
         "image_url": "/images/bullpadel_hack.jpg",
         "rating": 4.9,
         "reviews_count": 34,
-        "description": "راکت رسمی پاوو سانچز در مسابقات Premier Padel با سیستم کنترل شوک Vibradrive و کانال هوایی Air React Channel."
+        "description": "راکت رسمی پاکیتو ناوارو (Paquito Navarro) در مسابقات Premier Padel با سیستم کنترل شوک Vibradrive و کانال هوایی Air React Channel."
     },
     {
         "id": "racket-padel-2",

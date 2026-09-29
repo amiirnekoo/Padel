@@ -22,7 +22,7 @@ export const MOCK_SHOP_PRODUCTS: ShopProduct[] = [
     image_url: '/images/bullpadel_hack.jpg',
     rating: 4.9,
     reviews_count: 34,
-    description: 'راکت رسمی پاوو سانچز ستاره Premier Padel؛ مجهز به فریم کربنی با کانال جریان هوای Air React Channel جهت حداکثر سرعت سویینگ و قدرت سهمگین در اسمش‌ها.',
+    description: 'راکت رسمی پاکیتو ناوارو (Paquito Navarro) ستاره محبوب مسابقات Premier Padel؛ مجهز به فریم کربنی با کانال جریان هوای Air React Channel جهت حداکثر سرعت سویینگ و قدرت سهمگین در اسمش‌ها.',
     tags: ['پرفروش', 'اصالت تضمینی', 'ارسال اکسپرس']
   },
   {

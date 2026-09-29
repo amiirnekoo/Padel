@@ -17,6 +17,8 @@ venv/
 *.db
 *.sqlite
 *.sqlite3
+*.db-journal
+.tmp_tests/
 
 # Node / Frontend
 node_modules/
