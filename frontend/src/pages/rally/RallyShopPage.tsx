@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Search, ShoppingBag, ShieldCheck, Truck, RotateCcw, Filter, Sparkles } from 'lucide-react';
 import { ShopProduct, ProductCategory, SportType } from '../../types/rally';
 import { ProductCard } from '../../components/rally/shop/ProductCard';
+import { ShopCategoryPills } from '../../components/rally/shop/ShopCategoryPills';
 
 interface RallyShopPageProps {
   products: ShopProduct[];
@@ -24,17 +25,7 @@ export const RallyShopPage: React.FC<RallyShopPageProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'POPULAR' | 'PRICE_ASC' | 'PRICE_DESC' | 'DISCOUNT'>('POPULAR');
 
-  const CATEGORIES: { id: ProductCategory; label: string }[] = [
-    { id: 'ALL', label: 'همه تجهیزات' },
-    { id: 'PADEL_RACKET', label: 'راکت‌های پدل' },
-    { id: 'TENNIS_RACKET', label: 'راکت‌های تنیس' },
-    { id: 'BALLS', label: 'توپ مسابقه‌ای' },
-    { id: 'BAGS', label: 'ساک و کوله‌پشتی' },
-    { id: 'ACCESSORIES', label: 'اورگریپ و متعلقات' },
-    { id: 'SHOES', label: 'کفش تخصصی کورت' }
-  ];
-
-  const BRANDS = ['ALL', 'Bullpadel', 'Wilson', 'Babolat', 'Head', 'Nox', 'Asics'];
+  const BRANDS = ['ALL', 'Bullpadel', 'Babolat', 'Nox', 'Head', 'Wilson', 'Asics', 'Yonex'];
 
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
@@ -122,39 +113,15 @@ export const RallyShopPage: React.FC<RallyShopPageProps> = ({
             />
           </div>
 
-          {/* Sport Switcher & Sorting */}
+          {/* Sorting & Counter */}
           <div className="w-full md:w-auto flex items-center justify-between md:justify-end gap-3">
-            <div className="flex bg-gray-100 p-1 rounded-xl">
-              <button
-                onClick={() => setSelectedSport('ALL')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                  selectedSport === 'ALL' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-600'
-                }`}
-              >
-                همه
-              </button>
-              <button
-                onClick={() => setSelectedSport('PADEL')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                  selectedSport === 'PADEL' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-600'
-                }`}
-              >
-                پدل
-              </button>
-              <button
-                onClick={() => setSelectedSport('TENNIS')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                  selectedSport === 'TENNIS' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-600'
-                }`}
-              >
-                تنیس
-              </button>
-            </div>
-
+            <span className="text-xs text-gray-500 font-bold whitespace-nowrap">
+              {filteredProducts.length} کالا
+            </span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-700 focus:outline-none cursor-pointer"
+              className="px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-700 focus:outline-none cursor-pointer"
             >
               <option value="POPULAR">محبوب‌ترین‌ها</option>
               <option value="PRICE_ASC">ارزان‌ترین</option>
@@ -164,43 +131,16 @@ export const RallyShopPage: React.FC<RallyShopPageProps> = ({
           </div>
         </div>
 
-        {/* Category Pills Bar */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-3 mb-6 no-scrollbar">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setSelectedCategory(cat.id)}
-              className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
-                selectedCategory === cat.id
-                  ? 'bg-slate-900 text-white shadow-md'
-                  : 'bg-white text-gray-600 border border-gray-200 hover:border-gray-400'
-              }`}
-            >
-              {cat.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Brand Filter */}
-        <div className="flex items-center gap-2 mb-6 text-xs text-gray-500">
-          <Filter className="w-3.5 h-3.5" />
-          <span className="font-bold">برند:</span>
-          <div className="flex flex-wrap gap-1.5">
-            {BRANDS.map((brand) => (
-              <button
-                key={brand}
-                onClick={() => setSelectedBrand(brand)}
-                className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer ${
-                  selectedBrand === brand
-                    ? 'bg-rally-primary text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                {brand === 'ALL' ? 'همه برندها' : brand}
-              </button>
-            ))}
-          </div>
-        </div>
+        {/* Category Pills and Brand Filter */}
+        <ShopCategoryPills
+          selectedCategory={selectedCategory}
+          onSelectCategory={setSelectedCategory}
+          selectedSport={selectedSport}
+          onSelectSport={setSelectedSport}
+          selectedBrand={selectedBrand}
+          onSelectBrand={setSelectedBrand}
+          brands={BRANDS}
+        />
 
         {/* Product Grid */}
         {filteredProducts.length === 0 ? (

@@ -31,11 +31,11 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
     >
       <div>
         {/* Image Container with Badges */}
-        <div className="relative aspect-square w-full bg-slate-900 overflow-hidden">
+        <div className="relative aspect-square w-full bg-slate-50 overflow-hidden flex items-center justify-center p-3 border-b border-gray-100">
           <img
             src={product.image_url}
             alt={product.name_fa}
-            className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-200"
             loading="lazy"
           />
 

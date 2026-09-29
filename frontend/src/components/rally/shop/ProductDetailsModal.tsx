@@ -63,11 +63,11 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
           
           {/* Image & Quick Highlight */}
           <div className="md:col-span-5 flex flex-col gap-3">
-            <div className="relative aspect-square w-full rounded-2xl bg-slate-900 overflow-hidden border border-gray-200">
+            <div className="relative aspect-square w-full rounded-2xl bg-slate-50 overflow-hidden border border-gray-200 flex items-center justify-center p-4">
               <img
                 src={product.image_url}
                 alt={product.name_fa}
-                className="w-full h-full object-cover object-center"
+                className="w-full h-full object-contain"
               />
               {product.discount_percent > 0 && (
                 <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-black px-2.5 py-1 rounded-full shadow-md">
