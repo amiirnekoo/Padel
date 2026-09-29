@@ -128,6 +128,10 @@ export interface ShopProduct {
   reviews_count: number;
   description: string;
   tags?: string[];
+  power_index?: number; // 1 to 10
+  control_index?: number; // 1 to 10
+  series?: string; // e.g. Luxury Series, Pro Series
+  player_signature?: string; // e.g. Agustín Tapia, Miguel Lamperti
 }
 
 export interface CartItem {
