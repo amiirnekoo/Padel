@@ -22,4 +22,10 @@ class Settings(BaseSettings):
     # Platform Defaults
     DEFAULT_COMMISSION_RATE: float = 3.00
 
+    # Production Integrations & Gateways
+    PAYMENT_GATEWAY_PROVIDER: str = os.getenv("PAYMENT_GATEWAY_PROVIDER", "MOCK")
+    ZARINPAL_MERCHANT_ID: str = os.getenv("ZARINPAL_MERCHANT_ID", "00000000-0000-0000-0000-000000000000")
+    REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+    SMS_PROVIDER: str = os.getenv("SMS_PROVIDER", "mock")
+
 settings = Settings()

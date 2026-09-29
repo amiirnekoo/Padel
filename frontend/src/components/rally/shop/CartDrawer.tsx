@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, ShoppingBag, ArrowRight, Tag, Wallet, CreditCard, CheckCircle2 } from 'lucide-react';
 import { CartItem, ShopOrderReceipt } from '../../../types/rally';
 import { CartItemRow } from './CartItemRow';
+import { rallyApi } from '../../../services/rallyApi';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -59,7 +60,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     }
   };
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (items.length === 0) return;
     if (paymentMethod === 'WALLET' && walletBalance < totalAmount) {
       alert('موجودی کیف پول شما کافی نیست. لطفاً کیف پول را شارژ نمایید یا درگاه بانکی را انتخاب کنید.');
@@ -67,33 +68,44 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     }
 
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      const trackingCode = `RLY-SHP-${Math.floor(100000 + Math.random() * 900000)}`;
-      const receipt: ShopOrderReceipt = {
-        orderId: `ord-${Date.now()}`,
-        trackingCode,
-        items: items.map((i) => ({
-          productId: i.product.id,
-          nameFa: i.product.name_fa,
-          quantity: i.quantity,
-          unitPrice: i.product.price,
-          totalPrice: i.product.price * i.quantity
-        })),
-        subtotal,
-        discountAmount,
-        shippingFee,
-        totalAmount,
-        receiverName: userName,
-        receiverPhone: userPhone,
-        deliveryAddress: address,
-        paymentMethod,
-        createdAt: new Date().toLocaleDateString('fa-IR')
-      };
-      onClearCart();
-      onClose();
-      onOrderComplete(receipt);
-    }, 1200);
+    const apiRes = await rallyApi.checkoutShopOrder({
+      user_id: 'usr-1',
+      items: items.map((i) => ({ product_id: i.product.id, quantity: i.quantity })),
+      delivery_address: address,
+      receiver_name: userName,
+      receiver_phone: userPhone,
+      payment_method: paymentMethod,
+      coupon_code: appliedCoupon || undefined,
+    });
+    setIsSubmitting(false);
+
+    const trackingCode = apiRes.success && apiRes.data?.tracking_code
+      ? apiRes.data.tracking_code
+      : `RLY-SHP-${Math.floor(100000 + Math.random() * 900000)}`;
+
+    const receipt: ShopOrderReceipt = {
+      orderId: apiRes.data?.order_id || `ord-${Date.now()}`,
+      trackingCode,
+      items: items.map((i) => ({
+        productId: i.product.id,
+        nameFa: i.product.name_fa,
+        quantity: i.quantity,
+        unitPrice: i.product.price,
+        totalPrice: i.product.price * i.quantity
+      })),
+      subtotal,
+      discountAmount,
+      shippingFee,
+      totalAmount,
+      receiverName: userName,
+      receiverPhone: userPhone,
+      deliveryAddress: address,
+      paymentMethod,
+      createdAt: new Date().toLocaleDateString('fa-IR')
+    };
+    onClearCart();
+    onClose();
+    onOrderComplete(receipt);
   };
 
   return (

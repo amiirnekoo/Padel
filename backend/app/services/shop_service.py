@@ -413,6 +413,7 @@ class ShopService:
             "discount_amount": cart["discount_amount"],
             "total_amount": total_tomans,
             "status": "PAID" if payment_method == "WALLET" else "WAITING_PAYMENT",
+            "payment_url": f"/api/v1/payments/shaparak-gateway?order_id={tracking_code}&amount={total_rials}" if payment_method != "WALLET" else None,
             "created_at": datetime.now().isoformat()
         }
         return order_record

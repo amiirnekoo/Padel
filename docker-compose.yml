@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: rally_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-padel_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-padel_secret_password_2026}
+      POSTGRES_DB: ${POSTGRES_DB:-padel_production}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-padel_user} -d ${POSTGRES_DB:-padel_production}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: rally_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: rally_backend
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-padel_user}:${POSTGRES_PASSWORD:-padel_secret_password_2026}@db:5432/${POSTGRES_DB:-padel_production}
+      REDIS_URL: redis://redis:6379/0
+      SECRET_KEY: ${SECRET_KEY:-super-secret-padel-jwt-key-for-development-2026}
+      API_V1_STR: /api/v1
+      PAYMENT_GATEWAY_PROVIDER: ${PAYMENT_GATEWAY_PROVIDER:-MOCK}
+      SMS_PROVIDER: ${SMS_PROVIDER:-SIMULATOR}
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: rally_frontend
+    restart: always
+    ports:
+      - "3000:80"
+
+  nginx:
+    image: nginx:alpine
+    container_name: rally_gateway
+    restart: always
+    depends_on:
+      - backend
+      - frontend
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+
+volumes:
+  postgres_data:
+  redis_data:

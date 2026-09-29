@@ -12,7 +12,9 @@ from backend.app.core.sms import get_sms_provider, BaseSmsProvider
 class NotificationService:
     @staticmethod
     def _provider() -> BaseSmsProvider:
-        return get_sms_provider("mock")
+        import os
+        provider_name = os.getenv("SMS_PROVIDER", "mock").lower()
+        return get_sms_provider(provider_name)
 
     @staticmethod
     async def send_booking_confirmation(

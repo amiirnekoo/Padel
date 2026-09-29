@@ -13,6 +13,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { CourtClub, TimeSlotItem, BookingReceipt } from '../../types/rally';
+import { rallyApi } from '../../services/rallyApi';
 
 interface BookingFlowModalProps {
   club: CourtClub;
@@ -40,7 +41,7 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
 
   const finalAmount = slot.price; // No hidden fees!
 
-  const handleStartPayment = () => {
+  const handleStartPayment = async () => {
     // Check if slot lost simulation is triggered
     if (simulateState === 'SLOT_LOST') {
       setErrorMessage('متأسفانه این سانس در حین فرآیند توسط کاربر دیگری رزرو شد. لطفاً سانس دیگری انتخاب کنید.');
@@ -49,6 +50,9 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
     }
 
     setStep('PAYING');
+    if (slot.slotId) {
+      await rallyApi.holdSlot(slot.slotId, 'usr-1');
+    }
     setTimeout(() => {
       if (simulateState === 'PAYMENT_PENDING') {
         setErrorMessage('وضعیت تراکنش از سوی درگاه پرداخت نامشخص است. مبلغی از شما کسر نشده و نیازی به پرداخت مجدد نیست؛ می‌توانید از طریق پشتیبانی پیگیری کنید.');

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { CheckCircle2, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { RallyHeader, RallyPageTab } from './components/rally/RallyHeader';
 import { MobileBottomNav } from './components/rally/MobileBottomNav';
 import { RallyHomePage } from './pages/rally/RallyHomePage';
@@ -16,12 +16,14 @@ import { CoachDetailsModal } from './components/rally/CoachDetailsModal';
 import { TournamentDetailsModal } from './components/rally/TournamentDetailsModal';
 import { ProductDetailsModal } from './components/rally/shop/ProductDetailsModal';
 import { CartDrawer } from './components/rally/shop/CartDrawer';
+import { ShopReceiptModal } from './components/rally/shop/ShopReceiptModal';
 import { ScenarioTesterBar } from './components/rally/ScenarioTesterBar';
 import { WalletModal } from './components/WalletModal';
 import { AuthModal, UserSession } from './components/AuthModal';
 import { CourtClub, Coach, Tournament, TimeSlotItem, SportType, ShopProduct, CartItem, ShopOrderReceipt } from './types/rally';
 import { MOCK_CLUBS, MOCK_COACHES, MOCK_TOURNAMENTS } from './data/mockRallyData';
 import { MOCK_SHOP_PRODUCTS } from './data/mockRallyShopData';
+import { rallyApi } from './services/rallyApi';
 
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<RallyPageTab>('home');
@@ -60,10 +62,16 @@ export const App: React.FC = () => {
   const [simulateState, setSimulateState] = useState<'NORMAL' | 'SLOT_LOST' | 'PAYMENT_PENDING'>('NORMAL');
 
   useEffect(() => {
-    try {
-      localStorage.setItem('rally_cart', JSON.stringify(cartItems));
-    } catch {}
+    try { localStorage.setItem('rally_cart', JSON.stringify(cartItems)); } catch {}
   }, [cartItems]);
+
+  useEffect(() => {
+    if (userSession?.userId) {
+      rallyApi.getWalletBalance(userSession.userId).then((b) => {
+        if (typeof b === 'number') setWalletBalance(b);
+      });
+    }
+  }, [userSession?.userId]);
 
   const handleAddToCart = (product: ShopProduct, quantity: number = 1) => {
     setCartItems((prev) => {
@@ -214,41 +222,7 @@ export const App: React.FC = () => {
       />
 
       {/* Shop Order Receipt Modal */}
-      {shopReceipt && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 text-center shadow-2xl border border-gray-200">
-            <CheckCircle2 className="w-16 h-16 text-sky-500 mx-auto mb-3" />
-            <h3 className="text-lg font-black text-gray-900 mb-1">سفارش شما با موفقیت ثبت شد</h3>
-            <p className="text-xs text-gray-500 mb-4">
-              کد پیگیری انحصاری مرسوله: <span className="font-mono font-bold text-rally-primary">{shopReceipt.trackingCode}</span>
-            </p>
-            <div className="bg-gray-50 p-3.5 rounded-2xl border border-gray-200 text-xs text-gray-700 space-y-1.5 text-right mb-5">
-              <div className="flex justify-between font-bold">
-                <span>تعداد اقلام:</span>
-                <span>{shopReceipt.items.reduce((s, i) => s + i.quantity, 0)} کالا</span>
-              </div>
-              <div className="flex justify-between font-bold">
-                <span>مبلغ پرداخت‌شده:</span>
-                <span className="text-sky-600 font-black">{shopReceipt.totalAmount.toLocaleString('fa-IR')} تومان</span>
-              </div>
-              <div className="flex justify-between">
-                <span>روش پرداخت:</span>
-                <span>{shopReceipt.paymentMethod === 'WALLET' ? 'کسر از کیف پول رالی' : 'درگاه بانکی شتاب'}</span>
-              </div>
-              <div className="flex justify-between truncate">
-                <span>آدرس تحویل:</span>
-                <span className="truncate max-w-[200px]">{shopReceipt.deliveryAddress}</span>
-              </div>
-            </div>
-            <button
-              onClick={() => setShopReceipt(null)}
-              className="w-full py-2.5 bg-rally-primary text-white rounded-xl font-bold text-xs hover:bg-slate-800 transition-colors"
-            >
-              متوجه شدم و بازگشت به فروشگاه
-            </button>
-          </div>
-        </div>
-      )}
+      <ShopReceiptModal receipt={shopReceipt} onClose={() => setShopReceipt(null)} />
 
       <WalletModal
         userId={userSession?.userId || 'usr-1'}
