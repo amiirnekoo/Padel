@@ -1,0 +1,175 @@
+import React, { useState, useEffect } from 'react';
+import { Menu, X, ArrowLeft, Shield } from 'lucide-react';
+import { RallyLogo } from './RallyLogo';
+import { UserSession } from '../AuthModal';
+
+export type ModernNavTab = 'courts' | 'coaches' | 'tournaments' | 'partners' | 'home';
+
+interface ModernRallyHeaderProps {
+  activeTab: ModernNavTab;
+  onSelectTab: (tab: ModernNavTab) => void;
+  userSession: UserSession | null;
+  onOpenAuth: () => void;
+  onOpenAdmin: () => void;
+}
+
+export const ModernRallyHeader: React.FC<ModernRallyHeaderProps> = ({
+  activeTab,
+  onSelectTab,
+  userSession,
+  onOpenAuth,
+  onOpenAdmin
+}) => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 30);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const allNavItems = [
+    { id: 'courts' as ModernNavTab, label: 'زمین‌ها' },
+    { id: 'coaches' as ModernNavTab, label: 'مربیان' },
+    { id: 'tournaments' as ModernNavTab, label: 'مسابقات' },
+    { id: 'partners' as ModernNavTab, label: 'برای باشگاه‌ها' }
+  ];
+
+  const centerNavItems = allNavItems.slice(0, 3);
+
+  return (
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-200 ${
+        isScrolled
+          ? 'bg-[#0E3D38] border-b border-[#172320]/60 shadow-lg py-3'
+          : 'bg-[#0E3D38]/85 backdrop-none py-4 sm:py-5 border-b border-white/10'
+      }`}
+      dir="rtl"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+        
+        {/* Right: Main Official Rally Logo */}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => onSelectTab('home')}
+            className="flex items-center gap-3 text-right group cursor-pointer focus:outline-none"
+            title="صفحه اصلی رالی"
+          >
+            <RallyLogo className="h-8 sm:h-9 md:h-10 w-auto" />
+          </button>
+        </div>
+
+        {/* Center: Desktop Navigation (Courts, Coaches, Tournaments) */}
+        <nav className="hidden md:flex items-center gap-8 lg:gap-10">
+          {centerNavItems.map((item) => {
+            const isActive = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => onSelectTab(item.id)}
+                className={`relative py-1 text-sm font-bold transition-colors cursor-pointer select-none ${
+                  isActive ? 'text-white' : 'text-slate-200 hover:text-white'
+                }`}
+              >
+                <span>{item.label}</span>
+                {isActive && (
+                  <span className="absolute -bottom-1.5 left-0 right-0 h-0.5 bg-[#D7ED68] rounded-full shadow-[0_0_8px_rgba(215,237,104,0.6)]" />
+                )}
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* Left: Actions (For Clubs, Login, Admin) */}
+        <div className="flex items-center gap-3">
+          {/* For Clubs Action Link */}
+          <button
+            onClick={() => onSelectTab('partners')}
+            className={`hidden md:inline-flex text-xs sm:text-sm font-bold transition-colors cursor-pointer px-3 py-1.5 rounded-lg ${
+              activeTab === 'partners'
+                ? 'text-[#D7ED68] bg-white/10'
+                : 'text-slate-200 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            برای باشگاه‌ها
+          </button>
+
+          {/* Admin shortcut button */}
+          <button
+            onClick={onOpenAdmin}
+            className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/40 hover:bg-black/60 text-slate-300 hover:text-white border border-white/10 text-xs font-semibold transition-all cursor-pointer"
+            title="ورود به پنل مدیریت عملیاتی"
+          >
+            <Shield className="w-3.5 h-3.5 text-[#D7ED68]" />
+            <span>مدیریت</span>
+          </button>
+
+          {/* User / Login Button */}
+          {userSession ? (
+            <button
+              onClick={onOpenAuth}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white border border-white/20 text-xs sm:text-sm font-bold transition-all cursor-pointer"
+            >
+              <span className="w-2 h-2 rounded-full bg-[#D7ED68]" />
+              <span className="truncate max-w-[120px]">{userSession.fullName || 'حساب کاربری'}</span>
+            </button>
+          ) : (
+            <button
+              onClick={onOpenAuth}
+              className="px-5 py-2 rounded-xl bg-[#D7ED68] hover:bg-[#c9df5b] text-[#172320] text-xs sm:text-sm font-black transition-all cursor-pointer shadow-sm active:scale-98"
+            >
+              <span>ورود</span>
+            </button>
+          )}
+
+          {/* Mobile Menu Toggle Button */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden p-2 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-colors cursor-pointer"
+            aria-label="منوی موبایل"
+          >
+            {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu Dropdown */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-[#0E3D38] border-b border-[#172320] px-4 py-4 space-y-2">
+          {allNavItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => {
+                onSelectTab(item.id);
+                setIsMobileMenuOpen(false);
+              }}
+              className={`w-full flex items-center justify-between p-3 rounded-xl text-right text-sm font-bold transition-colors cursor-pointer ${
+                activeTab === item.id
+                  ? 'bg-white/10 text-[#D7ED68]'
+                  : 'text-slate-200 hover:bg-white/5'
+              }`}
+            >
+              <span>{item.label}</span>
+              <ArrowLeft className="w-4 h-4 opacity-70" />
+            </button>
+          ))}
+          <div className="pt-2 border-t border-white/10 flex items-center justify-between gap-2">
+            <button
+              onClick={() => {
+                onOpenAdmin();
+                setIsMobileMenuOpen(false);
+              }}
+              className="w-full py-2.5 px-3 rounded-xl bg-black/40 text-xs font-bold text-slate-300 flex items-center justify-center gap-2 border border-white/10"
+            >
+              <Shield className="w-4 h-4 text-[#D7ED68]" />
+              <span>پنل مدیریت رالی</span>
+            </button>
+          </div>
+        </div>
+      )}
+    </header>
+  );
+};

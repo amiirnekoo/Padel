@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { X } from 'lucide-react';
-import { RallyHeader, RallyPageTab } from './components/rally/RallyHeader';
+import { RallyPageTab } from './components/rally/RallyHeader';
+import { ModernRallyHeader } from './components/rally/ModernRallyHeader';
+import { ModernRallyFooter } from './components/rally/ModernRallyFooter';
 import { MobileBottomNav } from './components/rally/MobileBottomNav';
 import { RallyHomePage } from './pages/rally/RallyHomePage';
 import { RallyCourtsPage } from './pages/rally/RallyCourtsPage';
@@ -123,21 +124,15 @@ export const App: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-rally-light-bg text-rally-charcoal selection:bg-rally-accent selection:text-rally-charcoal font-sans">
-      <RallyHeader
-        currentTab={activeTab}
-        onSelectTab={setActiveTab}
-        selectedCity={selectedCity}
-        onSelectCity={setSelectedCity}
-        walletBalance={walletBalance}
-        onOpenWallet={() => setIsWalletOpen(true)}
+      <ModernRallyHeader
+        activeTab={activeTab as any}
+        onSelectTab={(tab) => setActiveTab(tab as RallyPageTab)}
+        userSession={userSession}
         onOpenAuth={() => setIsAuthOpen(true)}
-        userName={userSession?.fullName}
-        cartItemsCount={cartItems.reduce((acc, i) => acc + i.quantity, 0)}
-        onOpenCart={() => setIsCartOpen(true)}
         onOpenAdmin={() => setIsAdminOpen(true)}
       />
 
-      <main className="flex-1 pb-20 lg:pb-12">
+      <main className={`flex-1 pb-20 lg:pb-12 ${activeTab !== 'home' ? 'pt-20 sm:pt-24' : ''}`}>
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
@@ -264,15 +259,7 @@ export const App: React.FC = () => {
         onOpenAuth={() => setIsAuthOpen(true)}
         isLoggedIn={!!userSession}
       />
-      <footer className="w-full bg-white border-t border-gray-200 py-8 text-xs text-gray-500">
-        <div className="max-w-7xl 2xl:max-w-[1600px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="font-black text-rally-charcoal text-sm">رالی</span>
-            <span>— سامانه هوشمند رزرو زمین، مربیان، مسابقات و فروشگاه تخصصی پدل و تنیس</span>
-          </div>
-          <p>© ۱۴۰۵ تمامی حقوق برای پلتفرم ورزشی رالی محفوظ است.</p>
-        </div>
-      </footer>
+      <ModernRallyFooter onNavigateTab={(t) => setActiveTab(t as RallyPageTab)} />
     </div>
   );
 };

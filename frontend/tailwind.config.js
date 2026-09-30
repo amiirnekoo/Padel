@@ -8,39 +8,62 @@ export default {
     extend: {
       colors: {
         rally: {
+          teal: {
+            DEFAULT: '#0E3D38', // Deep Mineral Teal
+            dark: '#082522',
+            light: '#14574F',
+            hover: '#1B6960',
+          },
+          lime: {
+            DEFAULT: '#D7ED68', // Electric Lime
+            hover: '#C7DE54',
+            light: '#E6F58D',
+            glow: 'rgba(215, 237, 104, 0.35)',
+          },
+          ivory: {
+            DEFAULT: '#F5F4EF', // Warm Ivory
+            light: '#FAF9F5',
+            dark: '#E8E6DD',
+          },
+          graphite: {
+            DEFAULT: '#172320', // Graphite
+            muted: '#253833',
+            light: '#354E48',
+          },
+          softGray: '#66706D', // Secondary soft gray text
           primary: {
-            DEFAULT: '#0284C7', // Padel Cobalt Court Blue
-            light: '#0EA5E9',   // Electric Sky Blue
-            dark: '#0369A1',    // Deep Court Navy
-            hover: '#0274B3'
+            DEFAULT: '#0E3D38', // Deep Mineral Teal as primary
+            light: '#165B53',
+            dark: '#082522',
+            hover: '#1B6960'
           },
           accent: {
-            DEFAULT: '#38BDF8', // Court Line Cyan Accent
-            hover: '#0EA5E9',
-            muted: '#7DD3FC',
-            glow: 'rgba(56, 189, 248, 0.25)'
+            DEFAULT: '#D7ED68', // Electric Lime Accent
+            hover: '#C7DE54',
+            muted: '#E6F58D',
+            glow: 'rgba(215, 237, 104, 0.35)'
           },
           charcoal: {
-            DEFAULT: '#0F172A', // Midnight Slate
-            muted: '#334155',
-            light: '#64748B'
+            DEFAULT: '#172320',
+            muted: '#253833',
+            light: '#66706D'
           },
           dark: {
-            bg: '#0F172A',
-            card: '#1E293B',
-            subtle: '#1E3A8A',
-            hover: '#1D4ED8'
+            bg: '#0E3D38',
+            card: '#172320',
+            subtle: '#253833',
+            hover: '#354E48'
           },
           light: {
-            bg: '#F5F5F7',     // Apple Store Signature Clean Off-White
-            card: '#FFFFFF',    // Crisp White
-            subtle: '#F0F9FF',  // Subtle Ice Blue Tint
-            border: '#E2E8F0'
+            bg: '#F5F4EF',
+            card: '#FFFFFF',
+            subtle: '#FAF9F5',
+            border: '#E8E6DD'
           },
           border: {
             subtle: '#E2E8F0',
-            active: '#38BDF8',
-            strong: '#0284C7'
+            active: '#D7ED68',
+            strong: '#0E3D38'
           }
         }
       },
