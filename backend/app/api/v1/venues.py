@@ -82,6 +82,15 @@ async def list_public_venues(
         for v in venues
     ]
 
+class CourtCreatePayload(BaseModel):
+    name: str = Field(..., description="نام کورت")
+    sport_type: str = Field("PADEL", description="PADEL یا TENNIS")
+    surface_type: str = Field("چمن مصنوعی آبی موندو", description="جنس کفپوش")
+    is_indoor: bool = Field(False, description="سرپوشیده یا روباز")
+    has_lighting: bool = Field(True, description="دارای پروژکتور و روشنایی شب")
+    hourly_rate: int = Field(3000000, description="نرخ ساعتی اختصاصی کورت")
+    image_url: str | None = Field(None, description="آدرس تصویر کورت")
+
 @router.post("/{club_id}/approve")
 async def approve_venue(club_id: str, db: AsyncSession = Depends(get_db)):
     """تایید رسمی باشگاه توسط ادمین پلتفرم."""
@@ -90,3 +99,38 @@ async def approve_venue(club_id: str, db: AsyncSession = Depends(get_db)):
         return {"success": True, "approval_status": club.approval_status}
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
+
+@router.get("/{club_id}/courts")
+async def get_club_courts(club_id: str, db: AsyncSession = Depends(get_db)):
+    """دریافت تمامی کورت‌های یک باشگاه به همراه قیمت و تصاویر."""
+    courts = await VenueService.get_club_courts(db, club_id)
+    return [
+        {
+            "id": c.id,
+            "club_id": c.club_id,
+            "name": c.name,
+            "sport_type": c.sport_type,
+            "surface_type": c.surface_type,
+            "is_indoor": c.is_indoor,
+            "has_lighting": c.has_lighting,
+            "hourly_rate": c.hourly_rate,
+            "image_url": c.image_url,
+            "is_active": c.is_active
+        }
+        for c in courts
+    ]
+
+@router.post("/{club_id}/courts")
+async def add_court(club_id: str, payload: CourtCreatePayload, db: AsyncSession = Depends(get_db)):
+    """افزودن کورت جدید با مشخصات، عکس و قیمت‌گذاری اختصاصی توسط باشگاه‌دار."""
+    try:
+        court = await VenueService.add_court_to_club(db, club_id=club_id, court_data=payload.model_dump())
+        return {
+            "success": True,
+            "message": f"کورت {court.name} با موفقیت به مجموعه افزوده شد.",
+            "court_id": court.id,
+            "hourly_rate": court.hourly_rate
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+

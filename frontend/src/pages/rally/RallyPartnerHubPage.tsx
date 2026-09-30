@@ -7,16 +7,19 @@ import {
   MessageSquare,
   ShieldCheck,
   Sparkles,
-  Building2
+  Building2,
+  Layers
 } from 'lucide-react';
 import { OperatorPage } from '../OperatorPage';
 import { ClubSettlementsPage } from '../ClubSettlementsPage';
 import { CrmCustomersPage } from '../CrmCustomersPage';
 import { VenueOnboardingPage } from '../VenueOnboardingPage';
 import { NotificationLogsPage } from '../NotificationLogsPage';
+import { CourtManagementSection } from '../../components/rally/partner/CourtManagementSection';
 
 export type PartnerTab =
   | 'operator'
+  | 'courts'
   | 'settlements'
   | 'crm'
   | 'onboarding'
@@ -35,6 +38,7 @@ export const RallyPartnerHubPage: React.FC = () => {
 
   const TABS: TabItem[] = [
     { id: 'operator', label: 'میز کار باجه اپراتور', icon: LayoutDashboard, tag: 'زنده' },
+    { id: 'courts', label: 'کورت‌ها و مچ‌میکینگ', icon: Layers, tag: 'جدید' },
     { id: 'settlements', label: 'تسویه‌حساب مالی و پایا', icon: Wallet },
     { id: 'crm', label: 'باشگاه مشتریان و CRM', icon: Users },
     { id: 'onboarding', label: 'ثبت و پذیرش باشگاه جدید', icon: PlusCircle, tag: 'سراسری' },
@@ -117,6 +121,10 @@ export const RallyPartnerHubPage: React.FC = () => {
             </div>
             <OperatorPage />
           </div>
+        )}
+
+        {activeTab === 'courts' && (
+          <CourtManagementSection />
         )}
 
         {activeTab === 'settlements' && (

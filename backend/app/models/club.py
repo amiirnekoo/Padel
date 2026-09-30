@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from sqlalchemy import String, Boolean, DateTime, Numeric, Text, ForeignKey
+from sqlalchemy import String, Boolean, DateTime, Numeric, Text, ForeignKey, BigInteger
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from backend.app.models.base import Base
 
@@ -36,6 +36,9 @@ class Court(Base):
     sport_type: Mapped[str] = mapped_column(String(20), nullable=False, default="PADEL")  # PADEL, TENNIS
     surface_type: Mapped[str] = mapped_column(String(50), nullable=True)
     is_indoor: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    has_lighting: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    hourly_rate: Mapped[int] = mapped_column(BigInteger, nullable=False, default=3000000)
+    image_url: Mapped[str | None] = mapped_column(String(255), nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
 
     club: Mapped["Club"] = relationship("Club", back_populates="courts")

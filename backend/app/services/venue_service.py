@@ -104,6 +104,26 @@ class VenueService:
         return list(res.scalars().all())
 
     @staticmethod
+    async def add_court_to_club(db: AsyncSession, club_id: str, court_data: dict[str, Any]) -> Court:
+        """Adds a new court with custom specifications, pricing, image, and lighting."""
+        court = Court(
+            id=str(uuid.uuid4()),
+            club_id=club_id,
+            name=court_data.get("name", "کورت جدید"),
+            sport_type=court_data.get("sport_type", "PADEL"),
+            surface_type=court_data.get("surface_type", "چمن مصنوعی استاندارد"),
+            is_indoor=bool(court_data.get("is_indoor", False)),
+            has_lighting=bool(court_data.get("has_lighting", True)),
+            hourly_rate=int(court_data.get("hourly_rate", 3000000)),
+            image_url=court_data.get("image_url"),
+            is_active=True
+        )
+        db.add(court)
+        await db.commit()
+        await db.refresh(court)
+        return court
+
+    @staticmethod
     async def list_public_venues(db: AsyncSession, city: str | None = None, sport_type: str | None = None) -> list[Club]:
         """Public listing of approved sports venues filtered by city and sport."""
         query = select(Club).where(Club.approval_status == "APPROVED", Club.is_active == True)

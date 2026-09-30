@@ -161,3 +161,47 @@ export interface ShopOrderReceipt {
   createdAt: string;
 }
 
+export interface OwnerCourtItem {
+  id: string;
+  club_id: string;
+  name: string;
+  sport_type: SportType;
+  surface_type: string;
+  is_indoor: boolean;
+  has_lighting: boolean;
+  hourly_rate: number;
+  image_url?: string;
+  is_active: boolean;
+}
+
+export type CourtPositionType = 'TEAM_A_RIGHT' | 'TEAM_A_LEFT' | 'TEAM_B_RIGHT' | 'TEAM_B_LEFT';
+
+export interface MatchmakingPlayerSlot {
+  user_id: string | null;
+  user_name: string | null;
+  label: string;
+}
+
+export interface MatchmakingGameItem {
+  id: string;
+  title: string;
+  skill_level: string; // 'D' | 'D+' | 'C' | 'C+' | 'B' | 'A'
+  gender_category: 'OPEN' | 'MALE' | 'FEMALE';
+  total_price: number;
+  price_per_player: number;
+  status: 'OPEN' | 'CONFIRMED' | 'CANCELLED';
+  filled_count: number;
+  club_name: string;
+  club_city: string;
+  court_name: string;
+  slot_date: string;
+  start_time: string;
+  end_time: string;
+  positions: {
+    team_a_right: MatchmakingPlayerSlot;
+    team_a_left: MatchmakingPlayerSlot;
+    team_b_right: MatchmakingPlayerSlot;
+    team_b_left: MatchmakingPlayerSlot;
+  };
+}
+

@@ -10,12 +10,14 @@ import {
   Users2,
   Handshake,
   ShoppingBag,
-  ChevronDown
+  ChevronDown,
+  Zap
 } from 'lucide-react';
 
 export type RallyPageTab =
   | 'home'
   | 'courts'
+  | 'matchmaking'
   | 'coaches'
   | 'tournaments'
   | 'shop'
@@ -53,6 +55,7 @@ export const RallyHeader: React.FC<RallyHeaderProps> = ({
 
   const NAV_ITEMS: { id: RallyPageTab; label: string; icon: React.FC<{ className?: string }> }[] = [
     { id: 'courts', label: 'زمین‌ها', icon: CalendarCheck },
+    { id: 'matchmaking', label: 'مچ‌میکینگ (بازی آزاد)', icon: Zap },
     { id: 'coaches', label: 'مربیان', icon: Award },
     { id: 'tournaments', label: 'مسابقات', icon: Users2 },
     { id: 'shop', label: 'فروشگاه تجهیزات', icon: ShoppingBag },

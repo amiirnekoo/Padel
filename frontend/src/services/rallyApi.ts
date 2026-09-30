@@ -134,4 +134,101 @@ export const rallyApi = {
       return null;
     }
   },
+
+  /**
+   * دریافت کورت‌های متعلق به باشگاه
+   */
+  async getClubCourts(clubId: string) {
+    try {
+      const res = await fetch(`${API_BASE}/venues/${clubId}/courts`);
+      if (!res.ok) return [];
+      return await res.json();
+    } catch {
+      return [];
+    }
+  },
+
+  /**
+   * ثبت کورت جدید توسط باشگاه‌دار
+   */
+  async addCourt(clubId: string, courtData: any) {
+    try {
+      const res = await fetch(`${API_BASE}/venues/${clubId}/courts`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(courtData),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در ثبت کورت' };
+      return { success: true, data };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در برقراری ارتباط' };
+    }
+  },
+
+  /**
+   * دریافت لیست بازی‌های مچ‌میکینگ آزاد
+   */
+  async getMatchmakingGames(skillLevel?: string, status: string = 'OPEN') {
+    try {
+      const params = new URLSearchParams();
+      if (skillLevel && skillLevel !== 'ALL') params.append('skill_level', skillLevel);
+      if (status) params.append('status', status);
+      const res = await fetch(`${API_BASE}/matchmaking${params.toString() ? `?${params.toString()}` : ''}`);
+      if (!res.ok) return [];
+      return await res.json();
+    } catch {
+      return [];
+    }
+  },
+
+  /**
+   * دریافت جزییات یک بازی مچ‌میکینگ
+   */
+  async getMatchmakingDetails(gameId: string) {
+    try {
+      const res = await fetch(`${API_BASE}/matchmaking/${gameId}`);
+      if (!res.ok) return null;
+      return await res.json();
+    } catch {
+      return null;
+    }
+  },
+
+  /**
+   * ایجاد بازی جدید مچ‌میکینگ ۴ نفره
+   */
+  async createMatchmakingGame(payload: any) {
+    try {
+      const res = await fetch(`${API_BASE}/matchmaking/create`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در ایجاد مچ‌میکینگ' };
+      return { success: true, data };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در ارتباط با سرور' };
+    }
+  },
+
+  /**
+   * پیوستن به پوزیشن خالی در مچ‌میکینگ ۴ نفره
+   */
+  async joinMatchmakingGame(gameId: string, userId: string, position: string) {
+    try {
+      const res = await fetch(`${API_BASE}/matchmaking/${gameId}/join`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: userId, position }),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در پیوستن به بازی' };
+      return { success: true, data };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در ارتباط با سرور' };
+    }
+  },
 };
+

@@ -10,6 +10,7 @@ from backend.app.models.trainee import CoachTrainee
 from backend.app.models.wallet import Wallet, WalletTransaction
 from backend.app.models.settlement import SettlementBatch, SettlementItem
 from backend.app.models.notification import NotificationLog
+from backend.app.models.matchmaking import MatchmakingGame
 
 __all__ = [
     "Base",
@@ -30,4 +31,5 @@ __all__ = [
     "SettlementBatch",
     "SettlementItem",
     "NotificationLog",
+    "MatchmakingGame",
 ]

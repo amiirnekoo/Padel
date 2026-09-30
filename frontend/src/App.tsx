@@ -5,6 +5,7 @@ import { RallyHeader, RallyPageTab } from './components/rally/RallyHeader';
 import { MobileBottomNav } from './components/rally/MobileBottomNav';
 import { RallyHomePage } from './pages/rally/RallyHomePage';
 import { RallyCourtsPage } from './pages/rally/RallyCourtsPage';
+import { RallyMatchmakingPage } from './pages/rally/RallyMatchmakingPage';
 import { RallyCoachesPage } from './pages/rally/RallyCoachesPage';
 import { RallyTournamentsPage } from './pages/rally/RallyTournamentsPage';
 import { RallyShopPage } from './pages/rally/RallyShopPage';
@@ -128,6 +129,15 @@ export const App: React.FC = () => {
             {activeTab === 'courts' && (
               <div className="max-w-7xl 2xl:max-w-[1600px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-6">
                 <RallyCourtsPage initialFilters={courtFilterParam} onSelectClub={setSelectedClub} onSelectDirectSlot={(club, slot) => setBookingSlot({ club, slot })} />
+              </div>
+            )}
+            {activeTab === 'matchmaking' && (
+              <div className="max-w-7xl 2xl:max-w-[1600px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-6">
+                <RallyMatchmakingPage
+                  userId={userSession?.userId || 'usr-1'}
+                  userName={userSession?.fullName || 'کاربر رالی'}
+                  walletBalance={walletBalance}
+                />
               </div>
             )}
             {activeTab === 'coaches' && (
