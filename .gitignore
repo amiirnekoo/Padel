@@ -39,3 +39,7 @@ Desktop.ini
 # Logs and Scratch
 *.log
 scratch/
+
+# Cloud Storage / Google Drive sync conflicts
+* (*).*
+
