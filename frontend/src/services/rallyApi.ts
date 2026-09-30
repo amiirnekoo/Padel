@@ -293,5 +293,26 @@ export const rallyApi = {
       return { success: false, error: err?.message || 'خطا در شبکه' };
     }
   },
+
+  /**
+   * احراز هویت و ورود ادمین عملیاتی
+   */
+  async adminLogin(username: string, password: string) {
+    try {
+      const res = await fetch(`${API_BASE}/admin/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        return { success: false, error: data.detail || 'نام کاربری یا رمز عبور اشتباه است.' };
+      }
+      return { success: true, data };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در ارتباط با سرور' };
+    }
+  },
 };
+
 

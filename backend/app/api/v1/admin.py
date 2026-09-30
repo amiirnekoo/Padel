@@ -1,5 +1,5 @@
 from typing import List, Optional, Dict, Any
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -7,6 +7,10 @@ from backend.app.models.base import get_db_session
 from backend.app.services.admin_service import AdminService
 
 router = APIRouter(prefix="/admin", tags=["admin"])
+
+class AdminLoginRequest(BaseModel):
+    username: str
+    password: str
 
 class IncidentCreateRequest(BaseModel):
     title: str
@@ -28,6 +32,29 @@ class AuditLogCreateRequest(BaseModel):
     target_id: str
     details: Optional[Dict[str, Any]] = None
     admin_name: str = "ادمین عملیاتی"
+
+@router.post("/login")
+async def admin_login(
+    req: AdminLoginRequest,
+    request: Request,
+    session: AsyncSession = Depends(get_db_session)
+):
+    """
+    Authenticates operations admin and issues secure token.
+    """
+    client_ip = request.client.host if request.client else "127.0.0.1"
+    service = AdminService(session)
+    result = await service.authenticate_admin(
+        username=req.username,
+        password=req.password,
+        ip_address=client_ip
+    )
+    if not result.get("success"):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=result.get("message", "نام کاربری یا رمز عبور نامعتبر است.")
+        )
+    return result
 
 @router.get("/stats")
 async def get_dashboard_stats(session: AsyncSession = Depends(get_db_session)):

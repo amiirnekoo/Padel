@@ -105,3 +105,24 @@ async def test_emergency_cancel_match_with_refund(db_session):
     # User's wallet balance should be refunded 100%
     await db_session.refresh(wallet)
     assert wallet.balance == 2000000
+
+@pytest.mark.asyncio
+async def test_admin_authentication(db_session):
+    admin_service = AdminService(db_session)
+
+    # 1. Successful authentication
+    auth_result = await admin_service.authenticate_admin("Nimadvr", "kirtookoonesadati", ip_address="127.0.0.1")
+    assert auth_result["success"] is True
+    assert auth_result["username"] == "Nimadvr"
+    assert auth_result["role"] == "OPERATIONS_ADMIN"
+    assert "token" in auth_result
+
+    # 2. Failed authentication with wrong password
+    bad_pass = await admin_service.authenticate_admin("Nimadvr", "wrongpassword", ip_address="127.0.0.1")
+    assert bad_pass["success"] is False
+    assert "رمز عبور" in bad_pass["message"]
+
+    # 3. Failed authentication with wrong username
+    bad_user = await admin_service.authenticate_admin("RandomUser", "kirtookoonesadati", ip_address="127.0.0.1")
+    assert bad_user["success"] is False
+

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LayoutDashboard, Package, Zap, ShieldAlert, ArrowLeft, RefreshCw, UserCheck } from 'lucide-react';
+import { LayoutDashboard, Package, Zap, ShieldAlert, ArrowLeft, RefreshCw, UserCheck, LogOut } from 'lucide-react';
 import { ShopProduct, MatchmakingGameItem } from '../../../types/rally';
 import { rallyApi } from '../../../services/rallyApi';
 import { AdminOverviewTab } from '../../../components/rally/admin/AdminOverviewTab';
@@ -7,6 +7,7 @@ import { AdminInventoryTab } from '../../../components/rally/admin/AdminInventor
 import { AdminMatchesMonitorTab } from '../../../components/rally/admin/AdminMatchesMonitorTab';
 import { AdminIncidentModal } from '../../../components/rally/admin/AdminIncidentModal';
 import { AdminNewProductModal } from '../../../components/rally/admin/AdminNewProductModal';
+import { AdminLoginModal } from '../../../components/rally/admin/AdminLoginModal';
 
 interface AdminPortalPageProps {
   products: ShopProduct[];
@@ -21,6 +22,15 @@ export const AdminPortalPage: React.FC<AdminPortalPageProps> = ({
   onAddProduct,
   onExitAdmin
 }) => {
+  const [adminUser, setAdminUser] = useState<any>(() => {
+    try {
+      const saved = sessionStorage.getItem('rally_admin_user');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
   const [activeTab, setActiveTab] = useState<'overview' | 'inventory' | 'matches' | 'incidents'>('overview');
   const [matches, setMatches] = useState<MatchmakingGameItem[]>([]);
   const [incidents, setIncidents] = useState<any[]>([]);
@@ -51,8 +61,29 @@ export const AdminPortalPage: React.FC<AdminPortalPageProps> = ({
   };
 
   useEffect(() => {
-    fetchAdminData();
-  }, []);
+    if (adminUser) {
+      fetchAdminData();
+    }
+  }, [adminUser]);
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('rally_admin_token');
+    sessionStorage.removeItem('rally_admin_user');
+    setAdminUser(null);
+    onExitAdmin();
+  };
+
+  if (!adminUser) {
+    return (
+      <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center p-4">
+        <AdminLoginModal
+          isOpen={true}
+          onClose={onExitAdmin}
+          onLoginSuccess={(user) => setAdminUser(user)}
+        />
+      </div>
+    );
+  }
 
   const openIncidentsCount = incidents.filter((i) => !i.is_resolved).length;
 
@@ -67,9 +98,9 @@ export const AdminPortalPage: React.FC<AdminPortalPageProps> = ({
           <div>
             <div className="flex items-center gap-2">
               <span className="font-extrabold text-sm text-white">پنل مدیریت اختصاصی رالی</span>
-              <span className="bg-blue-500/20 text-blue-400 border border-blue-500/30 text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1">
+              <span className="bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1">
                 <UserCheck className="w-3 h-3" />
-                ادمین عملیاتی
+                {adminUser?.full_name || 'ادمین عملیاتی'}
               </span>
             </div>
             <span className="text-[10px] text-slate-400">دسترسی امن به انبار، مسابقات و سفارش‌ها</span>
@@ -84,6 +115,15 @@ export const AdminPortalPage: React.FC<AdminPortalPageProps> = ({
             title="به‌روزرسانی داده‌ها"
           >
             <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin text-rally-primary' : ''}`} />
+          </button>
+
+          <button
+            onClick={handleLogout}
+            className="px-3 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer border border-rose-500/30"
+            title="خروج از حساب ادمین"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">خروج ادمین</span>
           </button>
 
           <button

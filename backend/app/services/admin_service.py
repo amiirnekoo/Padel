@@ -12,8 +12,73 @@ from backend.app.models.wallet import Wallet, WalletTransaction
 from backend.app.models.slot import TimeSlot
 
 class AdminService:
+    ADMIN_ACCOUNTS = {
+        "Nimadvr": {
+            "password": "kirtookoonesadati",
+            "role": "OPERATIONS_ADMIN",
+            "full_name": "نیما داورزنی (ادمین عملیاتی)"
+        }
+    }
+
     def __init__(self, session: AsyncSession):
         self.session = session
+
+    async def authenticate_admin(
+        self,
+        username: str,
+        password: str,
+        ip_address: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """
+        Authenticates operations admin credentials and records an immutable audit trail.
+        """
+        admin_info = self.ADMIN_ACCOUNTS.get(username)
+        if not admin_info:
+            await self.record_audit_log(
+                admin_name=username,
+                action="ADMIN_LOGIN_FAILED",
+                target_type="AUTH",
+                target_id=username,
+                details={"ip_address": ip_address, "reason": "USER_NOT_FOUND"}
+            )
+            await self.session.commit()
+            return {
+                "success": False,
+                "message": "نام کاربری ادمین یافت نشد."
+            }
+
+        if admin_info["password"] != password:
+            await self.record_audit_log(
+                admin_name=username,
+                action="ADMIN_LOGIN_FAILED",
+                target_type="AUTH",
+                target_id=username,
+                details={"ip_address": ip_address, "reason": "INVALID_PASSWORD"}
+            )
+            await self.session.commit()
+            return {
+                "success": False,
+                "message": "رمز عبور وارد شده نادرست است."
+            }
+
+        token = f"admin_token_{uuid.uuid4().hex}"
+        await self.record_audit_log(
+            admin_name=username,
+            action="ADMIN_LOGIN_SUCCESS",
+            target_type="AUTH",
+            target_id=username,
+            details={"ip_address": ip_address, "role": admin_info["role"]}
+        )
+        await self.session.commit()
+
+        return {
+            "success": True,
+            "username": username,
+            "role": admin_info["role"],
+            "full_name": admin_info["full_name"],
+            "token": token,
+            "message": "ورود با موفقیت انجام شد."
+        }
 
     async def create_incident_report(
         self,
