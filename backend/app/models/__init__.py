@@ -11,6 +11,7 @@ from backend.app.models.wallet import Wallet, WalletTransaction
 from backend.app.models.settlement import SettlementBatch, SettlementItem
 from backend.app.models.notification import NotificationLog
 from backend.app.models.matchmaking import MatchmakingGame
+from backend.app.models.admin import AdminIncidentReport, AdminAuditLog
 
 __all__ = [
     "Base",
@@ -32,4 +33,6 @@ __all__ = [
     "SettlementItem",
     "NotificationLog",
     "MatchmakingGame",
+    "AdminIncidentReport",
+    "AdminAuditLog",
 ]

@@ -11,19 +11,13 @@ import { RallyTournamentsPage } from './pages/rally/RallyTournamentsPage';
 import { RallyShopPage } from './pages/rally/RallyShopPage';
 import { RallyPartnerHubPage } from './pages/rally/RallyPartnerHubPage';
 import { RallySponsorsPage } from './pages/rally/RallySponsorsPage';
-import { CourtDetailsModal } from './components/rally/CourtDetailsModal';
-import { BookingFlowModal } from './components/rally/BookingFlowModal';
-import { CoachDetailsModal } from './components/rally/CoachDetailsModal';
-import { TournamentDetailsModal } from './components/rally/TournamentDetailsModal';
-import { ProductDetailsModal } from './components/rally/shop/ProductDetailsModal';
-import { CartDrawer } from './components/rally/shop/CartDrawer';
-import { ShopReceiptModal } from './components/rally/shop/ShopReceiptModal';
+import { AppModalsContainer } from './components/rally/AppModalsContainer';
 import { ScenarioTesterBar } from './components/rally/ScenarioTesterBar';
-import { WalletModal } from './components/WalletModal';
-import { AuthModal, UserSession } from './components/AuthModal';
+import { UserSession } from './components/AuthModal';
 import { CourtClub, Coach, Tournament, TimeSlotItem, SportType, ShopProduct, CartItem, ShopOrderReceipt } from './types/rally';
 import { MOCK_CLUBS, MOCK_COACHES, MOCK_TOURNAMENTS } from './data/mockRallyData';
 import { MOCK_SHOP_PRODUCTS } from './data/mockRallyShopData';
+import { AdminPortalPage } from './pages/rally/admin/AdminPortalPage';
 import { rallyApi } from './services/rallyApi';
 
 export const App: React.FC = () => {
@@ -74,6 +68,32 @@ export const App: React.FC = () => {
     }
   }, [userSession?.userId]);
 
+  const [isAdminOpen, setIsAdminOpen] = useState(false);
+  const [productsList, setProductsList] = useState<ShopProduct[]>(() => {
+    try {
+      const saved = localStorage.getItem('rally_shop_products');
+      return saved ? JSON.parse(saved) : MOCK_SHOP_PRODUCTS;
+    } catch {
+      return MOCK_SHOP_PRODUCTS;
+    }
+  });
+
+  const handleUpdateProduct = (productId: string, updates: Partial<ShopProduct>) => {
+    setProductsList((prev) => {
+      const next = prev.map((p) => p.id === productId ? { ...p, ...updates } : p);
+      try { localStorage.setItem('rally_shop_products', JSON.stringify(next)); } catch {}
+      return next;
+    });
+  };
+
+  const handleAddProduct = (newProd: ShopProduct) => {
+    setProductsList((prev) => {
+      const next = [newProd, ...prev];
+      try { localStorage.setItem('rally_shop_products', JSON.stringify(next)); } catch {}
+      return next;
+    });
+  };
+
   const handleAddToCart = (product: ShopProduct, quantity: number = 1) => {
     setCartItems((prev) => {
       const existing = prev.find((item) => item.product.id === product.id);
@@ -88,6 +108,19 @@ export const App: React.FC = () => {
     setCartItems((prev) => qty <= 0 ? prev.filter((i) => i.product.id !== productId) : prev.map((i) => i.product.id === productId ? { ...i, quantity: qty } : i));
   };
 
+  if (isAdminOpen) {
+    return (
+      <div className="min-h-screen bg-slate-950 font-sans" dir="rtl">
+        <AdminPortalPage
+          products={productsList}
+          onUpdateProduct={handleUpdateProduct}
+          onAddProduct={handleAddProduct}
+          onExitAdmin={() => setIsAdminOpen(false)}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-rally-light-bg text-rally-charcoal selection:bg-rally-accent selection:text-rally-charcoal font-sans">
       <RallyHeader
@@ -101,6 +134,7 @@ export const App: React.FC = () => {
         userName={userSession?.fullName}
         cartItemsCount={cartItems.reduce((acc, i) => acc + i.quantity, 0)}
         onOpenCart={() => setIsCartOpen(true)}
+        onOpenAdmin={() => setIsAdminOpen(true)}
       />
 
       <main className="flex-1 pb-20 lg:pb-12">
@@ -152,7 +186,7 @@ export const App: React.FC = () => {
             )}
             {activeTab === 'shop' && (
               <RallyShopPage
-                products={MOCK_SHOP_PRODUCTS}
+                products={productsList}
                 onAddToCart={handleAddToCart}
                 onSelectProduct={setSelectedProduct}
                 cartProductIds={new Set(cartItems.map((i) => i.product.id))}
@@ -173,77 +207,43 @@ export const App: React.FC = () => {
         </AnimatePresence>
       </main>
 
-      {/* Interactive Modals */}
-      {selectedClub && (
-        <CourtDetailsModal
-          club={selectedClub}
-          onClose={() => setSelectedClub(null)}
-          onProceedBooking={(club, slot) => { setSelectedClub(null); setBookingSlot({ club, slot }); }}
-        />
-      )}
-      {bookingSlot && (
-        <BookingFlowModal
-          club={bookingSlot.club}
-          slot={bookingSlot.slot}
-          walletBalance={walletBalance}
-          simulateState={simulateState}
-          onClose={() => setBookingSlot(null)}
-          onPaymentCompleted={() => {}}
-        />
-      )}
-      {selectedCoach && (
-        <CoachDetailsModal
-          coach={selectedCoach}
-          onClose={() => setSelectedCoach(null)}
-          onRequestSubmitted={() => setSelectedCoach(null)}
-        />
-      )}
-      {selectedTournament && (
-        <TournamentDetailsModal
-          tournament={selectedTournament}
-          onClose={() => setSelectedTournament(null)}
-          onRegisterConfirmed={() => setSelectedTournament(null)}
-        />
-      )}
-      {selectedProduct && (
-        <ProductDetailsModal
-          product={selectedProduct}
-          onClose={() => setSelectedProduct(null)}
-          onAddToCart={handleAddToCart}
-          onOpenCart={() => { setSelectedProduct(null); setIsCartOpen(true); }}
-        />
-      )}
-      <CartDrawer
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-        items={cartItems}
-        onUpdateQty={handleUpdateCartQty}
-        onRemoveItem={(id) => setCartItems((prev) => prev.filter((i) => i.product.id !== id))}
-        onClearCart={() => setCartItems([])}
+      {/* Interactive Modals Container */}
+      <AppModalsContainer
+        selectedClub={selectedClub}
+        onCloseClub={() => setSelectedClub(null)}
+        onProceedBooking={(club, slot) => { setSelectedClub(null); setBookingSlot({ club, slot }); }}
+        bookingSlot={bookingSlot}
         walletBalance={walletBalance}
-        userName={userSession?.fullName}
-        userPhone={userSession?.phoneNumber}
+        simulateState={simulateState}
+        onCloseBooking={() => setBookingSlot(null)}
+        selectedCoach={selectedCoach}
+        onCloseCoach={() => setSelectedCoach(null)}
+        selectedTournament={selectedTournament}
+        onCloseTournament={() => setSelectedTournament(null)}
+        selectedProduct={selectedProduct}
+        onCloseProduct={() => setSelectedProduct(null)}
+        onAddToCartProduct={handleAddToCart}
+        onOpenCartFromProduct={() => { setSelectedProduct(null); setIsCartOpen(true); }}
+        isCartOpen={isCartOpen}
+        onCloseCart={() => setIsCartOpen(false)}
+        cartItems={cartItems}
+        onUpdateCartQty={handleUpdateCartQty}
+        onRemoveCartItem={(id) => setCartItems((prev) => prev.filter((i) => i.product.id !== id))}
+        onClearCart={() => setCartItems([])}
         onOrderComplete={(receipt) => {
           setShopReceipt(receipt);
           if (receipt.paymentMethod === 'WALLET') {
             setWalletBalance((prev) => Math.max(0, prev - receipt.totalAmount * 10));
           }
         }}
-      />
-
-      {/* Shop Order Receipt Modal */}
-      <ShopReceiptModal receipt={shopReceipt} onClose={() => setShopReceipt(null)} />
-
-      <WalletModal
-        userId={userSession?.userId || 'usr-1'}
-        isOpen={isWalletOpen}
-        onClose={() => setIsWalletOpen(false)}
+        shopReceipt={shopReceipt}
+        onCloseReceipt={() => setShopReceipt(null)}
+        isWalletOpen={isWalletOpen}
+        onCloseWallet={() => setIsWalletOpen(false)}
         onBalanceUpdated={setWalletBalance}
-      />
-      <AuthModal
-        isOpen={isAuthOpen}
-        currentUser={userSession}
-        onClose={() => setIsAuthOpen(false)}
+        isAuthOpen={isAuthOpen}
+        userSession={userSession}
+        onCloseAuth={() => setIsAuthOpen(false)}
         onLoginSuccess={setUserSession}
         onLogout={() => { localStorage.removeItem('padel_auth'); setUserSession(null); }}
       />

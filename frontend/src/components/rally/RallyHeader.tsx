@@ -11,7 +11,8 @@ import {
   Handshake,
   ShoppingBag,
   ChevronDown,
-  Zap
+  Zap,
+  ShieldCheck
 } from 'lucide-react';
 
 export type RallyPageTab =
@@ -35,6 +36,7 @@ interface RallyHeaderProps {
   userName?: string;
   cartItemsCount?: number;
   onOpenCart?: () => void;
+  onOpenAdmin?: () => void;
 }
 
 export const RallyHeader: React.FC<RallyHeaderProps> = ({
@@ -47,7 +49,8 @@ export const RallyHeader: React.FC<RallyHeaderProps> = ({
   onOpenAuth,
   userName,
   cartItemsCount = 0,
-  onOpenCart
+  onOpenCart,
+  onOpenAdmin
 }) => {
   const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
 
@@ -200,6 +203,18 @@ export const RallyHeader: React.FC<RallyHeaderProps> = ({
               {userName ? userName : 'ورود'}
             </span>
           </button>
+
+          {/* Admin portal shortcut */}
+          {onOpenAdmin && (
+            <button
+              onClick={onOpenAdmin}
+              className="flex items-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-xl bg-slate-900 text-amber-400 border border-slate-800 hover:bg-slate-800 hover:text-amber-300 text-xs font-black transition-all cursor-pointer shadow-2xs shrink-0"
+              title="ورود به پنل مدیریت عملیاتی رالی"
+            >
+              <ShieldCheck className="w-4 h-4 text-amber-400 shrink-0" />
+              <span className="hidden xl:inline">پنل مدیریت</span>
+            </button>
+          )}
         </div>
       </div>
     </header>

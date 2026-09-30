@@ -230,5 +230,68 @@ export const rallyApi = {
       return { success: false, error: err?.message || 'خطا در ارتباط با سرور' };
     }
   },
+
+  /**
+   * دریافت آمار کلان داشبورد ادمین
+   */
+  async getAdminStats() {
+    try {
+      const res = await fetch(`${API_BASE}/admin/stats`);
+      if (!res.ok) return null;
+      return await res.json();
+    } catch {
+      return null;
+    }
+  },
+
+  /**
+   * دریافت لیست گزارش‌های اضطراری SOS
+   */
+  async getAdminIncidents(resolved?: boolean) {
+    try {
+      const url = resolved !== undefined ? `${API_BASE}/admin/incidents?resolved=${resolved}` : `${API_BASE}/admin/incidents`;
+      const res = await fetch(url);
+      if (!res.ok) return [];
+      return await res.json();
+    } catch {
+      return [];
+    }
+  },
+
+  /**
+   * ثبت گزارش اضطراری جدید توسط ادمین به مالک پلتفرم
+   */
+  async reportAdminIncident(payload: { title: string; severity: string; category: string; description: string; reporter_name?: string }) {
+    try {
+      const res = await fetch(`${API_BASE}/admin/incidents`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در ثبت گزارش' };
+      return { success: true, data };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در شبکه' };
+    }
+  },
+
+  /**
+   * لغو اضطراری بازی مچ‌میکینگ توسط ادمین با استرداد ۱۰۰٪ به بازیکنان
+   */
+  async emergencyCancelMatch(gameId: string, reason: string, adminName: string = 'ادمین عملیاتی') {
+    try {
+      const res = await fetch(`${API_BASE}/admin/matches/${gameId}/emergency-cancel`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reason, admin_name: adminName }),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در لغو بازی' };
+      return { success: true, data };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در شبکه' };
+    }
+  },
 };
 
