@@ -16,6 +16,7 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
   isInCart = false
 }) => {
   const [justAdded, setJustAdded] = useState(false);
+  const [hasImgError, setHasImgError] = useState(false);
 
   const handleAdd = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -32,15 +33,29 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
       <div>
         {/* Image Container with Badges */}
         <div className="relative aspect-square w-full bg-slate-50 overflow-hidden flex items-center justify-center p-3 border-b border-gray-100">
-          <img
-            src={product.image_url}
-            alt={product.name_fa}
-            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-200"
-            loading="lazy"
-          />
+          {hasImgError ? (
+            <div className="w-full h-full flex flex-col items-center justify-center text-center p-3 bg-slate-100/70">
+              <span className="text-xs font-black text-slate-700">{product.brand}</span>
+              <span className="text-[10px] text-slate-400 mt-1 line-clamp-2 px-2">{product.name_fa}</span>
+              <span className="text-[9px] text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded mt-2">منتظر عکس</span>
+            </div>
+          ) : (
+            <img
+              src={product.image_url}
+              alt={product.name_fa}
+              onError={() => setHasImgError(true)}
+              className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-200"
+              loading="lazy"
+            />
+          )}
 
           {/* Top Badges */}
           <div className="absolute top-3 right-3 flex flex-col gap-1.5 z-10">
+            {product.year === 2026 && (
+              <span className="bg-amber-500 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm">
+                ۲۰۲۶
+              </span>
+            )}
             {product.discount_percent > 0 && (
               <span className="bg-red-500 text-white text-[11px] font-black px-2.5 py-1 rounded-full shadow-md">
                 ٪{product.discount_percent} تخفیف

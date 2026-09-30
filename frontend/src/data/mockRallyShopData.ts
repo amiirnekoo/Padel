@@ -1,6 +1,8 @@
 import { ShopProduct } from '../types/rally';
+import { MOCK_2026_PRODUCTS } from './mock2026Products';
 
 export const MOCK_SHOP_PRODUCTS: ShopProduct[] = [
+  ...MOCK_2026_PRODUCTS,
   {
     id: 'racket-padel-1',
     name_fa: 'راکت پدل بول‌پدل مدل Hack 03 Pro 2024',

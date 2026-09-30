@@ -132,6 +132,12 @@ export interface ShopProduct {
   control_index?: number; // 1 to 10
   series?: string; // e.g. Luxury Series, Pro Series
   player_signature?: string; // e.g. Agustín Tapia, Miguel Lamperti
+  images?: string[]; // Multiple high-res photos
+  year?: number; // e.g. 2026
+  features?: string[]; // Bullet features / technologies
+  colors?: string[];
+  sizes?: string[];
+  specs_detail?: Record<string, string>;
 }
 
 export interface CartItem {
