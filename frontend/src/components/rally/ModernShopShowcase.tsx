@@ -27,7 +27,7 @@ export const ModernShopShowcase: React.FC<ModernShopShowcaseProps> = ({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 sm:mb-10">
           <div>
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#0E3D38]" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#0B4278]" />
               <h2 className="text-2xl sm:text-3xl font-black text-[#172320] tracking-tight">
                 فروشگاه تخصصی تجهیزات پدل
               </h2>
@@ -39,7 +39,7 @@ export const ModernShopShowcase: React.FC<ModernShopShowcaseProps> = ({
 
           <button
             onClick={onViewAllProducts}
-            className="inline-flex items-center gap-1.5 text-sm font-bold text-[#0E3D38] hover:text-[#0E3D38]/80 transition-colors cursor-pointer group self-start sm:self-auto"
+            className="inline-flex items-center gap-1.5 text-sm font-bold text-[#0B4278] hover:text-[#0C4F8D] transition-colors cursor-pointer group self-start sm:self-auto"
           >
             <span>مشاهده همه محصولات فروشگاه</span>
             <ChevronLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
@@ -55,7 +55,7 @@ export const ModernShopShowcase: React.FC<ModernShopShowcaseProps> = ({
               <div
                 key={product.id}
                 onClick={() => onSelectProduct?.(product)}
-                className="group relative bg-white rounded-2xl overflow-hidden border border-[#E8E6DD] hover:border-[#0E3D38]/30 shadow-xs hover:shadow-xl transition-all duration-200 cursor-pointer flex flex-col justify-between"
+                className="group relative bg-white rounded-2xl overflow-hidden border border-[#E8E6DD] hover:border-[#0B4278]/40 shadow-xs hover:shadow-xl transition-all duration-200 cursor-pointer flex flex-col justify-between"
               >
                 {/* Product Image Area */}
                 <div className="relative w-full h-64 bg-slate-900/5 p-4 flex items-center justify-center overflow-hidden">
@@ -66,13 +66,13 @@ export const ModernShopShowcase: React.FC<ModernShopShowcaseProps> = ({
                     loading="lazy"
                   />
                   
-                  {/* Brand Tag */}
-                  <span className="absolute top-3 right-3 px-2.5 py-1 rounded-lg bg-[#0E3D38] text-white text-[11px] font-black">
+                  {/* Brand Tag (Padel Blue) */}
+                  <span className="absolute top-3 right-3 px-2.5 py-1 rounded-lg bg-[#0B4278] text-white text-[11px] font-black">
                     {product.brand}
                   </span>
 
-                  {/* Level Tag */}
-                  <span className="absolute top-3 left-3 px-2 py-0.5 rounded-lg bg-black/60 text-[#D7ED68] text-[10px] font-bold">
+                  {/* Level Tag (Touch of Turf Green) */}
+                  <span className="absolute top-3 left-3 px-2 py-0.5 rounded-lg bg-[#0E3D38] text-[#D7ED68] text-[10px] font-bold border border-[#0E3D38]">
                     {product.level === 'PRO' ? 'حرفه‌ای' : 'نیمه‌حرفه‌ای'}
                   </span>
                 </div>
@@ -80,7 +80,7 @@ export const ModernShopShowcase: React.FC<ModernShopShowcaseProps> = ({
                 {/* Product Details */}
                 <div className="p-5 flex-1 flex flex-col justify-between">
                   <div>
-                    <h3 className="text-base font-extrabold text-[#172320] group-hover:text-[#0E3D38] transition-colors line-clamp-1 mb-1.5">
+                    <h3 className="text-base font-extrabold text-[#172320] group-hover:text-[#0B4278] transition-colors line-clamp-1 mb-1.5">
                       {product.name_fa}
                     </h3>
                     <p className="text-xs text-[#66706D] font-medium line-clamp-2 leading-relaxed mb-4">
@@ -92,7 +92,7 @@ export const ModernShopShowcase: React.FC<ModernShopShowcaseProps> = ({
                   <div className="pt-3 border-t border-[#F5F4EF] flex items-center justify-between gap-3">
                     <div>
                       <span className="block text-[10px] text-[#66706D] font-bold">قیمت با گارانتی:</span>
-                      <span className="text-base font-black text-[#0E3D38]">
+                      <span className="text-base font-black text-[#0B4278]">
                         {(product.price / 10).toLocaleString('fa-IR')} <span className="text-xs font-semibold">تومان</span>
                       </span>
                     </div>
@@ -105,7 +105,7 @@ export const ModernShopShowcase: React.FC<ModernShopShowcaseProps> = ({
                       }}
                       className={`px-3.5 py-2.5 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95 ${
                         inCart
-                          ? 'bg-[#0E3D38] text-[#D7ED68]'
+                          ? 'bg-[#0B4278] text-[#D7ED68]'
                           : 'bg-[#D7ED68] hover:bg-[#c9df5b] text-[#172320]'
                       }`}
                     >
@@ -130,13 +130,13 @@ export const ModernShopShowcase: React.FC<ModernShopShowcaseProps> = ({
 
         {/* Brand Authenticity Guarantee Bar */}
         <div className="mt-8 bg-white rounded-2xl p-4 sm:p-5 border border-[#E8E6DD] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-semibold text-[#172320]">
-          <div className="flex items-center gap-2 text-[#0E3D38]">
-            <ShieldCheck className="w-5 h-5 text-[#D7ED68]" />
+          <div className="flex items-center gap-2 text-[#0B4278]">
+            <ShieldCheck className="w-5 h-5 text-[#0E3D38]" />
             <span>تمامی راکت‌ها و توپ‌های پدل دارای هولوگرام و اصالت تضمینی رالی می‌باشند.</span>
           </div>
           <button
             onClick={onViewAllProducts}
-            className="text-xs font-black text-[#0E3D38] hover:underline cursor-pointer"
+            className="text-xs font-black text-[#0B4278] hover:underline cursor-pointer"
           >
             ورود به ویترین کامل فروشگاه ←
           </button>

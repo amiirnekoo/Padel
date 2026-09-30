@@ -8,14 +8,27 @@ export default {
     extend: {
       colors: {
         rally: {
+          padelBlue: {
+            DEFAULT: '#0B4278', // Iconic Premier Padel Court Blue
+            dark: '#0B2238',    // Deep Court Navy
+            light: '#0C4F8D',
+            vibrant: '#0284C7',
+            deep: '#091B2F',
+            hover: '#0A3966'
+          },
+          turfGreen: {
+            DEFAULT: '#0E3D38', // Deep Turf Green accent
+            light: '#14574F',
+            dark: '#082522'
+          },
           teal: {
-            DEFAULT: '#0E3D38', // Deep Mineral Teal
+            DEFAULT: '#0E3D38', // Deep Mineral Teal preserved for accents
             dark: '#082522',
             light: '#14574F',
             hover: '#1B6960',
           },
           lime: {
-            DEFAULT: '#D7ED68', // Electric Lime
+            DEFAULT: '#D7ED68', // Electric Lime (Ball Color)
             hover: '#C7DE54',
             light: '#E6F58D',
             glow: 'rgba(215, 237, 104, 0.35)',
@@ -32,10 +45,10 @@ export default {
           },
           softGray: '#66706D', // Secondary soft gray text
           primary: {
-            DEFAULT: '#0E3D38', // Deep Mineral Teal as primary
-            light: '#165B53',
-            dark: '#082522',
-            hover: '#1B6960'
+            DEFAULT: '#0B4278', // Padel Blue as primary
+            light: '#0C4F8D',
+            dark: '#0B2238',
+            hover: '#0A3966'
           },
           accent: {
             DEFAULT: '#D7ED68', // Electric Lime Accent

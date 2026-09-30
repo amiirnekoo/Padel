@@ -30,9 +30,9 @@ export const ModernFeaturedBanners: React.FC<ModernFeaturedBannersProps> = ({
         {/* 2-Column Responsive Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           
-          {/* Card 1: Featured Tournament (مسابقه شاخص) */}
-          <div className="relative rounded-2xl overflow-hidden bg-[#0E3D38] text-white flex flex-col justify-between shadow-xl min-h-[380px] group border border-[#172320]">
-            {/* Background Tournament Image with Controlled Overlay */}
+          {/* Card 1: Featured Tournament (Padel Blue Court Atmosphere) */}
+          <div className="relative rounded-2xl overflow-hidden bg-[#0B2B4E] text-white flex flex-col justify-between shadow-xl min-h-[380px] group border border-[#0C4F8D]/50">
+            {/* Background Tournament Image with Controlled Padel Blue Overlay */}
             <div className="absolute inset-0 z-0">
               <img
                 src="/images/tournament_player_crop.jpg"
@@ -40,12 +40,12 @@ export const ModernFeaturedBanners: React.FC<ModernFeaturedBannersProps> = ({
                 className="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105 opacity-40"
                 loading="lazy"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0E3D38] via-[#0E3D38]/80 to-[#0E3D38]/40" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0A1B2F] via-[#0B2B4E]/85 to-[#0C4F8D]/50" />
             </div>
 
             {/* Top Label */}
             <div className="relative z-10 p-6 sm:p-8 flex items-center justify-between">
-              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#D7ED68] text-[#172320] text-xs font-black">
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#D7ED68] text-[#0A1B2F] text-xs font-black">
                 <Trophy className="w-4 h-4" />
                 <span>رویداد شاخص کشوری</span>
               </span>
@@ -76,7 +76,7 @@ export const ModernFeaturedBanners: React.FC<ModernFeaturedBannersProps> = ({
               <button
                 type="button"
                 onClick={handleTournamentClick}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#D7ED68] hover:bg-[#c9df5b] text-[#172320] text-sm font-black transition-all cursor-pointer shadow-md hover:shadow-lg active:scale-98"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#D7ED68] hover:bg-[#c9df5b] text-[#0A1B2F] text-sm font-black transition-all cursor-pointer shadow-md hover:shadow-lg active:scale-98"
               >
                 <span>اطلاعات و ثبت‌نام</span>
                 <ChevronLeft className="w-4 h-4" />
@@ -84,9 +84,9 @@ export const ModernFeaturedBanners: React.FC<ModernFeaturedBannersProps> = ({
             </div>
           </div>
 
-          {/* Card 2: Commercial Partnership (همکاری با رالی) */}
-          <div className="relative rounded-2xl overflow-hidden bg-[#172320] text-white flex flex-col justify-between shadow-xl min-h-[380px] group border border-[#0E3D38]">
-            {/* Background Partnership Image with Controlled Overlay */}
+          {/* Card 2: Commercial Partnership (Deliberate Turf Green Accent) */}
+          <div className="relative rounded-2xl overflow-hidden bg-[#0E3D38] text-white flex flex-col justify-between shadow-xl min-h-[380px] group border border-[#14574F]">
+            {/* Background Partnership Image with Controlled Turf Green Overlay */}
             <div className="absolute inset-0 z-0">
               <img
                 src="/images/partnership_court_crop.jpg"
@@ -94,7 +94,7 @@ export const ModernFeaturedBanners: React.FC<ModernFeaturedBannersProps> = ({
                 className="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105 opacity-30"
                 loading="lazy"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#172320] via-[#172320]/85 to-[#172320]/50" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#082522] via-[#0E3D38]/85 to-[#14574F]/50" />
             </div>
 
             {/* Top Label */}

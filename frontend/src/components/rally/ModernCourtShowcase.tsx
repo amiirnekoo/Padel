@@ -117,7 +117,7 @@ export const ModernCourtShowcase: React.FC<ModernCourtShowcaseProps> = ({
           <div className="flex items-center gap-4">
             <button
               onClick={onViewAllCourts}
-              className="inline-flex items-center gap-1.5 text-sm font-bold text-[#0E3D38] hover:text-[#0E3D38]/80 transition-colors cursor-pointer group"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-[#0B4278] hover:text-[#0C4F8D] transition-colors cursor-pointer group"
             >
               <span>مشاهده همه زمین‌ها</span>
               <ChevronLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
@@ -127,14 +127,14 @@ export const ModernCourtShowcase: React.FC<ModernCourtShowcaseProps> = ({
             <div className="hidden sm:flex items-center gap-1.5">
               <button
                 onClick={onViewAllCourts}
-                className="w-9 h-9 rounded-full bg-white border border-[#E8E6DD] text-[#172320] flex items-center justify-center hover:bg-[#172320] hover:text-white transition-all cursor-pointer shadow-xs"
+                className="w-9 h-9 rounded-full bg-white border border-[#E8E6DD] text-[#172320] flex items-center justify-center hover:bg-[#0B4278] hover:text-white transition-all cursor-pointer shadow-xs"
                 aria-label="قبلی"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
               <button
                 onClick={onViewAllCourts}
-                className="w-9 h-9 rounded-full bg-white border border-[#E8E6DD] text-[#172320] flex items-center justify-center hover:bg-[#172320] hover:text-white transition-all cursor-pointer shadow-xs"
+                className="w-9 h-9 rounded-full bg-white border border-[#E8E6DD] text-[#172320] flex items-center justify-center hover:bg-[#0B4278] hover:text-white transition-all cursor-pointer shadow-xs"
                 aria-label="بعدی"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -152,7 +152,7 @@ export const ModernCourtShowcase: React.FC<ModernCourtShowcaseProps> = ({
               <div
                 key={court.id}
                 onClick={() => handleCardClick(court)}
-                className="group relative bg-white rounded-2xl overflow-hidden border border-[#E8E6DD] hover:border-[#0E3D38]/30 shadow-xs hover:shadow-xl transition-all duration-200 cursor-pointer flex flex-col"
+                className="group relative bg-white rounded-2xl overflow-hidden border border-[#E8E6DD] hover:border-[#0B4278]/40 shadow-xs hover:shadow-xl transition-all duration-200 cursor-pointer flex flex-col"
               >
                 {/* Court Image with Subtle Zoom on Hover */}
                 <div className="relative w-full h-56 sm:h-60 overflow-hidden bg-slate-900">
@@ -163,15 +163,15 @@ export const ModernCourtShowcase: React.FC<ModernCourtShowcaseProps> = ({
                     loading="lazy"
                   />
                   {/* Subtle Darkening Overlay on Hover */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent transition-opacity duration-200 group-hover:opacity-90" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent transition-opacity duration-200 group-hover:opacity-90" />
 
-                  {/* Badges on Image (Location & Starting Price) */}
+                  {/* Badges on Image (Location with Turf Green touch & Starting Price with Padel Blue) */}
                   <div className="absolute bottom-3 right-3 left-3 flex items-center justify-between text-white text-xs">
-                    <span className="flex items-center gap-1 font-medium bg-black/60 px-2.5 py-1 rounded-lg backdrop-none">
+                    <span className="flex items-center gap-1 font-semibold bg-[#0E3D38]/85 text-[#F5F4EF] px-2.5 py-1 rounded-lg backdrop-none border border-[#0E3D38]">
                       <MapPin className="w-3.5 h-3.5 text-[#D7ED68]" />
                       <span>{court.area}</span>
                     </span>
-                    <span className="font-bold text-white bg-[#0E3D38]/80 px-2.5 py-1 rounded-lg">
+                    <span className="font-bold text-white bg-[#0B4278]/90 px-2.5 py-1 rounded-lg border border-[#0B4278]">
                       شروع از {court.startingPrice.toLocaleString('fa-IR')} تومان
                     </span>
                   </div>
@@ -180,7 +180,7 @@ export const ModernCourtShowcase: React.FC<ModernCourtShowcaseProps> = ({
                 {/* Card Body */}
                 <div className="p-5 flex-1 flex flex-col justify-between">
                   <div>
-                    <h3 className="text-lg font-black text-[#172320] group-hover:text-[#0E3D38] transition-colors mb-2">
+                    <h3 className="text-lg font-black text-[#172320] group-hover:text-[#0B4278] transition-colors mb-2">
                       {court.name}
                     </h3>
                     <p className="text-xs text-[#66706D] font-medium mb-4 flex items-center gap-1.5">
@@ -194,7 +194,7 @@ export const ModernCourtShowcase: React.FC<ModernCourtShowcaseProps> = ({
                   <div className="pt-3 border-t border-[#F5F4EF]">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-[11px] font-bold text-[#66706D] flex items-center gap-1">
-                        <Clock className="w-3.5 h-3.5" />
+                        <Clock className="w-3.5 h-3.5 text-[#0B4278]" />
                         <span>سانس‌های نزدیک فردا:</span>
                       </span>
                     </div>
@@ -209,8 +209,8 @@ export const ModernCourtShowcase: React.FC<ModernCourtShowcaseProps> = ({
                             onClick={(e) => handleSlotClick(e, court, slot)}
                             className={`py-2 px-1 rounded-xl text-xs font-bold transition-all text-center cursor-pointer ${
                               isSelected
-                                ? 'bg-[#0E3D38] text-[#D7ED68] shadow-xs'
-                                : 'bg-[#F5F4EF] hover:bg-[#D7ED68]/20 text-[#172320] border border-[#E8E6DD]'
+                                ? 'bg-[#0B4278] text-[#D7ED68] shadow-xs'
+                                : 'bg-[#F5F4EF] hover:bg-[#0B4278]/10 text-[#172320] border border-[#E8E6DD]'
                             }`}
                           >
                             <span>{slot.time}</span>

@@ -11,15 +11,18 @@
   --border-subtle: #E8E6DD;
   --border-glow: rgba(215, 237, 104, 0.4);
   
-  --color-teal: #0E3D38;
+  --color-padel-blue: #0B4278;
+  --color-padel-navy: #0B2238;
+  --color-padel-vibrant: #0284C7;
+  --color-turf-green: #0E3D38;
   --color-lime: #D7ED68;
   --color-ivory: #F5F4EF;
   --color-graphite: #172320;
   
-  --color-primary: #0E3D38;
-  --color-primary-light: #165B53;
-  --color-primary-dark: #082522;
-  --color-primary-glow: rgba(14, 61, 56, 0.25);
+  --color-primary: #0B4278;
+  --color-primary-light: #0C4F8D;
+  --color-primary-dark: #0B2238;
+  --color-primary-glow: rgba(11, 66, 120, 0.25);
   --color-accent: #D7ED68;
   --color-accent-glow: rgba(215, 237, 104, 0.35);
   
@@ -27,7 +30,7 @@
   --color-hold-glow: rgba(217, 119, 6, 0.2);
   --color-booked: #94a3b8;
   --color-blocked: #dc2626;
-  --color-tournament: #0E3D38;
+  --color-tournament: #0B4278;
   
   --text-main: #172320;
   --text-muted: #66706D;

@@ -23,9 +23,9 @@ export const ModernRallyHero: React.FC<ModernRallyHeroProps> = ({
           className="w-full h-full object-cover object-center"
           loading="eager"
         />
-        {/* Deep Mineral Teal Tonal Overlays (No backdrop-blur per performance rules) */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0E3D38]/85 via-[#0E3D38]/75 to-[#0E3D38]/95" />
-        <div className="absolute inset-0 bg-radial from-transparent via-transparent to-[#0E3D38]/90" />
+        {/* Iconic Padel Court Blue Tonal Overlays (Immersive padel court feel) */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0B2238]/90 via-[#0B355E]/80 to-[#091B2F]/95" />
+        <div className="absolute inset-0 bg-gradient-to-tr from-[#0E3D38]/30 via-transparent to-[#0284C7]/20" />
       </div>
 
       {/* Electric Lime Ball Trajectory Line (مسیر حرکت توپ) as Brand Signature */}

@@ -49,8 +49,8 @@ export const ModernRallyHeader: React.FC<ModernRallyHeaderProps> = ({
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-200 ${
         isScrolled
-          ? 'bg-[#0E3D38] border-b border-[#172320]/60 shadow-lg py-3'
-          : 'bg-[#0E3D38]/85 backdrop-none py-4 sm:py-5 border-b border-white/10'
+          ? 'bg-[#0B2238] border-b border-[#0C3E6E]/60 shadow-lg py-3'
+          : 'bg-[#0B2238]/85 backdrop-none py-4 sm:py-5 border-b border-white/10'
       }`}
       dir="rtl"
     >
@@ -161,7 +161,7 @@ export const ModernRallyHeader: React.FC<ModernRallyHeaderProps> = ({
 
       {/* Mobile Menu Dropdown */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-[#0E3D38] border-b border-[#172320] px-4 py-4 space-y-2">
+        <div className="md:hidden bg-[#0B2238] border-b border-[#0C3E6E] px-4 py-4 space-y-2">
           {allNavItems.map((item) => (
             <button
               key={item.id}

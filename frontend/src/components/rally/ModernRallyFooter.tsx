@@ -10,7 +10,7 @@ export const ModernRallyFooter: React.FC<ModernRallyFooterProps> = ({
   onNavigateTab
 }) => {
   return (
-    <footer className="w-full bg-[#172320] text-[#F5F4EF] border-t border-[#0E3D38] pt-14 pb-20 md:pb-12" dir="rtl">
+    <footer className="w-full bg-[#091B2F] text-[#F5F4EF] border-t border-[#0B4278] pt-14 pb-20 md:pb-12" dir="rtl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Main Footer Grid */}

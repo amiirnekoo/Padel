@@ -100,7 +100,7 @@ export const RallyBookingSearch: React.FC<RallyBookingSearchProps> = ({
                     setOpenDropdown(null);
                   }}
                   className={`w-full text-right px-3.5 py-2.5 rounded-xl text-xs font-bold flex items-center justify-between cursor-pointer transition-colors ${
-                    selectedSport === opt.id ? 'bg-[#0E3D38] text-white' : 'text-[#172320] hover:bg-[#F5F4EF]'
+                    selectedSport === opt.id ? 'bg-[#0B4278] text-white' : 'text-[#172320] hover:bg-[#F5F4EF]'
                   }`}
                 >
                   <span>{opt.label}</span>
@@ -149,7 +149,7 @@ export const RallyBookingSearch: React.FC<RallyBookingSearchProps> = ({
                       setSelectedArea('همه مناطق');
                     }}
                     className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
-                      selectedCity === c.name ? 'bg-[#0E3D38] text-white' : 'bg-[#F5F4EF] text-[#172320]'
+                      selectedCity === c.name ? 'bg-[#0B4278] text-white' : 'bg-[#F5F4EF] text-[#172320]'
                     }`}
                   >
                     {c.name}
@@ -166,7 +166,7 @@ export const RallyBookingSearch: React.FC<RallyBookingSearchProps> = ({
                       setOpenDropdown(null);
                     }}
                     className={`w-full text-right px-3 py-1.5 rounded-xl text-xs font-semibold cursor-pointer transition-colors ${
-                      selectedArea === area ? 'bg-[#D7ED68]/20 text-[#0E3D38] font-bold' : 'text-[#172320] hover:bg-[#F5F4EF]'
+                      selectedArea === area ? 'bg-[#0B4278]/10 text-[#0B4278] font-bold' : 'text-[#172320] hover:bg-[#F5F4EF]'
                     }`}
                   >
                     {area}
@@ -190,7 +190,7 @@ export const RallyBookingSearch: React.FC<RallyBookingSearchProps> = ({
           >
             <div className="flex items-center gap-2.5">
               <span className="w-8 h-8 rounded-full bg-[#172320]/5 flex items-center justify-center text-[#172320]">
-                <Calendar className="w-4 h-4 text-[#0E3D38]" />
+                <Calendar className="w-4 h-4 text-[#0B4278]" />
               </span>
               <div>
                 <span className="block text-[11px] font-bold text-[#66706D]">تاریخ سانس</span>
@@ -218,7 +218,7 @@ export const RallyBookingSearch: React.FC<RallyBookingSearchProps> = ({
                     }}
                     className={`w-full text-right px-3 py-2 rounded-xl text-xs flex items-center justify-between cursor-pointer transition-colors ${
                       selectedDate === d.label
-                        ? 'bg-[#0E3D38] text-white font-bold'
+                        ? 'bg-[#0B4278] text-white font-bold'
                         : 'text-[#172320] hover:bg-[#F5F4EF]'
                     }`}
                   >
