@@ -1,0 +1,66 @@
+name: Continuous Integration & Deployment (CI/CD)
+<div dir="rtl">
+workflow استقرار خودکار و آزمون‌های مداوم پروژه Padel / Rally
+</div>
+
+on:
+  push:
+    branches:
+      - 001-court-booking-engine
+      - main
+
+jobs:
+  test:
+    name: Run Pytest & Frontend Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Backend Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+          pip install pytest pytest-asyncio
+
+      - name: Run Backend Pytest Suite
+        run: |
+          pytest backend/tests
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build Frontend
+        working-directory: ./frontend
+        run: |
+          npm ci || npm install
+          npm run build
+
+  deploy:
+    name: Deploy to Production VPS
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/001-court-booking-engine' || github.ref == 'refs/heads/main'
+    steps:
+      - name: Execute Remote SSH Deployment
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 213.176.121.117
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          script: |
+            cd /root/Padel
+            git fetch origin
+            git checkout ${{ github.ref_name }}
+            git pull origin ${{ github.ref_name }}
+            docker compose build
+            docker compose up -d
+            docker system prune -f
