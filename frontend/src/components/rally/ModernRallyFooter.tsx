@@ -68,6 +68,14 @@ export const ModernRallyFooter: React.FC<ModernRallyFooterProps> = ({
                   تقویم مسابقات کشوری
                 </button>
               </li>
+              <li>
+                <button
+                  onClick={() => onNavigateTab?.('shop')}
+                  className="hover:text-[#D7ED68] transition-colors cursor-pointer text-right text-[#D7ED68]"
+                >
+                  فروشگاه راکت و تجهیزات
+                </button>
+              </li>
             </ul>
           </div>
 

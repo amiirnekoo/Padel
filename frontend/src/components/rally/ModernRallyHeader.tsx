@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, ArrowLeft, Shield } from 'lucide-react';
+import { Menu, X, ArrowLeft, Shield, ShoppingBag } from 'lucide-react';
 import { RallyLogo } from './RallyLogo';
 import { UserSession } from '../AuthModal';
 
-export type ModernNavTab = 'courts' | 'coaches' | 'tournaments' | 'partners' | 'home';
+export type ModernNavTab = 'courts' | 'coaches' | 'tournaments' | 'shop' | 'partners' | 'home';
 
 interface ModernRallyHeaderProps {
   activeTab: ModernNavTab;
@@ -11,6 +11,8 @@ interface ModernRallyHeaderProps {
   userSession: UserSession | null;
   onOpenAuth: () => void;
   onOpenAdmin: () => void;
+  cartItemsCount?: number;
+  onOpenCart?: () => void;
 }
 
 export const ModernRallyHeader: React.FC<ModernRallyHeaderProps> = ({
@@ -18,7 +20,9 @@ export const ModernRallyHeader: React.FC<ModernRallyHeaderProps> = ({
   onSelectTab,
   userSession,
   onOpenAuth,
-  onOpenAdmin
+  onOpenAdmin,
+  cartItemsCount = 0,
+  onOpenCart
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -35,10 +39,11 @@ export const ModernRallyHeader: React.FC<ModernRallyHeaderProps> = ({
     { id: 'courts' as ModernNavTab, label: 'زمین‌ها' },
     { id: 'coaches' as ModernNavTab, label: 'مربیان' },
     { id: 'tournaments' as ModernNavTab, label: 'مسابقات' },
+    { id: 'shop' as ModernNavTab, label: 'فروشگاه' },
     { id: 'partners' as ModernNavTab, label: 'برای باشگاه‌ها' }
   ];
 
-  const centerNavItems = allNavItems.slice(0, 3);
+  const centerNavItems = allNavItems.slice(0, 4);
 
   return (
     <header
@@ -62,8 +67,8 @@ export const ModernRallyHeader: React.FC<ModernRallyHeaderProps> = ({
           </button>
         </div>
 
-        {/* Center: Desktop Navigation (Courts, Coaches, Tournaments) */}
-        <nav className="hidden md:flex items-center gap-8 lg:gap-10">
+        {/* Center: Desktop Navigation (Courts, Coaches, Tournaments, Shop) */}
+        <nav className="hidden md:flex items-center gap-6 lg:gap-9">
           {centerNavItems.map((item) => {
             const isActive = activeTab === item.id;
             return (
@@ -83,8 +88,8 @@ export const ModernRallyHeader: React.FC<ModernRallyHeaderProps> = ({
           })}
         </nav>
 
-        {/* Left: Actions (For Clubs, Login, Admin) */}
-        <div className="flex items-center gap-3">
+        {/* Left: Actions (For Clubs, Cart, Login, Admin) */}
+        <div className="flex items-center gap-2.5 sm:gap-3">
           {/* For Clubs Action Link */}
           <button
             onClick={() => onSelectTab('partners')}
@@ -96,6 +101,24 @@ export const ModernRallyHeader: React.FC<ModernRallyHeaderProps> = ({
           >
             برای باشگاه‌ها
           </button>
+
+          {/* Cart Button with Counter */}
+          {onOpenCart && (
+            <button
+              onClick={onOpenCart}
+              className="relative p-2 sm:px-3 sm:py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white flex items-center gap-1.5 transition-all cursor-pointer border border-white/10"
+              title="سبد خرید تجهیزات رالی"
+              aria-label="سبد خرید"
+            >
+              <ShoppingBag className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-[#D7ED68]" />
+              <span className="hidden sm:inline text-xs font-bold text-white">سبد</span>
+              {cartItemsCount > 0 && (
+                <span className="w-5 h-5 rounded-full bg-[#D7ED68] text-[#172320] text-[10px] font-black flex items-center justify-center shadow-xs">
+                  {cartItemsCount}
+                </span>
+              )}
+            </button>
+          )}
 
           {/* Admin shortcut button */}
           <button

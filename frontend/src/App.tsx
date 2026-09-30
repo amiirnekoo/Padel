@@ -130,6 +130,8 @@ export const App: React.FC = () => {
         userSession={userSession}
         onOpenAuth={() => setIsAuthOpen(true)}
         onOpenAdmin={() => setIsAdminOpen(true)}
+        cartItemsCount={cartItems.reduce((acc, i) => acc + i.quantity, 0)}
+        onOpenCart={() => setIsCartOpen(true)}
       />
 
       <main className={`flex-1 pb-20 lg:pb-12 ${activeTab !== 'home' ? 'pt-20 sm:pt-24' : ''}`}>
@@ -153,6 +155,10 @@ export const App: React.FC = () => {
                 onNavigateToCoaches={(f) => { if (f) setCoachFilterParam(f); setActiveTab('coaches'); }}
                 onNavigateToTournaments={() => setActiveTab('tournaments')}
                 onNavigateToSponsors={() => setActiveTab('sponsors')}
+                onNavigateToShop={() => setActiveTab('shop')}
+                onSelectProduct={setSelectedProduct}
+                onAddToCartProduct={handleAddToCart}
+                cartProductIds={new Set(cartItems.map((i) => i.product.id))}
               />
             )}
             {activeTab === 'courts' && (

@@ -1,8 +1,9 @@
 import React from 'react';
 import { ModernRallyHero } from '../../components/rally/ModernRallyHero';
 import { ModernCourtShowcase } from '../../components/rally/ModernCourtShowcase';
+import { ModernShopShowcase } from '../../components/rally/ModernShopShowcase';
 import { ModernFeaturedBanners } from '../../components/rally/ModernFeaturedBanners';
-import { CourtClub, Coach, Tournament, TimeSlotItem, SportType } from '../../types/rally';
+import { CourtClub, Coach, Tournament, TimeSlotItem, SportType, ShopProduct } from '../../types/rally';
 import { MOCK_CLUBS, MOCK_TOURNAMENTS } from '../../data/mockRallyData';
 
 interface RallyHomePageProps {
@@ -15,6 +16,10 @@ interface RallyHomePageProps {
   onNavigateToCoaches: (filter?: { sport?: SportType; level?: string }) => void;
   onNavigateToTournaments: (filter?: { sport?: SportType; level?: string }) => void;
   onNavigateToSponsors: () => void;
+  onNavigateToShop?: () => void;
+  onSelectProduct?: (product: ShopProduct) => void;
+  onAddToCartProduct?: (product: ShopProduct) => void;
+  cartProductIds?: Set<string>;
 }
 
 export const RallyHomePage: React.FC<RallyHomePageProps> = ({
@@ -26,7 +31,11 @@ export const RallyHomePage: React.FC<RallyHomePageProps> = ({
   onNavigateToCourts,
   onNavigateToCoaches,
   onNavigateToTournaments,
-  onNavigateToSponsors
+  onNavigateToSponsors,
+  onNavigateToShop,
+  onSelectProduct,
+  onAddToCartProduct,
+  cartProductIds
 }) => {
   return (
     <div className="w-full flex flex-col">
@@ -51,7 +60,15 @@ export const RallyHomePage: React.FC<RallyHomePageProps> = ({
         fallbackClubs={MOCK_CLUBS}
       />
 
-      {/* 3. Featured Tournament & Commercial Partnership Side-by-Side */}
+      {/* 3. Specialized Equipment Shop Showcase (Premier Rackets & Balls) */}
+      <ModernShopShowcase
+        onSelectProduct={onSelectProduct}
+        onAddToCart={onAddToCartProduct}
+        onViewAllProducts={() => onNavigateToShop?.()}
+        cartProductIds={cartProductIds}
+      />
+
+      {/* 4. Featured Tournament & Commercial Partnership Side-by-Side */}
       <ModernFeaturedBanners
         onSelectTournament={onSelectTournament}
         onNavigateToTournaments={() => onNavigateToTournaments()}
