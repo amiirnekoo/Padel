@@ -15,17 +15,17 @@ export const ModernRallyHero: React.FC<ModernRallyHeroProps> = ({
 }) => {
   return (
     <section className="relative w-full min-h-[580px] lg:min-h-[640px] pt-28 pb-16 md:pt-36 md:pb-20 overflow-hidden flex flex-col justify-center items-center text-center" dir="rtl">
-      {/* Background Court Photo with Controlled Deep Mineral Teal Overlay */}
+      {/* Background Realistic Court Photo with Balanced Cinematic Overlay */}
       <div className="absolute inset-0 z-0">
         <img
-          src="/images/rally_hero_clean.jpg"
+          src="/images/rally_hero_real.jpg"
           alt="زمین پدل رالی"
           className="w-full h-full object-cover object-center"
           loading="eager"
         />
-        {/* Iconic Padel Court Blue Tonal Overlays (Immersive padel court feel) */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0B2238]/90 via-[#0B355E]/80 to-[#091B2F]/95" />
-        <div className="absolute inset-0 bg-gradient-to-tr from-[#0E3D38]/30 via-transparent to-[#0284C7]/20" />
+        {/* Subtle cinematic gradient so text is crystal clear while the real court shines through */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0B2238]/85 via-[#0B2238]/45 to-[#0B2238]/90" />
+        <div className="absolute inset-0 bg-black/20" />
       </div>
 
       {/* Electric Lime Ball Trajectory Line (مسیر حرکت توپ) as Brand Signature */}

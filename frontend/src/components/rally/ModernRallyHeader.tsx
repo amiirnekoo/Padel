@@ -3,14 +3,15 @@ import { Menu, X, ArrowLeft, Shield, ShoppingBag } from 'lucide-react';
 import { RallyLogo } from './RallyLogo';
 import { UserSession } from '../AuthModal';
 
-export type ModernNavTab = 'courts' | 'coaches' | 'tournaments' | 'shop' | 'partners' | 'home';
+export type ModernNavTab = 'courts' | 'coaches' | 'tournaments' | 'shop' | 'home';
 
 interface ModernRallyHeaderProps {
   activeTab: ModernNavTab;
   onSelectTab: (tab: ModernNavTab) => void;
   userSession: UserSession | null;
   onOpenAuth: () => void;
-  onOpenAdmin: () => void;
+  onOpenPortal?: () => void;
+  onOpenAdmin?: () => void;
   cartItemsCount?: number;
   onOpenCart?: () => void;
 }
@@ -20,7 +21,7 @@ export const ModernRallyHeader: React.FC<ModernRallyHeaderProps> = ({
   onSelectTab,
   userSession,
   onOpenAuth,
-  onOpenAdmin,
+  onOpenPortal,
   cartItemsCount = 0,
   onOpenCart
 }) => {
@@ -35,15 +36,12 @@ export const ModernRallyHeader: React.FC<ModernRallyHeaderProps> = ({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const allNavItems = [
+  const navItems = [
     { id: 'courts' as ModernNavTab, label: 'زمین‌ها' },
     { id: 'coaches' as ModernNavTab, label: 'مربیان' },
     { id: 'tournaments' as ModernNavTab, label: 'مسابقات' },
-    { id: 'shop' as ModernNavTab, label: 'فروشگاه' },
-    { id: 'partners' as ModernNavTab, label: 'برای باشگاه‌ها' }
+    { id: 'shop' as ModernNavTab, label: 'فروشگاه' }
   ];
-
-  const centerNavItems = allNavItems.slice(0, 4);
 
   return (
     <header
@@ -69,7 +67,7 @@ export const ModernRallyHeader: React.FC<ModernRallyHeaderProps> = ({
 
         {/* Center: Desktop Navigation (Courts, Coaches, Tournaments, Shop) */}
         <nav className="hidden md:flex items-center gap-6 lg:gap-9">
-          {centerNavItems.map((item) => {
+          {navItems.map((item) => {
             const isActive = activeTab === item.id;
             return (
               <button
@@ -88,20 +86,8 @@ export const ModernRallyHeader: React.FC<ModernRallyHeaderProps> = ({
           })}
         </nav>
 
-        {/* Left: Actions (For Clubs, Cart, Login, Admin) */}
+        {/* Left: Actions (Cart, Portal / Login) */}
         <div className="flex items-center gap-2.5 sm:gap-3">
-          {/* For Clubs Action Link */}
-          <button
-            onClick={() => onSelectTab('partners')}
-            className={`hidden md:inline-flex text-xs sm:text-sm font-bold transition-colors cursor-pointer px-3 py-1.5 rounded-lg ${
-              activeTab === 'partners'
-                ? 'text-[#D7ED68] bg-white/10'
-                : 'text-slate-200 hover:text-white hover:bg-white/5'
-            }`}
-          >
-            برای باشگاه‌ها
-          </button>
-
           {/* Cart Button with Counter */}
           {onOpenCart && (
             <button
@@ -120,24 +106,15 @@ export const ModernRallyHeader: React.FC<ModernRallyHeaderProps> = ({
             </button>
           )}
 
-          {/* Admin shortcut button */}
-          <button
-            onClick={onOpenAdmin}
-            className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/40 hover:bg-black/60 text-slate-300 hover:text-white border border-white/10 text-xs font-semibold transition-all cursor-pointer"
-            title="ورود به پنل مدیریت عملیاتی"
-          >
-            <Shield className="w-3.5 h-3.5 text-[#D7ED68]" />
-            <span>مدیریت</span>
-          </button>
-
-          {/* User / Login Button */}
+          {/* User / Portal Button */}
           {userSession ? (
             <button
-              onClick={onOpenAuth}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white border border-white/20 text-xs sm:text-sm font-bold transition-all cursor-pointer"
+              onClick={onOpenPortal || onOpenAuth}
+              className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white border border-white/20 text-xs sm:text-sm font-bold transition-all cursor-pointer"
+              title="ورود به پنل کاربری اختصاصی"
             >
               <span className="w-2 h-2 rounded-full bg-[#D7ED68]" />
-              <span className="truncate max-w-[120px]">{userSession.fullName || 'حساب کاربری'}</span>
+              <span className="truncate max-w-[120px]">{userSession.fullName || 'پنل کاربری'}</span>
             </button>
           ) : (
             <button
@@ -162,7 +139,7 @@ export const ModernRallyHeader: React.FC<ModernRallyHeaderProps> = ({
       {/* Mobile Menu Dropdown */}
       {isMobileMenuOpen && (
         <div className="md:hidden bg-[#0B2238] border-b border-[#0C3E6E] px-4 py-4 space-y-2">
-          {allNavItems.map((item) => (
+          {navItems.map((item) => (
             <button
               key={item.id}
               onClick={() => {
@@ -179,17 +156,29 @@ export const ModernRallyHeader: React.FC<ModernRallyHeaderProps> = ({
               <ArrowLeft className="w-4 h-4 opacity-70" />
             </button>
           ))}
-          <div className="pt-2 border-t border-white/10 flex items-center justify-between gap-2">
-            <button
-              onClick={() => {
-                onOpenAdmin();
-                setIsMobileMenuOpen(false);
-              }}
-              className="w-full py-2.5 px-3 rounded-xl bg-black/40 text-xs font-bold text-slate-300 flex items-center justify-center gap-2 border border-white/10"
-            >
-              <Shield className="w-4 h-4 text-[#D7ED68]" />
-              <span>پنل مدیریت رالی</span>
-            </button>
+          <div className="pt-2 border-t border-white/10">
+            {userSession ? (
+              <button
+                onClick={() => {
+                  if (onOpenPortal) onOpenPortal();
+                  setIsMobileMenuOpen(false);
+                }}
+                className="w-full py-2.5 px-3 rounded-xl bg-white/10 text-xs font-bold text-white flex items-center justify-center gap-2 border border-white/10"
+              >
+                <span className="w-2 h-2 rounded-full bg-[#D7ED68]" />
+                <span>ورود به پنل کاربری ({userSession.fullName})</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  onOpenAuth();
+                  setIsMobileMenuOpen(false);
+                }}
+                className="w-full py-2.5 px-3 rounded-xl bg-[#D7ED68] text-xs font-black text-[#172320] flex items-center justify-center gap-2"
+              >
+                <span>ورود / عضویت در رالی</span>
+              </button>
+            )}
           </div>
         </div>
       )}

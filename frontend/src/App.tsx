@@ -10,33 +10,32 @@ import { RallyMatchmakingPage } from './pages/rally/RallyMatchmakingPage';
 import { RallyCoachesPage } from './pages/rally/RallyCoachesPage';
 import { RallyTournamentsPage } from './pages/rally/RallyTournamentsPage';
 import { RallyShopPage } from './pages/rally/RallyShopPage';
-import { RallyPartnerHubPage } from './pages/rally/RallyPartnerHubPage';
-import { RallySponsorsPage } from './pages/rally/RallySponsorsPage';
 import { AppModalsContainer } from './components/rally/AppModalsContainer';
-import { ScenarioTesterBar } from './components/rally/ScenarioTesterBar';
 import { UserSession } from './components/AuthModal';
 import { CourtClub, Coach, Tournament, TimeSlotItem, SportType, ShopProduct, CartItem, ShopOrderReceipt } from './types/rally';
-import { MOCK_CLUBS, MOCK_COACHES, MOCK_TOURNAMENTS } from './data/mockRallyData';
 import { MOCK_SHOP_PRODUCTS } from './data/mockRallyShopData';
 import { AdminPortalPage } from './pages/rally/admin/AdminPortalPage';
+import { UnifiedPortalPage } from './pages/rally/portal/UnifiedPortalPage';
 import { rallyApi } from './services/rallyApi';
 
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<RallyPageTab>('home');
-  const [selectedCity, setSelectedCity] = useState('تهران');
+  const [selectedCity] = useState('تهران');
   const [walletBalance, setWalletBalance] = useState<number>(35000000);
   const [isWalletOpen, setIsWalletOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isAdminOpen, setIsAdminOpen] = useState(() => window.location.pathname.startsWith('/admin'));
+  const [isPortalOpen, setIsPortalOpen] = useState(() => window.location.pathname.startsWith('/portal'));
+
   const [userSession, setUserSession] = useState<UserSession | null>(() => {
     try {
       const saved = localStorage.getItem('padel_auth');
-      return saved ? JSON.parse(saved) : { userId: 'usr-1', fullName: 'امیر نکوزاده', phoneNumber: '۰۹۱۲۳۴۵۶۷۸۹', role: 'PLAYER' };
+      return saved ? JSON.parse(saved) : { userId: 'usr-1', fullName: 'امیر نکوزاده', phoneNumber: '۰۹۱۲۳۴۵۶۷۸۹', role: 'PLAYER', token: 'mock-jwt-token-2026' };
     } catch {
       return null;
     }
   });
 
-  // Modals & Shop State
   const [selectedClub, setSelectedClub] = useState<CourtClub | null>(null);
   const [bookingSlot, setBookingSlot] = useState<{ club: CourtClub; slot: TimeSlotItem } | null>(null);
   const [selectedCoach, setSelectedCoach] = useState<Coach | null>(null);
@@ -55,7 +54,23 @@ export const App: React.FC = () => {
 
   const [courtFilterParam, setCourtFilterParam] = useState<{ sport?: SportType; area?: string }>({});
   const [coachFilterParam, setCoachFilterParam] = useState<{ sport?: SportType; level?: string }>({});
-  const [simulateState, setSimulateState] = useState<'NORMAL' | 'SLOT_LOST' | 'PAYMENT_PENDING'>('NORMAL');
+  const [productsList, setProductsList] = useState<ShopProduct[]>(() => {
+    try {
+      const saved = localStorage.getItem('rally_shop_products');
+      return saved ? JSON.parse(saved) : MOCK_SHOP_PRODUCTS;
+    } catch {
+      return MOCK_SHOP_PRODUCTS;
+    }
+  });
+
+  useEffect(() => {
+    const handlePopState = () => {
+      setIsAdminOpen(window.location.pathname.startsWith('/admin'));
+      setIsPortalOpen(window.location.pathname.startsWith('/portal'));
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   useEffect(() => {
     try { localStorage.setItem('rally_cart', JSON.stringify(cartItems)); } catch {}
@@ -68,16 +83,6 @@ export const App: React.FC = () => {
       });
     }
   }, [userSession?.userId]);
-
-  const [isAdminOpen, setIsAdminOpen] = useState(false);
-  const [productsList, setProductsList] = useState<ShopProduct[]>(() => {
-    try {
-      const saved = localStorage.getItem('rally_shop_products');
-      return saved ? JSON.parse(saved) : MOCK_SHOP_PRODUCTS;
-    } catch {
-      return MOCK_SHOP_PRODUCTS;
-    }
-  });
 
   const handleUpdateProduct = (productId: string, updates: Partial<ShopProduct>) => {
     setProductsList((prev) => {
@@ -111,14 +116,35 @@ export const App: React.FC = () => {
 
   if (isAdminOpen) {
     return (
-      <div className="min-h-screen bg-slate-950 font-sans" dir="rtl">
-        <AdminPortalPage
-          products={productsList}
-          onUpdateProduct={handleUpdateProduct}
-          onAddProduct={handleAddProduct}
-          onExitAdmin={() => setIsAdminOpen(false)}
-        />
-      </div>
+      <AdminPortalPage
+        products={productsList}
+        onUpdateProduct={handleUpdateProduct}
+        onAddProduct={handleAddProduct}
+        onExitAdmin={() => {
+          window.history.pushState({}, '', '/');
+          setIsAdminOpen(false);
+        }}
+      />
+    );
+  }
+
+  if (isPortalOpen) {
+    return (
+      <UnifiedPortalPage
+        userSession={userSession || { userId: 'usr-1', fullName: 'کاربر رالی', phoneNumber: '۰۹۱۲۳۴۵۶۷۸۹', role: 'PLAYER', token: 'mock-jwt-token-2026' }}
+        walletBalance={walletBalance}
+        onOpenWallet={() => setIsWalletOpen(true)}
+        onExitPortal={() => {
+          window.history.pushState({}, '', '/');
+          setIsPortalOpen(false);
+        }}
+        onLogout={() => {
+          localStorage.removeItem('padel_auth');
+          setUserSession(null);
+          window.history.pushState({}, '', '/');
+          setIsPortalOpen(false);
+        }}
+      />
     );
   }
 
@@ -129,7 +155,10 @@ export const App: React.FC = () => {
         onSelectTab={(tab) => setActiveTab(tab as RallyPageTab)}
         userSession={userSession}
         onOpenAuth={() => setIsAuthOpen(true)}
-        onOpenAdmin={() => setIsAdminOpen(true)}
+        onOpenPortal={() => {
+          window.history.pushState({}, '', '/portal');
+          setIsPortalOpen(true);
+        }}
         cartItemsCount={cartItems.reduce((acc, i) => acc + i.quantity, 0)}
         onOpenCart={() => setIsCartOpen(true)}
       />
@@ -154,7 +183,7 @@ export const App: React.FC = () => {
                 onNavigateToCourts={(f) => { if (f) setCourtFilterParam(f); setActiveTab('courts'); }}
                 onNavigateToCoaches={(f) => { if (f) setCoachFilterParam(f); setActiveTab('coaches'); }}
                 onNavigateToTournaments={() => setActiveTab('tournaments')}
-                onNavigateToSponsors={() => setActiveTab('sponsors')}
+                onNavigateToSponsors={() => {}}
                 onNavigateToShop={() => setActiveTab('shop')}
                 onSelectProduct={setSelectedProduct}
                 onAddToCartProduct={handleAddToCart}
@@ -162,26 +191,22 @@ export const App: React.FC = () => {
               />
             )}
             {activeTab === 'courts' && (
-              <div className="max-w-7xl 2xl:max-w-[1600px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-6">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 <RallyCourtsPage initialFilters={courtFilterParam} onSelectClub={setSelectedClub} onSelectDirectSlot={(club, slot) => setBookingSlot({ club, slot })} />
               </div>
             )}
             {activeTab === 'matchmaking' && (
-              <div className="max-w-7xl 2xl:max-w-[1600px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-6">
-                <RallyMatchmakingPage
-                  userId={userSession?.userId || 'usr-1'}
-                  userName={userSession?.fullName || 'کاربر رالی'}
-                  walletBalance={walletBalance}
-                />
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <RallyMatchmakingPage userId={userSession?.userId || 'usr-1'} userName={userSession?.fullName || 'کاربر رالی'} walletBalance={walletBalance} />
               </div>
             )}
             {activeTab === 'coaches' && (
-              <div className="max-w-7xl 2xl:max-w-[1600px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-6">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 <RallyCoachesPage initialFilters={coachFilterParam} onSelectCoach={setSelectedCoach} />
               </div>
             )}
             {activeTab === 'tournaments' && (
-              <div className="max-w-7xl 2xl:max-w-[1600px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-6">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 <RallyTournamentsPage onSelectTournament={setSelectedTournament} />
               </div>
             )}
@@ -194,28 +219,17 @@ export const App: React.FC = () => {
                 onOpenCart={() => setIsCartOpen(true)}
               />
             )}
-            {activeTab === 'partners' && (
-              <div className="max-w-7xl 2xl:max-w-[1600px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-6">
-                <RallyPartnerHubPage />
-              </div>
-            )}
-            {activeTab === 'sponsors' && (
-              <div className="max-w-7xl 2xl:max-w-[1600px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-6">
-                <RallySponsorsPage />
-              </div>
-            )}
           </motion.div>
         </AnimatePresence>
       </main>
 
-      {/* Interactive Modals Container */}
       <AppModalsContainer
         selectedClub={selectedClub}
         onCloseClub={() => setSelectedClub(null)}
         onProceedBooking={(club, slot) => { setSelectedClub(null); setBookingSlot({ club, slot }); }}
         bookingSlot={bookingSlot}
         walletBalance={walletBalance}
-        simulateState={simulateState}
+        simulateState="NORMAL"
         onCloseBooking={() => setBookingSlot(null)}
         selectedCoach={selectedCoach}
         onCloseCoach={() => setSelectedCoach(null)}
@@ -247,17 +261,6 @@ export const App: React.FC = () => {
         onCloseAuth={() => setIsAuthOpen(false)}
         onLoginSuccess={setUserSession}
         onLogout={() => { localStorage.removeItem('padel_auth'); setUserSession(null); }}
-      />
-      <ScenarioTesterBar
-        onRunScenario1={() => {
-          const club = MOCK_CLUBS[0];
-          const slot = club.slots.find((s) => s.startTime === '۱۸:۰۰') || club.slots[4];
-          setBookingSlot({ club, slot });
-        }}
-        onRunScenario2={() => setSelectedCoach(MOCK_COACHES[0])}
-        onRunScenario3={() => setSelectedTournament(MOCK_TOURNAMENTS[0])}
-        currentSimulateState={simulateState}
-        onSetSimulateState={setSimulateState}
       />
       <MobileBottomNav
         currentTab={activeTab}
