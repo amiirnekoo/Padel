@@ -30,7 +30,7 @@ export const App: React.FC = () => {
   const [userSession, setUserSession] = useState<UserSession | null>(() => {
     try {
       const saved = localStorage.getItem('padel_auth');
-      return saved ? JSON.parse(saved) : { userId: 'usr-1', fullName: 'امیر نکوزاده', phoneNumber: '۰۹۱۲۳۴۵۶۷۸۹', role: 'PLAYER', token: 'mock-jwt-token-2026' };
+      return saved ? JSON.parse(saved) : null;
     } catch {
       return null;
     }
@@ -261,6 +261,10 @@ export const App: React.FC = () => {
         onCloseAuth={() => setIsAuthOpen(false)}
         onLoginSuccess={setUserSession}
         onLogout={() => { localStorage.removeItem('padel_auth'); setUserSession(null); }}
+        onNavigateToPortal={(view) => {
+          setIsAuthOpen(false);
+          setIsPortalOpen(true);
+        }}
       />
       <MobileBottomNav
         currentTab={activeTab}

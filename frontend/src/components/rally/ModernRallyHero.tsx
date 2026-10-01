@@ -18,14 +18,14 @@ export const ModernRallyHero: React.FC<ModernRallyHeroProps> = ({
       {/* Background Realistic Court Photo with Balanced Cinematic Overlay */}
       <div className="absolute inset-0 z-0">
         <img
-          src="/images/rally_hero_real.jpg"
-          alt="زمین پدل رالی"
+          src="/images/real_padel_hero.jpg"
+          alt="زمین مسابقه پدل رالی"
           className="w-full h-full object-cover object-center"
           loading="eager"
         />
         {/* Subtle cinematic gradient so text is crystal clear while the real court shines through */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0B2238]/85 via-[#0B2238]/45 to-[#0B2238]/90" />
-        <div className="absolute inset-0 bg-black/20" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0B2238]/85 via-[#0B2238]/50 to-[#0B2238]/90" />
+        <div className="absolute inset-0 bg-black/25" />
       </div>
 
       {/* Electric Lime Ball Trajectory Line (مسیر حرکت توپ) as Brand Signature */}

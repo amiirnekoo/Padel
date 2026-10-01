@@ -209,3 +209,39 @@ input, select {
   }
 }
 
+/* ============================================================
+   Sport Differentiation (Subtle, Classy Padel Blue & Tennis Green)
+   ============================================================ */
+.sport-theme-padel {
+  border-color: rgba(56, 189, 248, 0.22);
+  background-color: #0f172a;
+  transition: all 0.25s ease;
+}
+.sport-theme-padel:hover {
+  border-color: rgba(56, 189, 248, 0.45);
+  box-shadow: 0 8px 24px -4px rgba(14, 165, 233, 0.14);
+}
+
+.sport-theme-tennis {
+  border-color: rgba(52, 211, 153, 0.22);
+  background-color: #0d1e1c;
+  transition: all 0.25s ease;
+}
+.sport-theme-tennis:hover {
+  border-color: rgba(52, 211, 153, 0.45);
+  box-shadow: 0 8px 24px -4px rgba(16, 185, 129, 0.14);
+}
+
+.badge-sport-padel {
+  background: rgba(14, 116, 144, 0.22);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+}
+
+.badge-sport-tennis {
+  background: rgba(16, 185, 129, 0.22);
+  color: #34d399;
+  border: 1px solid rgba(52, 211, 153, 0.35);
+}
+
+

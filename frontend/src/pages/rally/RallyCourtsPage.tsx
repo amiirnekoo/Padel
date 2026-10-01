@@ -18,12 +18,25 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
   initialFilters
 }) => {
   const [selectedCatId, setSelectedCatId] = useState<string>('ALL');
+  const [selectedCity, setSelectedCity] = useState<string>('تهران');
   const [sportFilter, setSportFilter] = useState<SportType | 'ALL'>(initialFilters?.sport || 'ALL');
   const [areaFilter, setAreaFilter] = useState<string>(initialFilters?.area || 'ALL');
   const [typeFilter, setTypeFilter] = useState<'ALL' | 'INDOOR' | 'OUTDOOR'>('ALL');
   const [selectedDayOffset, setSelectedDayOffset] = useState<number>(0); // 0 = today, 1 = tomorrow, 2 = day after
   const [isLoading, setIsLoading] = useState(false);
   const [clubsData, setClubsData] = useState<CourtClub[]>(MOCK_CLUBS);
+
+  const CITIES_LIST = [
+    { id: 'تهران', label: 'تهران' },
+    { id: 'مشهد', label: 'مشهد' },
+    { id: 'اصفهان', label: 'اصفهان' },
+    { id: 'شیراز', label: 'شیراز' },
+    { id: 'ساری', label: 'ساری' },
+    { id: 'کیش', label: 'کیش' },
+    { id: 'تبریز', label: 'تبریز' },
+    { id: 'نوشهر', label: 'نوشهر' },
+    { id: 'ALL', label: 'همه شهرها' },
+  ];
 
   // Compute selected ISO date string
   const targetDateStr = useMemo(() => {
@@ -99,6 +112,7 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
 
   const filteredClubs = useMemo(() => {
     return clubsData.filter((club) => {
+      if (selectedCity !== 'ALL' && club.city !== selectedCity) return false;
       if (sportFilter !== 'ALL' && club.sport !== sportFilter) return false;
       if (typeFilter !== 'ALL' && club.courtType !== typeFilter) return false;
       if (areaFilter !== 'ALL') {
@@ -106,7 +120,7 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
       }
       return true;
     });
-  }, [clubsData, sportFilter, typeFilter, areaFilter]);
+  }, [clubsData, selectedCity, sportFilter, typeFilter, areaFilter]);
 
   const DATE_TABS = [
     { offset: 0, label: 'امروز', sublabel: 'سه‌شنبه' },
@@ -149,7 +163,31 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
       {/* 3. Apple Horizontal Icon Shelf */}
       <AppleCategoryShelf selectedId={selectedCatId} onSelect={handleCategorySelect} />
 
-      {/* 4. Apple Sub-Navigation & Date Selector */}
+      {/* 4. City Filter Pills Bar */}
+      <div className="bg-white rounded-2xl p-3 border border-black/[0.05] shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex items-center gap-2 overflow-x-auto no-scrollbar">
+        <div className="flex items-center gap-1 text-xs font-black text-gray-500 shrink-0 ml-2">
+          <MapPin className="w-3.5 h-3.5 text-rally-primary" />
+          <span>شهر:</span>
+        </div>
+        {CITIES_LIST.map((c) => {
+          const isActive = selectedCity === c.id;
+          return (
+            <button
+              key={c.id}
+              onClick={() => setSelectedCity(c.id)}
+              className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer ${
+                isActive
+                  ? 'bg-rally-primary text-white shadow-xs'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              {c.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* 5. Apple Sub-Navigation & Date Selector */}
       <div className="bg-white rounded-3xl p-4 sm:p-5 border border-black/[0.05] shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex flex-col md:flex-row md:items-center justify-between gap-4">
         
         {/* Date Tabs (Apple Pill Tabs) */}
@@ -183,13 +221,13 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
                 sportFilter === s ? 'bg-white text-rally-primary shadow-xs' : 'text-gray-600'
               }`}
             >
-              {s === 'ALL' ? 'همه ورزش‌ها' : s === 'PADEL' ? 'پدل' : 'تنیس'}
+              {s === 'ALL' ? 'همه ورزش‌ها' : s === 'PADEL' ? 'پدل' : 'تنیس (خاکی)'}
             </button>
           ))}
         </div>
       </div>
 
-      {/* 5. Section Header */}
+      {/* 6. Section Header */}
       <div className="flex items-baseline justify-between px-1">
         <div>
           <h2 className="text-2xl sm:text-3xl font-black text-[#1d1d1f] tracking-tight">
@@ -201,7 +239,7 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
         </span>
       </div>
 
-      {/* 6. Grid of Apple Style Court Cards */}
+      {/* 7. Grid of Apple Style Court Cards */}
       {filteredClubs.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 sm:gap-7">
           {filteredClubs.map((club) => (
@@ -220,18 +258,19 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
             سانس آزادی با این فیلترها یافت نشد
           </h3>
           <p className="text-xs text-[#86868b] leading-relaxed">
-            می‌توانید روز دیگری را انتخاب کنید یا فیلتر دسته‌بندی را به «همه زمین‌ها» بازگردانید.
+            می‌توانید شهر دیگری را انتخاب کنید یا فیلتر دسته‌بندی را به «همه زمین‌ها» بازگردانید.
           </p>
           <button
             onClick={() => {
               setSelectedCatId('ALL');
+              setSelectedCity('ALL');
               setSportFilter('ALL');
               setTypeFilter('ALL');
               setAreaFilter('ALL');
             }}
-            className="px-6 py-2.5 rounded-full bg-rally-primary text-white text-xs font-bold shadow-xs hover:bg-rally-primary-light transition-all"
+            className="px-6 py-2.5 rounded-full bg-rally-primary text-white text-xs font-bold shadow-xs hover:bg-rally-primary-light transition-all cursor-pointer"
           >
-            مشاهده همه کورت‌ها
+            مشاهده همه کورت‌ها در سراسر کشور
           </button>
         </div>
       )}

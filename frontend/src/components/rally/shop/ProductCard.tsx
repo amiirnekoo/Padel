@@ -25,10 +25,16 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
     setTimeout(() => setJustAdded(false), 1500);
   };
 
+  const isPadel = product.sport === 'PADEL';
+
   return (
     <div
       onClick={() => onSelectProduct(product)}
-      className="group bg-white rounded-[24px] border border-black/[0.05] overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_10px_28px_rgba(0,0,0,0.07)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between cursor-pointer"
+      className={`group bg-white rounded-[24px] border overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between cursor-pointer ${
+        isPadel
+          ? 'border-sky-100 hover:border-sky-300 hover:shadow-[0_10px_28px_rgba(14,165,233,0.08)]'
+          : 'border-emerald-100 hover:border-emerald-300 hover:shadow-[0_10px_28px_rgba(16,185,129,0.08)]'
+      }`}
     >
       <div>
         {/* Image Container with Badges */}
@@ -51,8 +57,8 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
 
           {/* Top Badges */}
           <div className="absolute top-3 right-3 flex flex-col gap-1.5 z-10">
-            {product.year === 2026 && (
-              <span className="bg-amber-500 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm">
+            {Boolean(product.year && product.year >= 2026) && (
+              <span className="bg-amber-400 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm">
                 ۲۰۲۶
               </span>
             )}
@@ -61,8 +67,12 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
                 ٪{product.discount_percent} تخفیف
               </span>
             )}
-            <span className="bg-slate-900 text-white text-[10px] font-bold px-2 py-0.5 rounded-full border border-slate-700">
-              {product.sport === 'PADEL' ? 'پدل' : 'تنیس'}
+            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border shadow-xs ${
+              isPadel
+                ? 'bg-sky-950/85 text-sky-200 border-sky-500/40'
+                : 'bg-emerald-950/85 text-emerald-200 border-emerald-500/40'
+            }`}>
+              {isPadel ? '🎾 پدل' : '🏸 تنیس'}
             </span>
           </div>
 
@@ -138,8 +148,10 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
           onClick={handleAdd}
           className={`w-full py-2.5 px-4 rounded-full font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs active:scale-95 ${
             justAdded || isInCart
-              ? 'bg-sky-600 text-white hover:bg-sky-700'
-              : 'bg-rally-primary text-white hover:bg-rally-primary-dark'
+              ? 'bg-slate-700 text-white hover:bg-slate-800'
+              : isPadel
+              ? 'bg-[#0B4278] text-white hover:bg-[#0C4F8D]'
+              : 'bg-[#135d54] text-white hover:bg-[#0e4841]'
           }`}
         >
           {justAdded ? (

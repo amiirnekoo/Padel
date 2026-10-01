@@ -24,8 +24,7 @@ export const RallyShopPage: React.FC<RallyShopPageProps> = ({
   const [selectedBrand, setSelectedBrand] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'POPULAR' | 'PRICE_ASC' | 'PRICE_DESC' | 'DISCOUNT'>('POPULAR');
-
-  const BRANDS = ['ALL', 'Bullpadel', 'Babolat', 'Nox', 'Head', 'Wilson', 'Asics', 'Yonex'];
+  const BRANDS = ['ALL', 'Head', 'Nox'];
 
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {

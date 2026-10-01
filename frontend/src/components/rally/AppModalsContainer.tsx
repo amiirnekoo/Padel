@@ -43,6 +43,7 @@ interface AppModalsContainerProps {
   onCloseAuth: () => void;
   onLoginSuccess: (session: UserSession) => void;
   onLogout: () => void;
+  onNavigateToPortal?: (view?: 'PLAYER' | 'COACH' | 'CLUB_MANAGER' | 'ADMIN') => void;
 }
 
 export const AppModalsContainer: React.FC<AppModalsContainerProps> = ({
@@ -77,7 +78,8 @@ export const AppModalsContainer: React.FC<AppModalsContainerProps> = ({
   userSession,
   onCloseAuth,
   onLoginSuccess,
-  onLogout
+  onLogout,
+  onNavigateToPortal
 }) => {
   return (
     <>
@@ -145,6 +147,7 @@ export const AppModalsContainer: React.FC<AppModalsContainerProps> = ({
         onClose={onCloseAuth}
         onLoginSuccess={onLoginSuccess}
         onLogout={onLogout}
+        onNavigateToPortal={onNavigateToPortal}
       />
     </>
   );
