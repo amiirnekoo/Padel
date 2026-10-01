@@ -68,7 +68,7 @@ def deploy():
     commands = [
         ("بررسی مسیر پروژه", "cd /root/Padel && pwd"),
         ("دریافت آخرین تغییرات از گیت‌هاب (Git Pull)", "cd /root/Padel && git fetch origin && git pull origin 001-court-booking-engine"),
-        ("اعمال پیکربندی بهینه‌سازی همزمانی و بیلد کانتینرها", "cd /root/Padel && docker compose up -d --build"),
+        ("اعمال پیکربندی بهینه‌سازی همزمانی و بیلد کانتینرها", "cd /root/Padel && docker compose up -d --build && docker restart rally_gateway"),
         ("بررسی وضعیت کانتینرهای فعال", "docker compose -f /root/Padel/docker-compose.yml ps"),
     ]
 
