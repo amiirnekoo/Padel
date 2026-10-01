@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Plus, PackagePlus, Check } from 'lucide-react';
 import { ShopProduct, ProductCategory, SportType } from '../../../types/rally';
+import { rallyApi } from '../../../services/rallyApi';
 
 interface AdminNewProductModalProps {
   isOpen: boolean;
@@ -32,7 +33,7 @@ export const AdminNewProductModal: React.FC<AdminNewProductModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!nameFa.trim()) return;
 
@@ -70,6 +71,26 @@ export const AdminNewProductModal: React.FC<AdminNewProductModalProps> = ({
       reviews_count: 1,
       description: description || `محصول جدید کلکسیون سال ۲۰۲۶ برند معتبر ${brand} با بالاترین کیفیت متریال و استاندارد مسابقاتی.`
     };
+
+    try {
+      await rallyApi.createAdminProduct({
+        title_fa: newProd.name_fa,
+        title_en: newProd.name_en,
+        category_id: category === 'PADEL_RACKET' ? 'padel-rackets' : 'balls',
+        brand: newProd.brand,
+        model_year: 2026,
+        sport: newProd.sport,
+        level: newProd.level,
+        original_price: newProd.original_price,
+        discount_percent: newProd.discount_percent,
+        price: newProd.price,
+        stock: newProd.stock,
+        is_in_stock: newProd.stock > 0,
+        primary_image: newProd.image_url,
+        description_fa: newProd.description,
+        gallery_images: newProd.images
+      });
+    } catch {}
 
     onAddProduct(newProd);
     onClose();

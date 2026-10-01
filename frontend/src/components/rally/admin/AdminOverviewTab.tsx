@@ -8,7 +8,7 @@ interface AdminOverviewTabProps {
   openIncidentsCount: number;
   systemStats: any;
   onOpenSOSModal: () => void;
-  onNavigateToTab: (tab: 'inventory' | 'matches' | 'incidents') => void;
+  onNavigateToTab: (tab: string) => void;
 }
 
 export const AdminOverviewTab: React.FC<AdminOverviewTabProps> = ({

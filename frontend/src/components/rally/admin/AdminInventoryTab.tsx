@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Search, Plus, PackageCheck, AlertCircle, Edit2, Check, RefreshCw } from 'lucide-react';
 import { ShopProduct } from '../../../types/rally';
+import { rallyApi } from '../../../services/rallyApi';
 
 interface AdminInventoryTabProps {
   products: ShopProduct[];
@@ -34,6 +35,7 @@ export const AdminInventoryTab: React.FC<AdminInventoryTabProps> = ({
   const handleStockChange = (p: ShopProduct, delta: number) => {
     const newStock = Math.max(0, p.stock + delta);
     onUpdateProduct(p.id, { stock: newStock });
+    rallyApi.updateAdminProductStock(p.id, newStock).catch(() => {});
   };
 
   const handleStartEdit = (p: ShopProduct) => {
@@ -43,6 +45,7 @@ export const AdminInventoryTab: React.FC<AdminInventoryTabProps> = ({
 
   const handleSavePrice = (productId: string) => {
     onUpdateProduct(productId, { price: editPrice });
+    rallyApi.updateAdminProduct(productId, { price: editPrice }).catch(() => {});
     setEditingId(null);
   };
 

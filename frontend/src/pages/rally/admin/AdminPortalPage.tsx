@@ -1,9 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { LayoutDashboard, Calendar, Building2, UserCheck, DollarSign, Package, Zap, ShieldAlert, ArrowLeft, RefreshCw, LogOut } from 'lucide-react';
+import {
+  LayoutDashboard, Calendar, CalendarDays, Building2, UserCheck, DollarSign,
+  Package, ShoppingCart, Newspaper, Trophy, Image as ImageIcon, Users, Zap,
+  ShieldAlert, ArrowLeft, RefreshCw, LogOut
+} from 'lucide-react';
 import { ShopProduct, MatchmakingGameItem } from '../../../types/rally';
 import { rallyApi } from '../../../services/rallyApi';
 import { AdminOverviewTab } from '../../../components/rally/admin/AdminOverviewTab';
+import { AdminSchedulerTab } from '../../../components/rally/admin/AdminSchedulerTab';
 import { AdminInventoryTab } from '../../../components/rally/admin/AdminInventoryTab';
+import { AdminOrdersTab } from '../../../components/rally/admin/AdminOrdersTab';
+import { AdminContentTab } from '../../../components/rally/admin/AdminContentTab';
+import { AdminTournamentsTab } from '../../../components/rally/admin/AdminTournamentsTab';
+import { AdminMediaLibraryTab } from '../../../components/rally/admin/AdminMediaLibraryTab';
+import { AdminTeamTab } from '../../../components/rally/admin/AdminTeamTab';
 import { AdminMatchesMonitorTab } from '../../../components/rally/admin/AdminMatchesMonitorTab';
 import { AdminBookingsTab } from '../../../components/rally/admin/AdminBookingsTab';
 import { AdminClubsTab } from '../../../components/rally/admin/AdminClubsTab';
@@ -13,7 +23,21 @@ import { AdminIncidentModal } from '../../../components/rally/admin/AdminInciden
 import { AdminNewProductModal } from '../../../components/rally/admin/AdminNewProductModal';
 import { AdminLoginModal } from '../../../components/rally/admin/AdminLoginModal';
 
-export type AdminTab = 'overview' | 'bookings' | 'clubs' | 'coaches' | 'finances' | 'inventory' | 'matches' | 'incidents';
+export type AdminTab =
+  | 'overview'
+  | 'scheduler'
+  | 'inventory'
+  | 'orders'
+  | 'content'
+  | 'tournaments'
+  | 'media'
+  | 'team'
+  | 'bookings'
+  | 'clubs'
+  | 'coaches'
+  | 'finances'
+  | 'matches'
+  | 'incidents';
 
 interface AdminPortalPageProps {
   products: ShopProduct[];
@@ -84,11 +108,17 @@ export const AdminPortalPage: React.FC<AdminPortalPageProps> = ({
 
   const sidebarItems: { id: AdminTab; label: string; icon: any; count?: number; badgeColor?: string }[] = [
     { id: 'overview', label: 'داشبورد کلان', icon: LayoutDashboard },
-    { id: 'bookings', label: 'رزروها و سانس‌ها', icon: Calendar },
+    { id: 'scheduler', label: 'زمان‌بندی سانس‌ها', icon: CalendarDays },
+    { id: 'inventory', label: 'انبار و محصولات', icon: Package, count: products.length },
+    { id: 'orders', label: 'سفارشات فروشگاه', icon: ShoppingCart },
+    { id: 'content', label: 'محتوا و بنرها (CMS)', icon: Newspaper },
+    { id: 'tournaments', label: 'مسابقات و رنکینگ', icon: Trophy },
+    { id: 'media', label: 'کتابخانه رسانه (Upload)', icon: ImageIcon },
+    { id: 'team', label: 'تیم و دسترسی‌ها (RBAC)', icon: Users },
+    { id: 'bookings', label: 'گزارش رزروها', icon: Calendar },
     { id: 'clubs', label: 'باشگاه‌ها و کورت‌ها', icon: Building2 },
     { id: 'coaches', label: 'مربیان و تاییدیه‌ها', icon: UserCheck },
     { id: 'finances', label: 'تراکنش‌ها و تسویه', icon: DollarSign },
-    { id: 'inventory', label: 'انبار و کالاها', icon: Package, count: products.length },
     { id: 'matches', label: 'مانیتورینگ بازی‌ها', icon: Zap, count: matches.length },
     { id: 'incidents', label: 'گزارش‌های SOS', icon: ShieldAlert, count: openIncidentsCount, badgeColor: 'bg-red-500/20 text-red-300' }
   ];
@@ -96,20 +126,20 @@ export const AdminPortalPage: React.FC<AdminPortalPageProps> = ({
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans" dir="rtl">
       {/* Top Admin Header */}
-      <header className="bg-slate-900 border-b border-slate-800 px-4 sm:px-6 py-3 flex items-center justify-between sticky top-0 z-30">
+      <header className="bg-slate-900 border-b border-slate-800 px-4 sm:px-6 py-3 flex items-center justify-between sticky top-0 z-30 shadow-md">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-xl bg-rally-primary text-white flex items-center justify-center font-black text-sm">
             R
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-extrabold text-sm text-white">سامانه جامع مدیریت پلتفرم رالی (Admin Portal)</span>
+              <span className="font-extrabold text-sm text-white">سامانه جامع مدیریت خودکار رالی (Admin Portal)</span>
               <span className="bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1">
                 <UserCheck className="w-3 h-3" />
                 {adminUser?.full_name || 'ادمین ارشد'}
               </span>
             </div>
-            <span className="text-[10px] text-slate-400">کنترل رزروها، باشگاه‌ها، مربیان، انبار و امور مالی</span>
+            <span className="text-[10px] text-slate-400">کنترل کامل کالاها، قیمت‌ها، سفارشات، سانس‌ها، بنرها و کاربران بدون نیاز به کدنویسی</span>
           </div>
         </div>
 
@@ -182,13 +212,19 @@ export const AdminPortalPage: React.FC<AdminPortalPageProps> = ({
               onNavigateToTab={(t) => setActiveTab(t as AdminTab)}
             />
           )}
+          {activeTab === 'scheduler' && <AdminSchedulerTab />}
+          {activeTab === 'inventory' && (
+            <AdminInventoryTab products={products} onUpdateProduct={onUpdateProduct} onOpenNewProductModal={() => setIsNewProductOpen(true)} />
+          )}
+          {activeTab === 'orders' && <AdminOrdersTab />}
+          {activeTab === 'content' && <AdminContentTab />}
+          {activeTab === 'tournaments' && <AdminTournamentsTab />}
+          {activeTab === 'media' && <AdminMediaLibraryTab />}
+          {activeTab === 'team' && <AdminTeamTab />}
           {activeTab === 'bookings' && <AdminBookingsTab />}
           {activeTab === 'clubs' && <AdminClubsTab />}
           {activeTab === 'coaches' && <AdminCoachesTab />}
           {activeTab === 'finances' && <AdminFinancesTab />}
-          {activeTab === 'inventory' && (
-            <AdminInventoryTab products={products} onUpdateProduct={onUpdateProduct} onOpenNewProductModal={() => setIsNewProductOpen(true)} />
-          )}
           {activeTab === 'matches' && <AdminMatchesMonitorTab matches={matches} onRefresh={fetchAdminData} />}
           {activeTab === 'incidents' && (
             <div className="space-y-4">
