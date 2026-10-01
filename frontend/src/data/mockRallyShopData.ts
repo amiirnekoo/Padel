@@ -1,6 +1,9 @@
 import { ShopProduct } from '../types/rally';
+import productImagesManifest from './productImagesManifest.json';
 
-export const MOCK_SHOP_PRODUCTS: ShopProduct[] = [
+const MANIFEST = (productImagesManifest || {}) as Record<string, string[]>;
+
+const RAW_SHOP_PRODUCTS: ShopProduct[] = [
   {
     "id": "nox-at10-genius-18k-2026",
     "name_fa": "راکت پدل نوکس مدل AT10 Luxury Genius 18K Alum ۲۰۲۶ آگوستین تاپیا",
@@ -1037,3 +1040,16 @@ export const MOCK_SHOP_PRODUCTS: ShopProduct[] = [
     ]
   }
 ];
+
+export const MOCK_SHOP_PRODUCTS: ShopProduct[] = RAW_SHOP_PRODUCTS.map((p) => {
+  const customImages = MANIFEST[p.id];
+  if (customImages && customImages.length > 0) {
+    return {
+      ...p,
+      image_url: customImages[0],
+      images: customImages,
+    };
+  }
+  return p;
+});
+

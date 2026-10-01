@@ -12,6 +12,7 @@ import { RallyTournamentsPage } from './pages/rally/RallyTournamentsPage';
 import { RallyRankingsPage } from './pages/rally/RallyRankingsPage';
 import { RallyMagazinePage } from './pages/rally/RallyMagazinePage';
 import { RallyShopPage } from './pages/rally/RallyShopPage';
+import { RallyProductDetailPage } from './pages/rally/shop/RallyProductDetailPage';
 import { AppModalsContainer } from './components/rally/AppModalsContainer';
 import { UserSession } from './components/AuthModal';
 import { CourtClub, Coach, Tournament, TimeSlotItem, SportType, ShopProduct, CartItem, ShopOrderReceipt } from './types/rally';
@@ -154,137 +155,132 @@ export const App: React.FC = () => {
     <div className="min-h-screen flex flex-col bg-rally-light-bg text-rally-charcoal selection:bg-rally-accent selection:text-rally-charcoal font-sans">
       <ModernRallyHeader
         activeTab={activeTab as any}
-        onSelectTab={(tab) => setActiveTab(tab as RallyPageTab)}
+        onSelectTab={(tab) => { setSelectedProduct(null); setActiveTab(tab as RallyPageTab); }}
         userSession={userSession}
         onOpenAuth={() => setIsAuthOpen(true)}
-        onOpenPortal={() => {
-          window.history.pushState({}, '', '/portal');
-          setIsPortalOpen(true);
-        }}
+        onOpenPortal={() => { window.history.pushState({}, '', '/portal'); setIsPortalOpen(true); }}
         cartItemsCount={cartItems.reduce((acc, i) => acc + i.quantity, 0)}
         onOpenCart={() => setIsCartOpen(true)}
       />
 
-      <main className={`flex-1 pb-20 lg:pb-12 ${activeTab !== 'home' ? 'pt-20 sm:pt-24' : ''}`}>
+      <main className={`flex-1 pb-20 lg:pb-12 ${activeTab !== 'home' || selectedProduct ? 'pt-20 sm:pt-24' : ''}`}>
         <AnimatePresence mode="wait">
           <motion.div
-            key={activeTab}
+            key={selectedProduct ? `prod-${selectedProduct.id}` : activeTab}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.18, ease: 'easeOut' }}
             className="w-full"
           >
-            {activeTab === 'home' && (
-              <RallyHomePage
-                selectedCity={selectedCity}
-                onSelectClub={setSelectedClub}
-                onSelectDirectSlot={(club, slot) => setBookingSlot({ club, slot })}
-                onSelectCoach={setSelectedCoach}
-                onSelectTournament={setSelectedTournament}
-                onNavigateToCourts={(f) => { if (f) setCourtFilterParam(f); setActiveTab('courts'); }}
-                onNavigateToCoaches={(f) => { if (f) setCoachFilterParam(f); setActiveTab('coaches'); }}
-                onNavigateToTournaments={() => setActiveTab('tournaments')}
-                onNavigateToSponsors={() => {}}
-                onNavigateToShop={() => setActiveTab('shop')}
+            {selectedProduct ? (
+              <RallyProductDetailPage
+                product={selectedProduct}
+                allProducts={productsList}
+                onBackToShop={() => setSelectedProduct(null)}
+                onAddToCart={(p, qty) => handleAddToCart(p, qty || 1)}
                 onSelectProduct={setSelectedProduct}
-                onAddToCartProduct={handleAddToCart}
-                cartProductIds={new Set(cartItems.map((i) => i.product.id))}
-              />
-            )}
-            {activeTab === 'courts' && (
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                <RallyCourtsPage initialFilters={courtFilterParam} onSelectClub={setSelectedClub} onSelectDirectSlot={(club, slot) => setBookingSlot({ club, slot })} />
-              </div>
-            )}
-            {activeTab === 'matchmaking' && (
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                <RallyMatchmakingPage userId={userSession?.userId || 'usr-1'} userName={userSession?.fullName || 'کاربر رالی'} walletBalance={walletBalance} />
-              </div>
-            )}
-            {activeTab === 'coaches' && (
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                <RallyCoachesPage initialFilters={coachFilterParam} onSelectCoach={setSelectedCoach} />
-              </div>
-            )}
-            {activeTab === 'tournaments' && (
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                <RallyTournamentsPage onSelectTournament={setSelectedTournament} />
-              </div>
-            )}
-            {activeTab === 'rankings' && (
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                <RallyRankingsPage />
-              </div>
-            )}
-            {activeTab === 'magazine' && (
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                <RallyMagazinePage />
-              </div>
-            )}
-            {activeTab === 'shop' && (
-              <RallyShopPage
-                products={productsList}
-                onAddToCart={handleAddToCart}
-                onSelectProduct={setSelectedProduct}
-                cartProductIds={new Set(cartItems.map((i) => i.product.id))}
                 onOpenCart={() => setIsCartOpen(true)}
+                cartProductIds={new Set(cartItems.map((i) => i.product.id))}
               />
+            ) : (
+              <>
+                {activeTab === 'home' && (
+                  <RallyHomePage
+                    selectedCity={selectedCity}
+                    onSelectClub={setSelectedClub}
+                    onSelectDirectSlot={(club, slot) => setBookingSlot({ club, slot })}
+                    onSelectCoach={setSelectedCoach}
+                    onSelectTournament={setSelectedTournament}
+                    onNavigateToCourts={(f) => { if (f) setCourtFilterParam(f); setActiveTab('courts'); }}
+                    onNavigateToCoaches={(f) => { if (f) setCoachFilterParam(f); setActiveTab('coaches'); }}
+                    onNavigateToTournaments={() => setActiveTab('tournaments')}
+                    onNavigateToSponsors={() => {}}
+                    onNavigateToShop={() => setActiveTab('shop')}
+                    onSelectProduct={setSelectedProduct}
+                    onAddToCartProduct={handleAddToCart}
+                    cartProductIds={new Set(cartItems.map((i) => i.product.id))}
+                  />
+                )}
+                {activeTab === 'courts' && (
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    <RallyCourtsPage initialFilters={courtFilterParam} onSelectClub={setSelectedClub} onSelectDirectSlot={(club, slot) => setBookingSlot({ club, slot })} />
+                  </div>
+                )}
+                {activeTab === 'matchmaking' && (
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    <RallyMatchmakingPage userId={userSession?.userId || 'usr-1'} userName={userSession?.fullName || 'کاربر رالی'} walletBalance={walletBalance} />
+                  </div>
+                )}
+                {activeTab === 'coaches' && (
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    <RallyCoachesPage initialFilters={coachFilterParam} onSelectCoach={setSelectedCoach} />
+                  </div>
+                )}
+                {activeTab === 'tournaments' && (
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    <RallyTournamentsPage onSelectTournament={setSelectedTournament} />
+                  </div>
+                )}
+                {activeTab === 'rankings' && (
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    <RallyRankingsPage />
+                  </div>
+                )}
+                {activeTab === 'magazine' && (
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    <RallyMagazinePage />
+                  </div>
+                )}
+                {activeTab === 'shop' && (
+                  <RallyShopPage
+                    products={productsList}
+                    onAddToCart={handleAddToCart}
+                    onSelectProduct={setSelectedProduct}
+                    cartProductIds={new Set(cartItems.map((i) => i.product.id))}
+                    onOpenCart={() => setIsCartOpen(true)}
+                  />
+                )}
+              </>
             )}
           </motion.div>
         </AnimatePresence>
       </main>
 
       <AppModalsContainer
-        selectedClub={selectedClub}
-        onCloseClub={() => setSelectedClub(null)}
+        selectedClub={selectedClub} onCloseClub={() => setSelectedClub(null)}
         onProceedBooking={(club, slot) => { setSelectedClub(null); setBookingSlot({ club, slot }); }}
-        bookingSlot={bookingSlot}
-        walletBalance={walletBalance}
-        simulateState="NORMAL"
+        bookingSlot={bookingSlot} walletBalance={walletBalance} simulateState="NORMAL"
         onCloseBooking={() => setBookingSlot(null)}
-        selectedCoach={selectedCoach}
-        onCloseCoach={() => setSelectedCoach(null)}
-        selectedTournament={selectedTournament}
-        onCloseTournament={() => setSelectedTournament(null)}
-        selectedProduct={selectedProduct}
-        onCloseProduct={() => setSelectedProduct(null)}
+        selectedCoach={selectedCoach} onCloseCoach={() => setSelectedCoach(null)}
+        selectedTournament={selectedTournament} onCloseTournament={() => setSelectedTournament(null)}
+        selectedProduct={null} onCloseProduct={() => setSelectedProduct(null)}
         onAddToCartProduct={handleAddToCart}
         onOpenCartFromProduct={() => { setSelectedProduct(null); setIsCartOpen(true); }}
-        isCartOpen={isCartOpen}
-        onCloseCart={() => setIsCartOpen(false)}
-        cartItems={cartItems}
-        onUpdateCartQty={handleUpdateCartQty}
+        isCartOpen={isCartOpen} onCloseCart={() => setIsCartOpen(false)}
+        cartItems={cartItems} onUpdateCartQty={handleUpdateCartQty}
         onRemoveCartItem={(id) => setCartItems((prev) => prev.filter((i) => i.product.id !== id))}
         onClearCart={() => setCartItems([])}
         onOrderComplete={(receipt) => {
           setShopReceipt(receipt);
-          if (receipt.paymentMethod === 'WALLET') {
-            setWalletBalance((prev) => Math.max(0, prev - receipt.totalAmount * 10));
-          }
+          if (receipt.paymentMethod === 'WALLET') setWalletBalance((prev) => Math.max(0, prev - receipt.totalAmount * 10));
         }}
-        shopReceipt={shopReceipt}
-        onCloseReceipt={() => setShopReceipt(null)}
-        isWalletOpen={isWalletOpen}
-        onCloseWallet={() => setIsWalletOpen(false)}
+        shopReceipt={shopReceipt} onCloseReceipt={() => setShopReceipt(null)}
+        isWalletOpen={isWalletOpen} onCloseWallet={() => setIsWalletOpen(false)}
         onBalanceUpdated={setWalletBalance}
-        isAuthOpen={isAuthOpen}
-        userSession={userSession}
+        isAuthOpen={isAuthOpen} userSession={userSession}
         onCloseAuth={() => setIsAuthOpen(false)}
         onLoginSuccess={setUserSession}
         onLogout={() => { localStorage.removeItem('padel_auth'); setUserSession(null); }}
-        onNavigateToPortal={(view) => {
-          setIsAuthOpen(false);
-          setIsPortalOpen(true);
-        }}
+        onNavigateToPortal={() => { setIsAuthOpen(false); setIsPortalOpen(true); }}
       />
       <MobileBottomNav
         currentTab={activeTab}
-        onSelectTab={setActiveTab}
+        onSelectTab={(tab) => { setSelectedProduct(null); setActiveTab(tab); }}
         onOpenAuth={() => setIsAuthOpen(true)}
         isLoggedIn={!!userSession}
       />
-      <ModernRallyFooter onNavigateTab={(t) => setActiveTab(t as RallyPageTab)} />
+      <ModernRallyFooter onNavigateTab={(t) => { setSelectedProduct(null); setActiveTab(t as RallyPageTab); }} />
     </div>
   );
 };
