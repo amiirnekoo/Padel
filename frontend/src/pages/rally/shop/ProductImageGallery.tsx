@@ -15,8 +15,6 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = React.mem
   isPadel = true
 }) => {
   const [activeIdx, setActiveIdx] = useState(0);
-  const [isZoomed, setIsZoomed] = useState(false);
-  const [zoomOrigin, setZoomOrigin] = useState({ x: 50, y: 50 });
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [imgErrors, setImgErrors] = useState<Record<number, boolean>>({});
   
@@ -25,25 +23,13 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = React.mem
   const validImages = images && images.length > 0 ? images : ['/images/rally_logo_crisp.png'];
   const currentImage = validImages[activeIdx] || validImages[0];
 
-  // Mouse pan zoom handler (Luxury e-commerce style like Noxsport)
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
-    const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
-    setZoomOrigin({ x, y });
-  }, []);
-
-  const handleMouseEnter = () => setIsZoomed(true);
-  const handleMouseLeave = () => {
-    setIsZoomed(false);
-    setZoomOrigin({ x: 50, y: 50 });
-  };
-
-  const handlePrev = useCallback(() => {
+  const handlePrev = useCallback((e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
     setActiveIdx((prev) => (prev > 0 ? prev - 1 : validImages.length - 1));
   }, [validImages.length]);
 
-  const handleNext = useCallback(() => {
+  const handleNext = useCallback((e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
     setActiveIdx((prev) => (prev < validImages.length - 1 ? prev + 1 : 0));
   }, [validImages.length]);
 
@@ -72,13 +58,10 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = React.mem
   const accentRing = isPadel ? 'border-sky-500 ring-2 ring-sky-300' : 'border-emerald-500 ring-2 ring-emerald-300';
 
   return (
-    <div className="flex flex-col gap-3 select-none">
-      {/* Main Showcase Stage with Hover Zoom */}
+    <div className="flex flex-col gap-3.5 select-none">
+      {/* Main Showcase Stage (High-Definition Studio View, Zero Blur) */}
       <div
-        className="relative aspect-square w-full rounded-3xl bg-slate-50 border border-slate-200 overflow-hidden flex items-center justify-center cursor-zoom-in group shadow-xs"
-        onMouseMove={handleMouseMove}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        className="relative aspect-square w-full rounded-3xl bg-white border border-slate-200/90 overflow-hidden flex items-center justify-center cursor-pointer group shadow-sm"
         onClick={() => setIsLightboxOpen(true)}
       >
         {imgErrors[activeIdx] ? (
@@ -86,24 +69,23 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = React.mem
             <ImageIcon className="w-12 h-12 text-slate-300 mb-2" />
             <span className="text-sm font-bold text-slate-700">{brand}</span>
             <span className="text-xs text-slate-400 mt-1 line-clamp-2 px-4">{productName}</span>
-            <span className="text-xs text-amber-600 bg-amber-50 px-2.5 py-1 rounded-md mt-2 font-medium">تصویر در انتظار بارگذاری</span>
+            <span className="text-xs text-amber-600 bg-amber-50 px-2.5 py-1 rounded-md mt-2 font-medium">تصویر رسمی</span>
           </div>
         ) : (
           <img
             src={currentImage}
             alt={`${productName} - تصویر ${activeIdx + 1}`}
             onError={() => setImgErrors(prev => ({ ...prev, [activeIdx]: true }))}
-            className="w-full h-full object-contain p-4 transition-transform duration-100 ease-out will-change-transform"
+            className="w-full h-full object-contain p-5 transition-transform duration-300 ease-out group-hover:scale-[1.02]"
             style={{
-              transformOrigin: `${zoomOrigin.x}% ${zoomOrigin.y}%`,
-              transform: isZoomed ? 'scale(2.35)' : 'scale(1)',
+              imageRendering: '-webkit-optimize-contrast',
             }}
           />
         )}
 
         {/* Counter Badge */}
-        <div className="absolute top-4 right-4 z-10 bg-slate-900/80 text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
-          {activeIdx + 1} / {validImages.length}
+        <div className="absolute top-4 right-4 z-10 bg-slate-900/85 text-white text-[11px] font-bold px-3 py-1 rounded-full shadow-sm">
+          {activeIdx + 1} از {validImages.length}
         </div>
 
         {/* Lightbox Trigger Button */}
@@ -112,38 +94,32 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = React.mem
             e.stopPropagation();
             setIsLightboxOpen(true);
           }}
-          className="absolute top-4 left-4 z-10 w-9 h-9 rounded-full bg-white/90 text-slate-700 hover:text-slate-950 hover:bg-white shadow-md flex items-center justify-center transition-all cursor-pointer"
-          title="مشاهده تمام صفحه و گالری بزرگ"
+          className="absolute top-4 left-4 z-10 w-9 h-9 rounded-full bg-white/95 text-slate-700 hover:text-slate-950 hover:bg-white shadow-md flex items-center justify-center transition-all cursor-pointer"
+          title="مشاهده بزرگنمایی و جزئیات باکیفیت"
         >
           <Maximize2 className="w-4 h-4" />
         </button>
 
-        {/* Desktop Zoom Hint */}
-        <div className={`hidden sm:flex absolute bottom-3 right-3 left-3 items-center justify-center gap-1.5 py-1 px-3 rounded-full text-[11px] font-medium transition-opacity duration-200 pointer-events-none ${
-          isZoomed ? 'opacity-0' : 'bg-white/85 text-slate-700 shadow-xs opacity-90'
-        }`}>
-          <ZoomIn className="w-3.5 h-3.5 text-sky-600" />
-          <span>حرکت ماوس برای زوم جزئیات بافت راکت | کلیک برای تمام‌صفحه</span>
+        {/* Desktop Click for Fullscreen Hint */}
+        <div className="hidden sm:flex absolute bottom-3 right-3 left-3 items-center justify-center gap-1.5 py-1 px-3 rounded-full text-[11px] font-medium transition-opacity duration-200 pointer-events-none bg-slate-900/75 text-white/90 shadow-sm opacity-0 group-hover:opacity-100">
+          <ZoomIn className="w-3.5 h-3.5 text-sky-400" />
+          <span>برای مشاهده کیفیت بالا و تمام‌صفحه کلیک کنید</span>
         </div>
 
-        {/* Mobile / Tablet Arrow Navigators */}
+        {/* Arrow Navigators on Main Stage */}
         {validImages.length > 1 && (
           <>
             <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handlePrev();
-              }}
-              className="sm:hidden absolute right-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white/80 shadow text-slate-700 flex items-center justify-center"
+              onClick={handlePrev}
+              className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/90 hover:bg-white shadow-md text-slate-700 hover:text-slate-950 flex items-center justify-center transition-all cursor-pointer opacity-80 sm:opacity-0 group-hover:opacity-100"
+              title="تصویر قبلی"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
             <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleNext();
-              }}
-              className="sm:hidden absolute left-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white/80 shadow text-slate-700 flex items-center justify-center"
+              onClick={handleNext}
+              className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/90 hover:bg-white shadow-md text-slate-700 hover:text-slate-950 flex items-center justify-center transition-all cursor-pointer opacity-80 sm:opacity-0 group-hover:opacity-100"
+              title="تصویر بعدی"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
@@ -218,7 +194,7 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = React.mem
               <span className="text-sm font-bold text-slate-200 line-clamp-1">{productName}</span>
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-xs text-slate-400 font-mono">
+              <span className="text-xs text-slate-300 font-medium">
                 {activeIdx + 1} از {validImages.length}
               </span>
               <button

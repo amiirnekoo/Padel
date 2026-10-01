@@ -62,7 +62,7 @@ export const ProductBuyBox: React.FC<ProductBuyBoxProps> = React.memo(({
         <h1 className="text-xl sm:text-2xl font-black text-slate-900 leading-snug">
           {product.name_fa}
         </h1>
-        <p className="text-xs sm:text-sm text-slate-400 font-mono tracking-tight mt-1">
+        <p className="text-xs sm:text-sm text-slate-500 font-medium tracking-wide mt-1.5" dir="ltr" style={{ textAlign: 'right' }}>
           {product.name_en}
         </p>
       </div>
@@ -180,8 +180,8 @@ export const ProductBuyBox: React.FC<ProductBuyBoxProps> = React.memo(({
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
           موجود در انبار مرکزی رالی (آماده تحویل فوری)
         </span>
-        <span className="text-slate-400 font-mono text-[11px]">
-          کد اصالت: {product.id}
+        <span className="text-slate-500 font-medium text-[11px] bg-slate-100 px-2 py-0.5 rounded-md">
+          کد کالا: {product.id === 'nox-at10-genius-18k-2026' ? 'AT10-18K-2026' : product.id}
         </span>
       </div>
 

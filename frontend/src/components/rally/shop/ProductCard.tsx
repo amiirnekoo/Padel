@@ -98,7 +98,7 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
 
         {/* Content Body */}
         <div className="p-4">
-          <div className="text-[11px] text-gray-500 font-mono tracking-tight mb-1 truncate">
+          <div className="text-[11px] text-slate-400 font-medium tracking-normal mb-1 truncate" dir="ltr" style={{ textAlign: 'right' }}>
             {product.name_en}
           </div>
           <h3 className="font-bold text-gray-900 text-sm leading-snug line-clamp-2 min-h-[2.5rem] group-hover:text-rally-primary transition-colors">
