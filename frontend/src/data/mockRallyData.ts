@@ -1050,11 +1050,11 @@ export const MOCK_COACHES: Coach[] = [
 export const MOCK_TOURNAMENTS: Tournament[] = [
   {
     id: 'trn-friday-cup',
-    title: 'مسابقات آدینه آخر هفته پدل (Friday Weekend Cup)',
+    title: 'مسابقات آدینه رولو کاپ پدل (Rulo Friday Weekend Cup)',
     sport: 'PADEL',
     category: 'OPEN',
     level: 'آزاد و سطح‌بندی شده (سطح ۲ و ۳)',
-    organizer: 'باشگاه انقلاب با نظارت رسمی رالی',
+    organizer: 'برند ورزشی Rulo و باشگاه انقلاب با نظارت رسمی رالی',
     isOfficial: true,
     city: 'تهران',
     venueName: 'کورت سنترال مجموعه ورزشی انقلاب',
@@ -1067,9 +1067,9 @@ export const MOCK_TOURNAMENTS: Tournament[] = [
     status: 'REGISTRATION_OPEN',
     bannerUrl: '/images/tournaments/tournament_friday_cup.jpg',
     rules: [
-      'مسابقات یک‌روزه آدینه بر اساس جدول تک‌حذفی و سیستم رالی پوینت استاندارد.',
+      'مسابقات یک‌روزه آدینه رولو با حمایت رسمی برند Rulo بر اساس جدول استاندارد تک‌حذفی.',
       'هر مسابقه در ۲ ست ۶ گیمی و در صورت تساوی سوپر تای‌برک ۱۰ تایی برگزار می‌شود.',
-      'امتیاز این مسابقات مستقیماً در رنکینگ کشوری رالی محاسبه می‌گردد.'
+      'اعطای پکیج اختصاصی راکت و جوایز نقدی Rulo به تیم‌های برتر به همراه امتیاز رسمی رنکینگ.'
     ],
     format: 'DOUBLES'
   },
@@ -1100,15 +1100,15 @@ export const MOCK_TOURNAMENTS: Tournament[] = [
   },
   {
     id: 'trn-padel-league',
-    title: 'لیگ برتر پدل باشگاه‌های کشور (Iran Premier League)',
+    title: 'لیگ پدل مل اند موج استان تهران (Mel & Moj League)',
     sport: 'PADEL',
     category: 'OPEN',
-    level: 'سطح ۱ حرفه‌ای (رنکینگ ملی)',
-    organizer: 'کمیته پدل فدراسیون تنیس و انجمن رسمی پدل',
+    level: 'سطح ۱ حرفه‌ای (کمیته پدل تهران)',
+    organizer: 'کمیته پدل استان تهران و مجموعه پدل لافور (Lafour Club)',
     isOfficial: true,
     city: 'تهران',
-    venueName: 'کمپ تیم‌های ملی و کورت‌های باشگاه استقلال',
-    startDate: '۱ آبان ۱۴۰۵',
+    venueName: 'مجموعه تخصصی پدل لافور (Lafour Club)',
+    startDate: 'مهر و آبان ۱۴۰۵',
     endDate: '۳۰ آذر ۱۴۰۵',
     entryFee: 5000000,
     prizePool: 250000000,
@@ -1117,9 +1117,9 @@ export const MOCK_TOURNAMENTS: Tournament[] = [
     status: 'IN_PROGRESS',
     bannerUrl: '/images/tournaments/tournament_league.jpg',
     rules: [
-      'مسابقات رسمی لیگ برتر به صورت رفت و برگشت باشگاهی.',
-      'پخش مستقیم بازی‌های نیمه‌نهایی و فینال و حضور کادر فنی تیم ملی جهت استعدادیابی.',
-      'ثبت نتایج در جدول رده‌بندی ملی و اعطای سهمیه مسابقات بین‌المللی FIP.'
+      'مسابقات رسمی لیگ مل اند موج با نظارت مستقیم هیئت و کمیته پدل استان تهران.',
+      'رقابت‌های دوره‌ای و حذفی در مجموعه پدل لافور با حضور برترین راکت‌به‌دستان پایتخت.',
+      'ثبت نتایج در جدول رده‌بندی استانی و اعطای سهمیه مسابقات قهرمانی کشور.'
     ],
     format: 'DOUBLES'
   }
