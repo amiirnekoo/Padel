@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.app.models.base import get_db_session
 from backend.app.services.admin_service import AdminService
+from backend.app.api.deps import get_current_admin
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
@@ -57,9 +58,13 @@ async def admin_login(
     return result
 
 @router.get("/stats")
-async def get_dashboard_stats(session: AsyncSession = Depends(get_db_session)):
+async def get_dashboard_stats(
+    session: AsyncSession = Depends(get_db_session),
+    admin: dict = Depends(get_current_admin)
+):
     """
     Returns platform KPI overview and operational health metrics.
+    Protected: Only authorized operations admins.
     """
     service = AdminService(session)
     return await service.get_admin_dashboard_stats()
@@ -67,10 +72,12 @@ async def get_dashboard_stats(session: AsyncSession = Depends(get_db_session)):
 @router.get("/incidents")
 async def list_incidents(
     resolved: Optional[bool] = None,
-    session: AsyncSession = Depends(get_db_session)
+    session: AsyncSession = Depends(get_db_session),
+    admin: dict = Depends(get_current_admin)
 ):
     """
     Lists incident/SOS reports.
+    Protected: Only authorized operations admins.
     """
     service = AdminService(session)
     incidents = await service.get_incidents(resolved=resolved)
@@ -117,10 +124,12 @@ async def report_incident(
 async def resolve_incident(
     incident_id: str,
     req: IncidentResolveRequest,
-    session: AsyncSession = Depends(get_db_session)
+    session: AsyncSession = Depends(get_db_session),
+    admin: dict = Depends(get_current_admin)
 ):
     """
     Resolves an open incident report.
+    Protected: Only authorized operations admins.
     """
     service = AdminService(session)
     inc = await service.resolve_incident(incident_id, req.resolution_notes)
@@ -134,10 +143,12 @@ async def resolve_incident(
 async def emergency_cancel_match(
     game_id: str,
     req: EmergencyCancelRequest,
-    session: AsyncSession = Depends(get_db_session)
+    session: AsyncSession = Depends(get_db_session),
+    admin: dict = Depends(get_current_admin)
 ):
     """
     Executes emergency cancellation of a match with 100% full refund to players.
+    Protected: Only authorized operations admins.
     """
     service = AdminService(session)
     game = await service.emergency_cancel_match(
@@ -154,10 +165,12 @@ async def emergency_cancel_match(
 @router.post("/audit-logs", status_code=status.HTTP_201_CREATED)
 async def record_audit_log(
     req: AuditLogCreateRequest,
-    session: AsyncSession = Depends(get_db_session)
+    session: AsyncSession = Depends(get_db_session),
+    admin: dict = Depends(get_current_admin)
 ):
     """
     Records operations audit actions.
+    Protected: Only authorized operations admins.
     """
     service = AdminService(session)
     log = await service.record_audit_log(

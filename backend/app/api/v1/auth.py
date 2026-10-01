@@ -113,20 +113,26 @@ async def user_login(payload: UserLoginRequest, db: AsyncSession = Depends(get_d
         "club_id": user.club_id
     }
 
+from backend.app.core.config import settings
+
 @router.post("/otp/request")
 async def request_otp(payload: OTPRequest):
     code = OTPService.generate_otp(payload.phone_number)
-    # In production, integrate SMS provider (Kavenegar/Sms.ir). Here return response
-    return {
+    # In production, integrate SMS provider (Kavenegar/Sms.ir).
+    response_data = {
         "message": "کد تأیید با موفقیت ارسال شد",
         "expires_in_seconds": 120,
-        "dev_code": code  # for testing/quickstart
     }
+    # Only expose dev_code if explicitly enabled for testing
+    if settings.ALLOW_DEV_AUTH_BYPASS:
+        response_data["dev_code"] = code
+    return response_data
 
 @router.post("/otp/verify")
 async def verify_otp(payload: OTPVerify, db: AsyncSession = Depends(get_db_session)):
     is_valid = OTPService.verify_otp(payload.phone_number, payload.code)
-    if not is_valid and payload.code != "12345":  # 12345 fallback for automated integration tests
+    allow_test_code = settings.ALLOW_DEV_AUTH_BYPASS and payload.code == "12345"
+    if not is_valid and not allow_test_code:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="کد تأیید نامعتبر است یا منقضی شده است")
 
     stmt = select(User).where(User.phone_number == payload.phone_number)
