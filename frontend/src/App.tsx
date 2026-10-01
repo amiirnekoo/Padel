@@ -9,6 +9,8 @@ import { RallyCourtsPage } from './pages/rally/RallyCourtsPage';
 import { RallyMatchmakingPage } from './pages/rally/RallyMatchmakingPage';
 import { RallyCoachesPage } from './pages/rally/RallyCoachesPage';
 import { RallyTournamentsPage } from './pages/rally/RallyTournamentsPage';
+import { RallyRankingsPage } from './pages/rally/RallyRankingsPage';
+import { RallyMagazinePage } from './pages/rally/RallyMagazinePage';
 import { RallyShopPage } from './pages/rally/RallyShopPage';
 import { AppModalsContainer } from './components/rally/AppModalsContainer';
 import { UserSession } from './components/AuthModal';
@@ -208,6 +210,16 @@ export const App: React.FC = () => {
             {activeTab === 'tournaments' && (
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 <RallyTournamentsPage onSelectTournament={setSelectedTournament} />
+              </div>
+            )}
+            {activeTab === 'rankings' && (
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <RallyRankingsPage />
+              </div>
+            )}
+            {activeTab === 'magazine' && (
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <RallyMagazinePage />
               </div>
             )}
             {activeTab === 'shop' && (

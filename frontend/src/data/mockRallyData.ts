@@ -1049,53 +1049,80 @@ export const MOCK_COACHES: Coach[] = [
 
 export const MOCK_TOURNAMENTS: Tournament[] = [
   {
-    id: 'trn-rally-cup-1',
-    title: 'جام پاییزی پدل رالی (Rally Autumn Master 1000)',
+    id: 'trn-friday-cup',
+    title: 'مسابقات آدینه آخر هفته پدل (Friday Weekend Cup)',
     sport: 'PADEL',
     category: 'OPEN',
-    level: 'سطح ۳ و آزاد (متوسط به بالا)',
-    organizer: 'باشگاه انقلاب با نظارت رسمی انجمن پدل',
+    level: 'آزاد و سطح‌بندی شده (سطح ۲ و ۳)',
+    organizer: 'باشگاه انقلاب با نظارت رسمی رالی',
     isOfficial: true,
     city: 'تهران',
-    venueName: 'کورت سنترال انقلاب',
-    startDate: '۱۵ مهر ۱۴۰۵',
-    endDate: '۱۸ مهر ۱۴۰۵',
-    entryFee: 1800000,
-    prizePool: 60000000,
+    venueName: 'کورت سنترال مجموعه ورزشی انقلاب',
+    startDate: 'جمعه ۱۸ مهر ۱۴۰۵',
+    endDate: 'جمعه ۱۸ مهر ۱۴۰۵',
+    entryFee: 1200000,
+    prizePool: 35000000,
     maxTeams: 16,
-    registeredTeams: 12,
+    registeredTeams: 14,
     status: 'REGISTRATION_OPEN',
-    bannerUrl: '/images/rally_tournament.jpg',
+    bannerUrl: '/images/tournaments/tournament_friday_cup.jpg',
     rules: [
-      'مسابقات بر اساس جدول تک‌حذفی و سیستم رالی پوینت استاندارد FIP برگزار می‌شود.',
-      'هر تیم شامل ۲ بازیکن است. راکت‌ها باید دارای بند مچ ایمن باشند.',
-      'توپ رسمی مسابقات Head Padel Pro S می‌باشد.'
+      'مسابقات یک‌روزه آدینه بر اساس جدول تک‌حذفی و سیستم رالی پوینت استاندارد.',
+      'هر مسابقه در ۲ ست ۶ گیمی و در صورت تساوی سوپر تای‌برک ۱۰ تایی برگزار می‌شود.',
+      'امتیاز این مسابقات مستقیماً در رنکینگ کشوری رالی محاسبه می‌گردد.'
     ],
     format: 'DOUBLES'
   },
   {
-    id: 'trn-rally-amateur',
-    title: 'تورنمنت آخر هفته تازه‌واردان پدل (Rally Starter Series)',
+    id: 'trn-king-of-court',
+    title: 'مسابقات پادشاه زمین (King of the Court Challenge)',
     sport: 'PADEL',
-    category: 'MIXED',
-    level: 'مبتدی و نیمه‌متوسط (مناسب بازیکنان کمتر از ۱ سال سابقه)',
-    organizer: 'آکادمی رالی پدل',
+    category: 'OPEN',
+    level: 'رقابتی و سرعتی (سطح متوسط به بالا)',
+    organizer: 'پدل آرنا ولنجک و تیم داوری رالی',
     isOfficial: true,
     city: 'تهران',
-    venueName: 'پدل آرنا ولنجک',
-    startDate: '۲۴ مهر ۱۴۰۵',
-    endDate: '۲۵ مهر ۱۴۰۵',
-    entryFee: 950000,
-    prizePool: 25000000,
+    venueName: 'زمین اختصاصی پدل آرنا ولنجک',
+    startDate: 'پنج‌شنبه ۲۴ مهر ۱۴۰۵',
+    endDate: 'پنج‌شنبه ۲۴ مهر ۱۴۰۵',
+    entryFee: 1500000,
+    prizePool: 45000000,
     maxTeams: 12,
-    registeredTeams: 8,
+    registeredTeams: 11,
     status: 'REGISTRATION_OPEN',
-    bannerUrl: '/images/rally_tournament.jpg',
+    bannerUrl: '/images/tournaments/tournament_king_of_court.jpg',
     rules: [
-      'مناسب کسب تجربه مسابقاتی بدون فشار روانی.',
-      'جوایز شامل تجهیزات تخصصی پدل Bullpadel و بن اختصاصی رالی.'
+      'فرمت جذاب King of the Court: تیم برنده در زمین پادشاه مانده و چلنجرها پیوسته تعویض می‌شوند.',
+      'تایم مسابقه بدون وقفه و امتیازات بر اساس تعداد رالی‌های موفق در زمین کینگ است.',
+      'کسب جوایز نقدی اختصاصی به همراه کاپ افتخار پادشاه زمین.'
+    ],
+    format: 'DOUBLES'
+  },
+  {
+    id: 'trn-padel-league',
+    title: 'لیگ برتر پدل باشگاه‌های کشور (Iran Premier League)',
+    sport: 'PADEL',
+    category: 'OPEN',
+    level: 'سطح ۱ حرفه‌ای (رنکینگ ملی)',
+    organizer: 'کمیته پدل فدراسیون تنیس و انجمن رسمی پدل',
+    isOfficial: true,
+    city: 'تهران',
+    venueName: 'کمپ تیم‌های ملی و کورت‌های باشگاه استقلال',
+    startDate: '۱ آبان ۱۴۰۵',
+    endDate: '۳۰ آذر ۱۴۰۵',
+    entryFee: 5000000,
+    prizePool: 250000000,
+    maxTeams: 16,
+    registeredTeams: 16,
+    status: 'IN_PROGRESS',
+    bannerUrl: '/images/tournaments/tournament_league.jpg',
+    rules: [
+      'مسابقات رسمی لیگ برتر به صورت رفت و برگشت باشگاهی.',
+      'پخش مستقیم بازی‌های نیمه‌نهایی و فینال و حضور کادر فنی تیم ملی جهت استعدادیابی.',
+      'ثبت نتایج در جدول رده‌بندی ملی و اعطای سهمیه مسابقات بین‌المللی FIP.'
     ],
     format: 'DOUBLES'
   }
 ];
+
 

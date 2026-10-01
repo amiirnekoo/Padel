@@ -21,6 +21,8 @@ export type RallyPageTab =
   | 'matchmaking'
   | 'coaches'
   | 'tournaments'
+  | 'rankings'
+  | 'magazine'
   | 'shop'
   | 'partners'
   | 'sponsors';

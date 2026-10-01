@@ -15,7 +15,6 @@ export const RallyBookingSearch: React.FC<RallyBookingSearchProps> = ({
 }) => {
   const [selectedSport, setSelectedSport] = useState<SportType>('PADEL');
   const [selectedCity, setSelectedCity] = useState('تهران');
-  const [selectedArea, setSelectedArea] = useState('همه مناطق');
   const [selectedDate, setSelectedDate] = useState('فردا');
   const [dateDetail, setDateDetail] = useState('چهارشنبه ۹ مهر ۱۴۰۵');
 
@@ -37,16 +36,7 @@ export const RallyBookingSearch: React.FC<RallyBookingSearchProps> = ({
     { id: 'TENNIS', label: 'تنیس' }
   ];
 
-  const cityOptions = [
-    { name: 'تهران', areas: ['همه مناطق', 'سعادت‌آباد', 'انقلاب / سئول', 'نارمک', 'پاسداران', 'نیاوران', 'شهرک غرب', 'ولنجک'] },
-    { name: 'مشهد', areas: ['همه مناطق', 'بلوار سجاد', 'کوهسنگی', 'وکیل‌آباد'] },
-    { name: 'اصفهان', areas: ['همه مناطق', 'مرداویج', 'چهارباغ', 'مشتاق دوم'] },
-    { name: 'شیراز', areas: ['همه مناطق', 'بلوار ارم', 'بلوار چمران', 'قصردشت'] },
-    { name: 'ساری', areas: ['همه مناطق', 'بلوار طبرستان', 'میدان خزر', 'ساحلی'] },
-    { name: 'کیش', areas: ['همه مناطق', 'میدان المپیک', 'مارینا پارک', 'دامون'] },
-    { name: 'تبریز', areas: ['همه مناطق', 'ائل‌گلی', 'ولیعصر', 'یادگار امام'] },
-    { name: 'نوشهر', areas: ['همه مناطق', 'ساحل چلک', 'بلوار همافران', 'رویان'] }
-  ];
+  const CITIES = ['تهران', 'مشهد', 'اصفهان', 'شیراز', 'ساری', 'کیش', 'تبریز', 'نوشهر'];
 
   const dateOptions = [
     { label: 'امروز', detail: 'سه‌شنبه ۸ مهر ۱۴۰۵' },
@@ -59,7 +49,6 @@ export const RallyBookingSearch: React.FC<RallyBookingSearchProps> = ({
     onSearch({
       sport: selectedSport,
       city: selectedCity,
-      area: selectedArea !== 'همه مناطق' ? selectedArea : undefined,
       date: selectedDate
     });
   };
@@ -131,51 +120,39 @@ export const RallyBookingSearch: React.FC<RallyBookingSearchProps> = ({
                 <MapPin className="w-4 h-4 text-[#0E3D38]" />
               </span>
               <div>
-                <span className="block text-[11px] font-bold text-[#66706D]">شهر و منطقه</span>
+                <span className="block text-[11px] font-bold text-[#66706D]">شهر انتخاب شده</span>
                 <span className="text-sm font-black text-[#172320]">
-                  {selectedCity} {selectedArea !== 'همه مناطق' ? `(${selectedArea})` : ''}
+                  {selectedCity}
                 </span>
               </div>
             </div>
             <ChevronDown className="w-4 h-4 text-[#66706D]" />
           </button>
 
-          {/* City Dropdown */}
+          {/* City Dropdown - Clean Cities Grid */}
           {openDropdown === 'city' && (
-            <div className="absolute top-full mt-2 right-0 w-60 bg-white border border-[#E8E6DD] rounded-2xl shadow-xl p-2 z-30">
-              <span className="block text-[10px] font-bold text-[#66706D] px-2 py-1">انتخاب شهر</span>
-              <div className="flex gap-1 mb-2">
-                {cityOptions.map((c) => (
-                  <button
-                    key={c.name}
-                    onClick={() => {
-                      setSelectedCity(c.name);
-                      setSelectedArea('همه مناطق');
-                    }}
-                    className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
-                      selectedCity === c.name ? 'bg-[#0B4278] text-white' : 'bg-[#F5F4EF] text-[#172320]'
-                    }`}
-                  >
-                    {c.name}
-                  </button>
-                ))}
-              </div>
-              <span className="block text-[10px] font-bold text-[#66706D] px-2 py-1">مناطق فعال</span>
-              <div className="space-y-1 max-h-40 overflow-y-auto">
-                {cityOptions.find((c) => c.name === selectedCity)?.areas.map((area) => (
-                  <button
-                    key={area}
-                    onClick={() => {
-                      setSelectedArea(area);
-                      setOpenDropdown(null);
-                    }}
-                    className={`w-full text-right px-3 py-1.5 rounded-xl text-xs font-semibold cursor-pointer transition-colors ${
-                      selectedArea === area ? 'bg-[#0B4278]/10 text-[#0B4278] font-bold' : 'text-[#172320] hover:bg-[#F5F4EF]'
-                    }`}
-                  >
-                    {area}
-                  </button>
-                ))}
+            <div className="absolute top-full mt-2 right-0 w-64 bg-white border border-[#E8E6DD] rounded-2xl shadow-xl p-3 z-30">
+              <span className="block text-[11px] font-black text-[#172320] mb-2 px-1">انتخاب شهر:</span>
+              <div className="grid grid-cols-2 gap-1.5">
+                {CITIES.map((cityName) => {
+                  const isSelected = selectedCity === cityName;
+                  return (
+                    <button
+                      key={cityName}
+                      onClick={() => {
+                        setSelectedCity(cityName);
+                        setOpenDropdown(null);
+                      }}
+                      className={`px-3 py-2 rounded-xl text-xs font-bold text-center transition-all cursor-pointer ${
+                        isSelected
+                          ? 'bg-[#0B4278] text-white shadow-xs'
+                          : 'bg-[#F5F4EF] text-[#172320] hover:bg-[#E8E6DD]'
+                      }`}
+                    >
+                      {cityName}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}

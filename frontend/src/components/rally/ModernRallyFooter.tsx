@@ -70,6 +70,22 @@ export const ModernRallyFooter: React.FC<ModernRallyFooterProps> = ({
               </li>
               <li>
                 <button
+                  onClick={() => onNavigateTab?.('rankings')}
+                  className="hover:text-[#D7ED68] transition-colors cursor-pointer text-right"
+                >
+                  رنکینگ رسمی بازیکنان ایران و جهان
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => onNavigateTab?.('magazine')}
+                  className="hover:text-[#D7ED68] transition-colors cursor-pointer text-right"
+                >
+                  مجله تخصصی و مقالات آموزشی
+                </button>
+              </li>
+              <li>
+                <button
                   onClick={() => onNavigateTab?.('shop')}
                   className="hover:text-[#D7ED68] transition-colors cursor-pointer text-right text-[#D7ED68]"
                 >
