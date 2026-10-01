@@ -30,4 +30,8 @@ class Settings(BaseSettings):
     REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
     SMS_PROVIDER: str = os.getenv("SMS_PROVIDER", "mock")
 
+    # Media & File Uploads
+    UPLOAD_DIR: str = os.getenv("UPLOAD_DIR", "uploads")
+    MAX_UPLOAD_SIZE_MB: int = 15
+
 settings = Settings()

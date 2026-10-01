@@ -94,6 +94,9 @@ services:
       API_V1_STR: /api/v1
       PAYMENT_GATEWAY_PROVIDER: ${PAYMENT_GATEWAY_PROVIDER:-MOCK}
       SMS_PROVIDER: ${SMS_PROVIDER:-SIMULATOR}
+      UPLOAD_DIR: /app/uploads
+    volumes:
+      - uploads_data:/app/uploads
     logging:
       driver: "json-file"
       options:
@@ -142,3 +145,4 @@ services:
 volumes:
   postgres_data:
   redis_data:
+  uploads_data:
