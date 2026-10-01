@@ -53,14 +53,15 @@ export const RallyShopPage: React.FC<RallyShopPageProps> = ({
       
       {/* Hero Banner Section */}
       <section className="relative bg-slate-950 text-white overflow-hidden border-b border-slate-800">
-        <div className="absolute inset-0 z-0 opacity-40">
+        <div className="absolute inset-0 z-0 opacity-55">
           <img
             src="/images/rally_shop_banner.jpg"
-            alt="فروشگاه تجهیزات پدل و تنیس رالی"
-            className="w-full h-full object-cover object-center"
+            alt="فروشگاه تخصصی راکت‌های پدل و تجهیزات رالی"
+            className="w-full h-full object-cover object-[center_35%]"
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent z-0" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-slate-950/20 z-0" />
+        <div className="absolute inset-0 bg-gradient-to-l from-slate-950/90 via-slate-950/50 to-transparent z-0" />
 
         <div className="relative z-10 max-w-7xl 2xl:max-w-[1600px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-10 sm:py-16">
           <div className="max-w-2xl">
