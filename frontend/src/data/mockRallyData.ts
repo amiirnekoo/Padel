@@ -1065,7 +1065,7 @@ export const MOCK_TOURNAMENTS: Tournament[] = [
     maxTeams: 18,
     registeredTeams: 16,
     status: 'REGISTRATION_OPEN',
-    bannerUrl: '/images/tournaments/tournament_friday_cup.jpg',
+    bannerUrl: '/images/tournaments/rulo_weekend_cup_2026.jpg',
     rules: [
       'مسابقات یک‌روزه ویکند کاپ با حمایت رسمی برند Rulo و نظارت رالی در پدل هیلز کلاب.',
       'سطح رقابت: C Level مردان در جدول ۱۸ تیمی با توپ رسمی مسابقات HEAD.',
@@ -1090,7 +1090,7 @@ export const MOCK_TOURNAMENTS: Tournament[] = [
     maxTeams: 12,
     registeredTeams: 11,
     status: 'REGISTRATION_OPEN',
-    bannerUrl: '/images/tournaments/tournament_king_of_court.jpg',
+    bannerUrl: '/images/tournaments/king_of_court_2026.jpg',
     rules: [
       'فرمت رسمی و مهیج King of the Court: تیم برنده در زمین پادشاه مانده و چلنجرها پیوسته تعویض می‌شوند.',
       'تایم مسابقه بدون وقفه و امتیازات بر اساس رالی‌های موفق کسب‌شده در زمین کینگ است.',
@@ -1115,7 +1115,7 @@ export const MOCK_TOURNAMENTS: Tournament[] = [
     maxTeams: 16,
     registeredTeams: 16,
     status: 'IN_PROGRESS',
-    bannerUrl: '/images/tournaments/tournament_league.jpg',
+    bannerUrl: '/images/tournaments/mel_moj_league_2026.jpg',
     rules: [
       'Official Mel & Moj Padel League supervised by the Tehran Padel Committee.',
       'Premier professional division hosted at Lafour Club padel courts.',
