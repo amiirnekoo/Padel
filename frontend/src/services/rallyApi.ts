@@ -304,7 +304,12 @@ export const rallyApi = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
       });
-      const data = await res.json();
+      let data: any = {};
+      try {
+        data = await res.json();
+      } catch {
+        return { success: false, error: 'خطای سرور در پردازش احراز هویت. لطفاً لحظاتی بعد مجدداً تلاش کنید.' };
+      }
       if (!res.ok) {
         return { success: false, error: data.detail || 'نام کاربری یا رمز عبور اشتباه است.' };
       }

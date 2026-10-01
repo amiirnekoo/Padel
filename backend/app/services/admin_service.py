@@ -332,7 +332,7 @@ class AdminService:
             target_type=target_type,
             target_id=target_id,
             details=details,
-            timestamp=datetime.now(timezone.utc)
+            timestamp=datetime.utcnow()
         )
         self.session.add(log)
         return log

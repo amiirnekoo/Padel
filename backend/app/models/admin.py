@@ -17,7 +17,7 @@ class AdminIncidentReport(Base):
     reporter_name = Column(String(100), nullable=False, default="ادمین عملیاتی")
     is_resolved = Column(Boolean, default=False)
     resolution_notes = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=datetime.utcnow)
 
 class AdminAuditLog(Base):
     """
@@ -31,4 +31,4 @@ class AdminAuditLog(Base):
     target_type = Column(String(50), nullable=False)  # PRODUCT, MATCH, ORDER, COURT
     target_id = Column(String(100), nullable=False)
     details = Column(JSON, nullable=True)
-    timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    timestamp = Column(DateTime, default=datetime.utcnow)
