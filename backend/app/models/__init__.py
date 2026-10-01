@@ -12,6 +12,10 @@ from backend.app.models.settlement import SettlementBatch, SettlementItem
 from backend.app.models.notification import NotificationLog
 from backend.app.models.matchmaking import MatchmakingGame
 from backend.app.models.admin import AdminIncidentReport, AdminAuditLog
+from backend.app.models.product import ProductCategory, Product, ProductImage, ShopOrder, ShopOrderItem
+from backend.app.models.content import ArticleCategory, Article, SiteBanner, MediaAsset
+from backend.app.models.tournament import Tournament, PlayerRanking
+from backend.app.models.admin_user import AdminUser
 
 __all__ = [
     "Base",
@@ -35,4 +39,16 @@ __all__ = [
     "MatchmakingGame",
     "AdminIncidentReport",
     "AdminAuditLog",
+    "ProductCategory",
+    "Product",
+    "ProductImage",
+    "ShopOrder",
+    "ShopOrderItem",
+    "ArticleCategory",
+    "Article",
+    "SiteBanner",
+    "MediaAsset",
+    "Tournament",
+    "PlayerRanking",
+    "AdminUser",
 ]
