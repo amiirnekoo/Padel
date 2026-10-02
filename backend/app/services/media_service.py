@@ -121,3 +121,91 @@ class MediaService:
         await db.delete(asset)
         await db.commit()
         return True
+
+    @staticmethod
+    def process_product_responsive_images(
+        content_bytes: bytes,
+        product_slug: str,
+        image_name: str = "1"
+    ) -> Dict[str, Any]:
+        """
+        پردازش فوق‌حرفه‌ای تصویر ورودی و ساخت خودکار ابعاد رسپانسیو:
+        - نسخه دسکتاپ رتینا (Desktop HD) - 1200x1200px
+        - نسخه تبلت (Tablet) - 800x800px
+        - نسخه موبایل (Mobile) - 480x480px
+        - نسخه بندانگشتی (Thumbnail) - 200x200px
+        تمام نسخه‌ها در فرمت مدرن و سبک WebP با نهایت شارپنس (Lanczos) فشرده و ذخیره می‌شوند.
+        """
+        import io
+        import re
+        from PIL import Image, ImageOps
+
+        # پاکسازی نام پوشه و فایل
+        clean_slug = re.sub(r'[^a-zA-Z0-9_\-]', '', product_slug.lower()) or "product"
+        clean_name = re.sub(r'[^a-zA-Z0-9_\-]', '', str(image_name).lower()) or "img"
+
+        target_dir = os.path.join(MediaService.get_upload_path(), "products", clean_slug)
+        os.makedirs(target_dir, exist_ok=True)
+
+        try:
+            raw_image = Image.open(io.BytesIO(content_bytes))
+            # تصحیح جهت دوربین گوشی
+            raw_image = ImageOps.exif_transpose(raw_image)
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=f"فایل ارسال‌شده تصویر معتبر نمی‌باشد: {str(e)}")
+
+        orig_w, orig_h = raw_image.size
+
+        # ابعاد هدف
+        size_configs = {
+            "desktop": (1200, 1200, 88),
+            "tablet": (800, 800, 85),
+            "mobile": (480, 480, 82),
+            "thumbnail": (200, 200, 80)
+        }
+
+        generated_urls = {}
+        metadata_sizes = {}
+
+        # تبدیل به RGBA یا RGB مناسب برای WebP
+        if raw_image.mode not in ("RGB", "RGBA"):
+            base_img = raw_image.convert("RGBA" if "transparency" in raw_image.info or raw_image.mode == "P" else "RGB")
+        else:
+            base_img = raw_image
+
+        for variant_key, (max_w, max_h, quality) in size_configs.items():
+            img_copy = base_img.copy()
+            # حفظ نسبت تصویر و اندازه متناسب
+            img_copy.thumbnail((max_w, max_h), Image.Resampling.LANCZOS)
+            
+            suffix = "thumb" if variant_key == "thumbnail" else variant_key
+            file_name = f"{clean_name}_{suffix}.webp"
+            file_path = os.path.join(target_dir, file_name)
+
+            # ذخیره با فشرده‌سازی WebP باکیفیت و بدون افت
+            img_copy.save(file_path, "WEBP", quality=quality, method=6)
+
+            public_url = f"/uploads/products/{clean_slug}/{file_name}"
+            generated_urls[variant_key] = public_url
+            metadata_sizes[variant_key] = {
+                "width": img_copy.width,
+                "height": img_copy.height,
+                "url": public_url
+            }
+
+        # URL نسخه اصلی به عنوان نسخه پیش‌فرض
+        primary_url = generated_urls.get("desktop", generated_urls.get("mobile"))
+
+        return {
+            "primary_url": primary_url,
+            "desktop": generated_urls["desktop"],
+            "tablet": generated_urls["tablet"],
+            "mobile": generated_urls["mobile"],
+            "thumbnail": generated_urls["thumbnail"],
+            "metadata": {
+                "original_size": [orig_w, orig_h],
+                "slug": clean_slug,
+                "sizes": metadata_sizes
+            }
+        }
+

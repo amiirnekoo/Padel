@@ -720,6 +720,21 @@ export const rallyApi = {
     }
   },
 
+  async processProductImage(payload: { product_slug: string; image_name?: string; content_base64: string }) {
+    try {
+      const res = await fetch(`${API_BASE}/admin/media/process-product-image`, {
+        method: 'POST',
+        headers: this.getAdminAuthHeaders(),
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در پردازش تصویر رسپانسیو' };
+      return { success: true, data };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در برقراری ارتباط با موتور پردازش تصویر' };
+    }
+  },
+
   async uploadAdminMedia(payload: { file_name: string; data_base64: string; folder?: string; alt_text?: string }) {
     try {
       const res = await fetch(`${API_BASE}/admin/media/upload`, {

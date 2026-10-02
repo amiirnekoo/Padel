@@ -859,6 +859,34 @@ class MediaUploadPayload(BaseModel):
     content_base64: str
     folder: str = "general"
 
+class ProductImageProcessPayload(BaseModel):
+    product_slug: str
+    image_name: str = "1"
+    content_base64: str
+
+@router.post("/media/process-product-image")
+async def process_product_image_endpoint(
+    payload: ProductImageProcessPayload,
+    admin: dict = Depends(get_current_admin)
+):
+    """پردازش بهینه و خودکار تصویر کالا در ابعاد رسپانسیو وب، موبایل و تبلت با فرمت WebP"""
+    import base64
+    raw_b64 = payload.content_base64
+    if "," in raw_b64:
+        _, raw_b64 = raw_b64.split(",", 1)
+
+    try:
+        content_bytes = base64.b64decode(raw_b64)
+    except Exception:
+        raise HTTPException(status_code=400, detail="فرمت داده Base64 نامعتبر است.")
+
+    variants = MediaService.process_product_responsive_images(
+        content_bytes=content_bytes,
+        product_slug=payload.product_slug,
+        image_name=payload.image_name
+    )
+    return variants
+
 @router.post("/media/upload")
 async def upload_media_asset(
     payload: MediaUploadPayload,
