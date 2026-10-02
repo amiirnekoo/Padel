@@ -4,6 +4,7 @@ from typing import Optional, List
 from sqlalchemy import String, Integer, BigInteger, Boolean, DateTime, Text, Float, JSON, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from backend.app.models.base import Base
+from backend.app.core.datetime_utils import utc_now
 
 
 class ProductCategory(Base):
@@ -16,7 +17,7 @@ class ProductCategory(Base):
     icon: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     display_order: Mapped[int] = mapped_column(Integer, default=0)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
 
     products: Mapped[List["Product"]] = relationship("Product", back_populates="category_rel")
 
@@ -59,8 +60,8 @@ class Product(Base):
     specs: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
     technologies: Mapped[Optional[list]] = mapped_column(JSON, nullable=True)
 
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now, onupdate=utc_now)
 
     # Relationships
     category_rel: Mapped["ProductCategory"] = relationship("ProductCategory", back_populates="products")
@@ -76,7 +77,7 @@ class ProductImage(Base):
     alt_text: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     display_order: Mapped[int] = mapped_column(Integer, default=0)
     is_primary: Mapped[bool] = mapped_column(Boolean, default=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
 
     product: Mapped["Product"] = relationship("Product", back_populates="images")
 
@@ -107,8 +108,8 @@ class ShopOrder(Base):
     shipping_tracking_code: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     admin_notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now, onupdate=utc_now)
 
     items: Mapped[List["ShopOrderItem"]] = relationship("ShopOrderItem", back_populates="order", cascade="all, delete-orphan")
 

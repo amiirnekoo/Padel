@@ -113,9 +113,32 @@ class FarazSmsProvider(BaseSmsProvider):
             return SmsResult(success=False, provider="farazsms", recipient=receptor, error=str(e))
 
 
-def get_sms_provider(provider_type: str = "mock") -> BaseSmsProvider:
-    if provider_type == "kavenegar":
+class DisabledSmsProvider(BaseSmsProvider):
+    """Explicitly fails and warns when SMS provider is unconfigured or mock in production."""
+    async def send_pattern_sms(
+        self,
+        receptor: str,
+        template: str,
+        tokens: dict
+    ) -> SmsResult:
+        logger.warning(f"[SMS DISABLED] SMS provider is unconfigured or disabled in production for {receptor}")
+        return SmsResult(
+            success=False,
+            provider="disabled",
+            recipient=receptor,
+            error="سرویس ارسال پیامک در محیط عملیاتی پیکربندی نشده است"
+        )
+
+
+def get_sms_provider(provider_type: str = "mock", is_production: bool = False) -> BaseSmsProvider:
+    provider = provider_type.lower().strip()
+    if is_production and provider in ["mock", "simulator", "none", ""]:
+        return DisabledSmsProvider()
+    if provider == "kavenegar":
         return KavenegarSmsProvider()
-    if provider_type == "farazsms":
+    if provider == "farazsms":
         return FarazSmsProvider()
+    if is_production:
+        return DisabledSmsProvider()
     return MockSmsProvider()
+

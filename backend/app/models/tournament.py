@@ -4,6 +4,7 @@ from typing import Optional
 from sqlalchemy import String, Integer, BigInteger, Boolean, DateTime, Date, Text, Float
 from sqlalchemy.orm import Mapped, mapped_column
 from backend.app.models.base import Base
+from backend.app.core.datetime_utils import utc_now
 
 
 class Tournament(Base):
@@ -32,8 +33,8 @@ class Tournament(Base):
     rules_summary: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now, onupdate=utc_now)
 
 
 class PlayerRanking(Base):
@@ -49,4 +50,4 @@ class PlayerRanking(Base):
     matches_won: Mapped[int] = mapped_column(Integer, default=0)
     matches_lost: Mapped[int] = mapped_column(Integer, default=0)
     win_rate: Mapped[float] = mapped_column(Float, default=0.0)
-    last_updated: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    last_updated: Mapped[datetime] = mapped_column(DateTime, default=utc_now)

@@ -2,6 +2,7 @@ import asyncio
 import logging
 from datetime import datetime, timedelta
 from sqlalchemy import select, update
+from backend.app.core.datetime_utils import utc_now
 from backend.app.models.base import async_session_factory
 from backend.app.models.slot import TimeSlot
 from backend.app.models.booking import Booking
@@ -9,7 +10,7 @@ from backend.app.models.booking import Booking
 logger = logging.getLogger("cleanup_worker")
 
 async def cleanup_expired_holds(session_factory=None) -> int:
-    now = datetime.utcnow()
+    now = utc_now()
     factory = session_factory or async_session_factory
     async with factory() as session:
         # 1. Release expired slots from HOLD back to AVAILABLE

@@ -3,6 +3,7 @@ from datetime import datetime
 from sqlalchemy import String, Boolean, DateTime, Numeric, Text, ForeignKey, BigInteger
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from backend.app.models.base import Base
+from backend.app.core.datetime_utils import utc_now
 
 class Club(Base):
     __tablename__ = "clubs"
@@ -22,7 +23,7 @@ class Club(Base):
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     approval_status: Mapped[str] = mapped_column(String(30), nullable=False, default="APPROVED")  # PENDING_APPROVAL, APPROVED, REJECTED
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
 
     courts: Mapped[list["Court"]] = relationship("Court", back_populates="club", cascade="all, delete-orphan")
 

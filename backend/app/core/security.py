@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from typing import Any, Optional
 from jose import jwt
 from backend.app.core.config import settings
+from backend.app.core.datetime_utils import utc_now
 
 
 def get_password_hash(password: str) -> str:
@@ -28,9 +29,9 @@ def create_access_token(
     expires_delta: Optional[timedelta] = None
 ) -> str:
     if expires_delta:
-        expire = datetime.utcnow() + expires_delta
+        expire = utc_now() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        expire = utc_now() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     
     to_encode = {
         "sub": str(subject),

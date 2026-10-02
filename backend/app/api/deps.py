@@ -26,6 +26,17 @@ async def get_current_user_id(credentials: HTTPAuthorizationCredentials = Depend
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="توکن نامعتبر یا منقضی شده است")
 
 
+async def get_optional_user_id(credentials: HTTPAuthorizationCredentials | None = Depends(security)) -> str | None:
+    if not credentials:
+        return None
+    token = credentials.credentials
+    try:
+        payload = decode_token(token)
+        return payload.get("sub")
+    except JWTError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="توکن نامعتبر یا منقضی شده است")
+
+
 async def get_current_operator(credentials: HTTPAuthorizationCredentials = Depends(security)) -> dict:
     if not credentials:
         if settings.ALLOW_DEV_AUTH_BYPASS:

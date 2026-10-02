@@ -3,6 +3,7 @@ from datetime import datetime
 from sqlalchemy import String, Boolean, DateTime, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from backend.app.models.base import Base
+from backend.app.core.datetime_utils import utc_now
 
 class User(Base):
     __tablename__ = "users"
@@ -24,7 +25,7 @@ class User(Base):
     kyc_status: Mapped[str] = mapped_column(String(20), nullable=False, default="UNVERIFIED")  # UNVERIFIED, PENDING, VERIFIED
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
 
     coach_profile: Mapped["CoachProfile | None"] = relationship("CoachProfile", back_populates="user", uselist=False, cascade="all, delete-orphan")
     training_connections: Mapped[list["CoachTrainee"]] = relationship("CoachTrainee", back_populates="trainee", foreign_keys="CoachTrainee.trainee_id")

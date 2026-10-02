@@ -3,6 +3,7 @@ from datetime import datetime
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from backend.app.core.datetime_utils import utc_now
 from backend.app.models.booking import Booking
 from backend.app.models.payment import PaymentAttempt
 from backend.app.models.slot import TimeSlot
@@ -10,6 +11,7 @@ from backend.app.models.refund import Refund
 from backend.app.models.user import User
 from backend.app.models.club import Club, Court
 from backend.app.services.notification_service import NotificationService
+from backend.app.core.config import settings
 
 class PaymentService:
     @staticmethod
@@ -32,8 +34,14 @@ class PaymentService:
         slot_res = await db.execute(slot_stmt)
         slot = slot_res.scalar_one()
 
-        if slot.status != "HOLD" or (slot.hold_expires_at and slot.hold_expires_at < datetime.utcnow()):
+        if slot.status != "HOLD" or (slot.hold_expires_at and slot.hold_expires_at < utc_now()):
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="مهلت پرداخت ۱۰ دقیقه‌ای این سانس منقضی شده است")
+
+        if settings.ENVIRONMENT == "production" and settings.PAYMENT_GATEWAY_PROVIDER in ["MOCK", "SIMULATOR", ""]:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="درگاه پرداخت الکترونیک شاپرک در محیط پروداکشن فعال نیست و شبیه‌ساز پرداخت مسدود است"
+            )
 
         # Generate unique idempotency key
         idempotency_key = f"PAY-{uuid.uuid4()}"
@@ -73,6 +81,12 @@ class PaymentService:
         if not attempt:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="تلاش پرداخت یافت نشد")
 
+        if settings.ENVIRONMENT == "production" and attempt.gateway_name == "SHAPARAK_SIMULATOR":
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="کال‌بک شبیه‌ساز پرداخت در محیط پروداکشن پذیرفته نمی‌شود"
+            )
+
         # Idempotency check: If already processed, return current state
         if attempt.status in ["SUCCESSFUL", "REVERSED", "FAILED"]:
             return {
@@ -89,7 +103,7 @@ class PaymentService:
         slot_res = await db.execute(slot_stmt)
         slot = slot_res.scalar_one()
 
-        now = datetime.utcnow()
+        now = utc_now()
 
         if not success:
             attempt.status = "FAILED"

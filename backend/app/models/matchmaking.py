@@ -3,6 +3,7 @@ from datetime import datetime
 from sqlalchemy import String, BigInteger, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from backend.app.models.base import Base
+from backend.app.core.datetime_utils import utc_now
 
 class MatchmakingGame(Base):
     __tablename__ = "matchmaking_games"
@@ -25,7 +26,7 @@ class MatchmakingGame(Base):
     team_b_right_user_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
     team_b_left_user_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
 
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
 
     # Relationships
     club = relationship("Club")

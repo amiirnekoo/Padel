@@ -3,6 +3,7 @@ from datetime import datetime
 from sqlalchemy import String, Text, DateTime
 from sqlalchemy.orm import Mapped, mapped_column
 from backend.app.models.base import Base
+from backend.app.core.datetime_utils import utc_now
 
 class NotificationLog(Base):
     __tablename__ = "notification_logs"
@@ -16,4 +17,4 @@ class NotificationLog(Base):
     status: Mapped[str] = mapped_column(String(20), nullable=False, default="DELIVERED", index=True)  # DELIVERED, FAILED, PENDING
     message_id: Mapped[str | None] = mapped_column(String(100), nullable=True, index=True)
     error_message: Mapped[str | None] = mapped_column(Text, nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now, index=True)

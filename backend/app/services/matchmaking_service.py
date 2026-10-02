@@ -2,6 +2,7 @@ import uuid
 from datetime import datetime
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from backend.app.core.datetime_utils import utc_now
 from backend.app.models.matchmaking import MatchmakingGame
 from backend.app.models.slot import TimeSlot
 from backend.app.models.club import Club, Court
@@ -72,7 +73,7 @@ class MatchmakingService:
             team_a_left_user_id=team_a_left,
             team_b_right_user_id=team_b_right,
             team_b_left_user_id=team_b_left,
-            created_at=datetime.utcnow()
+            created_at=utc_now()
         )
         db.add(game)
         await db.commit()
@@ -170,7 +171,7 @@ class MatchmakingService:
                     status="CONFIRMED",
                     payment_method="WALLET_SPLIT",
                     settlement_status="UNSETTLED",
-                    confirmed_at=datetime.utcnow()
+                    confirmed_at=utc_now()
                 )
                 db.add(booking)
 

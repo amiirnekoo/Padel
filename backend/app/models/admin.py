@@ -2,6 +2,7 @@ import uuid
 from datetime import datetime, timezone
 from sqlalchemy import Column, String, Text, DateTime, Boolean, JSON
 from backend.app.models.base import Base
+from backend.app.core.datetime_utils import utc_now
 
 class AdminIncidentReport(Base):
     """
@@ -17,7 +18,7 @@ class AdminIncidentReport(Base):
     reporter_name = Column(String(100), nullable=False, default="ادمین عملیاتی")
     is_resolved = Column(Boolean, default=False)
     resolution_notes = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=utc_now)
 
 class AdminAuditLog(Base):
     """
@@ -31,4 +32,4 @@ class AdminAuditLog(Base):
     target_type = Column(String(50), nullable=False)  # PRODUCT, MATCH, ORDER, COURT
     target_id = Column(String(100), nullable=False)
     details = Column(JSON, nullable=True)
-    timestamp = Column(DateTime, default=datetime.utcnow)
+    timestamp = Column(DateTime, default=utc_now)

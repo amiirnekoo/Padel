@@ -6,7 +6,7 @@ class Settings(BaseSettings):
 
     PROJECT_NAME: str = "Padel & Tennis Court Booking Engine"
     API_V1_STR: str = "/api/v1"
-    ENVIRONMENT: str = os.getenv("ENVIRONMENT", "production")
+    ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
     ALLOW_DEV_AUTH_BYPASS: bool = os.getenv("ALLOW_DEV_AUTH_BYPASS", "false").lower() == "true"
     SECRET_KEY: str = os.getenv("SECRET_KEY", "super-secret-padel-jwt-key-for-development-2026")
     ALGORITHM: str = "HS256"

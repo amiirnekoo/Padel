@@ -8,13 +8,15 @@ from backend.app.models.booking import Booking
 from backend.app.models.slot import TimeSlot
 from backend.app.models.club import Club, Court
 from backend.app.core.sms import get_sms_provider, BaseSmsProvider
+from backend.app.core.config import settings
 
 class NotificationService:
     @staticmethod
     def _provider() -> BaseSmsProvider:
         import os
-        provider_name = os.getenv("SMS_PROVIDER", "mock").lower()
-        return get_sms_provider(provider_name)
+        provider_name = os.getenv("SMS_PROVIDER", settings.SMS_PROVIDER).lower()
+        is_prod = (settings.ENVIRONMENT == "production")
+        return get_sms_provider(provider_name, is_production=is_prod)
 
     @staticmethod
     async def send_booking_confirmation(

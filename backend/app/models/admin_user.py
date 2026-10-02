@@ -4,6 +4,7 @@ from typing import Optional
 from sqlalchemy import String, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 from backend.app.models.base import Base
+from backend.app.core.datetime_utils import utc_now
 
 
 class AdminUser(Base):
@@ -20,5 +21,5 @@ class AdminUser(Base):
     club_id: Mapped[Optional[str]] = mapped_column(String(36), ForeignKey("clubs.id"), nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     last_login_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now, onupdate=utc_now)

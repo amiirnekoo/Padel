@@ -4,6 +4,7 @@ from typing import Optional, List
 from sqlalchemy import String, Integer, BigInteger, Boolean, DateTime, Text, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from backend.app.models.base import Base
+from backend.app.core.datetime_utils import utc_now
 
 
 class ArticleCategory(Base):
@@ -13,7 +14,7 @@ class ArticleCategory(Base):
     title: Mapped[str] = mapped_column(String(100), nullable=False)
     slug: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
     display_order: Mapped[int] = mapped_column(Integer, default=0)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
 
     articles: Mapped[List["Article"]] = relationship("Article", back_populates="category_rel")
 
@@ -32,9 +33,9 @@ class Article(Base):
     reading_time_minutes: Mapped[int] = mapped_column(Integer, default=5)
     view_count: Mapped[int] = mapped_column(Integer, default=0)
     is_published: Mapped[bool] = mapped_column(Boolean, default=True)
-    published_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    published_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now, onupdate=utc_now)
 
     category_rel: Mapped["ArticleCategory"] = relationship("ArticleCategory", back_populates="articles")
 
@@ -52,7 +53,7 @@ class SiteBanner(Base):
     banner_type: Mapped[str] = mapped_column(String(50), default="HERO_SLIDER")  # HERO_SLIDER, PROMO_STRIP, SHOP_TOP
     display_order: Mapped[int] = mapped_column(Integer, default=0)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
 
 
 class MediaAsset(Base):
@@ -65,4 +66,4 @@ class MediaAsset(Base):
     mime_type: Mapped[str] = mapped_column(String(100), nullable=False)
     folder: Mapped[str] = mapped_column(String(50), default="general")  # products, banners, articles, courts, avatars
     uploaded_by: Mapped[str] = mapped_column(String(100), default="admin")
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)

@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from backend.app.models.club import Club, Court
 from backend.app.models.slot import TimeSlot
 from backend.app.models.booking import Booking
+from backend.app.core.datetime_utils import utc_now
 from backend.app.models.settlement import SettlementBatch, SettlementItem
 
 class SettlementService:
@@ -43,7 +44,7 @@ class SettlementService:
         commission_amount = int(total_amount * (commission_rate / 100.0))
         payout_amount = total_amount - commission_amount
 
-        batch_number = f"PAYA-{datetime.utcnow().strftime('%Y%m%d')}-{uuid.uuid4().hex[:6].upper()}"
+        batch_number = f"PAYA-{utc_now().strftime('%Y%m%d')}-{uuid.uuid4().hex[:6].upper()}"
         batch = SettlementBatch(
             id=str(uuid.uuid4()),
             batch_number=batch_number,
@@ -91,7 +92,7 @@ class SettlementService:
 
         batch.status = "PAID"
         batch.paya_reference = paya_reference
-        batch.paid_at = datetime.utcnow()
+        batch.paid_at = utc_now()
 
         await db.commit()
         await db.refresh(batch)

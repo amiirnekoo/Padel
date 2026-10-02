@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime, timezone
+from backend.app.core.datetime_utils import utc_now
 from typing import List, Optional, Dict, Any
 from sqlalchemy import select, func, desc
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -72,7 +73,7 @@ class AdminService:
                 role=admin_user.role,
                 club_id=admin_user.club_id
             )
-            admin_user.last_login_at = datetime.utcnow()
+            admin_user.last_login_at = utc_now()
             await self.record_audit_log(
                 admin_name=username,
                 action="ADMIN_LOGIN_SUCCESS",
@@ -332,7 +333,7 @@ class AdminService:
             target_type=target_type,
             target_id=target_id,
             details=details,
-            timestamp=datetime.utcnow()
+            timestamp=utc_now()
         )
         self.session.add(log)
         return log

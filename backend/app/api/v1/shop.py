@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel, Field
 from typing import List, Optional
 from backend.app.core.database import get_db
 from backend.app.services.shop_service import ShopService
+from backend.app.api.deps import get_current_user_id
 
 router = APIRouter(prefix="/shop", tags=["Shop"])
 
@@ -16,7 +17,7 @@ class CalculateCartRequest(BaseModel):
     coupon_code: Optional[str] = None
 
 class CheckoutRequest(BaseModel):
-    user_id: str = Field(..., description="شناسه کاربر خریدار")
+    user_id: Optional[str] = Field(None, description="شناسه کاربر خریدار (در صورت عدم ارسال از توکن استخراج می‌شود)")
     items: List[CartItemPayload]
     delivery_address: str = Field(..., description="آدرس پستی جهت ارسال مرسوله")
     receiver_name: str = Field(..., description="نام تحویل‌گیرنده")
@@ -56,14 +57,21 @@ async def calculate_cart(payload: CalculateCartRequest):
 @router.post("/checkout")
 async def checkout_shop_order(
     payload: CheckoutRequest,
+    current_user_id: str = Depends(get_current_user_id),
     db: AsyncSession = Depends(get_db)
 ):
     """ثبت نهایی سفارش، کسر از کیف پول یا ارجاع به درگاه بانکی شاپرک"""
+    if payload.user_id and payload.user_id != current_user_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="دسترسی غیرمجاز؛ ثبت سفارش به نام یا از حساب کاربر دیگر امکان‌پذیر نیست."
+        )
+
     try:
         items_data = [item.model_dump() for item in payload.items]
         order = await ShopService.checkout_order(
             db=db,
-            user_id=payload.user_id,
+            user_id=current_user_id,
             items=items_data,
             delivery_address=payload.delivery_address,
             receiver_name=payload.receiver_name,

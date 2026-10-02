@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field
 from backend.app.core.database import get_db
 from backend.app.services.wallet_service import WalletService
 from backend.app.api.deps import get_current_user_id
+from backend.app.core.config import settings
 
 router = APIRouter(prefix="/wallet", tags=["Wallet & Instant Checkout"])
 
@@ -38,6 +39,12 @@ async def topup_wallet(
     db: AsyncSession = Depends(get_db)
 ):
     """شارژ موجودی کیف پول کاربر پس از بازگشت موفق از شاپرک."""
+    if settings.ENVIRONMENT == "production":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="شارژ مستقیم و تستی کیف پول در محیط پروداکشن مسدود است. افزایش موجودی منحصراً از طریق درگاه پرداخت الکترونیک شاپرک یا پنل مدیریت امکان‌پذیر است."
+        )
+
     try:
         wallet = await WalletService.top_up_wallet(
             db,

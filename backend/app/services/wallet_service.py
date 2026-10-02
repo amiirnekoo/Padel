@@ -3,6 +3,7 @@ from datetime import datetime
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from backend.app.models.wallet import Wallet, WalletTransaction
+from backend.app.core.datetime_utils import utc_now
 from backend.app.models.slot import TimeSlot
 from backend.app.models.booking import Booking
 from backend.app.models.user import User
@@ -96,7 +97,7 @@ class WalletService:
         slot.status = "BOOKED"
         slot.hold_expires_at = None
 
-        now = datetime.utcnow()
+        now = utc_now()
         booking = None
         if booking_id:
             b_stmt = select(Booking).where(Booking.id == booking_id)

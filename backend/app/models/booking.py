@@ -3,6 +3,7 @@ from datetime import datetime
 from sqlalchemy import String, BigInteger, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from backend.app.models.base import Base
+from backend.app.core.datetime_utils import utc_now
 
 class Booking(Base):
     __tablename__ = "bookings"
@@ -15,7 +16,7 @@ class Booking(Base):
     status: Mapped[str] = mapped_column(String(30), nullable=False, default="PENDING_PAYMENT", index=True)  # PENDING_PAYMENT, CONFIRMED, CANCELLED_BY_USER, CANCELLED_BY_CLUB, EXPIRED
     payment_method: Mapped[str] = mapped_column(String(30), nullable=False, default="DIRECT_GATEWAY")  # DIRECT_GATEWAY, WALLET
     settlement_status: Mapped[str] = mapped_column(String(20), nullable=False, default="UNSETTLED")  # UNSETTLED, SETTLED
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
     confirmed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     cancelled_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 

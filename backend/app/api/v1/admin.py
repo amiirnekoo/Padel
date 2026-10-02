@@ -1014,7 +1014,8 @@ async def list_incidents(
 @router.post("/incidents", status_code=status.HTTP_201_CREATED)
 async def report_incident(
     req: IncidentCreateRequest,
-    session: AsyncSession = Depends(get_db_session)
+    session: AsyncSession = Depends(get_db_session),
+    admin: dict = Depends(get_current_admin)
 ):
     service = AdminService(session)
     inc = await service.create_incident_report(

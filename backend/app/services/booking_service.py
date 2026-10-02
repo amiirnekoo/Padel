@@ -7,6 +7,7 @@ from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update, or_, and_
 from backend.app.core.config import settings
+from backend.app.core.datetime_utils import utc_now
 from backend.app.models.slot import TimeSlot
 from backend.app.models.booking import Booking
 from backend.app.models.club import Court, Club
@@ -31,7 +32,7 @@ class BookingService:
         if not slot:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="سانس مورد نظر یافت نشد")
 
-        now = datetime.utcnow()
+        now = utc_now()
         hold_expires = now + timedelta(minutes=settings.HOLD_EXPIRATION_MINUTES)
 
         # Atomic conditional transition: Only updates if slot is AVAILABLE or has an expired HOLD
@@ -86,7 +87,7 @@ class BookingService:
         courts_result = await db.execute(stmt)
         courts = courts_result.scalars().all()
 
-        now = datetime.utcnow()
+        now = utc_now()
         calendar_data = []
 
         for court in courts:
@@ -185,7 +186,7 @@ class BookingService:
         slot = slot_res.scalar_one()
 
         slot_datetime = datetime.combine(slot.slot_date, slot.start_time)
-        now = datetime.utcnow()
+        now = utc_now()
         hours_to_slot = (slot_datetime - now).total_seconds() / 3600.0
 
         if is_club_emergency:

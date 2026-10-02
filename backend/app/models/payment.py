@@ -3,6 +3,7 @@ from datetime import datetime
 from sqlalchemy import String, BigInteger, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from backend.app.models.base import Base
+from backend.app.core.datetime_utils import utc_now
 
 class PaymentAttempt(Base):
     __tablename__ = "payment_attempts"
@@ -15,7 +16,7 @@ class PaymentAttempt(Base):
     status: Mapped[str] = mapped_column(String(30), nullable=False, default="INITIATED")  # INITIATED, SUCCESSFUL, FAILED, REVERSED
     gateway_token: Mapped[str | None] = mapped_column(String(255), nullable=True)
     ref_id: Mapped[str | None] = mapped_column(String(100), nullable=True, index=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
     verified_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
     booking: Mapped["Booking"] = relationship("Booking", back_populates="payment_attempts")

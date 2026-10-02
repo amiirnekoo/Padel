@@ -3,6 +3,7 @@ from datetime import datetime
 from sqlalchemy import String, Integer, DateTime, Text, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from backend.app.models.base import Base
+from backend.app.core.datetime_utils import utc_now
 
 class CoachTrainee(Base):
     __tablename__ = "coach_trainees"
@@ -15,7 +16,7 @@ class CoachTrainee(Base):
     total_sessions: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
     completed_sessions: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
 
     coach: Mapped["CoachProfile"] = relationship("CoachProfile", back_populates="trainee_connections")
     trainee: Mapped["User"] = relationship("User", back_populates="training_connections")
