@@ -20,15 +20,13 @@ import { MOCK_SHOP_PRODUCTS } from './data/mockRallyShopData';
 import { AdminPortalPage } from './pages/rally/admin/AdminPortalPage';
 import { UnifiedPortalPage } from './pages/rally/portal/UnifiedPortalPage';
 import { rallyApi } from './services/rallyApi';
+import { useRallyRouter } from './hooks/useRallyRouter';
 
 export const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<RallyPageTab>('home');
   const [selectedCity] = useState('تهران');
   const [walletBalance, setWalletBalance] = useState<number>(35000000);
   const [isWalletOpen, setIsWalletOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
-  const [isAdminOpen, setIsAdminOpen] = useState(() => window.location.pathname.startsWith('/admin'));
-  const [isPortalOpen, setIsPortalOpen] = useState(() => window.location.pathname.startsWith('/portal'));
 
   const [userSession, setUserSession] = useState<UserSession | null>(() => {
     try {
@@ -43,7 +41,6 @@ export const App: React.FC = () => {
   const [bookingSlot, setBookingSlot] = useState<{ club: CourtClub; slot: TimeSlotItem } | null>(null);
   const [selectedCoach, setSelectedCoach] = useState<Coach | null>(null);
   const [selectedTournament, setSelectedTournament] = useState<Tournament | null>(null);
-  const [selectedProduct, setSelectedProduct] = useState<ShopProduct | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [shopReceipt, setShopReceipt] = useState<ShopOrderReceipt | null>(null);
   const [cartItems, setCartItems] = useState<CartItem[]>(() => {
@@ -66,14 +63,22 @@ export const App: React.FC = () => {
     }
   });
 
-  useEffect(() => {
-    const handlePopState = () => {
-      setIsAdminOpen(window.location.pathname.startsWith('/admin'));
-      setIsPortalOpen(window.location.pathname.startsWith('/portal'));
-    };
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
+  const {
+    route,
+    navigateToTab,
+    navigateToProduct,
+    backToShop,
+    navigateToPortal,
+    navigateToAdmin,
+    exitSpecialPage,
+  } = useRallyRouter(productsList);
+
+  const activeTab = route.tab;
+  const isAdminOpen = route.isAdmin;
+  const isPortalOpen = route.isPortal;
+  const selectedProduct = route.productId
+    ? productsList.find((p) => p.id === route.productId) || null
+    : null;
 
   useEffect(() => {
     try { localStorage.setItem('rally_cart', JSON.stringify(cartItems)); } catch {}
@@ -123,10 +128,7 @@ export const App: React.FC = () => {
         products={productsList}
         onUpdateProduct={handleUpdateProduct}
         onAddProduct={handleAddProduct}
-        onExitAdmin={() => {
-          window.history.pushState({}, '', '/');
-          setIsAdminOpen(false);
-        }}
+        onExitAdmin={exitSpecialPage}
       />
     );
   }
@@ -137,15 +139,11 @@ export const App: React.FC = () => {
         userSession={userSession || { userId: 'usr-1', fullName: 'کاربر رالی', phoneNumber: '۰۹۱۲۳۴۵۶۷۸۹', role: 'PLAYER', token: 'mock-jwt-token-2026' }}
         walletBalance={walletBalance}
         onOpenWallet={() => setIsWalletOpen(true)}
-        onExitPortal={() => {
-          window.history.pushState({}, '', '/');
-          setIsPortalOpen(false);
-        }}
+        onExitPortal={exitSpecialPage}
         onLogout={() => {
           localStorage.removeItem('padel_auth');
           setUserSession(null);
-          window.history.pushState({}, '', '/');
-          setIsPortalOpen(false);
+          exitSpecialPage();
         }}
       />
     );
@@ -155,10 +153,10 @@ export const App: React.FC = () => {
     <div className="min-h-screen flex flex-col bg-rally-light-bg text-rally-charcoal selection:bg-rally-accent selection:text-rally-charcoal font-sans">
       <ModernRallyHeader
         activeTab={activeTab as any}
-        onSelectTab={(tab) => { setSelectedProduct(null); setActiveTab(tab as RallyPageTab); }}
+        onSelectTab={(tab) => navigateToTab(tab as RallyPageTab)}
         userSession={userSession}
         onOpenAuth={() => setIsAuthOpen(true)}
-        onOpenPortal={() => { window.history.pushState({}, '', '/portal'); setIsPortalOpen(true); }}
+        onOpenPortal={navigateToPortal}
         cartItemsCount={cartItems.reduce((acc, i) => acc + i.quantity, 0)}
         onOpenCart={() => setIsCartOpen(true)}
       />
@@ -177,9 +175,9 @@ export const App: React.FC = () => {
               <RallyProductDetailPage
                 product={selectedProduct}
                 allProducts={productsList}
-                onBackToShop={() => setSelectedProduct(null)}
+                onBackToShop={backToShop}
                 onAddToCart={(p, qty) => handleAddToCart(p, qty || 1)}
-                onSelectProduct={setSelectedProduct}
+                onSelectProduct={(p) => navigateToProduct(p.id)}
                 onOpenCart={() => setIsCartOpen(true)}
                 cartProductIds={new Set(cartItems.map((i) => i.product.id))}
               />
@@ -192,12 +190,12 @@ export const App: React.FC = () => {
                     onSelectDirectSlot={(club, slot) => setBookingSlot({ club, slot })}
                     onSelectCoach={setSelectedCoach}
                     onSelectTournament={setSelectedTournament}
-                    onNavigateToCourts={(f) => { if (f) setCourtFilterParam(f); setActiveTab('courts'); }}
-                    onNavigateToCoaches={(f) => { if (f) setCoachFilterParam(f); setActiveTab('coaches'); }}
-                    onNavigateToTournaments={() => setActiveTab('tournaments')}
+                    onNavigateToCourts={(f) => { if (f) setCourtFilterParam(f); navigateToTab('courts'); }}
+                    onNavigateToCoaches={(f) => { if (f) setCoachFilterParam(f); navigateToTab('coaches'); }}
+                    onNavigateToTournaments={() => navigateToTab('tournaments')}
                     onNavigateToSponsors={() => {}}
-                    onNavigateToShop={() => setActiveTab('shop')}
-                    onSelectProduct={setSelectedProduct}
+                    onNavigateToShop={() => navigateToTab('shop')}
+                    onSelectProduct={(p) => navigateToProduct(p.id)}
                     onAddToCartProduct={handleAddToCart}
                     cartProductIds={new Set(cartItems.map((i) => i.product.id))}
                   />
@@ -236,7 +234,7 @@ export const App: React.FC = () => {
                   <RallyShopPage
                     products={productsList}
                     onAddToCart={handleAddToCart}
-                    onSelectProduct={setSelectedProduct}
+                    onSelectProduct={(p) => navigateToProduct(p.id)}
                     cartProductIds={new Set(cartItems.map((i) => i.product.id))}
                     onOpenCart={() => setIsCartOpen(true)}
                   />
@@ -254,9 +252,9 @@ export const App: React.FC = () => {
         onCloseBooking={() => setBookingSlot(null)}
         selectedCoach={selectedCoach} onCloseCoach={() => setSelectedCoach(null)}
         selectedTournament={selectedTournament} onCloseTournament={() => setSelectedTournament(null)}
-        selectedProduct={null} onCloseProduct={() => setSelectedProduct(null)}
+        selectedProduct={null} onCloseProduct={() => {}}
         onAddToCartProduct={handleAddToCart}
-        onOpenCartFromProduct={() => { setSelectedProduct(null); setIsCartOpen(true); }}
+        onOpenCartFromProduct={() => setIsCartOpen(true)}
         isCartOpen={isCartOpen} onCloseCart={() => setIsCartOpen(false)}
         cartItems={cartItems} onUpdateCartQty={handleUpdateCartQty}
         onRemoveCartItem={(id) => setCartItems((prev) => prev.filter((i) => i.product.id !== id))}
@@ -272,15 +270,15 @@ export const App: React.FC = () => {
         onCloseAuth={() => setIsAuthOpen(false)}
         onLoginSuccess={setUserSession}
         onLogout={() => { localStorage.removeItem('padel_auth'); setUserSession(null); }}
-        onNavigateToPortal={() => { setIsAuthOpen(false); setIsPortalOpen(true); }}
+        onNavigateToPortal={() => { setIsAuthOpen(false); navigateToPortal(); }}
       />
       <MobileBottomNav
         currentTab={activeTab}
-        onSelectTab={(tab) => { setSelectedProduct(null); setActiveTab(tab); }}
+        onSelectTab={(tab) => navigateToTab(tab)}
         onOpenAuth={() => setIsAuthOpen(true)}
         isLoggedIn={!!userSession}
       />
-      <ModernRallyFooter onNavigateTab={(t) => { setSelectedProduct(null); setActiveTab(t as RallyPageTab); }} />
+      <ModernRallyFooter onNavigateTab={(t) => navigateToTab(t as RallyPageTab)} />
     </div>
   );
 };
