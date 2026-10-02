@@ -182,99 +182,96 @@ export const MOCK_CLUBS: CourtClub[] = [
   },
   {
     "id": "club-enghelab",
-    "name": "مجموعه ورزشی انقلاب - آکادمی پدل",
+    "name": "مجموعه پدل FGB انقلاب (FGB Padel Club)",
     "sport": "PADEL",
     "city": "تهران",
-    "area": "ونک / خیابان سئول",
-    "address": "تهران، خیابان سئول، انتهای خیابان ورزشگاه انقلاب، کورت‌های سنترال پدل",
+    "area": "باشگاه انقلاب",
+    "address": "تهران، خیابان سئول، مجموعه فرهنگی ورزشی انقلاب، نخستین مجموعه پدل ایران (FGB Arena)",
     "courtType": "INDOOR",
-    "surface": "چمن مصنوعی Mondo استاندارد WPT با دیواره شیشه سکوریت",
-    "rating": 4.9,
-    "startingPrice": 1800000,
-    "nearestAvailableSlot": "فردا ۱۸:۰۰ تا ۱۹:۳۰",
+    "surface": "کورت‌های آرنا سرپوشیده با چمن آبی استاندارد مسابقات بین‌المللی WPT و دیواره سوپر پانورامیک شیشه سکوریت",
+    "rating": 4.98,
+    "startingPrice": 2400000,
+    "nearestAvailableSlot": "فردا ۱۶:۳۰ تا ۱۸:۰۰",
     "images": [
-      "/images/real_padel_hero.jpg",
-      "/images/rally_hero.jpg"
+      "/images/court_fgb_enghelab.jpg"
     ],
     "amenities": [
       {
+        "id": "canopy",
+        "label": "آرنا سرپوشیده اختصاصی با تهویه مطبوع",
+        "iconName": "Shield"
+      },
+      {
         "id": "parking",
-        "label": "پارکینگ اختصاصی",
+        "label": "پارکینگ اختصاصی باشگاه انقلاب",
         "iconName": "Car"
       },
       {
         "id": "shower",
-        "label": "رختکن و دوش آبگرم",
+        "label": "رختکن VIP و دوش آبگرم",
         "iconName": "Bath"
       },
       {
         "id": "racket",
-        "label": "اجاره و تست راکت پدل NOX و Head",
+        "label": "اجاره و تست راکت‌های مسابقاتی Bullpadel و Babolat",
         "iconName": "Shield"
       },
       {
         "id": "cafe",
-        "label": "کافه ورزشی و بار انرژی",
+        "label": "کافه رستوران ورزشی و بار انرژی",
         "iconName": "Coffee"
       },
       {
         "id": "lighting",
-        "label": "نورپردازی استاندارد فدراسیون جهانی",
+        "label": "سیستم نورپردازی لوکس و استاندارد مسابقات بین‌المللی",
         "iconName": "Sun"
       }
     ],
     "rules": [
-      "حضور در کورت با کفش مخصوص کورت اجباری است.",
+      "نخستین و اصیل‌ترین مجموعه کورت‌های پدل ایران (FGB Padel Club).",
+      "ورود با کفش اختصاصی کورت پدل الزامی است.",
       "تعداد حداکثر بازیکنان در زمین دونفره ۴ نفر می‌باشد."
     ],
     "cancellationPolicy": "لغو تا ۱۲ ساعت قبل شامل استرداد ۱۰۰٪ وجه است.",
     "slots": [
       {
         "slotId": "eng-1",
-        "startTime": "۰۸:۰۰",
-        "endTime": "۰۹:۳۰",
+        "startTime": "۱۵:۰۰",
+        "endTime": "۱۶:۳۰",
         "durationMinutes": 90,
-        "price": 1600000,
+        "price": 2400000,
         "status": "AVAILABLE"
       },
       {
         "slotId": "eng-2",
-        "startTime": "۰۹:۳۰",
-        "endTime": "۱۱:۰۰",
+        "startTime": "۱۶:۳۰",
+        "endTime": "۱۸:۰۰",
         "durationMinutes": 90,
-        "price": 1600000,
-        "status": "BOOKED"
+        "price": 2400000,
+        "status": "AVAILABLE"
       },
       {
         "slotId": "eng-3",
-        "startTime": "۱۱:۰۰",
-        "endTime": "۱۲:۳۰",
+        "startTime": "۱۸:۰۰",
+        "endTime": "۱۹:۳۰",
         "durationMinutes": 90,
-        "price": 1800000,
+        "price": 2600000,
         "status": "AVAILABLE"
       },
       {
         "slotId": "eng-4",
-        "startTime": "۱۶:۳۰",
-        "endTime": "۱۸:۰۰",
-        "durationMinutes": 90,
-        "price": 2200000,
-        "status": "BOOKED"
-      },
-      {
-        "slotId": "eng-5",
-        "startTime": "۱۸:۰۰",
-        "endTime": "۱۹:۳۰",
-        "durationMinutes": 90,
-        "price": 2400000,
-        "status": "AVAILABLE"
-      },
-      {
-        "slotId": "eng-6",
         "startTime": "۱۹:۳۰",
         "endTime": "۲۱:۰۰",
         "durationMinutes": 90,
-        "price": 2400000,
+        "price": 2600000,
+        "status": "AVAILABLE"
+      },
+      {
+        "slotId": "eng-5",
+        "startTime": "۲۱:۰۰",
+        "endTime": "۲۲:۳۰",
+        "durationMinutes": 90,
+        "price": 2600000,
         "status": "AVAILABLE"
       }
     ]

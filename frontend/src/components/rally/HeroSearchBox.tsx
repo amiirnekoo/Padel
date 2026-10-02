@@ -33,7 +33,7 @@ export const HeroSearchBox: React.FC<HeroSearchBoxProps> = ({
   const [coachGoal, setCoachGoal] = useState<string>('یادگیری پایه و تکنیک');
   const [tournamentLevel, setTournamentLevel] = useState<string>('آزاد / سطح ۳');
 
-  const AREAS = ['همه محدوده‌ها', 'مینی‌سیتی (ویوا)', 'آجودانیه (لفور)', 'ونک / سئول (انقلاب)', 'ولنجک / توچال', 'شهرک غرب', 'پاسداران'];
+  const AREAS = ['همه محدوده‌ها', 'ونک / سئول (FGB انقلاب)', 'آجودانیه (لفور)', 'مینی‌سیتی (ویوا)', 'ولنجک / توچال', 'شهرک غرب', 'پاسداران'];
 
   const handleExecuteSearch = () => {
     if (activeSearchTab === 'court') {

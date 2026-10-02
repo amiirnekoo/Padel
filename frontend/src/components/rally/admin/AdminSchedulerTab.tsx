@@ -19,13 +19,13 @@ interface SlotItem {
 
 export const AdminSchedulerTab: React.FC = () => {
   const [courts, setCourts] = useState<CourtItem[]>([
-    { id: 'court-viva-1', name: 'کورت ۱ پانورامیک (ویوا مینی‌سیتی)', club_id: 'club-viva' },
-    { id: 'court-rev-1', name: 'کورت ۱ پانورامیک (انقلاب)', club_id: 'club-enghelab' },
-    { id: 'court-rev-2', name: 'کورت ۲ سنترال (انقلاب)', club_id: 'club-enghelab' },
+    { id: 'court-fgb-1', name: 'کورت ۱ مسابقات (FGB انقلاب)', club_id: 'club-enghelab' },
+    { id: 'court-fgb-2', name: 'کورت ۲ سنترال (FGB انقلاب)', club_id: 'club-enghelab' },
     { id: 'court-laf-1', name: 'کورت روباز ۱ (لفور آجودانیه)', club_id: 'club-lafour' },
+    { id: 'court-viva-1', name: 'کورت ۱ پانورامیک (ویوا مینی‌سیتی)', club_id: 'club-viva' },
     { id: 'court-vel-1', name: 'کورت ۱ روباز (بام ولنجک)', club_id: 'club-velenjak' }
   ]);
-  const [selectedCourtId, setSelectedCourtId] = useState<string>('court-rev-1');
+  const [selectedCourtId, setSelectedCourtId] = useState<string>('court-fgb-1');
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [slots, setSlots] = useState<SlotItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);

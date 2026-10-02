@@ -26,25 +26,24 @@ export const ModernCourtShowcase: React.FC<ModernCourtShowcaseProps> = ({
   fallbackClubs = []
 }) => {
   const [activeSlotMap, setActiveSlotMap] = useState<Record<string, string>>({
-    'court-viva': 'slot-2',
+    'club-enghelab': 'slot-2',
     'court-lafour': 'slot-2',
-    'court-padel-land': 'slot-1',
-    'court-east-tehran': 'slot-1'
+    'court-viva': 'slot-2'
   });
 
   const showcaseCourts: (CourtShowcaseItem & { courtType?: 'INDOOR' | 'OUTDOOR' })[] = [
     {
-      id: 'court-viva',
-      name: 'باشگاه پدل ویوا (VIVA Club)',
-      area: 'مینی‌سیتی',
+      id: 'club-enghelab',
+      name: 'مجموعه پدل FGB انقلاب (FGB Club)',
+      area: 'باشگاه انقلاب',
       city: 'تهران',
-      imageUrl: '/images/court_viva.jpg',
-      startingPrice: 3500000,
+      imageUrl: '/images/court_fgb_enghelab.jpg',
+      startingPrice: 2400000,
       courtType: 'INDOOR',
       slots: [
-        { id: 'slot-1', time: '۱۵:۳۰', price: 3500000 },
-        { id: 'slot-2', time: '۱۷:۰۰', price: 3500000 },
-        { id: 'slot-3', time: '۱۸:۳۰', price: 3500000 }
+        { id: 'slot-1', time: '۱۵:۰۰', price: 2400000 },
+        { id: 'slot-2', time: '۱۶:۳۰', price: 2400000 },
+        { id: 'slot-3', time: '۱۸:۰۰', price: 2600000 }
       ]
     },
     {
@@ -62,31 +61,17 @@ export const ModernCourtShowcase: React.FC<ModernCourtShowcaseProps> = ({
       ]
     },
     {
-      id: 'court-padel-land',
-      name: 'پدل لند تهران',
-      area: 'سعادت‌آباد',
+      id: 'court-viva',
+      name: 'باشگاه پدل ویوا (VIVA Club)',
+      area: 'مینی‌سیتی',
       city: 'تهران',
-      imageUrl: '/images/court_padel_land.jpg',
-      startingPrice: 580000,
+      imageUrl: '/images/court_viva.jpg',
+      startingPrice: 3500000,
       courtType: 'INDOOR',
       slots: [
-        { id: 'slot-1', time: '۱۷:۰۰', price: 580000 },
-        { id: 'slot-2', time: '۱۸:۰۰', price: 620000 },
-        { id: 'slot-3', time: '۱۹:۰۰', price: 620000 }
-      ]
-    },
-    {
-      id: 'court-east-tehran',
-      name: 'مجموعه پدل شرق تهران',
-      area: 'پیروزی / دماوند',
-      city: 'تهران',
-      imageUrl: '/images/court_east_tehran.jpg',
-      startingPrice: 500000,
-      courtType: 'OUTDOOR',
-      slots: [
-        { id: 'slot-1', time: '۱۷:۳۰', price: 500000 },
-        { id: 'slot-2', time: '۱۹:۰۰', price: 540000 },
-        { id: 'slot-3', time: '۲۰:۳۰', price: 540000 }
+        { id: 'slot-1', time: '۱۵:۳۰', price: 3500000 },
+        { id: 'slot-2', time: '۱۷:۰۰', price: 3500000 },
+        { id: 'slot-3', time: '۱۸:۳۰', price: 3500000 }
       ]
     }
   ];
@@ -161,8 +146,8 @@ export const ModernCourtShowcase: React.FC<ModernCourtShowcaseProps> = ({
           </div>
         </div>
 
-        {/* 4 Featured Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+        {/* 3 Featured Premier Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
           {showcaseCourts.map((court) => {
             const currentSelectedSlotId = activeSlotMap[court.id];
 
@@ -186,7 +171,7 @@ export const ModernCourtShowcase: React.FC<ModernCourtShowcaseProps> = ({
                   {/* Top Badge: Outdoor / Indoor tag */}
                   <div className="absolute top-3 right-3 flex items-center gap-1.5">
                     <span className="font-bold text-[10px] bg-black/70 text-[#D7ED68] px-2.5 py-1 rounded-lg border border-[#D7ED68]/30">
-                      {court.id === 'court-viva' ? '🏢 کورت مسقف سازه‌ای' : court.courtType === 'OUTDOOR' ? '🌤️ کورت روباز' : '🏢 کورت مسقف'}
+                      {court.id === 'club-enghelab' ? '🏆 آرنا مسابقات FGB' : court.id === 'court-viva' ? '🏢 کورت مسقف سازه‌ای' : court.courtType === 'OUTDOOR' ? '🌤️ کورت روباز' : '🏢 کورت مسقف'}
                     </span>
                   </div>
 
@@ -197,7 +182,7 @@ export const ModernCourtShowcase: React.FC<ModernCourtShowcaseProps> = ({
                       <span>{court.area}</span>
                     </span>
                     <span className="font-bold text-white bg-[#0B4278]/90 px-2 py-1 rounded-lg border border-[#0B4278] text-[11px]">
-                      {['court-lafour', 'court-viva'].includes(court.id) ? 'ساعتی ' : 'شروع از '}
+                      {['court-lafour', 'court-viva', 'club-enghelab'].includes(court.id) ? 'ساعتی ' : 'شروع از '}
                       {court.startingPrice.toLocaleString('fa-IR')} تومان
                     </span>
                   </div>

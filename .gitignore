@@ -43,4 +43,5 @@ scratch/
 # Cloud Storage / Google Drive sync conflicts
 * (*).*
 .tempmediaStorage/
+uploads/
 
