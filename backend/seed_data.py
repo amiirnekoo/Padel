@@ -160,6 +160,20 @@ async def seed():
                 "approval_status": "APPROVED",
                 "is_active": True,
                 "iban": "IR880120000000001234567804"
+            },
+            {
+                "id": "club-lafour",
+                "name": "باشگاه پدل لفور (Lafour Club)",
+                "city": "تهران",
+                "province": "تهران",
+                "address": "تهران، منطقه ۱، اقدسیه / آجودانیه، مجتمع تفریحی ورزشی لفور",
+                "phone": "02126110000",
+                "sports_supported": "PADEL",
+                "default_hourly_rate": 30000000,
+                "amenities": "کورت سوپر پانورامیک روباز، کافه رستوران اختصاصی، پارکینگ ولت، رختکن VIP",
+                "approval_status": "APPROVED",
+                "is_active": True,
+                "iban": "IR880120000000001234567805"
             }
         ]
 
@@ -170,6 +184,7 @@ async def seed():
         courts_data = [
             {"id": "court-eng-1", "club_id": "club-enghelab", "name": "کورت سنترال پدل (انقلاب)", "sport_type": "PADEL", "is_indoor": True},
             {"id": "court-eng-2", "club_id": "club-enghelab", "name": "کورت ۲ پدل روباز (انقلاب)", "sport_type": "PADEL", "is_indoor": False},
+            {"id": "court-laf-1", "club_id": "club-lafour", "name": "کورت ۱ روباز پانورامیک (لفور)", "sport_type": "PADEL", "is_indoor": False},
             {"id": "court-eng-3", "club_id": "club-enghelab", "name": "کورت تنیس شماره ۱ خاکی", "sport_type": "TENNIS", "is_indoor": False},
             {"id": "court-shz-1", "club_id": "club-spin-shiraz", "name": "کورت ۱ پانورامیک اسپین", "sport_type": "PADEL", "is_indoor": True},
             {"id": "court-isf-1", "club_id": "club-parvaz-isfahan", "name": "کورت پدل شماره ۱ پرواز", "sport_type": "PADEL", "is_indoor": True},

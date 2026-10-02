@@ -26,12 +26,27 @@ export const ModernCourtShowcase: React.FC<ModernCourtShowcaseProps> = ({
   fallbackClubs = []
 }) => {
   const [activeSlotMap, setActiveSlotMap] = useState<Record<string, string>>({
+    'court-lafour': 'slot-2',
     'court-padel-land': 'slot-1',
     'court-narmak': 'slot-2',
     'court-east-tehran': 'slot-1'
   });
 
-  const showcaseCourts: CourtShowcaseItem[] = [
+  const showcaseCourts: (CourtShowcaseItem & { courtType?: 'INDOOR' | 'OUTDOOR' })[] = [
+    {
+      id: 'court-lafour',
+      name: 'باشگاه پدل لفور (Lafour Club)',
+      area: 'آجودانیه',
+      city: 'تهران',
+      imageUrl: '/images/court_lafour.jpg',
+      startingPrice: 3000000,
+      courtType: 'OUTDOOR',
+      slots: [
+        { id: 'slot-1', time: '۱۶:۳۰', price: 3000000 },
+        { id: 'slot-2', time: '۱۸:۰۰', price: 3000000 },
+        { id: 'slot-3', time: '۱۹:۳۰', price: 3000000 }
+      ]
+    },
     {
       id: 'court-padel-land',
       name: 'پدل لند تهران',
@@ -39,6 +54,7 @@ export const ModernCourtShowcase: React.FC<ModernCourtShowcaseProps> = ({
       city: 'تهران',
       imageUrl: '/images/court_padel_land.jpg',
       startingPrice: 580000,
+      courtType: 'INDOOR',
       slots: [
         { id: 'slot-1', time: '۱۷:۰۰', price: 580000 },
         { id: 'slot-2', time: '۱۸:۰۰', price: 620000 },
@@ -52,6 +68,7 @@ export const ModernCourtShowcase: React.FC<ModernCourtShowcaseProps> = ({
       city: 'تهران',
       imageUrl: '/images/court_narmak.jpg',
       startingPrice: 450000,
+      courtType: 'INDOOR',
       slots: [
         { id: 'slot-1', time: '۱۶:۳۰', price: 450000 },
         { id: 'slot-2', time: '۱۸:۰۰', price: 500000 },
@@ -65,6 +82,7 @@ export const ModernCourtShowcase: React.FC<ModernCourtShowcaseProps> = ({
       city: 'تهران',
       imageUrl: '/images/court_east_tehran.jpg',
       startingPrice: 500000,
+      courtType: 'OUTDOOR',
       slots: [
         { id: 'slot-1', time: '۱۷:۳۰', price: 500000 },
         { id: 'slot-2', time: '۱۹:۰۰', price: 540000 },
@@ -143,8 +161,8 @@ export const ModernCourtShowcase: React.FC<ModernCourtShowcaseProps> = ({
           </div>
         </div>
 
-        {/* 3 Featured Wide Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
+        {/* 4 Featured Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
           {showcaseCourts.map((court) => {
             const currentSelectedSlotId = activeSlotMap[court.id];
 
@@ -155,7 +173,7 @@ export const ModernCourtShowcase: React.FC<ModernCourtShowcaseProps> = ({
                 className="group relative bg-white rounded-2xl overflow-hidden border border-[#E8E6DD] hover:border-[#0B4278]/40 shadow-xs hover:shadow-xl transition-all duration-200 cursor-pointer flex flex-col"
               >
                 {/* Court Image with Subtle Zoom on Hover */}
-                <div className="relative w-full h-56 sm:h-60 overflow-hidden bg-slate-900">
+                <div className="relative w-full h-52 sm:h-56 overflow-hidden bg-slate-900">
                   <img
                     src={court.imageUrl}
                     alt={court.name}
@@ -165,14 +183,22 @@ export const ModernCourtShowcase: React.FC<ModernCourtShowcaseProps> = ({
                   {/* Subtle Darkening Overlay on Hover */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent transition-opacity duration-200 group-hover:opacity-90" />
 
+                  {/* Top Badge: Outdoor / Indoor tag */}
+                  <div className="absolute top-3 right-3 flex items-center gap-1.5">
+                    <span className="font-bold text-[10px] bg-black/70 text-[#D7ED68] px-2.5 py-1 rounded-lg border border-[#D7ED68]/30">
+                      {court.courtType === 'OUTDOOR' ? '🌤️ کورت روباز' : '🏢 کورت مسقف'}
+                    </span>
+                  </div>
+
                   {/* Badges on Image (Location with Turf Green touch & Starting Price with Padel Blue) */}
                   <div className="absolute bottom-3 right-3 left-3 flex items-center justify-between text-white text-xs">
-                    <span className="flex items-center gap-1 font-semibold bg-[#0E3D38]/85 text-[#F5F4EF] px-2.5 py-1 rounded-lg backdrop-none border border-[#0E3D38]">
+                    <span className="flex items-center gap-1 font-semibold bg-[#0E3D38]/85 text-[#F5F4EF] px-2.5 py-1 rounded-lg border border-[#0E3D38]">
                       <MapPin className="w-3.5 h-3.5 text-[#D7ED68]" />
                       <span>{court.area}</span>
                     </span>
-                    <span className="font-bold text-white bg-[#0B4278]/90 px-2.5 py-1 rounded-lg border border-[#0B4278]">
-                      شروع از {court.startingPrice.toLocaleString('fa-IR')} تومان
+                    <span className="font-bold text-white bg-[#0B4278]/90 px-2 py-1 rounded-lg border border-[#0B4278] text-[11px]">
+                      {court.id === 'court-lafour' ? 'ساعتی ' : 'شروع از '}
+                      {court.startingPrice.toLocaleString('fa-IR')} تومان
                     </span>
                   </div>
                 </div>

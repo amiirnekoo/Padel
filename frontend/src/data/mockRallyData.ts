@@ -2,6 +2,89 @@ import { CourtClub, Coach, Tournament } from '../types/rally';
 
 export const MOCK_CLUBS: CourtClub[] = [
   {
+    "id": "club-lafour",
+    "name": "باشگاه پدل لفور (Lafour Club)",
+    "sport": "PADEL",
+    "city": "تهران",
+    "area": "آجودانیه",
+    "address": "تهران، منطقه ۱، اقدسیه / آجودانیه، مجموعه پدل و تندرستی لفور",
+    "courtType": "OUTDOOR",
+    "surface": "کورت سوپر پانورامیک روباز با چمن مونت‌کارلو استاندارد مسابقات جهانی",
+    "rating": 4.96,
+    "startingPrice": 3000000,
+    "nearestAvailableSlot": "فردا ۱۸:۰۰ تا ۱۹:۰۰",
+    "images": [
+      "/images/court_lafour.jpg"
+    ],
+    "amenities": [
+      {
+        "id": "parking",
+        "label": "پارکینگ اختصاصی و ولت",
+        "iconName": "Car"
+      },
+      {
+        "id": "cafe",
+        "label": "کافه رستوران مدرن لفور",
+        "iconName": "Coffee"
+      },
+      {
+        "id": "shower",
+        "label": "رختکن VIP و دوش اختصاصی",
+        "iconName": "Bath"
+      },
+      {
+        "id": "lighting",
+        "label": "نورپردازی استاندارد پریمیر پدل",
+        "iconName": "Sun"
+      },
+      {
+        "id": "racket",
+        "label": "تست و اجاره راکت‌های حرفه‌ای",
+        "iconName": "Shield"
+      }
+    ],
+    "rules": [
+      "کورت در حال حاضر روباز (Open-Air) می‌باشد.",
+      "ورود با کفش استاندارد پدل الزامی است.",
+      "تعداد حداکثر بازیکنان در زمین دونفره ۴ نفر می‌باشد."
+    ],
+    "cancellationPolicy": "لغو تا ۱۲ ساعت قبل با استرداد ۱۰۰٪ وجه امکان‌پذیر است.",
+    "slots": [
+      {
+        "slotId": "laf-1",
+        "startTime": "۱۶:۳۰",
+        "endTime": "۱۷:۳۰",
+        "durationMinutes": 60,
+        "price": 3000000,
+        "status": "AVAILABLE"
+      },
+      {
+        "slotId": "laf-2",
+        "startTime": "۱۸:۰۰",
+        "endTime": "۱۹:۰۰",
+        "durationMinutes": 60,
+        "price": 3000000,
+        "status": "AVAILABLE"
+      },
+      {
+        "slotId": "laf-3",
+        "startTime": "۱۹:۳۰",
+        "endTime": "۲۰:۳۰",
+        "durationMinutes": 60,
+        "price": 3000000,
+        "status": "AVAILABLE"
+      },
+      {
+        "slotId": "laf-4",
+        "startTime": "۲۱:۰۰",
+        "endTime": "۲۲:۰۰",
+        "durationMinutes": 60,
+        "price": 3000000,
+        "status": "AVAILABLE"
+      }
+    ]
+  },
+  {
     "id": "club-enghelab",
     "name": "مجموعه ورزشی انقلاب - آکادمی پدل",
     "sport": "PADEL",

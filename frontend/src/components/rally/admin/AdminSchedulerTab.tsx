@@ -21,6 +21,7 @@ export const AdminSchedulerTab: React.FC = () => {
   const [courts, setCourts] = useState<CourtItem[]>([
     { id: 'court-rev-1', name: 'کورت ۱ پانورامیک (انقلاب)', club_id: 'club-enghelab' },
     { id: 'court-rev-2', name: 'کورت ۲ سنترال (انقلاب)', club_id: 'club-enghelab' },
+    { id: 'court-laf-1', name: 'کورت روباز ۱ (لفور آجودانیه)', club_id: 'club-lafour' },
     { id: 'court-vel-1', name: 'کورت ۱ روباز (بام ولنجک)', club_id: 'club-velenjak' }
   ]);
   const [selectedCourtId, setSelectedCourtId] = useState<string>('court-rev-1');
