@@ -14,15 +14,14 @@ export const OtpLoginForm: React.FC<OtpLoginFormProps> = ({
   onError
 }) => {
   const [step, setStep] = useState<'PHONE' | 'CODE'>('PHONE');
-  const [phone, setPhone] = useState('09121111111');
-  const [code, setCode] = useState('12345');
+  const [phone, setPhone] = useState('');
+  const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
-  const [devCode, setDevCode] = useState<string | null>(null);
 
   const handleRequestOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!phone) {
-      onError('لطفاً شماره تلفن همراه را وارد نمایید.');
+    if (!phone || phone.trim().length < 10) {
+      onError('لطفاً شماره تلفن همراه معتبر (۱۱ رقمی) را وارد نمایید.');
       return;
     }
 
@@ -31,20 +30,17 @@ export const OtpLoginForm: React.FC<OtpLoginFormProps> = ({
       const res = await fetch('/api/v1/auth/otp/request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone_number: phone })
+        body: JSON.stringify({ phone_number: phone.trim() })
       });
       const data = await res.json();
       if (res.ok) {
-        setDevCode(data.dev_code || '12345');
-        setCode(data.dev_code || '12345');
+        setCode('');
         setStep('CODE');
       } else {
-        onError(data.detail || 'خطا در ارسال پیامک');
+        onError(data.detail || 'خطا در ارسال پیامک. لطفاً مجدداً بررسی فرمایید.');
       }
     } catch {
-      setDevCode('12345');
-      setCode('12345');
-      setStep('CODE');
+      onError('خطا در برقراری ارتباط با سرور. لطفاً اتصال اینترنت خود را بررسی نمایید.');
     } finally {
       setLoading(false);
     }
@@ -52,12 +48,17 @@ export const OtpLoginForm: React.FC<OtpLoginFormProps> = ({
 
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!code || code.trim().length < 4) {
+      onError('لطفاً کد تأیید دریافتی را به طور کامل وارد نمایید.');
+      return;
+    }
+
     setLoading(true);
     try {
       const res = await fetch('/api/v1/auth/otp/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone_number: phone, code })
+        body: JSON.stringify({ phone_number: phone.trim(), code: code.trim() })
       });
       const data = await res.json();
       if (res.ok) {
@@ -73,18 +74,10 @@ export const OtpLoginForm: React.FC<OtpLoginFormProps> = ({
         localStorage.setItem('padel_auth', JSON.stringify(session));
         onSuccess(session);
       } else {
-        onError(data.detail || 'کد وارد شده معتبر نیست');
+        onError(data.detail || 'کد وارد شده معتبر نیست یا منقضی شده است.');
       }
     } catch {
-      const demoSession: UserSession = {
-        userId: 'usr-' + Date.now(),
-        phoneNumber: phone,
-        role: 'PLAYER',
-        fullName: 'ورزشکار گرامی',
-        token: 'local-otp-token'
-      };
-      localStorage.setItem('padel_auth', JSON.stringify(demoSession));
-      onSuccess(demoSession);
+      onError('خطا در اعتبارسنجی کد پیامکی. لطفاً اتصال اینترنت خود را بررسی نمایید.');
     } finally {
       setLoading(false);
     }
@@ -148,13 +141,7 @@ export const OtpLoginForm: React.FC<OtpLoginFormProps> = ({
                 className="w-full bg-slate-900 border border-emerald-500 rounded-xl py-3 px-3.5 text-center text-xl font-mono font-bold tracking-widest text-emerald-400 focus:outline-none"
                 dir="ltr"
               />
-              <KeyRound className="w-5 h-5 text-emerald-500 absolute right-3.5 top-3.5" />
             </div>
-            {devCode && (
-              <p className="text-[11px] text-amber-400 bg-amber-950/40 border border-amber-900/60 p-1.5 rounded-lg mt-2 text-center">
-                کد پیامکی (محیط تست): <span className="font-mono font-bold">{devCode}</span>
-              </p>
-            )}
           </div>
 
           <button

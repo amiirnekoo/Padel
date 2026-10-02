@@ -70,11 +70,17 @@ export const ClubCalendarPage: React.FC<ClubCalendarPageProps> = ({
     setNotification(null);
     setActiveSlotId(slot.slot_id);
     try {
+      const sessionStr = localStorage.getItem('padel_auth');
+      let token = '';
+      if (sessionStr) {
+        try { token = JSON.parse(sessionStr).token || ''; } catch {}
+      }
+
       const res = await fetch(`/api/v1/slots/${slot.slot_id}/hold`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-user-id': userId
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
         }
       });
 
@@ -92,19 +98,11 @@ export const ClubCalendarPage: React.FC<ClubCalendarPageProps> = ({
         fetchCalendar(selectedDate, clubId);
       } else {
         const error = await res.json();
-        setNotification({ type: 'error', message: error.detail || 'این سانس توسط کاربر دیگری رزرو شد' });
+        setNotification({ type: 'error', message: error.detail || 'امکان قفل این سانس وجود ندارد یا توسط شخص دیگری رزرو شده است.' });
         fetchCalendar(selectedDate, clubId);
       }
     } catch {
-      const simulatedBooking: Booking = {
-        booking_id: `b-${Date.now()}`,
-        tracking_code: `PAD-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
-        amount: slot.price,
-        status: "PENDING_PAYMENT",
-        hold_expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
-      };
-      setActiveBooking(simulatedBooking);
-      setNotification({ type: 'success', message: 'سانس به مدت ۱۰ دقیقه به نام شما قفل اتمیک شد (حالت تست)' });
+      setNotification({ type: 'error', message: 'خطا در برقراری ارتباط با سامانه رزرواسیون. لطفاً اتصال اینترنت خود را بررسی نمایید.' });
     } finally {
       setIsLoading(false);
     }
@@ -114,20 +112,32 @@ export const ClubCalendarPage: React.FC<ClubCalendarPageProps> = ({
     if (!activeBooking) return;
     setIsLoading(true);
     try {
+      const sessionStr = localStorage.getItem('padel_auth');
+      let token = '';
+      if (sessionStr) {
+        try { token = JSON.parse(sessionStr).token || ''; } catch {}
+      }
+
       const res = await fetch(`/api/v1/bookings/${activeBooking.booking_id}/checkout`, {
         method: 'POST',
-        headers: { 'x-user-id': userId }
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        }
       });
       if (res.ok) {
         const data: CheckoutResult = await res.json();
-        setNotification({ type: 'info', message: `انتقال به درگاه شاپرک با توکن: ${data.gateway_token}` });
+        if (data.payment_url) {
+          window.location.href = data.payment_url;
+        } else {
+          setNotification({ type: 'info', message: `شناسه درگاه شاپرک صادر شد: ${data.gateway_token}` });
+        }
       } else {
-        setNotification({ type: 'error', message: 'خطا در اتصال به درگاه پرداخت' });
+        const err = await res.json();
+        setNotification({ type: 'error', message: err.detail || 'خطا در اتصال به درگاه پرداخت شاپرک' });
       }
     } catch {
-      setNotification({ type: 'success', message: 'تأیید شبیه‌ساز پرداخت شاپرک؛ رزرو شما قطعی شد!' });
-      setActiveBooking(null);
-      fetchCalendar(selectedDate, clubId);
+      setNotification({ type: 'error', message: 'خطا در برقراری ارتباط با درگاه پرداخت بانکی. لطفاً مجدداً تلاش نمایید.' });
     } finally {
       setIsLoading(false);
     }
@@ -137,11 +147,19 @@ export const ClubCalendarPage: React.FC<ClubCalendarPageProps> = ({
     if (!activeBooking) return;
     setIsLoading(true);
     try {
+      const sessionStr = localStorage.getItem('padel_auth');
+      let token = '';
+      if (sessionStr) {
+        try { token = JSON.parse(sessionStr).token || ''; } catch {}
+      }
+
       const res = await fetch('/api/v1/wallet/pay-booking', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
         body: JSON.stringify({
-          user_id: userId,
           slot_id: activeSlotId || 'slot-1',
           booking_id: activeBooking.booking_id
         })
@@ -159,7 +177,7 @@ export const ClubCalendarPage: React.FC<ClubCalendarPageProps> = ({
         setNotification({ type: 'error', message: data.detail || 'خطا در پرداخت از کیف پول' });
       }
     } catch {
-      setNotification({ type: 'error', message: 'خطا در اتصال به کیف پول' });
+      setNotification({ type: 'error', message: 'خطا در برقراری ارتباط با سرور کیف پول. لطفاً مجدداً تلاش فرمایید.' });
     } finally {
       setIsLoading(false);
     }

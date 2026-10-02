@@ -14,14 +14,38 @@ export interface CheckoutPayload {
 
 export const rallyApi = {
   /**
-   * استعلام مانده زنده کیف پول کاربر از بک‌اند
+   * تولید هدرهای احراز هویت کاربر احراز هویت شده بر اساس توکن ذخیره‌شده
    */
-  async getWalletBalance(userId: string): Promise<number | null> {
+  getUserAuthHeaders(): Record<string, string> {
+    const sessionStr = localStorage.getItem('padel_auth');
+    let token = '';
+    if (sessionStr) {
+      try {
+        const session = JSON.parse(sessionStr);
+        token = session.token || '';
+      } catch {
+        token = '';
+      }
+    }
+    return {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    };
+  },
+
+  /**
+   * استعلام مانده زنده کیف پول کاربر از بک‌اند با استفاده از توکن امن JWT
+   */
+  async getWalletBalance(userId?: string): Promise<number | null> {
     try {
-      const res = await fetch(`${API_BASE}/wallet/balance?user_id=${userId}`);
+      const headers = this.getUserAuthHeaders();
+      const queryParam = userId ? `?user_id=${userId}` : '';
+      const res = await fetch(`${API_BASE}/wallet/balance${queryParam}`, {
+        headers,
+      });
       if (!res.ok) return null;
       const data = await res.json();
-      return data.balance_tomans || Math.floor(data.balance_rials / 10);
+      return data.balance_toman ?? Math.floor(data.balance / 10);
     } catch {
       return null;
     }
@@ -49,9 +73,10 @@ export const rallyApi = {
    */
   async checkoutShopOrder(payload: CheckoutPayload): Promise<{ success: boolean; data?: any; error?: string }> {
     try {
+      const headers = this.getUserAuthHeaders();
       const res = await fetch(`${API_BASE}/shop/checkout`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify(payload),
       });
 
@@ -68,12 +93,13 @@ export const rallyApi = {
   /**
    * قفل اتمیک ۱۰ دقیقه‌ای سانس در بک‌اند جهت جلوگیری از همروندی
    */
-  async holdSlot(slotId: string, userId: string) {
+  async holdSlot(slotId: string, userId?: string) {
     try {
+      const headers = this.getUserAuthHeaders();
       const res = await fetch(`${API_BASE}/slots/${slotId}/hold`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: userId }),
+        headers,
+        body: JSON.stringify(userId ? { user_id: userId } : {}),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -86,14 +112,15 @@ export const rallyApi = {
   },
 
   /**
-   * پرداخت سانس رزرو شده از طریق موجودی کیف پول
+   * پرداخت سانس رزرو شده از طریق موجودی کیف پول کاربر احراز هویت شده
    */
-  async payBookingWithWallet(bookingId: string, userId: string) {
+  async payBookingWithWallet(slotId: string, bookingId?: string) {
     try {
+      const headers = this.getUserAuthHeaders();
       const res = await fetch(`${API_BASE}/wallet/pay-booking`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ booking_id: bookingId, user_id: userId }),
+        headers,
+        body: JSON.stringify({ slot_id: slotId, booking_id: bookingId || null }),
       });
       const data = await res.json();
       if (!res.ok) {

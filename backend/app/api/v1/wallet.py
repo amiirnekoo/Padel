@@ -1,24 +1,26 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel, Field
 from backend.app.core.database import get_db
 from backend.app.services.wallet_service import WalletService
+from backend.app.api.deps import get_current_user_id
 
 router = APIRouter(prefix="/wallet", tags=["Wallet & Instant Checkout"])
 
 class TopUpRequest(BaseModel):
-    user_id: str = Field(..., description="شناسه کاربر")
     amount: int = Field(..., gt=0, description="مبلغ شارژ به ریال")
     reference_id: str | None = Field(None, description="شماره ارجاع تراکنش بانکی شاپرک")
 
 class PayBookingRequest(BaseModel):
-    user_id: str = Field(..., description="شناسه کاربر")
     slot_id: str = Field(..., description="شناسه سانس انتخابی")
     booking_id: str | None = Field(None, description="شناسه سفارش رزرو در صورت قفل موقت قبلی")
 
 @router.get("/balance")
-async def get_wallet_balance(user_id: str = Query(..., description="شناسه کاربر"), db: AsyncSession = Depends(get_db)):
-    """دریافت موجودی ریالی و وضعیت کیف پول کاربر."""
+async def get_wallet_balance(
+    user_id: str = Depends(get_current_user_id),
+    db: AsyncSession = Depends(get_db)
+):
+    """دریافت موجودی ریالی و وضعیت کیف پول کاربر احراز هویت شده."""
     wallet = await WalletService.get_or_create_wallet(db, user_id)
     return {
         "wallet_id": wallet.id,
@@ -30,12 +32,16 @@ async def get_wallet_balance(user_id: str = Query(..., description="شناسه �
     }
 
 @router.post("/topup")
-async def topup_wallet(payload: TopUpRequest, db: AsyncSession = Depends(get_db)):
+async def topup_wallet(
+    payload: TopUpRequest,
+    user_id: str = Depends(get_current_user_id),
+    db: AsyncSession = Depends(get_db)
+):
     """شارژ موجودی کیف پول کاربر پس از بازگشت موفق از شاپرک."""
     try:
         wallet = await WalletService.top_up_wallet(
             db,
-            user_id=payload.user_id,
+            user_id=user_id,
             amount=payload.amount,
             reference_id=payload.reference_id
         )
@@ -49,12 +55,16 @@ async def topup_wallet(payload: TopUpRequest, db: AsyncSession = Depends(get_db)
         raise HTTPException(status_code=400, detail=str(e))
 
 @router.post("/pay-booking")
-async def pay_booking_from_wallet(payload: PayBookingRequest, db: AsyncSession = Depends(get_db)):
-    """پرداخت آنی و ۱ کلیکی هزینه سانس از موجودی کیف پول بدون نیاز به ارجاع مجدد به درگاه بانکی."""
+async def pay_booking_from_wallet(
+    payload: PayBookingRequest,
+    user_id: str = Depends(get_current_user_id),
+    db: AsyncSession = Depends(get_db)
+):
+    """پرداخت آنی و ۱ کلیکی هزینه سانس از موجودی کیف پول کاربر احراز هویت شده."""
     try:
         booking = await WalletService.pay_booking_with_wallet(
             db,
-            user_id=payload.user_id,
+            user_id=user_id,
             slot_id=payload.slot_id,
             booking_id=payload.booking_id
         )
@@ -71,8 +81,11 @@ async def pay_booking_from_wallet(payload: PayBookingRequest, db: AsyncSession =
         raise HTTPException(status_code=400, detail=str(e))
 
 @router.get("/transactions")
-async def get_wallet_transactions(user_id: str = Query(..., description="شناسه کاربر"), db: AsyncSession = Depends(get_db)):
-    """دریافت لیست و تاریخچه کلیه تراکنش‌های واریز و برداشت کیف پول کاربر."""
+async def get_wallet_transactions(
+    user_id: str = Depends(get_current_user_id),
+    db: AsyncSession = Depends(get_db)
+):
+    """دریافت لیست و تاریخچه کلیه تراکنش‌های واریز و برداشت کیف پول کاربر احراز هویت شده."""
     txs = await WalletService.get_wallet_transactions(db, user_id)
     return [
         {
@@ -87,3 +100,4 @@ async def get_wallet_transactions(user_id: str = Query(..., description="شنا�
         }
         for t in txs
     ]
+

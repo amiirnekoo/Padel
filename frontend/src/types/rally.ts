@@ -94,6 +94,7 @@ export interface BookingReceipt {
   userName: string;
   userPhone: string;
   cancellationTerms: string;
+  paymentMethod?: 'WALLET' | 'GATEWAY';
 }
 
 export type ProductCategory =

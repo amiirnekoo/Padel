@@ -5,15 +5,11 @@ import {
   CreditCard,
   Wallet,
   AlertTriangle,
-  CheckCircle2,
-  Clock,
-  Printer,
-  Share2,
-  HelpCircle,
   RefreshCw
 } from 'lucide-react';
 import { CourtClub, TimeSlotItem, BookingReceipt } from '../../types/rally';
 import { rallyApi } from '../../services/rallyApi';
+import { BookingReceiptView } from './BookingReceiptView';
 
 interface BookingFlowModalProps {
   club: CourtClub;
@@ -36,49 +32,104 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
   const [paymentMethod, setPaymentMethod] = useState<'GATEWAY' | 'WALLET'>('GATEWAY');
   const [receipt, setReceipt] = useState<BookingReceipt | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [fullName, setFullName] = useState('امیر نکوزاده');
-  const [phoneNumber, setPhoneNumber] = useState('۰۹۱۲۳۴۵۶۷۸۹');
 
-  const finalAmount = slot.price; // No hidden fees!
+  const [fullName, setFullName] = useState(() => {
+    try {
+      const s = localStorage.getItem('padel_auth');
+      return s ? JSON.parse(s).fullName || '' : '';
+    } catch { return ''; }
+  });
+
+  const [phoneNumber, setPhoneNumber] = useState(() => {
+    try {
+      const s = localStorage.getItem('padel_auth');
+      return s ? JSON.parse(s).phoneNumber || '' : '';
+    } catch { return ''; }
+  });
+
+  const finalAmount = slot.price;
 
   const handleStartPayment = async () => {
-    // Check if slot lost simulation is triggered
+    const authHeaders = rallyApi.getUserAuthHeaders();
+    if (!authHeaders.Authorization) {
+      setErrorMessage('برای رزرو قطعی سانس، لطفاً ابتدا وارد حساب کاربری خود شوید.');
+      setStep('ERROR');
+      return;
+    }
+
     if (simulateState === 'SLOT_LOST') {
-      setErrorMessage('متأسفانه این سانس در حین فرآیند توسط کاربر دیگری رزرو شد. لطفاً سانس دیگری انتخاب کنید.');
+      setErrorMessage('متأسفانه این سانس توسط کاربر دیگری رزرو شد. لطفاً سانس دیگری انتخاب کنید.');
       setStep('ERROR');
       return;
     }
 
     setStep('PAYING');
-    if (slot.slotId) {
-      await rallyApi.holdSlot(slot.slotId, 'usr-1');
+    setErrorMessage(null);
+
+    // 1. Atomic Hold on Server
+    const holdRes = await rallyApi.holdSlot(slot.slotId);
+    if (!holdRes.success) {
+      setErrorMessage(holdRes.error || 'این سانس در حال حاضر قفل یا رزرو شده است. لطفاً سانس دیگری انتخاب کنید.');
+      setStep('ERROR');
+      return;
     }
-    setTimeout(() => {
-      if (simulateState === 'PAYMENT_PENDING') {
-        setErrorMessage('وضعیت تراکنش از سوی درگاه پرداخت نامشخص است. مبلغی از شما کسر نشده و نیازی به پرداخت مجدد نیست؛ می‌توانید از طریق پشتیبانی پیگیری کنید.');
+
+    const bookingData = holdRes.data;
+
+    // 2. Process Payment based on selected method
+    if (paymentMethod === 'WALLET') {
+      if (walletBalance < finalAmount) {
+        setErrorMessage('موجودی کیف پول شما کافی نیست. لطفاً کیف پول خود را شارژ کرده یا درگاه بانکی را انتخاب کنید.');
         setStep('ERROR');
-      } else {
-        const generatedReceipt: BookingReceipt = {
-          bookingId: `RLY-${Date.now().toString().slice(-6)}`,
-          trackingCode: `TRK-${Math.floor(100000 + Math.random() * 900000)}`,
-          clubName: club.name,
-          courtName: 'کورت شماره ۱ سنترال',
-          sport: club.sport,
-          date: 'فردا - پنجشنبه',
-          timeSlot: `${slot.startTime} تا ${slot.endTime}`,
-          durationMinutes: slot.durationMinutes,
-          totalAmount: finalAmount,
-          taxAmount: 0,
-          paidAt: new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' }),
-          userName: fullName,
-          userPhone: phoneNumber,
-          cancellationTerms: club.cancellationPolicy
-        };
-        setReceipt(generatedReceipt);
-        setStep('SUCCESS');
-        onPaymentCompleted(generatedReceipt);
+        return;
       }
-    }, 1200);
+
+      const payRes = await rallyApi.payBookingWithWallet(slot.slotId, bookingData?.booking_id);
+      if (!payRes.success) {
+        setErrorMessage(payRes.error || 'خطا در تسویه با کیف پول. لطفاً مجدداً تلاش نمایید.');
+        setStep('ERROR');
+        return;
+      }
+
+      const confirmedReceipt: BookingReceipt = {
+        bookingId: payRes.data?.booking_id || bookingData?.booking_id || `RLY-${Date.now().toString().slice(-6)}`,
+        trackingCode: payRes.data?.tracking_code || bookingData?.tracking_code || `TRK-${Date.now()}`,
+        clubName: club.name,
+        courtName: 'کورت سنترال',
+        sport: club.sport,
+        date: 'امروز / فردا',
+        timeSlot: `${slot.startTime} تا ${slot.endTime}`,
+        durationMinutes: slot.durationMinutes,
+        totalAmount: finalAmount,
+        taxAmount: 0,
+        paidAt: new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' }),
+        userName: fullName || 'ورزشکار گرامی',
+        userPhone: phoneNumber,
+        cancellationTerms: club.cancellationPolicy,
+        paymentMethod: 'WALLET'
+      };
+      setReceipt(confirmedReceipt);
+      setStep('SUCCESS');
+      onPaymentCompleted(confirmedReceipt);
+    } else {
+      // Gateway Payment Flow
+      try {
+        const checkoutRes = await fetch(`/api/v1/bookings/${bookingData?.booking_id}/checkout`, {
+          method: 'POST',
+          headers: authHeaders
+        });
+        const checkoutData = await checkoutRes.json();
+        if (checkoutRes.ok && checkoutData.payment_url) {
+          window.location.href = checkoutData.payment_url;
+        } else {
+          setErrorMessage(checkoutData.detail || 'خطا در اتصال به درگاه بانکی شاپرک.');
+          setStep('ERROR');
+        }
+      } catch {
+        setErrorMessage('وضعیت تراکنش نامشخص است. لطفاً وضعیت را در حساب کاربری خود بررسی فرمایید.');
+        setStep('ERROR');
+      }
+    }
   };
 
   return (
@@ -136,21 +187,11 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-[11px] font-bold text-gray-500 mb-1">نام رزروکننده</label>
-                  <input
-                    type="text"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    className="w-full h-10 px-3 rounded-xl border border-gray-200 text-xs font-bold text-rally-charcoal"
-                  />
+                  <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-gray-200 text-xs font-bold text-rally-charcoal" />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-bold text-gray-500 mb-1">شماره همراه (دریافت پیامک)</label>
-                  <input
-                    type="text"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                    className="w-full h-10 px-3 rounded-xl border border-gray-200 text-xs font-bold text-rally-charcoal"
-                  />
+                  <label className="block text-[11px] font-bold text-gray-500 mb-1">شماره همراه</label>
+                  <input type="text" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-gray-200 text-xs font-bold text-rally-charcoal" dir="ltr" />
                 </div>
               </div>
 
@@ -158,37 +199,11 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
               <div>
                 <label className="block text-[11px] font-bold text-gray-500 mb-1.5">روش پرداخت</label>
                 <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMethod('GATEWAY')}
-                    className={`p-3 rounded-xl border text-right transition-all flex items-center justify-between ${
-                      paymentMethod === 'GATEWAY'
-                        ? 'border-rally-primary bg-rally-primary/5 text-rally-primary'
-                        : 'border-gray-200 text-gray-600 hover:bg-gray-50'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <CreditCard className="w-4 h-4" />
-                      <span className="text-xs font-bold">درگاه شتاب / شاپرک</span>
-                    </div>
+                  <button type="button" onClick={() => setPaymentMethod('GATEWAY')} className={`p-3 rounded-xl border text-right transition-all flex items-center justify-between ${paymentMethod === 'GATEWAY' ? 'border-rally-primary bg-rally-primary/5 text-rally-primary' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
+                    <div className="flex items-center gap-2"><CreditCard className="w-4 h-4" /><span className="text-xs font-bold">درگاه شتاب / شاپرک</span></div>
                   </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMethod('WALLET')}
-                    className={`p-3 rounded-xl border text-right transition-all flex items-center justify-between ${
-                      paymentMethod === 'WALLET'
-                        ? 'border-rally-primary bg-rally-primary/5 text-rally-primary'
-                        : 'border-gray-200 text-gray-600 hover:bg-gray-50'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <Wallet className="w-4 h-4" />
-                      <div>
-                        <span className="text-xs font-bold block">کیف پول رالی</span>
-                        <span className="text-[10px] text-gray-400">موجودی: {(walletBalance / 10).toLocaleString('fa-IR')} ت</span>
-                      </div>
-                    </div>
+                  <button type="button" onClick={() => setPaymentMethod('WALLET')} className={`p-3 rounded-xl border text-right transition-all flex items-center justify-between ${paymentMethod === 'WALLET' ? 'border-rally-primary bg-rally-primary/5 text-rally-primary' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
+                    <div className="flex items-center gap-2"><Wallet className="w-4 h-4" /><div><span className="text-xs font-bold block">کیف پول رالی</span><span className="text-[10px] text-gray-400">موجودی: {(walletBalance / 10).toLocaleString('fa-IR')} ت</span></div></div>
                   </button>
                 </div>
               </div>
@@ -226,45 +241,7 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
           )}
 
           {step === 'SUCCESS' && receipt && (
-            <div className="space-y-4">
-              <div className="text-center space-y-1">
-                <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto" />
-                <h4 className="text-base font-black text-rally-charcoal">رزرو با موفقیت قطعی شد</h4>
-                <p className="text-xs text-gray-500">پیامک تأیید و شناسه ورود به کورت برای شما ارسال گردید.</p>
-              </div>
-
-              <div className="border border-dashed border-gray-300 rounded-2xl p-4 bg-gray-50 space-y-3 text-xs">
-                <div className="flex justify-between items-center pb-2 border-b border-gray-200">
-                  <span className="text-gray-400">شناسه پیگیری (Tracking ID):</span>
-                  <span className="font-black text-rally-primary font-mono">{receipt.trackingCode}</span>
-                </div>
-
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <span className="text-gray-400 block text-[10px]">کلوپ:</span>
-                    <span className="font-bold text-gray-800">{receipt.clubName}</span>
-                  </div>
-                  <div>
-                    <span className="text-gray-400 block text-[10px]">ساعت سانس:</span>
-                    <span className="font-bold text-gray-800">{receipt.timeSlot}</span>
-                  </div>
-                </div>
-
-                <div className="flex justify-between items-center pt-2 border-t border-gray-200">
-                  <span className="text-gray-500">مبلغ پرداخت‌شده:</span>
-                  <span className="font-extrabold text-gray-900">{(receipt.totalAmount / 10).toLocaleString('fa-IR')} تومان</span>
-                </div>
-              </div>
-
-              <div className="flex gap-2">
-                <button
-                  onClick={onClose}
-                  className="flex-1 py-2.5 rounded-xl bg-rally-primary text-white text-xs font-bold"
-                >
-                  بازگشت به سایت
-                </button>
-              </div>
-            </div>
+            <BookingReceiptView receipt={receipt} onClose={onClose} />
           )}
 
           {step === 'ERROR' && (

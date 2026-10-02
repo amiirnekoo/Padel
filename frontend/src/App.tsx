@@ -24,7 +24,7 @@ import { useRallyRouter } from './hooks/useRallyRouter';
 
 export const App: React.FC = () => {
   const [selectedCity] = useState('تهران');
-  const [walletBalance, setWalletBalance] = useState<number>(35000000);
+  const [walletBalance, setWalletBalance] = useState<number>(0);
   const [isWalletOpen, setIsWalletOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
 
@@ -89,6 +89,8 @@ export const App: React.FC = () => {
       rallyApi.getWalletBalance(userSession.userId).then((b) => {
         if (typeof b === 'number') setWalletBalance(b);
       });
+    } else {
+      setWalletBalance(0);
     }
   }, [userSession?.userId]);
 
@@ -134,15 +136,21 @@ export const App: React.FC = () => {
   }
 
   if (isPortalOpen) {
+    if (!userSession) {
+      setIsAuthOpen(true);
+      exitSpecialPage();
+      return null;
+    }
     return (
       <UnifiedPortalPage
-        userSession={userSession || { userId: 'usr-1', fullName: 'کاربر رالی', phoneNumber: '۰۹۱۲۳۴۵۶۷۸۹', role: 'PLAYER', token: 'mock-jwt-token-2026' }}
+        userSession={userSession}
         walletBalance={walletBalance}
         onOpenWallet={() => setIsWalletOpen(true)}
         onExitPortal={exitSpecialPage}
         onLogout={() => {
           localStorage.removeItem('padel_auth');
           setUserSession(null);
+          setWalletBalance(0);
           exitSpecialPage();
         }}
       />
@@ -207,7 +215,7 @@ export const App: React.FC = () => {
                 )}
                 {activeTab === 'matchmaking' && (
                   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                    <RallyMatchmakingPage userId={userSession?.userId || 'usr-1'} userName={userSession?.fullName || 'کاربر رالی'} walletBalance={walletBalance} />
+                    <RallyMatchmakingPage userId={userSession?.userId || ''} userName={userSession?.fullName || 'کاربر گرامی'} walletBalance={walletBalance} />
                   </div>
                 )}
                 {activeTab === 'coaches' && (

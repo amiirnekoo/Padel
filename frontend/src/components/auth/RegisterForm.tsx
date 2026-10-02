@@ -61,19 +61,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         onError(data.detail || 'خطا در ثبت‌نام کاربر');
       }
     } catch {
-      // Local fallback
-      const fallbackSession: UserSession = {
-        userId: 'usr-' + Date.now(),
-        phoneNumber: phone,
-        email,
-        role: 'PLAYER',
-        fullName,
-        preferredSport: sport,
-        dominantHand,
-        token: 'local-registered-token'
-      };
-      localStorage.setItem('padel_auth', JSON.stringify(fallbackSession));
-      onSuccess(fallbackSession);
+      onError('خطا در برقراری ارتباط با سامانه ثبت‌نام. لطفاً اتصال اینترنت خود را بررسی و مجدداً تلاش فرمایید.');
     } finally {
       setLoading(false);
     }

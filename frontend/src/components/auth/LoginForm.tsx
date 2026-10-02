@@ -52,17 +52,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         onError(data.detail || 'شماره همراه/ایمیل یا کلمه عبور نادرست است.');
       }
     } catch {
-      // Local fallback for offline/demo
-      const demoSession: UserSession = {
-        userId: 'usr-demo',
-        phoneNumber: username.startsWith('09') ? username : '۰۹۱۲۳۴۵۶۷۸۹',
-        email: username.includes('@') ? username : undefined,
-        role: 'PLAYER',
-        fullName: 'ورزشکار گرامی',
-        token: 'local-jwt-demo'
-      };
-      localStorage.setItem('padel_auth', JSON.stringify(demoSession));
-      onSuccess(demoSession);
+      onError('خطا در برقراری ارتباط با سرور. لطفاً اتصال اینترنت خود را بررسی و مجدداً تلاش فرمایید.');
     } finally {
       setLoading(false);
     }
