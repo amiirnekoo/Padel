@@ -2,6 +2,102 @@ import { CourtClub, Coach, Tournament } from '../types/rally';
 
 export const MOCK_CLUBS: CourtClub[] = [
   {
+    "id": "club-viva",
+    "name": "باشگاه پدل ویوا (VIVA Padel Club)",
+    "sport": "PADEL",
+    "city": "تهران",
+    "area": "مینی‌سیتی",
+    "address": "تهران، منطقه ۱، مینی‌سیتی، بلوار ارتش، مجموعه ورزشی و کلوپ پدل ویوا",
+    "courtType": "INDOOR",
+    "surface": "کورت سوپر پانورامیک مسقف سازه‌ای با چمن مشکی استاندارد WPT و دیواره شیشه‌ای سکوریت",
+    "rating": 4.98,
+    "startingPrice": 3500000,
+    "nearestAvailableSlot": "فردا ۱۷:۰۰ تا ۱۸:۰۰",
+    "images": [
+      "/images/court_viva.jpg"
+    ],
+    "amenities": [
+      {
+        "id": "canopy",
+        "label": "سقف سازه‌ای مسقف با تهویه آزاد",
+        "iconName": "Shield"
+      },
+      {
+        "id": "parking",
+        "label": "پارکینگ اختصاصی مجموعه",
+        "iconName": "Car"
+      },
+      {
+        "id": "cafe",
+        "label": "کافه رستوران و لانژ استراحت",
+        "iconName": "Coffee"
+      },
+      {
+        "id": "shower",
+        "label": "رختکن مدرن و دوش آبگرم",
+        "iconName": "Bath"
+      },
+      {
+        "id": "lighting",
+        "label": "پروژکتورهای قوسی مدرن WPT",
+        "iconName": "Sun"
+      },
+      {
+        "id": "racket",
+        "label": "اجاره و تست راکت‌های حرفه‌ای",
+        "iconName": "Shield"
+      }
+    ],
+    "rules": [
+      "کورت دارای سقف محافظ بوده و در تمام شرایط جوی فعال است.",
+      "ورود با کفش استاندارد کورت پدل الزامی است.",
+      "تعداد حداکثر بازیکنان در زمین دونفره ۴ نفر می‌باشد."
+    ],
+    "cancellationPolicy": "لغو تا ۱۲ ساعت قبل با استرداد ۱۰۰٪ وجه امکان‌پذیر است.",
+    "slots": [
+      {
+        "slotId": "viva-1",
+        "startTime": "۱۵:۳۰",
+        "endTime": "۱۶:۳۰",
+        "durationMinutes": 60,
+        "price": 3500000,
+        "status": "AVAILABLE"
+      },
+      {
+        "slotId": "viva-2",
+        "startTime": "۱۷:۰۰",
+        "endTime": "۱۸:۰۰",
+        "durationMinutes": 60,
+        "price": 3500000,
+        "status": "AVAILABLE"
+      },
+      {
+        "slotId": "viva-3",
+        "startTime": "۱۸:۳۰",
+        "endTime": "۱۹:۳۰",
+        "durationMinutes": 60,
+        "price": 3500000,
+        "status": "AVAILABLE"
+      },
+      {
+        "slotId": "viva-4",
+        "startTime": "۲۰:۰۰",
+        "endTime": "۲۱:۰۰",
+        "durationMinutes": 60,
+        "price": 3500000,
+        "status": "AVAILABLE"
+      },
+      {
+        "slotId": "viva-5",
+        "startTime": "۲۱:۳۰",
+        "endTime": "۲۲:۳۰",
+        "durationMinutes": 60,
+        "price": 3500000,
+        "status": "AVAILABLE"
+      }
+    ]
+  },
+  {
     "id": "club-lafour",
     "name": "باشگاه پدل لفور (Lafour Club)",
     "sport": "PADEL",

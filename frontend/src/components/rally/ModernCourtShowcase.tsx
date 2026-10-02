@@ -26,13 +26,27 @@ export const ModernCourtShowcase: React.FC<ModernCourtShowcaseProps> = ({
   fallbackClubs = []
 }) => {
   const [activeSlotMap, setActiveSlotMap] = useState<Record<string, string>>({
+    'court-viva': 'slot-2',
     'court-lafour': 'slot-2',
     'court-padel-land': 'slot-1',
-    'court-narmak': 'slot-2',
     'court-east-tehran': 'slot-1'
   });
 
   const showcaseCourts: (CourtShowcaseItem & { courtType?: 'INDOOR' | 'OUTDOOR' })[] = [
+    {
+      id: 'court-viva',
+      name: 'باشگاه پدل ویوا (VIVA Club)',
+      area: 'مینی‌سیتی',
+      city: 'تهران',
+      imageUrl: '/images/court_viva.jpg',
+      startingPrice: 3500000,
+      courtType: 'INDOOR',
+      slots: [
+        { id: 'slot-1', time: '۱۵:۳۰', price: 3500000 },
+        { id: 'slot-2', time: '۱۷:۰۰', price: 3500000 },
+        { id: 'slot-3', time: '۱۸:۳۰', price: 3500000 }
+      ]
+    },
     {
       id: 'court-lafour',
       name: 'باشگاه پدل لفور (Lafour Club)',
@@ -59,20 +73,6 @@ export const ModernCourtShowcase: React.FC<ModernCourtShowcaseProps> = ({
         { id: 'slot-1', time: '۱۷:۰۰', price: 580000 },
         { id: 'slot-2', time: '۱۸:۰۰', price: 620000 },
         { id: 'slot-3', time: '۱۹:۰۰', price: 620000 }
-      ]
-    },
-    {
-      id: 'court-narmak',
-      name: 'باشگاه پدل نارمک',
-      area: 'نارمک',
-      city: 'تهران',
-      imageUrl: '/images/court_narmak.jpg',
-      startingPrice: 450000,
-      courtType: 'INDOOR',
-      slots: [
-        { id: 'slot-1', time: '۱۶:۳۰', price: 450000 },
-        { id: 'slot-2', time: '۱۸:۰۰', price: 500000 },
-        { id: 'slot-3', time: '۱۹:۳۰', price: 500000 }
       ]
     },
     {
@@ -186,7 +186,7 @@ export const ModernCourtShowcase: React.FC<ModernCourtShowcaseProps> = ({
                   {/* Top Badge: Outdoor / Indoor tag */}
                   <div className="absolute top-3 right-3 flex items-center gap-1.5">
                     <span className="font-bold text-[10px] bg-black/70 text-[#D7ED68] px-2.5 py-1 rounded-lg border border-[#D7ED68]/30">
-                      {court.courtType === 'OUTDOOR' ? '🌤️ کورت روباز' : '🏢 کورت مسقف'}
+                      {court.id === 'court-viva' ? '🏢 کورت مسقف سازه‌ای' : court.courtType === 'OUTDOOR' ? '🌤️ کورت روباز' : '🏢 کورت مسقف'}
                     </span>
                   </div>
 
@@ -197,7 +197,7 @@ export const ModernCourtShowcase: React.FC<ModernCourtShowcaseProps> = ({
                       <span>{court.area}</span>
                     </span>
                     <span className="font-bold text-white bg-[#0B4278]/90 px-2 py-1 rounded-lg border border-[#0B4278] text-[11px]">
-                      {court.id === 'court-lafour' ? 'ساعتی ' : 'شروع از '}
+                      {['court-lafour', 'court-viva'].includes(court.id) ? 'ساعتی ' : 'شروع از '}
                       {court.startingPrice.toLocaleString('fa-IR')} تومان
                     </span>
                   </div>

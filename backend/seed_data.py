@@ -174,6 +174,20 @@ async def seed():
                 "approval_status": "APPROVED",
                 "is_active": True,
                 "iban": "IR880120000000001234567805"
+            },
+            {
+                "id": "club-viva",
+                "name": "باشگاه پدل ویوا (VIVA Padel Club)",
+                "city": "تهران",
+                "province": "تهران",
+                "address": "تهران، منطقه ۱، مینی‌سیتی، بلوار ارتش، مجتمع ورزشی ویوا پدل",
+                "phone": "02122440000",
+                "sports_supported": "PADEL",
+                "default_hourly_rate": 35000000,
+                "amenities": "کورت مسقف سازه‌ای سوپر پانورامیک، چمن مشکی، پارکینگ، کافه رستوران و رختکن مدرن",
+                "approval_status": "APPROVED",
+                "is_active": True,
+                "iban": "IR880120000000001234567806"
             }
         ]
 
@@ -182,6 +196,7 @@ async def seed():
 
         # 4. Seed Courts
         courts_data = [
+            {"id": "court-viva-1", "club_id": "club-viva", "name": "کورت ۱ مسقف سازه‌ای (ویوا مینی‌سیتی)", "sport_type": "PADEL", "is_indoor": True},
             {"id": "court-eng-1", "club_id": "club-enghelab", "name": "کورت سنترال پدل (انقلاب)", "sport_type": "PADEL", "is_indoor": True},
             {"id": "court-eng-2", "club_id": "club-enghelab", "name": "کورت ۲ پدل روباز (انقلاب)", "sport_type": "PADEL", "is_indoor": False},
             {"id": "court-laf-1", "club_id": "club-lafour", "name": "کورت ۱ روباز پانورامیک (لفور)", "sport_type": "PADEL", "is_indoor": False},

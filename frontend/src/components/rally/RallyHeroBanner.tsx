@@ -78,7 +78,7 @@ export const RallyHeroBanner: React.FC<RallyHeroBannerProps> = ({
                   </div>
                   <div>
                     <p className="font-bold text-white">کورت‌های شیشه‌ای و چمن استاندارد</p>
-                    <p className="text-[11px] text-gray-300">مجموعه انقلاب، لفور آجودانیه و بام ولنجک</p>
+                    <p className="text-[11px] text-gray-300">مجموعه انقلاب، ویوا مینی‌سیتی، لفور و بام ولنجک</p>
                   </div>
                 </div>
                 <span className="text-[11px] font-bold text-rally-accent bg-white/10 px-2 py-1 rounded-lg">

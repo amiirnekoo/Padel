@@ -19,6 +19,7 @@ interface SlotItem {
 
 export const AdminSchedulerTab: React.FC = () => {
   const [courts, setCourts] = useState<CourtItem[]>([
+    { id: 'court-viva-1', name: 'کورت ۱ پانورامیک (ویوا مینی‌سیتی)', club_id: 'club-viva' },
     { id: 'court-rev-1', name: 'کورت ۱ پانورامیک (انقلاب)', club_id: 'club-enghelab' },
     { id: 'court-rev-2', name: 'کورت ۲ سنترال (انقلاب)', club_id: 'club-enghelab' },
     { id: 'court-laf-1', name: 'کورت روباز ۱ (لفور آجودانیه)', club_id: 'club-lafour' },
