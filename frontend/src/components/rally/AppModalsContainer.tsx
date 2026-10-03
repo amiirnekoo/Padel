@@ -8,7 +8,7 @@ import { CartDrawer } from './shop/CartDrawer';
 import { ShopReceiptModal } from './shop/ShopReceiptModal';
 import { WalletModal } from '../WalletModal';
 import { AuthModal, UserSession } from '../AuthModal';
-import { CourtClub, Coach, Tournament, TimeSlotItem, ShopProduct, CartItem, ShopOrderReceipt } from '../../types/rally';
+import { CourtClub, Coach, Tournament, TimeSlotItem, ShopProduct, CartItem, ShopOrderReceipt, BookingReceipt } from '../../types/rally';
 
 interface AppModalsContainerProps {
   selectedClub: CourtClub | null;
@@ -16,8 +16,9 @@ interface AppModalsContainerProps {
   onProceedBooking: (club: CourtClub, slot: TimeSlotItem) => void;
   bookingSlot: { club: CourtClub; slot: TimeSlotItem } | null;
   walletBalance: number;
-  simulateState: 'NORMAL' | 'SLOT_LOST' | 'PAYMENT_PENDING';
+  simulateState?: 'NORMAL' | 'SLOT_LOST' | 'PAYMENT_PENDING';
   onCloseBooking: () => void;
+  onBookingPaymentCompleted?: (receipt: BookingReceipt) => void;
   selectedCoach: Coach | null;
   onCloseCoach: () => void;
   selectedTournament: Tournament | null;
@@ -54,6 +55,7 @@ export const AppModalsContainer: React.FC<AppModalsContainerProps> = ({
   walletBalance,
   simulateState,
   onCloseBooking,
+  onBookingPaymentCompleted,
   selectedCoach,
   onCloseCoach,
   selectedTournament,
@@ -97,7 +99,7 @@ export const AppModalsContainer: React.FC<AppModalsContainerProps> = ({
           walletBalance={walletBalance}
           simulateState={simulateState}
           onClose={onCloseBooking}
-          onPaymentCompleted={() => {}}
+          onPaymentCompleted={onBookingPaymentCompleted || (() => {})}
         />
       )}
       {selectedCoach && (

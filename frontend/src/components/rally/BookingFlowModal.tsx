@@ -48,6 +48,8 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
   });
 
   const finalAmount = slot.price;
+  const finalAmountToman = finalAmount > 10000000 ? Math.floor(finalAmount / 10) : finalAmount;
+  const userBalanceToman = walletBalance > 10000000 ? Math.floor(walletBalance / 10) : walletBalance;
 
   const handleStartPayment = async () => {
     const authHeaders = rallyApi.getUserAuthHeaders();
@@ -78,7 +80,7 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
 
     // 2. Process Payment based on selected method
     if (paymentMethod === 'WALLET') {
-      if (walletBalance < finalAmount) {
+      if (userBalanceToman < finalAmountToman) {
         setErrorMessage('موجودی کیف پول شما کافی نیست. لطفاً کیف پول خود را شارژ کرده یا درگاه بانکی را انتخاب کنید.');
         setStep('ERROR');
         return;
@@ -199,11 +201,13 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
               <div>
                 <label className="block text-[11px] font-bold text-gray-500 mb-1.5">روش پرداخت</label>
                 <div className="grid grid-cols-2 gap-2">
-                  <button type="button" onClick={() => setPaymentMethod('GATEWAY')} className={`p-3 rounded-xl border text-right transition-all flex items-center justify-between ${paymentMethod === 'GATEWAY' ? 'border-rally-primary bg-rally-primary/5 text-rally-primary' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
-                    <div className="flex items-center gap-2"><CreditCard className="w-4 h-4" /><span className="text-xs font-bold">درگاه شتاب / شاپرک</span></div>
+                  <button type="button" onClick={() => setPaymentMethod('GATEWAY')} className={`p-3 rounded-xl border text-right transition-all flex flex-col justify-between opacity-60 cursor-not-allowed ${paymentMethod === 'GATEWAY' ? 'border-amber-400 bg-amber-50 text-amber-900' : 'border-gray-200 text-gray-500 hover:bg-gray-50'}`}>
+                    <div className="flex items-center gap-2"><CreditCard className="w-4 h-4 text-gray-400" /><span className="text-xs font-bold">درگاه شاپرک</span></div>
+                    <span className="text-[9px] text-amber-700 bg-amber-100/80 px-1.5 py-0.5 rounded mt-1.5 inline-block w-fit font-medium">غیرفعال در این نسخه (PSP)</span>
                   </button>
-                  <button type="button" onClick={() => setPaymentMethod('WALLET')} className={`p-3 rounded-xl border text-right transition-all flex items-center justify-between ${paymentMethod === 'WALLET' ? 'border-rally-primary bg-rally-primary/5 text-rally-primary' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
-                    <div className="flex items-center gap-2"><Wallet className="w-4 h-4" /><div><span className="text-xs font-bold block">کیف پول رالی</span><span className="text-[10px] text-gray-400">موجودی: {(walletBalance / 10).toLocaleString('fa-IR')} ت</span></div></div>
+                  <button type="button" onClick={() => setPaymentMethod('WALLET')} className={`p-3 rounded-xl border text-right transition-all flex flex-col justify-between ${paymentMethod === 'WALLET' ? 'border-rally-primary bg-rally-primary/5 text-rally-primary' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
+                    <div className="flex items-center gap-2"><Wallet className="w-4 h-4" /><div><span className="text-xs font-bold block">کیف پول رالی</span></div></div>
+                    <div className="flex items-center justify-between mt-1"><span className="text-[10px] text-gray-400">موجودی: {userBalanceToman.toLocaleString('fa-IR')} ت</span><span className="text-[9px] text-emerald-700 bg-emerald-100/80 px-1.5 py-0.5 rounded font-medium">فعال و آماده تسویه</span></div>
                   </button>
                 </div>
               </div>
@@ -212,7 +216,7 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
               <div className="pt-2 border-t border-gray-100 flex items-center justify-between text-xs">
                 <span className="text-gray-500 font-medium">مبلغ نهایی قابل پرداخت (بدون کارمزد مخفی):</span>
                 <div className="flex items-baseline gap-1 font-black text-rally-charcoal text-base">
-                  <span>{(finalAmount / 10).toLocaleString('fa-IR')}</span>
+                  <span>{finalAmountToman.toLocaleString('fa-IR')}</span>
                   <span className="text-xs font-medium text-gray-500">تومان</span>
                 </div>
               </div>

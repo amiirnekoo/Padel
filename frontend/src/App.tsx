@@ -258,6 +258,13 @@ export const App: React.FC = () => {
         onProceedBooking={(club, slot) => { setSelectedClub(null); setBookingSlot({ club, slot }); }}
         bookingSlot={bookingSlot} walletBalance={walletBalance} simulateState="NORMAL"
         onCloseBooking={() => setBookingSlot(null)}
+        onBookingPaymentCompleted={(receipt) => {
+          setWalletBalance((prev) => Math.max(0, prev - receipt.totalAmount));
+          try {
+            const prevBookings = JSON.parse(localStorage.getItem('my_rally_bookings') || '[]');
+            localStorage.setItem('my_rally_bookings', JSON.stringify([receipt, ...prevBookings]));
+          } catch {}
+        }}
         selectedCoach={selectedCoach} onCloseCoach={() => setSelectedCoach(null)}
         selectedTournament={selectedTournament} onCloseTournament={() => setSelectedTournament(null)}
         selectedProduct={null} onCloseProduct={() => {}}
