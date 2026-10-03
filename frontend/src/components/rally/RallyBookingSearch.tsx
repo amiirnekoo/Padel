@@ -14,7 +14,7 @@ export const RallyBookingSearch: React.FC<RallyBookingSearchProps> = ({
   onNavigateToTournaments
 }) => {
   const [selectedSport, setSelectedSport] = useState<SportType>('PADEL');
-  const [selectedCity, setSelectedCity] = useState('تهران');
+  const [selectedCity, setSelectedCity] = useState('تهران (همه زمین‌ها)');
   const [selectedDate, setSelectedDate] = useState('فردا');
   const [dateDetail, setDateDetail] = useState('چهارشنبه ۹ مهر ۱۴۰۵');
 
@@ -36,7 +36,12 @@ export const RallyBookingSearch: React.FC<RallyBookingSearchProps> = ({
     { id: 'TENNIS', label: 'تنیس' }
   ];
 
-  const CITIES = ['تهران', 'مشهد', 'اصفهان', 'شیراز', 'ساری', 'کیش', 'تبریز', 'نوشهر'];
+  const VENUE_AREAS = [
+    { id: 'ALL', label: 'تهران (همه زمین‌ها)' },
+    { id: 'FGB', label: 'FGB انقلاب', area: 'انقلاب' },
+    { id: 'LAFOUR', label: 'لفور آجودانیه', area: 'آجودانیه' },
+    { id: 'VIVA', label: 'ویوا مینی‌سیتی', area: 'مینی‌سیتی' }
+  ];
 
   const dateOptions = [
     { label: 'امروز', detail: 'سه‌شنبه ۸ مهر ۱۴۰۵' },
@@ -46,9 +51,11 @@ export const RallyBookingSearch: React.FC<RallyBookingSearchProps> = ({
   ];
 
   const handleSearchClick = () => {
+    const selectedItem = VENUE_AREAS.find((v) => v.label === selectedCity);
     onSearch({
       sport: selectedSport,
-      city: selectedCity,
+      city: 'تهران',
+      area: selectedItem?.area,
       date: selectedDate
     });
   };
@@ -120,7 +127,7 @@ export const RallyBookingSearch: React.FC<RallyBookingSearchProps> = ({
                 <MapPin className="w-4 h-4 text-[#0E3D38]" />
               </span>
               <div>
-                <span className="block text-[11px] font-bold text-[#66706D]">شهر انتخاب شده</span>
+                <span className="block text-[11px] font-bold text-[#66706D]">مجموعه / محدوده</span>
                 <span className="text-sm font-black text-[#172320]">
                   {selectedCity}
                 </span>
@@ -129,27 +136,28 @@ export const RallyBookingSearch: React.FC<RallyBookingSearchProps> = ({
             <ChevronDown className="w-4 h-4 text-[#66706D]" />
           </button>
 
-          {/* City Dropdown - Clean Cities Grid */}
+          {/* City / Venue Dropdown */}
           {openDropdown === 'city' && (
             <div className="absolute top-full mt-2 right-0 w-64 bg-white border border-[#E8E6DD] rounded-2xl shadow-xl p-3 z-30">
-              <span className="block text-[11px] font-black text-[#172320] mb-2 px-1">انتخاب شهر:</span>
-              <div className="grid grid-cols-2 gap-1.5">
-                {CITIES.map((cityName) => {
-                  const isSelected = selectedCity === cityName;
+              <span className="block text-[11px] font-black text-[#172320] mb-2 px-1">انتخاب کورت یا محدوده:</span>
+              <div className="space-y-1.5">
+                {VENUE_AREAS.map((item) => {
+                  const isSelected = selectedCity === item.label;
                   return (
                     <button
-                      key={cityName}
+                      key={item.id}
                       onClick={() => {
-                        setSelectedCity(cityName);
+                        setSelectedCity(item.label);
                         setOpenDropdown(null);
                       }}
-                      className={`px-3 py-2 rounded-xl text-xs font-bold text-center transition-all cursor-pointer ${
+                      className={`w-full px-3 py-2.5 rounded-xl text-xs font-bold text-right flex items-center justify-between transition-all cursor-pointer ${
                         isSelected
                           ? 'bg-[#0B4278] text-white shadow-xs'
                           : 'bg-[#F5F4EF] text-[#172320] hover:bg-[#E8E6DD]'
                       }`}
                     >
-                      {cityName}
+                      <span>{item.label}</span>
+                      {isSelected && <span className="w-2 h-2 rounded-full bg-[#D7ED68]" />}
                     </button>
                   );
                 })}

@@ -7,8 +7,8 @@ export const AdminClubsTab: React.FC = () => {
   const [clubs, setClubs] = useState<CourtClub[]>(MOCK_CLUBS);
   const [activeStatuses, setActiveStatuses] = useState<Record<string, boolean>>({
     'club-enghelab': true,
-    'club-velenjak': true,
-    'club-esteghlal': true
+    'club-lafour': true,
+    'club-viva': true
   });
 
   const toggleStatus = (clubId: string) => {

@@ -13,13 +13,11 @@ export interface CategoryItem {
 
 export const APPLE_CATEGORIES: CategoryItem[] = [
   { id: 'ALL', label: 'همه زمین‌ها', icon: Layers, sport: 'ALL', type: 'ALL' },
-  { id: 'PADEL_INDOOR', label: 'پدل سرپوشیده', icon: Shield, sport: 'PADEL', type: 'INDOOR', tag: 'محبوب' },
-  { id: 'PADEL_OUTDOOR', label: 'پدل پانورامیک', icon: Sun, sport: 'PADEL', type: 'OUTDOOR' },
-  { id: 'TENNIS_ALL', label: 'کورت‌های تنیس', icon: Trophy, sport: 'TENNIS', type: 'ALL' },
-  { id: 'TEHRAN', label: 'کلوپ‌های تهران', icon: Building, city: 'تهران' },
-  { id: 'SHIRAZ', label: 'اسپین شیراز', icon: MapPin, city: 'شیراز' },
-  { id: 'ISFAHAN', label: 'پرواز اصفهان', icon: MapPin, city: 'اصفهان' },
-  { id: 'KISH', label: 'سنترال کیش', icon: Sparkles, city: 'کیش', tag: 'لوکس' },
+  { id: 'CLUB_FGB', label: 'FGB انقلاب', icon: Building, city: 'انقلاب', tag: 'آرنا' },
+  { id: 'CLUB_LAFOUR', label: 'لفور آجودانیه', icon: Sun, city: 'آجودانیه' },
+  { id: 'CLUB_VIVA', label: 'ویوا مینی‌سیتی', icon: Shield, city: 'مینی‌سیتی', tag: 'مسقف' },
+  { id: 'PADEL_INDOOR', label: 'کورت‌های مسقف', icon: Shield, sport: 'PADEL', type: 'INDOOR' },
+  { id: 'PADEL_OUTDOOR', label: 'کورت‌های روباز', icon: Sun, sport: 'PADEL', type: 'OUTDOOR' },
 ];
 
 interface AppleCategoryShelfProps {

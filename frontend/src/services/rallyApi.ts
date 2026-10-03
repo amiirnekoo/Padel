@@ -52,6 +52,20 @@ export const rallyApi = {
   },
 
   /**
+   * دریافت کلیه رزروهای ثبت‌شده و قطعی کاربر از سرور
+   */
+  async getMyBookings(): Promise<any[]> {
+    try {
+      const headers = this.getUserAuthHeaders();
+      const res = await fetch(`${API_BASE}/bookings/my`, { headers });
+      if (!res.ok) return [];
+      return await res.json();
+    } catch {
+      return [];
+    }
+  },
+
+  /**
    * محاسبه بلادرنگ سبد خرید و اعمال تخفیف از بک‌اند
    */
   async calculateCart(items: { product_id: string; quantity: number }[], couponCode?: string) {

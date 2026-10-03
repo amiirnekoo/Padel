@@ -115,10 +115,10 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         <button
           type="button"
           onClick={onSwitchToOtp}
-          className="flex items-center gap-1.5 text-sky-400 hover:text-sky-300 font-bold transition-colors cursor-pointer"
+          className="flex items-center gap-1.5 text-slate-400 hover:text-slate-300 font-bold transition-colors cursor-pointer text-[11px]"
         >
-          <KeyRound className="w-3.5 h-3.5" />
-          <span>ورود سریع و بدون رمز با پیامک یکبار مصرف (OTP)</span>
+          <KeyRound className="w-3.5 h-3.5 text-amber-400" />
+          <span>ورود با پیامک یکبار مصرف OTP (غیرفعال در نسخه فعلی)</span>
         </button>
 
         <div>

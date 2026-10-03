@@ -114,24 +114,56 @@ async def user_login(payload: UserLoginRequest, db: AsyncSession = Depends(get_d
     }
 
 from backend.app.core.config import settings
+from backend.app.core.sms import get_sms_provider, DisabledSmsProvider
+
+def is_sms_available() -> bool:
+    """بررسی فعال بودن درگاه پیامک واقعی در محیط جاری."""
+    provider = get_sms_provider(
+        provider_type=settings.SMS_PROVIDER,
+        is_production=(settings.ENVIRONMENT.lower() == "production")
+    )
+    return not isinstance(provider, DisabledSmsProvider)
 
 @router.post("/otp/request")
 async def request_otp(payload: OTPRequest):
+    if not is_sms_available():
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="سامانه ارسال پیامک در محیط عملیاتی غیرفعال است. ورود تنها از طریق کلمه عبور امکان‌پذیر است."
+        )
+
     code = OTPService.generate_otp(payload.phone_number)
-    # In production, integrate SMS provider (Kavenegar/Sms.ir).
+    provider = get_sms_provider(settings.SMS_PROVIDER, is_production=False)
+    await provider.send_pattern_sms(
+        receptor=payload.phone_number,
+        template="rally-otp",
+        tokens={"token": code}
+    )
+
     response_data = {
         "message": "کد تأیید با موفقیت ارسال شد",
         "expires_in_seconds": 120,
     }
-    # Only expose dev_code if explicitly enabled for testing
-    if settings.ALLOW_DEV_AUTH_BYPASS:
+    # کد آزمایشی هرگز در محیط پروداکشن نباید افشا یا فعال شود
+    if settings.ALLOW_DEV_AUTH_BYPASS and settings.ENVIRONMENT.lower() != "production":
         response_data["dev_code"] = code
     return response_data
 
 @router.post("/otp/verify")
 async def verify_otp(payload: OTPVerify, db: AsyncSession = Depends(get_db_session)):
+    if not is_sms_available():
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="ورود پیامکی در این نسخه غیرفعال است. لطفاً از طریق کلمه عبور وارد شوید."
+        )
+
+    # کدهای تست هرگز در پروداکشن معتبر نیستند
+    allow_test_code = (
+        settings.ALLOW_DEV_AUTH_BYPASS
+        and settings.ENVIRONMENT.lower() != "production"
+        and payload.code == "12345"
+    )
     is_valid = OTPService.verify_otp(payload.phone_number, payload.code)
-    allow_test_code = settings.ALLOW_DEV_AUTH_BYPASS and payload.code == "12345"
     if not is_valid and not allow_test_code:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="کد تأیید نامعتبر است یا منقضی شده است")
 

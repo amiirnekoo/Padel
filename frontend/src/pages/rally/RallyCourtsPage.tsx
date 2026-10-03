@@ -27,14 +27,7 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
   const [clubsData, setClubsData] = useState<CourtClub[]>(MOCK_CLUBS);
 
   const CITIES_LIST = [
-    { id: 'تهران', label: 'تهران' },
-    { id: 'مشهد', label: 'مشهد' },
-    { id: 'اصفهان', label: 'اصفهان' },
-    { id: 'شیراز', label: 'شیراز' },
-    { id: 'ساری', label: 'ساری' },
-    { id: 'کیش', label: 'کیش' },
-    { id: 'تبریز', label: 'تبریز' },
-    { id: 'نوشهر', label: 'نوشهر' },
+    { id: 'تهران', label: 'تهران (۳ مجموعه معتبر)' },
     { id: 'ALL', label: 'همه شهرها' },
   ];
 
@@ -116,7 +109,7 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
       if (sportFilter !== 'ALL' && club.sport !== sportFilter) return false;
       if (typeFilter !== 'ALL' && club.courtType !== typeFilter) return false;
       if (areaFilter !== 'ALL') {
-        if (!club.area.includes(areaFilter) && !club.city.includes(areaFilter)) return false;
+        if (!club.area.includes(areaFilter) && !club.city.includes(areaFilter) && !club.name.includes(areaFilter)) return false;
       }
       return true;
     });

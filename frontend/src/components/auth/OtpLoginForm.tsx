@@ -85,6 +85,9 @@ export const OtpLoginForm: React.FC<OtpLoginFormProps> = ({
 
   return (
     <div dir="rtl">
+      <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl text-amber-200 text-xs leading-relaxed mb-3">
+        ⚠️ سامانه پیامک خدماتی (OTP) در این نسخه غیرفعال است. ورود تنها از طریق کلمه عبور امکان‌پذیر است.
+      </div>
       {step === 'PHONE' ? (
         <form onSubmit={handleRequestOtp} className="space-y-4">
           <div>

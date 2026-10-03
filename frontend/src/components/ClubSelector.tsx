@@ -17,7 +17,7 @@ interface ClubSelectorProps {
   onSelectClub: (club: VenueSummary) => void;
 }
 
-const CITIES = ['همه شهرها', 'تهران', 'شیراز', 'اصفهان', 'مشهد', 'کیش'];
+const CITIES = ['همه شهرها', 'تهران'];
 
 export const ClubSelector: React.FC<ClubSelectorProps> = ({ selectedClubId, onSelectClub }) => {
   const [venues, setVenues] = useState<VenueSummary[]>([]);
@@ -105,7 +105,11 @@ export const ClubSelector: React.FC<ClubSelectorProps> = ({ selectedClubId, onSe
               </option>
             ))
           ) : (
-            <option value="club-enghelab">مجموعه ورزشی انقلاب (تهران)</option>
+            <>
+              <option value="club-enghelab">مجموعه پدل FGB انقلاب (تهران)</option>
+              <option value="club-lafour">باشگاه پدل لفور (تهران)</option>
+              <option value="club-viva">باشگاه پدل ویوا (تهران)</option>
+            </>
           )}
         </select>
       </div>

@@ -5,7 +5,34 @@ from backend.app.services.booking_service import BookingService
 from backend.app.services.payment_service import PaymentService
 from backend.app.api.deps import get_current_user_id
 
+from sqlalchemy import select
+from backend.app.models.booking import Booking
+
 router = APIRouter(tags=["Booking"])
+
+@router.get("/bookings/my")
+async def get_my_bookings(
+    user_id: str = Depends(get_current_user_id),
+    db: AsyncSession = Depends(get_db_session)
+):
+    """دریافت کلیه رزروهای ثبت‌شده و قطعی کاربر از پایگاه داده."""
+    stmt = select(Booking).where(Booking.user_id == user_id).order_by(Booking.created_at.desc())
+    result = await db.execute(stmt)
+    bookings = result.scalars().all()
+    return [
+        {
+            "booking_id": b.id,
+            "tracking_code": b.tracking_code,
+            "timeslot_id": b.timeslot_id,
+            "amount_paid": b.amount_paid,
+            "amount_toman": b.amount_paid // 10,
+            "status": b.status,
+            "payment_method": b.payment_method,
+            "created_at": b.created_at.isoformat() if b.created_at else None,
+            "confirmed_at": b.confirmed_at.isoformat() if b.confirmed_at else None
+        }
+        for b in bookings
+    ]
 
 @router.post("/slots/{slot_id}/hold")
 async def hold_slot(

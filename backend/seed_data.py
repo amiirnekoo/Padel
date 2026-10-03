@@ -107,59 +107,17 @@ async def seed():
         clubs_data = [
             {
                 "id": "club-enghelab",
-                "name": "مجموعه ورزشی پدل و تنیس انقلاب تهران",
+                "name": "مجموعه پدل FGB انقلاب (FGB Padel Club)",
                 "city": "تهران",
                 "province": "تهران",
                 "address": "خیابان ولیعصر، اتوبان نیایش، مجموعه فرهنگی ورزشی انقلاب",
                 "phone": "02122001100",
-                "sports_supported": "PADEL,TENNIS",
+                "sports_supported": "PADEL",
                 "default_hourly_rate": 24000000,
-                "amenities": "پارکینگ اختصاصی، کافه رستوران، رختکن VIP، نورافکن استاندارد جهانی",
+                "amenities": "آرنا مسابقات، پارکینگ اختصاصی، کافه رستوران، رختکن VIP، نورافکن استاندارد جهانی",
                 "approval_status": "APPROVED",
                 "is_active": True,
                 "iban": "IR880120000000001234567801"
-            },
-            {
-                "id": "club-spin-shiraz",
-                "name": "کلوپ تخصصی پدل اسپین شیراز",
-                "city": "شیراز",
-                "province": "فارس",
-                "address": "شیراز، بلوار چمران، خیابان شاهد، کوچه ۸",
-                "phone": "07136224455",
-                "sports_supported": "PADEL",
-                "default_hourly_rate": 20000000,
-                "amenities": "کافه تریا، فروشگاه راکت و تجهیزات پدل، مربیان مقیم",
-                "approval_status": "APPROVED",
-                "is_active": True,
-                "iban": "IR880120000000001234567802"
-            },
-            {
-                "id": "club-parvaz-isfahan",
-                "name": "آکادمی تنیس و پدل پرواز اصفهان",
-                "city": "اصفهان",
-                "province": "اصفهان",
-                "address": "اصفهان، خیابان مشتاق سوم، مجموعه پرواز",
-                "phone": "03132667788",
-                "sports_supported": "PADEL,TENNIS",
-                "default_hourly_rate": 18000000,
-                "amenities": "زمین روباز و سرپوشیده، پارکینگ، سالن بدنسازی مجهز",
-                "approval_status": "APPROVED",
-                "is_active": True,
-                "iban": "IR880120000000001234567803"
-            },
-            {
-                "id": "club-kish-padel",
-                "name": "مرکز بین‌المللی پدل کیش",
-                "city": "کیش",
-                "province": "هرمزگان",
-                "address": "جزیره کیش، میدان سنایی، بلوار ساحل",
-                "phone": "07644421100",
-                "sports_supported": "PADEL",
-                "default_hourly_rate": 28000000,
-                "amenities": "زمین‌های پانورامیک شیشه‌ای، منظره دریا، رختکن لوکس",
-                "approval_status": "APPROVED",
-                "is_active": True,
-                "iban": "IR880120000000001234567804"
             },
             {
                 "id": "club-lafour",
@@ -197,13 +155,9 @@ async def seed():
         # 4. Seed Courts
         courts_data = [
             {"id": "court-viva-1", "club_id": "club-viva", "name": "کورت ۱ مسقف سازه‌ای (ویوا مینی‌سیتی)", "sport_type": "PADEL", "is_indoor": True},
-            {"id": "court-eng-1", "club_id": "club-enghelab", "name": "کورت سنترال پدل (انقلاب)", "sport_type": "PADEL", "is_indoor": True},
-            {"id": "court-eng-2", "club_id": "club-enghelab", "name": "کورت ۲ پدل روباز (انقلاب)", "sport_type": "PADEL", "is_indoor": False},
+            {"id": "court-eng-1", "club_id": "club-enghelab", "name": "کورت ۱ مسابقات آرنا (FGB انقلاب)", "sport_type": "PADEL", "is_indoor": True},
+            {"id": "court-eng-2", "club_id": "club-enghelab", "name": "کورت ۲ سنترال (FGB انقلاب)", "sport_type": "PADEL", "is_indoor": True},
             {"id": "court-laf-1", "club_id": "club-lafour", "name": "کورت ۱ روباز پانورامیک (لفور)", "sport_type": "PADEL", "is_indoor": False},
-            {"id": "court-eng-3", "club_id": "club-enghelab", "name": "کورت تنیس شماره ۱ خاکی", "sport_type": "TENNIS", "is_indoor": False},
-            {"id": "court-shz-1", "club_id": "club-spin-shiraz", "name": "کورت ۱ پانورامیک اسپین", "sport_type": "PADEL", "is_indoor": True},
-            {"id": "court-isf-1", "club_id": "club-parvaz-isfahan", "name": "کورت پدل شماره ۱ پرواز", "sport_type": "PADEL", "is_indoor": True},
-            {"id": "court-kish-1", "club_id": "club-kish-padel", "name": "کورت سنترال کیش", "sport_type": "PADEL", "is_indoor": False},
         ]
         for ct in courts_data:
             session.add(Court(**ct))
@@ -240,8 +194,8 @@ async def seed():
 
         await session.commit()
         print(f"✅ مقداردهی اولیه با موفقیت انجام شد:")
-        print(f"   - {len(clubs_data)} باشگاه در شهرهای تهران، شیراز، اصفهان، کیش")
-        print(f"   - {len(courts_data)} کورت پدل و تنیس")
+        print(f"   - {len(clubs_data)} باشگاه رسمی پدل (FGB انقلاب، لفور، ویوا)")
+        print(f"   - {len(courts_data)} کورت پدل مسقف و روباز")
         print(f"   - {slot_count} سانس فعال برای امروز و فردا")
         print(f"   - کاربر {user_player.phone_number} با موجودی کیف پول ۵ میلیون تومان")
 
