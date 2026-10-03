@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from backend.app.models.wallet import Wallet, WalletTransaction
 from backend.app.core.datetime_utils import utc_now
@@ -90,18 +90,44 @@ class WalletService:
         if wallet.is_locked:
             raise ValueError("کیف پول شما مسدود است")
 
-        if slot.status not in ["AVAILABLE", "HOLD"]:
-            raise ValueError("سانس انتخابی در دسترس نیست")
-
         if wallet.balance < slot.price:
             raise ValueError("موجودی کیف پول برای این رزرو کافی نیست")
 
-        # Deduct wallet
-        wallet.balance -= slot.price
+        # 1. Atomic wallet balance deduction (prevents negative balance race condition)
+        wallet_update = (
+            update(Wallet)
+            .where(
+                Wallet.id == wallet.id,
+                Wallet.balance >= slot.price,
+                Wallet.is_locked == False
+            )
+            .values(balance=Wallet.balance - slot.price)
+        )
+        wallet_update_res = await db.execute(wallet_update)
+        if wallet_update_res.rowcount == 0:
+            raise ValueError("موجودی کیف پول برای این رزرو کافی نیست")
 
-        # Update slot state
-        slot.status = "BOOKED"
-        slot.hold_expires_at = None
+        # 2. Atomic slot state check and transition (prevents double-booking race condition)
+        slot_update = (
+            update(TimeSlot)
+            .where(
+                TimeSlot.id == slot_id,
+                TimeSlot.status.in_(["AVAILABLE", "HOLD"])
+            )
+            .values(status="BOOKED", hold_expires_at=None)
+        )
+        slot_update_res = await db.execute(slot_update)
+        if slot_update_res.rowcount == 0:
+            # Revert wallet balance if slot is unavailable
+            await db.execute(
+                update(Wallet)
+                .where(Wallet.id == wallet.id)
+                .values(balance=Wallet.balance + slot.price)
+            )
+            raise ValueError("سانس انتخابی در دسترس نیست")
+
+        await db.refresh(wallet)
+        await db.refresh(slot)
 
         now = utc_now()
         booking = None
