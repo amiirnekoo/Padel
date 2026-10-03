@@ -116,6 +116,7 @@ export const UnifiedPortalPage: React.FC<UnifiedPortalPageProps> = ({
             userSession={userSession}
             walletBalance={walletBalance}
             onOpenWallet={onOpenWallet}
+            onNavigateToCourts={onExitPortal}
           />
         )}
 

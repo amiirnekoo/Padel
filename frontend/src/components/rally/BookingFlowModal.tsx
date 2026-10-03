@@ -32,6 +32,7 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
   const [paymentMethod, setPaymentMethod] = useState<'GATEWAY' | 'WALLET'>('GATEWAY');
   const [receipt, setReceipt] = useState<BookingReceipt | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [fullName, setFullName] = useState(() => {
     try {
@@ -52,6 +53,7 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
   const userBalanceToman = walletBalance > 10000000 ? Math.floor(walletBalance / 10) : walletBalance;
 
   const handleStartPayment = async () => {
+    if (isSubmitting) return; // جلوگیری از کلیک تکراری
     const authHeaders = rallyApi.getUserAuthHeaders();
     if (!authHeaders.Authorization) {
       setErrorMessage('برای رزرو قطعی سانس، لطفاً ابتدا وارد حساب کاربری خود شوید.');
@@ -65,12 +67,14 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
       return;
     }
 
+    setIsSubmitting(true);
     setStep('PAYING');
     setErrorMessage(null);
 
     // 1. Atomic Hold on Server
     const holdRes = await rallyApi.holdSlot(slot.slotId);
     if (!holdRes.success) {
+      setIsSubmitting(false);
       setErrorMessage(holdRes.error || 'این سانس در حال حاضر قفل یا رزرو شده است. لطفاً سانس دیگری انتخاب کنید.');
       setStep('ERROR');
       return;
@@ -81,12 +85,14 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
     // 2. Process Payment based on selected method
     if (paymentMethod === 'WALLET') {
       if (userBalanceToman < finalAmountToman) {
+        setIsSubmitting(false);
         setErrorMessage('موجودی کیف پول شما کافی نیست. لطفاً کیف پول خود را شارژ کرده یا درگاه بانکی را انتخاب کنید.');
         setStep('ERROR');
         return;
       }
 
       const payRes = await rallyApi.payBookingWithWallet(slot.slotId, bookingData?.booking_id);
+      setIsSubmitting(false);
       if (!payRes.success) {
         setErrorMessage(payRes.error || 'خطا در تسویه با کیف پول. لطفاً مجدداً تلاش نمایید.');
         setStep('ERROR');
@@ -121,6 +127,7 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
           headers: authHeaders
         });
         const checkoutData = await checkoutRes.json();
+        setIsSubmitting(false);
         if (checkoutRes.ok && checkoutData.payment_url) {
           window.location.href = checkoutData.payment_url;
         } else {
@@ -128,6 +135,7 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
           setStep('ERROR');
         }
       } catch {
+        setIsSubmitting(false);
         setErrorMessage('وضعیت تراکنش نامشخص است. لطفاً وضعیت را در حساب کاربری خود بررسی فرمایید.');
         setStep('ERROR');
       }
@@ -227,11 +235,12 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
               </div>
 
               <button
+                disabled={isSubmitting}
                 onClick={handleStartPayment}
-                className="w-full py-3 rounded-xl bg-rally-primary hover:bg-rally-primary-light text-white text-xs font-extrabold flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer min-h-[44px]"
+                className="w-full py-3 rounded-xl bg-rally-primary hover:bg-rally-primary-light disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-extrabold flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer min-h-[44px]"
               >
                 <ShieldCheck className="w-4 h-4 text-rally-accent" />
-                <span>پرداخت و ثبت نهایی رزرو</span>
+                <span>{isSubmitting ? 'در حال ثبت...' : 'پرداخت و ثبت نهایی رزرو'}</span>
               </button>
             </>
           )}

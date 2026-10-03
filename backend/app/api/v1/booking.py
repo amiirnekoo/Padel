@@ -6,7 +6,10 @@ from backend.app.services.payment_service import PaymentService
 from backend.app.api.deps import get_current_user_id
 
 from sqlalchemy import select
+from sqlalchemy.orm import joinedload
 from backend.app.models.booking import Booking
+from backend.app.models.slot import TimeSlot
+from backend.app.models.club import Court, Club
 
 router = APIRouter(tags=["Booking"])
 
@@ -15,12 +18,25 @@ async def get_my_bookings(
     user_id: str = Depends(get_current_user_id),
     db: AsyncSession = Depends(get_db_session)
 ):
-    """دریافت کلیه رزروهای ثبت‌شده و قطعی کاربر از پایگاه داده."""
-    stmt = select(Booking).where(Booking.user_id == user_id).order_by(Booking.created_at.desc())
+    """دریافت کلیه رزروهای ثبت‌شده و قطعی کاربر از پایگاه داده همراه با مشخصات کورت و باشگاه."""
+    stmt = (
+        select(Booking)
+        .options(
+            joinedload(Booking.timeslot)
+            .joinedload(TimeSlot.court)
+            .joinedload(Court.club)
+        )
+        .where(Booking.user_id == user_id)
+        .order_by(Booking.created_at.desc())
+    )
     result = await db.execute(stmt)
     bookings = result.scalars().all()
-    return [
-        {
+    items = []
+    for b in bookings:
+        slot = b.timeslot
+        court = slot.court if slot else None
+        club = court.club if court else None
+        items.append({
             "booking_id": b.id,
             "tracking_code": b.tracking_code,
             "timeslot_id": b.timeslot_id,
@@ -29,10 +45,17 @@ async def get_my_bookings(
             "status": b.status,
             "payment_method": b.payment_method,
             "created_at": b.created_at.isoformat() if b.created_at else None,
-            "confirmed_at": b.confirmed_at.isoformat() if b.confirmed_at else None
-        }
-        for b in bookings
-    ]
+            "confirmed_at": b.confirmed_at.isoformat() if b.confirmed_at else None,
+            "slot_date": str(slot.slot_date) if slot else None,
+            "start_time": slot.start_time.strftime("%H:%M") if slot else None,
+            "end_time": slot.end_time.strftime("%H:%M") if slot else None,
+            "court_name": court.name if court else "کورت سنترال",
+            "club_id": club.id if club else None,
+            "club_name": club.name if club else "مجموعه ورزشی رالی",
+            "club_address": club.address if club else None,
+            "sport_type": court.sport_type if court else "PADEL"
+        })
+    return items
 
 @router.post("/slots/{slot_id}/hold")
 async def hold_slot(

@@ -46,7 +46,10 @@ export const AdminSchedulerTab: React.FC = () => {
       const club = courts.find((c) => c.id === selectedCourtId);
       if (club) {
         const cal = await rallyApi.getClubCalendar(club.club_id, selectedDate);
-        if (cal && cal.slots) {
+        if (cal && cal.courts) {
+          const targetCourt = cal.courts.find((c: any) => c.id === selectedCourtId);
+          setSlots(targetCourt?.slots || []);
+        } else if (cal && cal.slots) {
           const courtSlots = cal.slots.filter((s: any) => s.court_id === selectedCourtId);
           setSlots(courtSlots);
         } else {

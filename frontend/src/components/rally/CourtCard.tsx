@@ -1,19 +1,30 @@
 import React from 'react';
-import { MapPin, Clock, Star, ChevronLeft, ShieldCheck, Sparkles } from 'lucide-react';
+import { MapPin, Clock, Star, ChevronLeft } from 'lucide-react';
 import { CourtClub, TimeSlotItem } from '../../types/rally';
+import { isSlotPast } from '../../utils/persianUtils';
 
 interface CourtCardProps {
   club: CourtClub;
+  targetDateStr?: string;
   onSelectClub: (club: CourtClub) => void;
   onSelectDirectSlot: (club: CourtClub, slot: TimeSlotItem) => void;
 }
 
 export const CourtCard: React.FC<CourtCardProps> = ({
   club,
+  targetDateStr,
   onSelectClub,
   onSelectDirectSlot
 }) => {
-  const availableSlots = club.slots.filter((s) => s.status === 'AVAILABLE').slice(0, 4);
+  // فیلتر سانس‌های آزاد و عدم نمایش سانس‌های گذشته بر مبنای ساعت تهران
+  const validAvailableSlots = club.slots.filter((s) => {
+    if (s.status !== 'AVAILABLE') return false;
+    if (targetDateStr && isSlotPast(targetDateStr, s.startTime)) return false;
+    return true;
+  });
+
+  const displaySlots = validAvailableSlots.slice(0, 4);
+  const firstValidSlot = validAvailableSlots[0] || null;
   const isPadel = club.sport === 'PADEL';
 
   return (
@@ -71,12 +82,16 @@ export const CourtCard: React.FC<CourtCardProps> = ({
           <span>{club.courtType === 'INDOOR' ? '🏢 کورت سرپوشیده' : '🌤️ کورت روباز / پانورامیک'}</span>
         </div>
 
-        {club.nearestAvailableSlot && (
+        {firstValidSlot ? (
           <div className={`absolute bottom-3 left-3 flex items-center gap-1 px-2.5 py-1 rounded-full text-white text-[10px] font-bold shadow-xs ${
             isPadel ? 'bg-[#0B4278]' : 'bg-[#135d54]'
           }`}>
             <Clock className="w-3 h-3" />
-            <span>نزدیک‌ترین: {club.nearestAvailableSlot}</span>
+            <span>اولین سانس آزاد: {firstValidSlot.startTime}</span>
+          </div>
+        ) : (
+          <div className="absolute bottom-3 left-3 flex items-center gap-1 px-2.5 py-1 rounded-full bg-black/60 text-gray-300 text-[10px] font-medium shadow-xs">
+            <span>سانس امروز تکمیل</span>
           </div>
         )}
       </div>
@@ -86,7 +101,7 @@ export const CourtCard: React.FC<CourtCardProps> = ({
         {/* Live Quick Slot Pills */}
         <div className="space-y-2">
           <div className="flex items-center justify-between text-[11px] font-bold text-gray-400">
-            <span>سانس‌های آزاد امروز (۹۰ دقیقه):</span>
+            <span>سریع‌ترین سانس‌های آزاد (۹۰ دقیقه):</span>
             <span
               onClick={() => onSelectClub(club)}
               className={`hover:underline cursor-pointer ${
@@ -98,8 +113,8 @@ export const CourtCard: React.FC<CourtCardProps> = ({
           </div>
 
           <div className="flex flex-wrap gap-1.5">
-            {availableSlots.length > 0 ? (
-              availableSlots.map((slot) => (
+            {displaySlots.length > 0 ? (
+              displaySlots.map((slot) => (
                 <button
                   key={slot.slotId}
                   onClick={() => onSelectDirectSlot(club, slot)}
@@ -108,13 +123,14 @@ export const CourtCard: React.FC<CourtCardProps> = ({
                       ? 'border-sky-600/25 bg-sky-50 text-sky-800 hover:bg-sky-700 hover:text-white'
                       : 'border-emerald-600/25 bg-emerald-50 text-emerald-800 hover:bg-emerald-700 hover:text-white'
                   }`}
+                  title={`${slot.startTime} تا ${slot.endTime} - ${(slot.price / 10).toLocaleString('fa-IR')} تومان`}
                 >
                   <Clock className="w-3 h-3" />
                   <span>{slot.startTime}</span>
                 </button>
               ))
             ) : (
-              <span className="text-xs text-gray-400 py-1 font-medium">سانس رزرو سریع برای این تاریخ تکمیل است</span>
+              <span className="text-xs text-gray-400 py-1 font-medium">سانس آزادی برای زمان انتخابی موجود نیست</span>
             )}
           </div>
         </div>
@@ -122,10 +138,12 @@ export const CourtCard: React.FC<CourtCardProps> = ({
         {/* Pricing & Apple Style Pill Button */}
         <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
           <div>
-            <span className="text-[10px] text-gray-400 font-medium block">نرخ مصوب از</span>
+            <span className="text-[10px] text-gray-400 font-medium block">
+              {firstValidSlot ? `تعرفه سانس ${firstValidSlot.startTime}` : 'پایه تعرفه هر سانس'}
+            </span>
             <div className="flex items-baseline gap-1">
               <span className="text-lg font-black text-rally-charcoal tracking-tight">
-                {(club.startingPrice / 10).toLocaleString('fa-IR')}
+                {((firstValidSlot ? firstValidSlot.price : club.startingPrice) / 10).toLocaleString('fa-IR')}
               </span>
               <span className="text-xs text-gray-500 font-medium">تومان</span>
             </div>
@@ -139,7 +157,7 @@ export const CourtCard: React.FC<CourtCardProps> = ({
                 : 'bg-[#135d54] hover:bg-[#0e4841]'
             }`}
           >
-            <span>رزرو سانس</span>
+            <span>مشاهده سانس‌ها</span>
             <ChevronLeft className="w-3.5 h-3.5" />
           </button>
         </div>

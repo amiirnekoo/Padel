@@ -8,7 +8,7 @@ export interface TimeSlotItem {
   endTime: string;
   durationMinutes: number;
   price: number; // in Tomans
-  status: 'AVAILABLE' | 'HOLD' | 'BOOKED' | 'MAINTENANCE';
+  status: 'AVAILABLE' | 'HOLD' | 'BOOKED' | 'MAINTENANCE' | 'BLOCKED' | 'TOURNAMENT' | 'TOURNAMENT_HOLD';
 }
 
 export interface Amenity {

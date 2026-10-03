@@ -66,6 +66,24 @@ export const rallyApi = {
   },
 
   /**
+   * درخواست لغو رزرو و استرداد وجه به کیف پول بر اساس قوانین کنسلی
+   */
+  async cancelBooking(bookingId: string): Promise<{ success: boolean; data?: any; error?: string }> {
+    try {
+      const headers = this.getUserAuthHeaders();
+      const res = await fetch(`${API_BASE}/bookings/${bookingId}/cancel`, {
+        method: 'POST',
+        headers,
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در لغو رزرو' };
+      return { success: true, data };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در برقراری ارتباط با سرور' };
+    }
+  },
+
+  /**
    * محاسبه بلادرنگ سبد خرید و اعمال تخفیف از بک‌اند
    */
   async calculateCart(items: { product_id: string; quantity: number }[], couponCode?: string) {
