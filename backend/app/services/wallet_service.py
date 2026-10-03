@@ -12,9 +12,11 @@ from backend.app.services.notification_service import NotificationService
 
 class WalletService:
     @staticmethod
-    async def get_or_create_wallet(db: AsyncSession, user_id: str) -> Wallet:
+    async def get_or_create_wallet(db: AsyncSession, user_id: str, for_update: bool = False) -> Wallet:
         """Retrieves existing wallet or safely provisions a new zero-balance wallet."""
         stmt = select(Wallet).where(Wallet.user_id == user_id)
+        if for_update:
+            stmt = stmt.with_for_update()
         res = await db.execute(stmt)
         wallet = res.scalar_one_or_none()
         if not wallet:
@@ -28,6 +30,10 @@ class WalletService:
             db.add(wallet)
             await db.commit()
             await db.refresh(wallet)
+            if for_update:
+                stmt_lock = select(Wallet).where(Wallet.id == wallet.id).with_for_update()
+                res_lock = await db.execute(stmt_lock)
+                wallet = res_lock.scalar_one()
         return wallet
 
     @staticmethod
@@ -42,7 +48,7 @@ class WalletService:
         if amount <= 0:
             raise ValueError("مبلغ شارژ باید بزرگتر از صفر باشد")
 
-        wallet = await WalletService.get_or_create_wallet(db, user_id)
+        wallet = await WalletService.get_or_create_wallet(db, user_id, for_update=True)
         if wallet.is_locked:
             raise ValueError("کیف پول شما مسدود شده است")
 
@@ -73,16 +79,16 @@ class WalletService:
         Executes instant 1-click booking payment via wallet balance.
         Guarantees atomic slot state transition without redirecting to Shaparak gateway.
         """
-        wallet = await WalletService.get_or_create_wallet(db, user_id)
-        if wallet.is_locked:
-            raise ValueError("کیف پول شما مسدود است")
-
-        # Slot verification
-        slot_stmt = select(TimeSlot).where(TimeSlot.id == slot_id)
+        # Slot verification with row-level lock
+        slot_stmt = select(TimeSlot).where(TimeSlot.id == slot_id).with_for_update()
         slot_res = await db.execute(slot_stmt)
         slot = slot_res.scalar_one_or_none()
         if not slot:
             raise ValueError("سانس مورد نظر یافت نشد")
+
+        wallet = await WalletService.get_or_create_wallet(db, user_id, for_update=True)
+        if wallet.is_locked:
+            raise ValueError("کیف پول شما مسدود است")
 
         if slot.status not in ["AVAILABLE", "HOLD"]:
             raise ValueError("سانس انتخابی در دسترس نیست")
