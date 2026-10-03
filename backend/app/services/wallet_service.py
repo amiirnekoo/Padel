@@ -86,6 +86,16 @@ class WalletService:
         if not slot:
             raise ValueError("سانس مورد نظر یافت نشد")
 
+        booking = None
+        if booking_id:
+            b_stmt = select(Booking).where(Booking.id == booking_id).with_for_update()
+            b_res = await db.execute(b_stmt)
+            booking = b_res.scalar_one_or_none()
+            if not booking:
+                raise ValueError("رزرو مورد نظر یافت نشد")
+            if booking.status != "PENDING_PAYMENT":
+                raise ValueError("این رزرو قبلاً پرداخت یا نهایی شده است")
+
         wallet = await WalletService.get_or_create_wallet(db, user_id, for_update=True)
         if wallet.is_locked:
             raise ValueError("کیف پول شما مسدود است")
@@ -130,13 +140,7 @@ class WalletService:
         await db.refresh(slot)
 
         now = utc_now()
-        booking = None
-        if booking_id:
-            b_stmt = select(Booking).where(Booking.id == booking_id)
-            b_res = await db.execute(b_stmt)
-            booking = b_res.scalar_one_or_none()
-
-        if booking and booking.status == "PENDING_PAYMENT":
+        if booking:
             booking.status = "CONFIRMED"
             booking.payment_method = "WALLET"
             booking.confirmed_at = now
