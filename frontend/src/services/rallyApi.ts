@@ -904,6 +904,51 @@ export const rallyApi = {
       return [];
     }
   },
+
+  /**
+   * دریافت اعلان‌های پایدار درون‌پرتال کاربر از دیتابیس (بدون نیاز به پیامک)
+   */
+  async getMyInAppNotifications(): Promise<any[]> {
+    try {
+      const headers = this.getUserAuthHeaders();
+      const res = await fetch(`${API_BASE}/notifications/in-app/my`, { headers });
+      if (!res.ok) return [];
+      const data = await res.json();
+      return data.notifications || [];
+    } catch {
+      return [];
+    }
+  },
+
+  /**
+   * علامت‌گذاری اعلان درون‌پرتال به عنوان خوانده‌شده
+   */
+  async markInAppNotificationRead(notificationId: string): Promise<boolean> {
+    try {
+      const headers = this.getUserAuthHeaders();
+      const res = await fetch(`${API_BASE}/notifications/in-app/${notificationId}/read`, {
+        method: 'POST',
+        headers
+      });
+      return res.ok;
+    } catch {
+      return false;
+    }
+  },
+
+  /**
+   * بررسی مجدد و زنده موجودی سانس در زمان کلیک روی اعلان لیست انتظار
+   */
+  async checkSlotAvailability(slotId: string): Promise<{ exists: boolean; is_available: boolean; status?: string; message?: string }> {
+    try {
+      const res = await fetch(`${API_BASE}/notifications/waitlist/check-slot/${slotId}`);
+      if (!res.ok) return { exists: false, is_available: false };
+      return await res.json();
+    } catch {
+      return { exists: false, is_available: false };
+    }
+  }
 };
+
 
 

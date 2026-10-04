@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { RefreshCw, AlertCircle, AlertTriangle, RotateCcw } from 'lucide-react';
+import { RefreshCw, AlertTriangle } from 'lucide-react';
 import { CourtClub, TimeSlotItem, SportType } from '../../types/rally';
 import { MOCK_CLUBS } from '../../data/mockRallyData';
 import { CourtCard } from '../../components/rally/CourtCard';
 import { AppleCategoryShelf, CategoryItem } from '../../components/rally/AppleCategoryShelf';
 import { CourtSearchFiltersBar, TimeWindowFilter, QuickShortcut } from '../../components/rally/CourtSearchFiltersBar';
-import { rallyApi } from '../../services/rallyApi';
+import { CourtsDateTabsBar } from '../../components/rally/CourtsDateTabsBar';
+import { CourtsEmptyState } from '../../components/rally/CourtsEmptyState';
 import { matchesPersianSearch, parseTimeToMinutes, isSlotPast } from '../../utils/persianUtils';
+import { useCourtsDistance } from '../../hooks/useCourtsDistance';
+import { rallyApi } from '../../services/rallyApi';
 
 interface RallyCourtsPageProps {
   onSelectClub: (club: CourtClub) => void;
@@ -32,6 +35,14 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [networkError, setNetworkError] = useState<string | null>(null);
   const [clubsData, setClubsData] = useState<CourtClub[]>(MOCK_CLUBS);
+
+  const {
+    isLocating,
+    locationError,
+    requestLocationAndSort,
+    clearDistanceSort,
+    applyDistanceToClubs
+  } = useCourtsDistance();
 
   // محاسبه تاریخ بر اساس افست انتخابی
   const targetDateStr = useMemo(() => {
@@ -92,6 +103,11 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
 
   const handleShortcutSelect = (sc: QuickShortcut) => {
     setActiveShortcut(sc);
+    if (sc === 'NEAREST') {
+      requestLocationAndSort();
+      return;
+    }
+    clearDistanceSort();
     setSelectedDayOffset(sc === 'TOMORROW' ? 1 : 0);
     setTimeWindow(sc === 'TONIGHT' ? 'NIGHT' : 'ALL');
   };
@@ -114,6 +130,7 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
     setSelectedAmenity('ALL');
     setActiveShortcut('NONE');
     setSelectedDayOffset(0);
+    clearDistanceSort();
   };
 
   // فیلتر هوشمند کورت‌ها بر اساس معیارهای ترکیبی و نرمال‌سازی فارسی
@@ -157,6 +174,8 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
       return true;
     });
   }, [clubsData, selectedCity, sportFilter, typeFilter, searchQuery, areaFilter, selectedAmenity, timeWindow, targetDateStr]);
+
+  const displayClubs = useMemo(() => applyDistanceToClubs(filteredClubs), [applyDistanceToClubs, filteredClubs]);
 
   const DATE_TABS = [
     { offset: 0, label: 'امروز', sublabel: 'سه‌شنبه' },
@@ -203,43 +222,23 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
         onShortcutSelect={handleShortcutSelect}
         selectedAmenity={selectedAmenity}
         onAmenityChange={setSelectedAmenity}
+        isLocating={isLocating}
+        locationError={locationError}
       />
 
       {/* 3. Category Shelf */}
       <AppleCategoryShelf selectedId={selectedCatId} onSelect={handleCategorySelect} />
 
       {/* 4. Date Tabs Bar */}
-      <div className="bg-white rounded-2xl p-3 border border-black/[0.05] shadow-xs flex items-center justify-between gap-3 overflow-x-auto no-scrollbar">
-        <div className="flex items-center gap-1.5 shrink-0">
-          <span className="text-xs font-bold text-gray-400 ml-2">تاریخ سانس:</span>
-          {DATE_TABS.map((tab) => {
-            const isTabActive = selectedDayOffset === tab.offset;
-            return (
-              <button
-                key={tab.offset}
-                onClick={() => {
-                  setSelectedDayOffset(tab.offset);
-                  setActiveShortcut(tab.offset === 0 ? 'TODAY' : tab.offset === 1 ? 'TOMORROW' : 'NONE');
-                }}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                  isTabActive
-                    ? 'bg-rally-primary text-white shadow-xs'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                <span>{tab.label}</span>
-                <span className={`text-[10px] ${isTabActive ? 'text-white/80' : 'text-gray-400'}`}>
-                  ({tab.sublabel})
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        <span className="text-xs font-bold text-gray-400 shrink-0 hidden sm:inline">
-          {filteredClubs.length} مجموعه آماده رزرو
-        </span>
-      </div>
+      <CourtsDateTabsBar
+        tabs={DATE_TABS}
+        selectedOffset={selectedDayOffset}
+        onSelectOffset={(offset) => {
+          setSelectedDayOffset(offset);
+          setActiveShortcut(offset === 0 ? 'TODAY' : offset === 1 ? 'TOMORROW' : 'NONE');
+        }}
+        clubsCount={displayClubs.length}
+      />
 
       {/* 5. Network Error State (تلفیق‌نشده با Empty State) */}
       {networkError && (
@@ -258,9 +257,9 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
       )}
 
       {/* 6. Grid of Court Cards or Explicit Empty State */}
-      {filteredClubs.length > 0 ? (
+      {displayClubs.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredClubs.map((club) => (
+          {displayClubs.map((club) => (
             <CourtCard
               key={club.id}
               club={club}
@@ -271,22 +270,7 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
           ))}
         </div>
       ) : (
-        <div className="bg-white rounded-3xl p-10 border border-black/[0.05] text-center space-y-3 max-w-md mx-auto shadow-xs">
-          <AlertCircle className="w-10 h-10 text-gray-400 mx-auto" />
-          <h3 className="text-base font-black text-rally-charcoal">
-            کورت یا سانسی با این مشخصات یافت نشد
-          </h3>
-          <p className="text-xs text-gray-500 leading-relaxed">
-            لطفاً عبارت جستجو را تغییر دهید یا فیلترهای زمانی و نوع سالن را بازنشانی کنید.
-          </p>
-          <button
-            onClick={resetAllFilters}
-            className="px-5 py-2 rounded-full bg-rally-primary text-white text-xs font-bold shadow-xs hover:bg-rally-primary-light transition-all cursor-pointer inline-flex items-center gap-1.5"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-            <span>پاک کردن فیلترها و مشاهده همه</span>
-          </button>
-        </div>
+        <CourtsEmptyState onResetFilters={resetAllFilters} />
       )}
     </div>
   );

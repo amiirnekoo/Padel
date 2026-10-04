@@ -70,7 +70,7 @@ export const CourtDetailsModal: React.FC<CourtDetailsModalProps> = ({
           <div className="absolute bottom-4 right-4 left-4 text-white">
             <div className="flex items-center gap-2 mb-1">
               <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#D7ED68] text-rally-charcoal">
-                {club.sport === 'PADEL' ? 'پدل استاندارد' : 'تنیس خاکی'}
+                🎾 کورت اختصاصی پدل
               </span>
               <span className="text-xs text-gray-200">
                 {isIndoor ? '🏢 سالن مسقف سازه‌ای' : '🌤️ کورت روباز / سوپر پانورامیک'}
@@ -159,7 +159,7 @@ export const CourtDetailsModal: React.FC<CourtDetailsModalProps> = ({
                           <span>{slot.startTime} تا {slot.endTime}</span>
                         </td>
                         <td className="py-3 px-3 font-extrabold text-rally-charcoal">
-                          {(slot.price / 10).toLocaleString('fa-IR')} <span className="text-[10px] text-gray-500 font-normal">تومان</span>
+                          {slot.price.toLocaleString('fa-IR')} <span className="text-[10px] text-gray-500 font-normal">تومان</span>
                         </td>
                         <td className="py-3 px-3 text-center">
                           {isAvailable ? (
@@ -221,12 +221,12 @@ export const CourtDetailsModal: React.FC<CourtDetailsModalProps> = ({
           <div>
             <span className="text-[10px] text-gray-400 block font-medium">
               {selectedSlot
-                ? `سانس انتخابی: ${selectedSlot.startTime} تا ${selectedSlot.endTime} (۹۰ دقیقه)`
+                ? `سانس انتخابی: ${selectedSlot.startTime} تا ${selectedSlot.endTime} (${selectedSlot.durationMinutes || 90} دقیقه)`
                 : 'لطفاً یک سانس آزاد را انتخاب کنید'}
             </span>
             <div className="flex items-baseline gap-1">
               <span className="text-lg font-black text-rally-primary">
-                {selectedSlot ? (selectedSlot.price / 10).toLocaleString('fa-IR') : '۰'}
+                {selectedSlot ? selectedSlot.price.toLocaleString('fa-IR') : '۰'}
               </span>
               <span className="text-xs text-gray-500 font-medium">تومان</span>
             </div>

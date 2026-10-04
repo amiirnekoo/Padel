@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Wallet, Trophy, Clock, CheckCircle, Plus, MapPin, AlertCircle, RefreshCw, RotateCcw, XCircle, ShieldAlert } from 'lucide-react';
+import { Calendar, Wallet, Trophy, Clock, CheckCircle, Plus, MapPin, AlertCircle, RefreshCw, RotateCcw, XCircle } from 'lucide-react';
 import { UserSession } from '../../../components/AuthModal';
 import { rallyApi } from '../../../services/rallyApi';
+import { CancelBookingModal } from '../../../components/rally/portal/CancelBookingModal';
+import { PlayerStatsHeader } from '../../../components/rally/portal/PlayerStatsHeader';
+import { WaitlistNotificationsSection } from '../../../components/rally/portal/WaitlistNotificationsSection';
+import { Bell } from 'lucide-react';
 
 interface PortalPlayerTabProps {
   userSession: UserSession;
@@ -35,7 +39,7 @@ export const PortalPlayerTab: React.FC<PortalPlayerTabProps> = ({
   onOpenWallet,
   onNavigateToCourts
 }) => {
-  const [activeSubTab, setActiveSubTab] = useState<'bookings' | 'matches' | 'wallet'>('bookings');
+  const [activeSubTab, setActiveSubTab] = useState<'bookings' | 'matches' | 'wallet' | 'waitlist'>('bookings');
   const [bookingFilter, setBookingFilter] = useState<'ALL' | 'UPCOMING' | 'PAST' | 'CANCELLED'>('ALL');
   const [bookings, setBookings] = useState<UserBookingItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -85,7 +89,6 @@ export const PortalPlayerTab: React.FC<PortalPlayerTabProps> = ({
   const filteredBookings = bookings.filter((b) => {
     const isPast = b.slot_date ? b.slot_date < todayStr : false;
     const isCancelled = b.status.includes('CANCELLED');
-
     if (bookingFilter === 'UPCOMING') return !isPast && !isCancelled;
     if (bookingFilter === 'PAST') return isPast && !isCancelled;
     if (bookingFilter === 'CANCELLED') return isCancelled;
@@ -97,43 +100,11 @@ export const PortalPlayerTab: React.FC<PortalPlayerTabProps> = ({
   return (
     <div className="space-y-6" dir="rtl">
       {/* Player Quick Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-[#0F1E2E] border border-white/10 p-4 rounded-2xl flex items-center justify-between">
-          <div>
-            <span className="text-xs text-slate-400">موجودی کیف پول رالی</span>
-            <p className="text-xl font-black text-[#D7ED68] mt-1">
-              {(walletBalance / 10).toLocaleString('fa-IR')} <span className="text-xs font-normal text-slate-300">تومان</span>
-            </p>
-          </div>
-          <button
-            onClick={onOpenWallet}
-            className="p-2.5 bg-[#D7ED68] hover:bg-[#c8de5b] text-[#172320] rounded-xl font-bold text-xs flex items-center gap-1 transition-all cursor-pointer"
-          >
-            <Plus className="w-4 h-4" />
-            <span>شارژ</span>
-          </button>
-        </div>
-
-        <div className="bg-[#0F1E2E] border border-white/10 p-4 rounded-2xl flex items-center justify-between">
-          <div>
-            <span className="text-xs text-slate-400">سانس‌های فعال پیش‌رو</span>
-            <p className="text-xl font-black text-white mt-1">{upcomingCount} سانس فعال</p>
-          </div>
-          <div className="p-2.5 bg-blue-500/10 text-blue-400 rounded-xl">
-            <Calendar className="w-5 h-5" />
-          </div>
-        </div>
-
-        <div className="bg-[#0F1E2E] border border-white/10 p-4 rounded-2xl flex items-center justify-between">
-          <div>
-            <span className="text-xs text-slate-400">سطح پدل و ریتینگ</span>
-            <p className="text-xl font-black text-emerald-400 mt-1">سطح ۳.۵ (متوسط)</p>
-          </div>
-          <div className="p-2.5 bg-emerald-500/10 text-emerald-400 rounded-xl">
-            <Trophy className="w-5 h-5" />
-          </div>
-        </div>
-      </div>
+      <PlayerStatsHeader
+        walletBalance={walletBalance}
+        upcomingCount={upcomingCount}
+        onOpenWallet={onOpenWallet}
+      />
 
       {message && (
         <div className={`p-4 rounded-2xl text-xs font-bold border ${message.type === 'success' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300' : 'bg-rose-500/10 border-rose-500/30 text-rose-300'}`}>
@@ -166,6 +137,15 @@ export const PortalPlayerTab: React.FC<PortalPlayerTabProps> = ({
           }`}
         >
           تراکنش‌های مالی
+        </button>
+        <button
+          onClick={() => setActiveSubTab('waitlist')}
+          className={`pb-3 transition-colors cursor-pointer border-b-2 flex items-center gap-1.5 ${
+            activeSubTab === 'waitlist' ? 'text-[#D7ED68] border-[#D7ED68]' : 'text-slate-400 border-transparent hover:text-white'
+          }`}
+        >
+          <Bell className="w-3.5 h-3.5" />
+          <span>لیست انتظار و اعلان‌ها</span>
         </button>
       </div>
 
@@ -228,18 +208,11 @@ export const PortalPlayerTab: React.FC<PortalPlayerTabProps> = ({
                     <div className="space-y-1.5 flex-1">
                       <div className="flex items-center gap-2">
                         <span className="font-bold text-white text-sm">{b.club_name || 'باشگاه پدل رالی'}</span>
-                        {isConfirmed && (
-                          <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-                            <CheckCircle className="w-3 h-3" />
-                            تایید قطعی
-                          </span>
-                        )}
-                        {isCancelled && (
-                          <span className="bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-                            <XCircle className="w-3 h-3" />
-                            لغو شده
-                          </span>
-                        )}
+                        {b.status === 'CONFIRMED' && <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1"><CheckCircle className="w-3 h-3" />تأیید قطعی</span>}
+                        {b.status === 'PENDING_PAYMENT' && <span className="bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1"><Clock className="w-3 h-3" />در انتظار پرداخت</span>}
+                        {b.status === 'EXPIRED' && <span className="bg-orange-500/10 text-orange-400 border border-orange-500/20 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1"><AlertCircle className="w-3 h-3" />منقضی‌شده (عودت وجه شاپرک)</span>}
+                        {b.status === 'CANCELLED_BY_USER' && <span className="bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1"><XCircle className="w-3 h-3" />لغوشده توسط شما</span>}
+                        {b.status === 'CANCELLED_BY_CLUB' && <span className="bg-slate-500/10 text-slate-300 border border-slate-500/20 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1"><XCircle className="w-3 h-3" />لغو اضطراری مجموعه</span>}
                       </div>
                       <p className="text-xs text-slate-300 flex items-center gap-1">
                         <MapPin className="w-3.5 h-3.5 text-slate-500" />
@@ -260,7 +233,7 @@ export const PortalPlayerTab: React.FC<PortalPlayerTabProps> = ({
                         {(b.amount_toman || b.amount_paid / 10).toLocaleString('fa-IR')} تومان
                       </span>
 
-                      {isConfirmed && (
+                      {b.status === 'CONFIRMED' && (
                         <button
                           onClick={() => setCancelModalItem(b)}
                           className="px-3 py-1.5 rounded-xl border border-rose-500/30 text-rose-400 hover:bg-rose-500/10 text-xs font-bold transition-colors cursor-pointer"
@@ -300,50 +273,23 @@ export const PortalPlayerTab: React.FC<PortalPlayerTabProps> = ({
         <div className="bg-[#0F1E2E] border border-white/10 p-5 rounded-2xl space-y-3">
           <div className="flex items-center justify-between">
             <h4 className="font-bold text-white text-xs">موجودی کیف پول: {(walletBalance / 10).toLocaleString('fa-IR')} تومان</h4>
-            <button onClick={onOpenWallet} className="px-3 py-1 bg-[#D7ED68] text-[#172320] font-bold text-xs rounded-lg cursor-pointer">
-              افزایش موجودی
-            </button>
+            <button onClick={onOpenWallet} className="px-3 py-1 bg-[#D7ED68] text-[#172320] font-bold text-xs rounded-lg cursor-pointer">افزایش موجودی</button>
           </div>
         </div>
       )}
 
-      {/* Cancellation Confirmation Modal */}
-      {cancelModalItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70">
-          <div className="bg-[#0F1E2E] border border-white/20 rounded-3xl p-6 max-w-md w-full text-white space-y-4 shadow-2xl">
-            <div className="flex items-center gap-2 text-rose-400">
-              <ShieldAlert className="w-5 h-5" />
-              <h3 className="font-black text-sm">تأیید لغو رزرو سانس</h3>
-            </div>
-
-            <p className="text-xs text-slate-300 leading-relaxed">
-              آیا از لغو رزرو کد پیگیری <strong className="font-mono text-white">{cancelModalItem.tracking_code}</strong> در {cancelModalItem.club_name} اطمینان دارید؟
-            </p>
-
-            <div className="bg-slate-900/80 p-3 rounded-xl border border-white/5 text-[11px] text-slate-400 space-y-1">
-              <p className="font-bold text-white">قوانین استرداد وجه رالی:</p>
-              <p>• بیش از ۲۴ ساعت مانده به سانس: استرداد ۹۰٪ وجه به کیف پول</p>
-              <p>• کمتر از ۲۴ ساعت مانده به سانس: غیرقابل استرداد طبق قوانین باشگاه</p>
-            </div>
-
-            <div className="flex items-center gap-2 pt-2">
-              <button
-                onClick={() => setCancelModalItem(null)}
-                className="flex-1 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold cursor-pointer"
-              >
-                انصراف
-              </button>
-              <button
-                disabled={!!cancellingId}
-                onClick={handleConfirmCancel}
-                className="flex-1 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold disabled:opacity-50 cursor-pointer"
-              >
-                {cancellingId ? 'در حال لغو...' : 'تأیید و لغو سانس'}
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* Waitlist Notifications Sub Tab */}
+      {activeSubTab === 'waitlist' && (
+        <WaitlistNotificationsSection />
       )}
+
+      {/* Modular Cancellation Modal */}
+      <CancelBookingModal
+        item={cancelModalItem}
+        onClose={() => setCancelModalItem(null)}
+        onConfirm={handleConfirmCancel}
+        isCancelling={!!cancellingId}
+      />
     </div>
   );
 };

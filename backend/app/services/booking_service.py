@@ -23,6 +23,34 @@ class BookingService:
         return f"PAD-{random_str}"
 
     @staticmethod
+    async def check_slot_time_overlap(
+        db: AsyncSession,
+        court_id: str,
+        slot_date: date,
+        start_time: time,
+        end_time: time,
+        exclude_slot_id: str | None = None
+    ) -> bool:
+        """
+        بررسی عدم تداخل زمانی بازه جدید با سانس‌های موجود برای همان زمین در همان تاریخ.
+        قاعده تداخل بازه‌های نیمه‌باز [start, end):
+        existing.start_time < new_end_time AND existing.end_time > new_start_time
+        در صورتی که بازه‌ها مماس باشند (مانند 09:30 پایان اولی و 09:30 شروع دومی)، تداخل نیست.
+        """
+        stmt = select(TimeSlot).where(
+            TimeSlot.court_id == court_id,
+            TimeSlot.slot_date == slot_date,
+            TimeSlot.start_time < end_time,
+            TimeSlot.end_time > start_time
+        )
+        if exclude_slot_id:
+            stmt = stmt.where(TimeSlot.id != exclude_slot_id)
+
+        res = await db.execute(stmt)
+        overlapping = res.scalars().first()
+        return overlapping is not None
+
+    @staticmethod
     async def hold_slot(db: AsyncSession, slot_id: str, user_id: str) -> Booking:
         # Check slot exists and get price
         stmt = select(TimeSlot).where(TimeSlot.id == slot_id)
@@ -100,14 +128,22 @@ class BookingService:
             slots = slots_result.scalars().all()
 
             if not slots and slot_date >= date.today():
+                base_price = 3000000
+                if "viva" in str(court.club_id).lower():
+                    base_price = 3500000
+                elif "lafour" in str(court.club_id).lower():
+                    base_price = 3000000
+                elif "enghelab" in str(court.club_id).lower():
+                    base_price = 2800000
+
                 default_hours = [
-                    (time(8, 0), time(9, 30), 1600000),
-                    (time(9, 30), time(11, 0), 1800000),
-                    (time(11, 0), time(12, 30), 1800000),
-                    (time(16, 30), time(18, 0), 2200000),
-                    (time(18, 0), time(19, 30), 2400000),
-                    (time(19, 30), time(21, 0), 2400000),
-                    (time(21, 0), time(22, 30), 2200000),
+                    (time(8, 0), time(9, 30), base_price),
+                    (time(9, 30), time(11, 0), base_price),
+                    (time(11, 0), time(12, 30), base_price),
+                    (time(16, 30), time(18, 0), base_price),
+                    (time(18, 0), time(19, 30), base_price if base_price >= 3000000 else 3000000),
+                    (time(19, 30), time(21, 0), base_price if base_price >= 3000000 else 3000000),
+                    (time(21, 0), time(22, 30), base_price if base_price >= 3000000 else 3000000),
                 ]
                 new_slots = []
                 for idx, (st, et, price) in enumerate(default_hours):
@@ -221,6 +257,13 @@ class BookingService:
         db.add(refund)
         await db.commit()
         await db.refresh(refund)
+
+        # Trigger durable in-app notifications for waitlist members
+        try:
+            from backend.app.services.waitlist_service import WaitlistService
+            await WaitlistService.trigger_slot_release_notifications(db=db, slot_id=slot.id)
+        except Exception:
+            pass
 
         # Wire to user wallet and send notification if refund amount is positive
         if refund_amount > 0:

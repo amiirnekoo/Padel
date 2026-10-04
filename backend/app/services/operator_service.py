@@ -49,6 +49,14 @@ class OperatorService:
         slot.status = "AVAILABLE"
         await db.commit()
         await db.refresh(slot)
+
+        # Trigger durable in-app waitlist notifications
+        try:
+            from backend.app.services.waitlist_service import WaitlistService
+            await WaitlistService.trigger_slot_release_notifications(db=db, slot_id=slot.id)
+        except Exception:
+            pass
+
         return slot
 
     @staticmethod

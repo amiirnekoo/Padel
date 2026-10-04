@@ -809,14 +809,15 @@ async def batch_generate_court_slots(
             start_t = time(sh, sm)
             end_t = time(eh if eh < 24 else 23, em if eh < 24 else 59)
 
-            # Check if slot already exists
+            # Strict non-overlap check: existing.start_time < end_t AND existing.end_time > start_t
             stmt = select(TimeSlot).where(
                 TimeSlot.court_id == court_id,
                 TimeSlot.slot_date == current_date,
-                TimeSlot.start_time == start_t
+                TimeSlot.start_time < end_t,
+                TimeSlot.end_time > start_t
             )
-            exists = (await session.execute(stmt)).scalar_one_or_none()
-            if not exists:
+            has_overlap = (await session.execute(stmt)).scalars().first()
+            if not has_overlap:
                 slot = TimeSlot(
                     court_id=court_id,
                     slot_date=current_date,

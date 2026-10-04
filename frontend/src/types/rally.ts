@@ -33,6 +33,9 @@ export interface CourtClub {
   rules: string[];
   cancellationPolicy: string;
   nearestAvailableSlot?: string;
+  latitude?: number;
+  longitude?: number;
+  directDistanceKm?: number;
   slots: TimeSlotItem[];
 }
 

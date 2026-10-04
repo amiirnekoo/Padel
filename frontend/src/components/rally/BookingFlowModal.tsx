@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import {
-  X,
-  ShieldCheck,
-  CreditCard,
-  Wallet,
-  AlertTriangle,
-  RefreshCw
-} from 'lucide-react';
+import { X, ShieldCheck, CreditCard, Wallet, AlertTriangle, RefreshCw } from 'lucide-react';
 import { CourtClub, TimeSlotItem, BookingReceipt } from '../../types/rally';
 import { rallyApi } from '../../services/rallyApi';
 import { BookingReceiptView } from './BookingReceiptView';
@@ -18,6 +11,7 @@ interface BookingFlowModalProps {
   walletBalance: number;
   onPaymentCompleted: (receipt: BookingReceipt) => void;
   simulateState?: 'NORMAL' | 'SLOT_LOST' | 'PAYMENT_PENDING';
+  userSession?: { userId: string; fullName: string; phoneNumber: string; role?: string } | null;
 }
 
 export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
@@ -26,7 +20,8 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
   onClose,
   walletBalance,
   onPaymentCompleted,
-  simulateState = 'NORMAL'
+  simulateState = 'NORMAL',
+  userSession = null
 }) => {
   const [step, setStep] = useState<'REVIEW' | 'PAYING' | 'SUCCESS' | 'ERROR'>('REVIEW');
   const [paymentMethod, setPaymentMethod] = useState<'GATEWAY' | 'WALLET'>('GATEWAY');
@@ -34,29 +29,22 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [fullName, setFullName] = useState(() => {
-    try {
-      const s = localStorage.getItem('padel_auth');
-      return s ? JSON.parse(s).fullName || '' : '';
-    } catch { return ''; }
-  });
+  const [fullName, setFullName] = useState(() => userSession?.fullName || '');
+  const [phoneNumber, setPhoneNumber] = useState(() => userSession?.phoneNumber || '');
 
-  const [phoneNumber, setPhoneNumber] = useState(() => {
-    try {
-      const s = localStorage.getItem('padel_auth');
-      return s ? JSON.parse(s).phoneNumber || '' : '';
-    } catch { return ''; }
-  });
-
-  const finalAmount = slot.price;
-  const finalAmountToman = finalAmount > 10000000 ? Math.floor(finalAmount / 10) : finalAmount;
-  const userBalanceToman = walletBalance > 10000000 ? Math.floor(walletBalance / 10) : walletBalance;
+  const finalAmountToman = slot.price;
+  const userBalanceToman = walletBalance;
 
   const handleStartPayment = async () => {
     if (isSubmitting) return; // جلوگیری از کلیک تکراری
+    if (!fullName.trim() || !phoneNumber.trim()) {
+      setErrorMessage('لطفاً نام و نام خانوادگی و شماره همراه خود را جهت دریافت پیامک رزرو وارد نمایید.');
+      setStep('ERROR');
+      return;
+    }
     const authHeaders = rallyApi.getUserAuthHeaders();
     if (!authHeaders.Authorization) {
-      setErrorMessage('برای رزرو قطعی سانس، لطفاً ابتدا وارد حساب کاربری خود شوید.');
+      setErrorMessage('جهت ثبت قطعی رزرواسیون، لطفاً ابتدا با شماره همراه خود وارد حساب کاربری شوید.');
       setStep('ERROR');
       return;
     }
@@ -108,7 +96,7 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
         date: 'امروز / فردا',
         timeSlot: `${slot.startTime} تا ${slot.endTime}`,
         durationMinutes: slot.durationMinutes,
-        totalAmount: finalAmount,
+        totalAmount: finalAmountToman,
         taxAmount: 0,
         paidAt: new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' }),
         userName: fullName || 'ورزشکار گرامی',
@@ -177,7 +165,7 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
                     <p className="text-xs text-gray-500 mt-0.5">{club.area}</p>
                   </div>
                   <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-white text-rally-charcoal border border-gray-200">
-                    {club.sport === 'PADEL' ? '🎾 پدل' : '🏸 تنیس'}
+                    🎾 پدل استاندارد
                   </span>
                 </div>
 
@@ -188,20 +176,43 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
                   </div>
                   <div>
                     <span className="text-gray-400 block text-[10px]">ساعت و مدت:</span>
-                    <span className="font-bold text-gray-800">{slot.startTime} تا {slot.endTime} (۹۰ دقیقه)</span>
+                    <span className="font-bold text-gray-800">{slot.startTime} تا {slot.endTime} ({slot.durationMinutes || 90} دقیقه)</span>
                   </div>
                 </div>
               </div>
 
               {/* Player details */}
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-[11px] font-bold text-gray-500 mb-1">نام رزروکننده</label>
-                  <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-gray-200 text-xs font-bold text-rally-charcoal" />
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="block text-[11px] font-bold text-gray-500">مشخصات رزروکننده</label>
+                  {userSession ? (
+                    <span className="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-bold">
+                      حساب متصل: {userSession.fullName}
+                    </span>
+                  ) : (
+                    <span className="text-[10px] text-gray-400 font-medium">بازیکن مهمان (بدون ورود پیش‌فرض)</span>
+                  )}
                 </div>
-                <div>
-                  <label className="block text-[11px] font-bold text-gray-500 mb-1">شماره همراه</label>
-                  <input type="text" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-gray-200 text-xs font-bold text-rally-charcoal" dir="ltr" />
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <input
+                      type="text"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      placeholder="نام و نام خانوادگی..."
+                      className="w-full h-10 px-3 rounded-xl border border-gray-200 text-xs font-bold text-rally-charcoal focus:border-rally-primary focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <input
+                      type="tel"
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      placeholder="۰۹۱۲۳۴۵۶۷۸۹"
+                      className="w-full h-10 px-3 rounded-xl border border-gray-200 text-xs font-bold text-rally-charcoal focus:border-rally-primary focus:outline-none"
+                      dir="ltr"
+                    />
+                  </div>
                 </div>
               </div>
 

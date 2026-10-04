@@ -28,21 +28,13 @@ export const CourtCard: React.FC<CourtCardProps> = ({
   const isPadel = club.sport === 'PADEL';
 
   return (
-    <div className={`bg-white rounded-[28px] border overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group ${
-      isPadel
-        ? 'border-sky-100 hover:border-sky-300 hover:shadow-[0_12px_32px_rgba(14,165,233,0.08)]'
-        : 'border-emerald-100 hover:border-emerald-300 hover:shadow-[0_12px_32px_rgba(16,185,129,0.08)]'
-    }`}>
+    <div className="bg-white rounded-[28px] border border-sky-100 hover:border-sky-300 overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(14,165,233,0.08)] transition-all duration-300 flex flex-col justify-between group">
       
       {/* Top Header Tag & Title */}
       <div className="p-6 sm:p-7 pb-4 space-y-2">
         <div className="flex items-center justify-between">
-          <span className={`text-[11px] font-black tracking-wider uppercase px-2.5 py-0.5 rounded-full ${
-            isPadel
-              ? 'text-sky-700 bg-sky-50 border border-sky-200'
-              : 'text-emerald-700 bg-emerald-50 border border-emerald-200'
-          }`}>
-            {isPadel ? '🎾 پدل اختصاصی' : '🏸 تنیس استاندارد (زمین خاکی)'}
+          <span className="text-[11px] font-black tracking-wider uppercase px-2.5 py-0.5 rounded-full text-sky-700 bg-sky-50 border border-sky-200">
+            🎾 کورت اختصاصی پدل
           </span>
           <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-gray-100 text-rally-charcoal text-[11px] font-bold">
             <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
@@ -52,9 +44,7 @@ export const CourtCard: React.FC<CourtCardProps> = ({
 
         <h3
           onClick={() => onSelectClub(club)}
-          className={`text-xl sm:text-2xl font-black text-rally-charcoal tracking-tight transition-colors cursor-pointer line-clamp-1 ${
-            isPadel ? 'group-hover:text-sky-700' : 'group-hover:text-emerald-700'
-          }`}
+          className="text-xl sm:text-2xl font-black text-rally-charcoal tracking-tight group-hover:text-sky-700 transition-colors cursor-pointer line-clamp-1"
         >
           {club.name}
         </h3>
@@ -62,6 +52,11 @@ export const CourtCard: React.FC<CourtCardProps> = ({
         <div className="flex items-center gap-1.5 text-xs text-gray-400">
           <MapPin className="w-3.5 h-3.5 text-gray-400 shrink-0" />
           <span className="line-clamp-1">{club.area} ({club.city})</span>
+          {typeof club.directDistanceKm === 'number' && club.directDistanceKm > 0 && (
+            <span className="text-[11px] font-bold text-sky-700 bg-sky-50 px-2 py-0.5 rounded-full border border-sky-100">
+              فاصله مستقیم: {club.directDistanceKm.toLocaleString('fa-IR')} کیلومتر
+            </span>
+          )}
         </div>
       </div>
 
@@ -83,9 +78,7 @@ export const CourtCard: React.FC<CourtCardProps> = ({
         </div>
 
         {firstValidSlot ? (
-          <div className={`absolute bottom-3 left-3 flex items-center gap-1 px-2.5 py-1 rounded-full text-white text-[10px] font-bold shadow-xs ${
-            isPadel ? 'bg-[#0B4278]' : 'bg-[#135d54]'
-          }`}>
+          <div className="absolute bottom-3 left-3 flex items-center gap-1 px-2.5 py-1 rounded-full text-white text-[10px] font-bold shadow-xs bg-[#0B4278]">
             <Clock className="w-3 h-3" />
             <span>اولین سانس آزاد: {firstValidSlot.startTime}</span>
           </div>
@@ -104,9 +97,7 @@ export const CourtCard: React.FC<CourtCardProps> = ({
             <span>سریع‌ترین سانس‌های آزاد (۹۰ دقیقه):</span>
             <span
               onClick={() => onSelectClub(club)}
-              className={`hover:underline cursor-pointer ${
-                isPadel ? 'text-sky-700' : 'text-emerald-700'
-              }`}
+              className="text-sky-700 hover:underline cursor-pointer"
             >
               مشاهده همه
             </span>
@@ -118,12 +109,8 @@ export const CourtCard: React.FC<CourtCardProps> = ({
                 <button
                   key={slot.slotId}
                   onClick={() => onSelectDirectSlot(club, slot)}
-                  className={`px-3 py-1.5 rounded-full border text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
-                    isPadel
-                      ? 'border-sky-600/25 bg-sky-50 text-sky-800 hover:bg-sky-700 hover:text-white'
-                      : 'border-emerald-600/25 bg-emerald-50 text-emerald-800 hover:bg-emerald-700 hover:text-white'
-                  }`}
-                  title={`${slot.startTime} تا ${slot.endTime} - ${(slot.price / 10).toLocaleString('fa-IR')} تومان`}
+                  className="px-3 py-1.5 rounded-full border border-sky-600/25 bg-sky-50 text-sky-800 hover:bg-sky-700 hover:text-white text-xs font-bold transition-all cursor-pointer flex items-center gap-1"
+                  title={`${slot.startTime} تا ${slot.endTime} - ${slot.price.toLocaleString('fa-IR')} تومان`}
                 >
                   <Clock className="w-3 h-3" />
                   <span>{slot.startTime}</span>
@@ -143,7 +130,7 @@ export const CourtCard: React.FC<CourtCardProps> = ({
             </span>
             <div className="flex items-baseline gap-1">
               <span className="text-lg font-black text-rally-charcoal tracking-tight">
-                {((firstValidSlot ? firstValidSlot.price : club.startingPrice) / 10).toLocaleString('fa-IR')}
+                {(firstValidSlot ? firstValidSlot.price : club.startingPrice).toLocaleString('fa-IR')}
               </span>
               <span className="text-xs text-gray-500 font-medium">تومان</span>
             </div>
@@ -151,11 +138,7 @@ export const CourtCard: React.FC<CourtCardProps> = ({
 
           <button
             onClick={() => onSelectClub(club)}
-            className={`px-5 py-2.5 rounded-full text-white text-xs font-black flex items-center gap-1.5 shadow-sm transition-all cursor-pointer active:scale-95 ${
-              isPadel
-                ? 'bg-[#0B4278] hover:bg-[#0C4F8D]'
-                : 'bg-[#135d54] hover:bg-[#0e4841]'
-            }`}
+            className="px-5 py-2.5 rounded-full text-white text-xs font-black flex items-center gap-1.5 shadow-sm transition-all cursor-pointer active:scale-95 bg-[#0B4278] hover:bg-[#0C4F8D]"
           >
             <span>مشاهده سانس‌ها</span>
             <ChevronLeft className="w-3.5 h-3.5" />

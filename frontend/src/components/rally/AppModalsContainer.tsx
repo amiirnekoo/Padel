@@ -98,6 +98,7 @@ export const AppModalsContainer: React.FC<AppModalsContainerProps> = ({
           slot={bookingSlot.slot}
           walletBalance={walletBalance}
           simulateState={simulateState}
+          userSession={userSession}
           onClose={onCloseBooking}
           onPaymentCompleted={onBookingPaymentCompleted || (() => {})}
         />

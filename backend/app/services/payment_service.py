@@ -111,17 +111,24 @@ class PaymentService:
             await db.commit()
             return {"status": "FAILED", "message": "پرداخت توسط کاربر لغو شد یا در بانک ناموفق بود"}
 
-        # CRITICAL VALIDATION: Check hold expiration (Late Callback handling)
-        if not slot.hold_expires_at or now >= slot.hold_expires_at:
-            # Late Callback: Money was deducted but 10-minute hold has expired!
-            # Reject booking and initiate 100% bank reversal
+        # CRITICAL VALIDATION: Check hold expiration and rightful ownership (Late/Conflicted Callback handling)
+        is_rightful_hold = (
+            slot.status == "HOLD" and
+            slot.held_by_user_id == booking.user_id and
+            slot.hold_expires_at is not None and
+            now < slot.hold_expires_at
+        )
+
+        if not is_rightful_hold:
+            # Late Callback or Conflicted: Money was deducted but 10-minute hold has expired or was re-assigned!
+            # Reject booking and initiate bank reversal
             attempt.status = "REVERSED"
             attempt.ref_id = ref_id
             attempt.verified_at = now
 
             booking.status = "EXPIRED"
 
-            # Create 100% Refund record
+            # Create Refund record with pending review / reversal status
             refund = Refund(
                 booking_id=booking.id,
                 amount=attempt.amount,
@@ -132,8 +139,8 @@ class PaymentService:
             )
             db.add(refund)
 
-            # Slot is released to AVAILABLE if it was still on HOLD
-            if slot.status == "HOLD":
+            # ONLY release slot to AVAILABLE if it is STILL held by this exact user
+            if slot.status == "HOLD" and slot.held_by_user_id == booking.user_id:
                 slot.status = "AVAILABLE"
                 slot.held_by_user_id = None
                 slot.hold_expires_at = None
@@ -141,7 +148,7 @@ class PaymentService:
             await db.commit()
             return {
                 "status": "REVERSED_EXPIRED",
-                "message": "پرداخت پس از مهلت ۱۰ دقیقه انجام شد؛ سانس واگذار نشد و کل وجه به کارت مبدأ برگشت داده شد."
+                "message": "پرداخت پس از مهلت ۱۰ دقیقه انجام شد یا سانس به کاربر دیگری واگذار شده است؛ وجه پرداختی در صف استرداد قرار گرفت."
             }
 
         # Happy Path: Payment valid & within 10-minute window

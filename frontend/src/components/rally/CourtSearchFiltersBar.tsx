@@ -3,7 +3,7 @@ import { Search, X, SlidersHorizontal, MapPin, Clock, Sun, Moon, Sparkles } from
 import { SportType } from '../../types/rally';
 
 export type TimeWindowFilter = 'ALL' | 'MORNING' | 'AFTERNOON' | 'NIGHT';
-export type QuickShortcut = 'TODAY' | 'TOMORROW' | 'TONIGHT' | 'FIRST_AVAILABLE' | 'NONE';
+export type QuickShortcut = 'TODAY' | 'TOMORROW' | 'TONIGHT' | 'FIRST_AVAILABLE' | 'NEAREST' | 'NONE';
 
 interface CourtSearchFiltersBarProps {
   searchQuery: string;
@@ -20,6 +20,8 @@ interface CourtSearchFiltersBarProps {
   onShortcutSelect: (sc: QuickShortcut) => void;
   selectedAmenity: string;
   onAmenityChange: (a: string) => void;
+  isLocating?: boolean;
+  locationError?: string | null;
 }
 
 export const CourtSearchFiltersBar: React.FC<CourtSearchFiltersBarProps> = ({
@@ -36,7 +38,9 @@ export const CourtSearchFiltersBar: React.FC<CourtSearchFiltersBarProps> = ({
   activeShortcut,
   onShortcutSelect,
   selectedAmenity,
-  onAmenityChange
+  onAmenityChange,
+  isLocating,
+  locationError
 }) => {
   const [showMoreFilters, setShowMoreFilters] = useState(false);
 
@@ -49,7 +53,8 @@ export const CourtSearchFiltersBar: React.FC<CourtSearchFiltersBarProps> = ({
     { id: 'TODAY', label: 'امروز', icon: '⚡' },
     { id: 'TOMORROW', label: 'فردا', icon: '📅' },
     { id: 'TONIGHT', label: 'امشب (۱۹ به بعد)', icon: '🌙' },
-    { id: 'FIRST_AVAILABLE', label: 'اولین سانس آزاد', icon: '🎯' }
+    { id: 'FIRST_AVAILABLE', label: 'اولین سانس آزاد', icon: '🎯' },
+    { id: 'NEAREST', label: isLocating ? 'در حال تعیین موقعیت...' : 'نزدیک‌ترین زمین (مستقیم)', icon: '📍' }
   ];
 
   const TIME_WINDOWS: { id: TimeWindowFilter; label: string; icon: React.ReactNode }[] = [
@@ -129,6 +134,11 @@ export const CourtSearchFiltersBar: React.FC<CourtSearchFiltersBarProps> = ({
           <span>فیلترهای بیشتر</span>
           {showMoreFilters && <span className="w-1.5 h-1.5 rounded-full bg-rally-accent" />}
         </button>
+        {locationError && (
+          <div className="w-full text-[11px] font-bold text-amber-800 bg-amber-50/90 border border-amber-200 px-3 py-1.5 rounded-xl">
+            {locationError}
+          </div>
+        )}
       </div>
 
       {/* 3. Time Windows & City Pills */}
@@ -155,19 +165,9 @@ export const CourtSearchFiltersBar: React.FC<CourtSearchFiltersBarProps> = ({
           })}
         </div>
 
-        {/* Quick Sport Pills */}
-        <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-full text-xs font-bold shrink-0 self-start sm:self-auto">
-          {(['ALL', 'PADEL', 'TENNIS'] as const).map((s) => (
-            <button
-              key={s}
-              onClick={() => onSportChange(s)}
-              className={`px-3.5 py-1 rounded-full transition-all cursor-pointer ${
-                sportFilter === s ? 'bg-white text-rally-primary shadow-xs' : 'text-gray-600'
-              }`}
-            >
-              {s === 'ALL' ? 'همه ورزش‌ها' : s === 'PADEL' ? 'پدل' : 'تنیس'}
-            </button>
-          ))}
+        {/* Padel Exclusive Badge */}
+        <div className="flex items-center gap-1.5 bg-sky-50 border border-sky-200 px-3 py-1 rounded-full text-xs font-bold text-sky-800 shrink-0 self-start sm:self-auto">
+          <span>🎾 ۳ مجموعه اختصاصی پدل تهران</span>
         </div>
       </div>
 

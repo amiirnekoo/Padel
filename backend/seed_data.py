@@ -113,7 +113,7 @@ async def seed():
                 "address": "خیابان ولیعصر، اتوبان نیایش، مجموعه فرهنگی ورزشی انقلاب",
                 "phone": "02122001100",
                 "sports_supported": "PADEL",
-                "default_hourly_rate": 24000000,
+                "default_hourly_rate": 28000000,
                 "amenities": "آرنا مسابقات، پارکینگ اختصاصی، کافه رستوران، رختکن VIP، نورافکن استاندارد جهانی",
                 "approval_status": "APPROVED",
                 "is_active": True,
@@ -166,12 +166,12 @@ async def seed():
         today = date.today()
         tomorrow = today + timedelta(days=1)
         slot_hours = [
-            (time(8, 0), time(9, 30), 18000000),
-            (time(9, 30), time(11, 0), 18000000),
-            (time(16, 30), time(18, 0), 22000000),
-            (time(18, 0), time(19, 30), 25000000),
-            (time(19, 30), time(21, 0), 25000000),
-            (time(21, 0), time(22, 30), 22000000),
+            (time(8, 0), time(9, 30), 25000000),
+            (time(9, 30), time(11, 0), 25000000),
+            (time(16, 30), time(18, 0), 30000000),
+            (time(18, 0), time(19, 30), 30000000),
+            (time(19, 30), time(21, 0), 35000000),
+            (time(21, 0), time(22, 30), 30000000),
         ]
 
         slot_count = 0

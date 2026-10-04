@@ -42,12 +42,12 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
                     fontSize: '0.75rem',
                     padding: '2px 8px',
                     borderRadius: '4px',
-                    background: court.sport_type === 'PADEL' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(99, 102, 241, 0.2)',
-                    color: court.sport_type === 'PADEL' ? '#34d399' : '#818cf8',
+                    background: 'rgba(16, 185, 129, 0.2)',
+                    color: '#34d399',
                     fontWeight: 700
                   }}
                 >
-                  {court.sport_type === 'PADEL' ? '🎾 پدل استاندارد' : '🎾 تنیس خاکی'}
+                  🎾 پدل استاندارد
                 </span>
                 <span style={{ fontSize: '0.75rem', padding: '2px 8px', borderRadius: '4px', background: 'rgba(255, 255, 255, 0.06)', color: '#94a3b8' }}>
                   {court.is_indoor ? 'سرپوشیده' : 'فضای باز'}

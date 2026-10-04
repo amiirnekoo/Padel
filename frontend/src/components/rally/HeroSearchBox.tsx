@@ -33,12 +33,12 @@ export const HeroSearchBox: React.FC<HeroSearchBoxProps> = ({
   const [coachGoal, setCoachGoal] = useState<string>('یادگیری پایه و تکنیک');
   const [tournamentLevel, setTournamentLevel] = useState<string>('آزاد / سطح ۳');
 
-  const AREAS = ['همه محدوده‌ها', 'ونک / سئول (FGB انقلاب)', 'آجودانیه (لفور)', 'مینی‌سیتی (ویوا)', 'ولنجک / توچال', 'شهرک غرب', 'پاسداران'];
+  const AREAS = ['همه محدوده‌ها', 'ونک / باشگاه انقلاب (FGB)', 'آجودانیه (باشگاه لفور)', 'مینی‌سیتی (باشگاه ویوا)'];
 
   const handleExecuteSearch = () => {
     if (activeSearchTab === 'court') {
       const dateLabel = day === 'today' ? 'امروز' : day === 'tomorrow' ? 'فردا' : 'آخر هفته';
-      onSearchCourts({ sport, area, date: dateLabel, time: timeOfDay });
+      onSearchCourts({ sport: 'PADEL', area, date: dateLabel, time: timeOfDay });
     } else if (activeSearchTab === 'coach') {
       onSearchCoaches({ sport, level: coachLevel, goal: coachGoal });
     } else {
@@ -90,26 +90,10 @@ export const HeroSearchBox: React.FC<HeroSearchBoxProps> = ({
       {/* Dynamic Filter Controls */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-4">
         <div>
-          <label className="block text-[11px] font-bold text-gray-500 mb-1">نوع ورزش</label>
-          <div className="grid grid-cols-2 gap-1.5 p-1 bg-gray-100 rounded-xl">
-            <button
-              type="button"
-              onClick={() => setSport('PADEL')}
-              className={`py-1.5 rounded-lg text-xs font-bold transition-all ${
-                sport === 'PADEL' ? 'bg-white text-rally-primary shadow-xs' : 'text-gray-600'
-              }`}
-            >
-              🎾 پدل
-            </button>
-            <button
-              type="button"
-              onClick={() => setSport('TENNIS')}
-              className={`py-1.5 rounded-lg text-xs font-bold transition-all ${
-                sport === 'TENNIS' ? 'bg-white text-rally-primary shadow-xs' : 'text-gray-600'
-              }`}
-            >
-              🏸 تنیس
-            </button>
+          <label className="block text-[11px] font-bold text-gray-500 mb-1">رشته ورزشی</label>
+          <div className="h-10 px-3 rounded-xl border border-sky-200 bg-sky-50 flex items-center justify-between text-xs font-bold text-sky-800">
+            <span>🎾 کورت اختصاصی پدل</span>
+            <span className="text-[10px] bg-sky-200/80 px-2 py-0.5 rounded-md font-black">۳ مجموعه فعال</span>
           </div>
         </div>
 

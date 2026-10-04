@@ -79,3 +79,90 @@ async def trigger_booking_reminder(booking_id: str, db: AsyncSession = Depends(g
         "notification_id": log.id,
         "status": log.status
     }
+
+from pydantic import BaseModel, Field
+from datetime import date as dt_date, time as dt_time
+from backend.app.services.waitlist_service import WaitlistService
+from backend.app.api.deps import get_current_user_id
+
+class WaitlistPayload(BaseModel):
+    court_id: str = Field(..., description="شناسه کورت")
+    slot_date: dt_date = Field(..., description="تاریخ سانس")
+    start_time: str = Field(..., description="ساعت شروع به فرمت HH:MM")
+
+@router.post("/waitlist/join")
+async def join_waitlist(
+    payload: WaitlistPayload,
+    user_id: str = Depends(get_current_user_id),
+    db: AsyncSession = Depends(get_db)
+):
+    """عضویت در لیست انتظار یک سانس مشخص جهت دریافت اعلان درون‌پرتال به محض آزادسازی"""
+    try:
+        parts = [int(p) for p in payload.start_time.split(":")]
+        st = dt_time(parts[0], parts[1])
+    except Exception:
+        raise HTTPException(status_code=400, detail="فرمت ساعت شروع نامعتبر است (الگوی صحیح: 18:30)")
+
+    entry = await WaitlistService.join_waitlist(
+        db=db,
+        user_id=user_id,
+        court_id=payload.court_id,
+        slot_date=payload.slot_date,
+        start_time=st
+    )
+    return {
+        "success": True,
+        "message": "عضویت شما در لیست انتظار سانس با موفقیت ثبت شد. به محض آزادسازی، اعلان در پرتال نمایش داده خواهد شد.",
+        "waitlist_id": entry.id,
+        "status": entry.status
+    }
+
+@router.post("/waitlist/leave")
+async def leave_waitlist(
+    payload: WaitlistPayload,
+    user_id: str = Depends(get_current_user_id),
+    db: AsyncSession = Depends(get_db)
+):
+    """لغو عضویت از لیست انتظار سانس"""
+    try:
+        parts = [int(p) for p in payload.start_time.split(":")]
+        st = dt_time(parts[0], parts[1])
+    except Exception:
+        raise HTTPException(status_code=400, detail="فرمت ساعت شروع نامعتبر است")
+
+    res = await WaitlistService.leave_waitlist(
+        db=db,
+        user_id=user_id,
+        court_id=payload.court_id,
+        slot_date=payload.slot_date,
+        start_time=st
+    )
+    return {"success": res, "message": "عضویت در لیست انتظار با موفقیت لغو شد." if res else "عضویت فعالی یافت نشد."}
+
+@router.get("/in-app/my")
+async def get_my_in_app_notifications(
+    user_id: str = Depends(get_current_user_id),
+    db: AsyncSession = Depends(get_db)
+):
+    """دریافت اعلان‌های پایدار و ماندگار کاربر در پرتال"""
+    notifs = await WaitlistService.get_user_notifications(db=db, user_id=user_id)
+    return notifs
+
+@router.post("/in-app/{notification_id}/read")
+async def mark_notification_read(
+    notification_id: str,
+    user_id: str = Depends(get_current_user_id),
+    db: AsyncSession = Depends(get_db)
+):
+    """علامت‌گذاری اعلان به عنوان خوانده شده"""
+    res = await WaitlistService.mark_as_read(db=db, notification_id=notification_id, user_id=user_id)
+    return {"success": res}
+
+@router.get("/waitlist/check-slot/{slot_id}")
+async def check_waitlist_slot(
+    slot_id: str,
+    db: AsyncSession = Depends(get_db)
+):
+    """بررسی زنده و لحظه‌ای موجودی سانس هنگام کلیک بازیکن روی اعلان آزادسازی"""
+    availability = await WaitlistService.verify_slot_availability(db=db, slot_id=slot_id)
+    return availability

@@ -58,20 +58,10 @@ export const App: React.FC = () => {
     try {
       const saved = localStorage.getItem('rally_shop_products');
       return saved ? JSON.parse(saved) : MOCK_SHOP_PRODUCTS;
-    } catch {
-      return MOCK_SHOP_PRODUCTS;
-    }
+    } catch { return MOCK_SHOP_PRODUCTS; }
   });
 
-  const {
-    route,
-    navigateToTab,
-    navigateToProduct,
-    backToShop,
-    navigateToPortal,
-    navigateToAdmin,
-    exitSpecialPage,
-  } = useRallyRouter(productsList);
+  const { route, navigateToTab, navigateToProduct, backToShop, navigateToPortal, navigateToAdmin, exitSpecialPage } = useRallyRouter(productsList);
 
   const activeTab = route.tab;
   const isAdminOpen = route.isAdmin;

@@ -38,12 +38,12 @@ export const ModernCourtShowcase: React.FC<ModernCourtShowcaseProps> = ({
       area: 'باشگاه انقلاب',
       city: 'تهران',
       imageUrl: '/images/court_fgb_enghelab.jpg',
-      startingPrice: 2400000,
+      startingPrice: 2800000,
       courtType: 'INDOOR',
       slots: [
-        { id: 'slot-1', time: '۱۵:۰۰', price: 2400000 },
-        { id: 'slot-2', time: '۱۶:۳۰', price: 2400000 },
-        { id: 'slot-3', time: '۱۸:۰۰', price: 2600000 }
+        { id: 'slot-1', time: '۱۵:۰۰', price: 2800000 },
+        { id: 'slot-2', time: '۱۶:۳۰', price: 2800000 },
+        { id: 'slot-3', time: '۱۸:۰۰', price: 3000000 }
       ]
     },
     {

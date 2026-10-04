@@ -16,8 +16,11 @@ from backend.app.models.product import ProductCategory, Product, ProductImage, S
 from backend.app.models.content import ArticleCategory, Article, SiteBanner, MediaAsset
 from backend.app.models.tournament import Tournament, PlayerRanking
 from backend.app.models.admin_user import AdminUser
+from backend.app.models.waitlist import WaitlistEntry, InAppNotification
 
 __all__ = [
+    "WaitlistEntry",
+    "InAppNotification",
     "Base",
     "engine",
     "async_session_factory",

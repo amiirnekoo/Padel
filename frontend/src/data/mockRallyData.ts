@@ -12,6 +12,8 @@ export const MOCK_CLUBS: CourtClub[] = [
     "surface": "کورت سوپر پانورامیک مسقف سازه‌ای با چمن مشکی استاندارد WPT و دیواره شیشه‌ای سکوریت",
     "rating": 4.98,
     "startingPrice": 3500000,
+    "latitude": 35.7981,
+    "longitude": 51.5032,
     "nearestAvailableSlot": "فردا ۱۷:۰۰ تا ۱۸:۰۰",
     "images": [
       "/images/court_viva.jpg"
@@ -58,40 +60,40 @@ export const MOCK_CLUBS: CourtClub[] = [
       {
         "slotId": "viva-1",
         "startTime": "۱۵:۳۰",
-        "endTime": "۱۶:۳۰",
-        "durationMinutes": 60,
+        "endTime": "۱۷:۰۰",
+        "durationMinutes": 90,
         "price": 3500000,
         "status": "AVAILABLE"
       },
       {
         "slotId": "viva-2",
         "startTime": "۱۷:۰۰",
-        "endTime": "۱۸:۰۰",
-        "durationMinutes": 60,
+        "endTime": "۱۸:۳۰",
+        "durationMinutes": 90,
         "price": 3500000,
         "status": "AVAILABLE"
       },
       {
         "slotId": "viva-3",
         "startTime": "۱۸:۳۰",
-        "endTime": "۱۹:۳۰",
-        "durationMinutes": 60,
+        "endTime": "۲۰:۰۰",
+        "durationMinutes": 90,
         "price": 3500000,
         "status": "AVAILABLE"
       },
       {
         "slotId": "viva-4",
         "startTime": "۲۰:۰۰",
-        "endTime": "۲۱:۰۰",
-        "durationMinutes": 60,
+        "endTime": "۲۱:۳۰",
+        "durationMinutes": 90,
         "price": 3500000,
         "status": "AVAILABLE"
       },
       {
         "slotId": "viva-5",
         "startTime": "۲۱:۳۰",
-        "endTime": "۲۲:۳۰",
-        "durationMinutes": 60,
+        "endTime": "۲۳:۰۰",
+        "durationMinutes": 90,
         "price": 3500000,
         "status": "AVAILABLE"
       }
@@ -108,7 +110,9 @@ export const MOCK_CLUBS: CourtClub[] = [
     "surface": "کورت سوپر پانورامیک روباز با چمن مونت‌کارلو استاندارد مسابقات جهانی",
     "rating": 4.96,
     "startingPrice": 3000000,
-    "nearestAvailableSlot": "فردا ۱۸:۰۰ تا ۱۹:۰۰",
+    "latitude": 35.8115,
+    "longitude": 51.4889,
+    "nearestAvailableSlot": "فردا ۱۸:۰۰ تا ۱۹:۳۰",
     "images": [
       "/images/court_lafour.jpg"
     ],
@@ -149,32 +153,32 @@ export const MOCK_CLUBS: CourtClub[] = [
       {
         "slotId": "laf-1",
         "startTime": "۱۶:۳۰",
-        "endTime": "۱۷:۳۰",
-        "durationMinutes": 60,
+        "endTime": "۱۸:۰۰",
+        "durationMinutes": 90,
         "price": 3000000,
         "status": "AVAILABLE"
       },
       {
         "slotId": "laf-2",
         "startTime": "۱۸:۰۰",
-        "endTime": "۱۹:۰۰",
-        "durationMinutes": 60,
+        "endTime": "۱۹:۳۰",
+        "durationMinutes": 90,
         "price": 3000000,
         "status": "AVAILABLE"
       },
       {
         "slotId": "laf-3",
         "startTime": "۱۹:۳۰",
-        "endTime": "۲۰:۳۰",
-        "durationMinutes": 60,
+        "endTime": "۲۱:۰۰",
+        "durationMinutes": 90,
         "price": 3000000,
         "status": "AVAILABLE"
       },
       {
         "slotId": "laf-4",
         "startTime": "۲۱:۰۰",
-        "endTime": "۲۲:۰۰",
-        "durationMinutes": 60,
+        "endTime": "۲۲:۳۰",
+        "durationMinutes": 90,
         "price": 3000000,
         "status": "AVAILABLE"
       }
@@ -190,7 +194,9 @@ export const MOCK_CLUBS: CourtClub[] = [
     "courtType": "INDOOR",
     "surface": "کورت‌های آرنا سرپوشیده با چمن آبی استاندارد مسابقات بین‌المللی WPT و دیواره سوپر پانورامیک شیشه سکوریت",
     "rating": 4.98,
-    "startingPrice": 2400000,
+    "startingPrice": 2800000,
+    "latitude": 35.7772,
+    "longitude": 51.4053,
     "nearestAvailableSlot": "فردا ۱۶:۳۰ تا ۱۸:۰۰",
     "images": [
       "/images/court_fgb_enghelab.jpg"
@@ -239,7 +245,7 @@ export const MOCK_CLUBS: CourtClub[] = [
         "startTime": "۱۵:۰۰",
         "endTime": "۱۶:۳۰",
         "durationMinutes": 90,
-        "price": 2400000,
+        "price": 2800000,
         "status": "AVAILABLE"
       },
       {
@@ -247,7 +253,7 @@ export const MOCK_CLUBS: CourtClub[] = [
         "startTime": "۱۶:۳۰",
         "endTime": "۱۸:۰۰",
         "durationMinutes": 90,
-        "price": 2400000,
+        "price": 2800000,
         "status": "AVAILABLE"
       },
       {
@@ -255,7 +261,7 @@ export const MOCK_CLUBS: CourtClub[] = [
         "startTime": "۱۸:۰۰",
         "endTime": "۱۹:۳۰",
         "durationMinutes": 90,
-        "price": 2600000,
+        "price": 3000000,
         "status": "AVAILABLE"
       },
       {
@@ -263,7 +269,7 @@ export const MOCK_CLUBS: CourtClub[] = [
         "startTime": "۱۹:۳۰",
         "endTime": "۲۱:۰۰",
         "durationMinutes": 90,
-        "price": 2600000,
+        "price": 3000000,
         "status": "AVAILABLE"
       },
       {
@@ -271,7 +277,7 @@ export const MOCK_CLUBS: CourtClub[] = [
         "startTime": "۲۱:۰۰",
         "endTime": "۲۲:۳۰",
         "durationMinutes": 90,
-        "price": 2600000,
+        "price": 3000000,
         "status": "AVAILABLE"
       }
     ]
