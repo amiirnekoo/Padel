@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "comment": "🎾 قالب استاندارد تحویل محتوای تمرینات تخصصی رالی (Drill Content Delivery Package)",
+  "metadata": {
+    "package_version": "1.0.0",
+    "drill_slug": "unique-kebab-case-slug",
+    "created_at_utc": "2026-10-04T00:00:00Z"
+  },
+  "content": {
+    "title": "عنوان تمرین به فارسی (بین ۳ تا ۲۵۵ نویسه)",
+    "sport": "PADEL",
+    "category": "TECHNIQUE",
+    "level": "BEGINNER",
+    "participant_type": "SOLO",
+    "summary": "خلاصه کاربردی تمرین برای کارت و پیش‌نمایش (۱۰ تا ۱۰۰۰ نویسه)",
+    "objective": "هدف فنی یا بدنی تمرین و دستاورد آن برای بازیکن (۱۰ تا ۱۰۰۰ نویسه)",
+    "duration_minutes": 15,
+    "equipment_required": [
+      "راکت پدل",
+      "حداقل ۳ عدد توپ",
+      "کورت پدل استاندارد"
+    ],
+    "steps": [
+      {
+        "step_number": 1,
+        "title": "عنوان مرحله اول (مثال: آماده‌سازی و استقرار)",
+        "instruction": "شرح دقیق حرکتی، موقعیت پاها و نحوه چرخش شانه",
+        "reps_or_time": "۱۰ بار تکرار یا ۲ دقیقه",
+        "key_focus": "نقطه تمرکز کلیدی (مثال: حفظ زاویه ۹۰ درجه آرنج)"
+      },
+      {
+        "step_number": 2,
+        "title": "عنوان مرحله دوم (مثال: ضربه و تعقیب)",
+        "instruction": "زمان‌بندی تماس با توپ و امتداد حرکت راکت به سمت کورت مقابل",
+        "reps_or_time": "۱۵ بار تکرار",
+        "key_focus": "ضربه در بالاترین نقطه بدون پایین آمدن مچ"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "mistake": "شرح اشتباه رایج (مثال: ضربه زدن با مچ شکسته)",
+        "correction": "راهکار تصحیح (مثال: مچ دست را قفل نگه دارید و نیرو را از چرخش سرشانه بگیرید)"
+      }
+    ],
+    "safety_precautions": [
+      "گرم کردن مفصل شانه و زانو به مدت حداقل ۵ دقیقه پیش از شروع",
+      "رعایت حداقل ۱.۵ متر فاصله ایمن از دیواره شیشه‌ای پشت کورت"
+    ]
+  },
+  "media_assets": [
+    {
+      "media_type": "IMAGE",
+      "file_name": "cover.webp",
+      "mime_type": "image/webp",
+      "is_cover": true,
+      "provenance": "REAL_RECORDING",
+      "usage_rights_status": "OWNED",
+      "license_details": "حقوق تصویر در مالکیت انحصاری باشگاه رالی است.",
+      "language": "fa"
+    },
+    {
+      "media_type": "VIDEO",
+      "file_name": "technique_demo.mp4",
+      "mime_type": "video/mp4",
+      "is_cover": false,
+      "video_duration_seconds": 95,
+      "aspect_ratio": "16:9",
+      "provenance": "REAL_RECORDING",
+      "usage_rights_status": "OWNED",
+      "license_details": "ویدئوی ضبط‌شده در آکادمی رالی با رضایت مربی و تهیه‌کننده.",
+      "language": "fa"
+    },
+    {
+      "media_type": "SUBTITLE",
+      "file_name": "subtitles_fa.vtt",
+      "mime_type": "text/vtt",
+      "is_cover": false,
+      "provenance": "REAL_RECORDING",
+      "usage_rights_status": "OWNED",
+      "license_details": "زیرنویس همگام فارسی اختصاصی رالی.",
+      "language": "fa"
+    }
+  ],
+  "review_record": {
+    "reviewer_role": "EXPERT_REVIEWER",
+    "suitability_approved": null,
+    "media_sync_approved": null,
+    "movement_clarity_approved": null,
+    "pedagogical_notes": null,
+    "safety_notes": null,
+    "final_action": "PENDING"
+  }
+}

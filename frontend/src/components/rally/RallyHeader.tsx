@@ -17,6 +17,7 @@ import {
 
 export type RallyPageTab =
   | 'home'
+  | 'drills'
   | 'courts'
   | 'matchmaking'
   | 'coaches'
@@ -59,6 +60,7 @@ export const RallyHeader: React.FC<RallyHeaderProps> = ({
   const CITIES = ['تهران', 'کرج', 'شیراز', 'اصفهان', 'کیش'];
 
   const NAV_ITEMS: { id: RallyPageTab; label: string; icon: React.FC<{ className?: string }> }[] = [
+    { id: 'drills', label: 'تمرینات تخصصی', icon: Zap },
     { id: 'courts', label: 'زمین‌ها', icon: CalendarCheck },
     { id: 'matchmaking', label: 'مچ‌میکینگ (بازی آزاد)', icon: Zap },
     { id: 'coaches', label: 'مربیان', icon: Award },

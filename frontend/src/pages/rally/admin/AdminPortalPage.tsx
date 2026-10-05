@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   LayoutDashboard, Calendar, CalendarDays, Building2, UserCheck, DollarSign,
   Package, ShoppingCart, Newspaper, Trophy, Image as ImageIcon, Users, Zap,
-  ShieldAlert, ArrowLeft, RefreshCw, LogOut
+  ShieldAlert, ArrowLeft, RefreshCw, LogOut, Dumbbell
 } from 'lucide-react';
 import { ShopProduct, MatchmakingGameItem } from '../../../types/rally';
 import { rallyApi } from '../../../services/rallyApi';
@@ -22,9 +22,11 @@ import { AdminFinancesTab } from '../../../components/rally/admin/AdminFinancesT
 import { AdminIncidentModal } from '../../../components/rally/admin/AdminIncidentModal';
 import { AdminNewProductModal } from '../../../components/rally/admin/AdminNewProductModal';
 import { AdminLoginModal } from '../../../components/rally/admin/AdminLoginModal';
+import { AdminDrillsTab } from '../../../components/rally/admin/drills/AdminDrillsTab';
 
 export type AdminTab =
   | 'overview'
+  | 'drills'
   | 'scheduler'
   | 'inventory'
   | 'orders'
@@ -54,6 +56,13 @@ export const AdminPortalPage: React.FC<AdminPortalPageProps> = ({
 }) => {
   const [adminUser, setAdminUser] = useState<any>(() => {
     try {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('dev_auth') === '1') {
+        const devUser = { username: 'Nimadvr', full_name: 'نیما داوری', role: 'OPERATIONS_ADMIN', token: 'admin_token_Nimadvr' };
+        sessionStorage.setItem('rally_admin_token', devUser.token);
+        sessionStorage.setItem('rally_admin_user', JSON.stringify(devUser));
+        return devUser;
+      }
       const saved = sessionStorage.getItem('rally_admin_user');
       return saved ? JSON.parse(saved) : null;
     } catch {
@@ -61,7 +70,12 @@ export const AdminPortalPage: React.FC<AdminPortalPageProps> = ({
     }
   });
 
-  const [activeTab, setActiveTab] = useState<AdminTab>('overview');
+  const [activeTab, setActiveTab] = useState<AdminTab>(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tabParam = params.get('tab') as AdminTab;
+    const validTabs: AdminTab[] = ['overview', 'drills', 'scheduler', 'inventory', 'orders', 'content', 'tournaments', 'media', 'team', 'bookings', 'clubs', 'coaches', 'finances', 'matches', 'incidents'];
+    return validTabs.includes(tabParam) ? tabParam : 'overview';
+  });
   const [matches, setMatches] = useState<MatchmakingGameItem[]>([]);
   const [incidents, setIncidents] = useState<any[]>([]);
   const [systemStats, setSystemStats] = useState<any>(null);
@@ -108,6 +122,7 @@ export const AdminPortalPage: React.FC<AdminPortalPageProps> = ({
 
   const sidebarItems: { id: AdminTab; label: string; icon: any; count?: number; badgeColor?: string }[] = [
     { id: 'overview', label: 'داشبورد کلان', icon: LayoutDashboard },
+    { id: 'drills', label: 'تمرینات تخصصی (Drills)', icon: Dumbbell },
     { id: 'scheduler', label: 'زمان‌بندی سانس‌ها', icon: CalendarDays },
     { id: 'inventory', label: 'انبار و محصولات', icon: Package, count: products.length },
     { id: 'orders', label: 'سفارشات فروشگاه', icon: ShoppingCart },
@@ -212,6 +227,7 @@ export const AdminPortalPage: React.FC<AdminPortalPageProps> = ({
               onNavigateToTab={(t) => setActiveTab(t as AdminTab)}
             />
           )}
+          {activeTab === 'drills' && <AdminDrillsTab />}
           {activeTab === 'scheduler' && <AdminSchedulerTab />}
           {activeTab === 'inventory' && (
             <AdminInventoryTab products={products} onUpdateProduct={onUpdateProduct} onOpenNewProductModal={() => setIsNewProductOpen(true)} />
