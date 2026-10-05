@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Menu, X, ArrowLeft, Shield, ShoppingBag } from 'lucide-react';
 import { RallyLogo } from './RallyLogo';
 import { UserSession } from '../AuthModal';
-import { DrillsComingSoonModal } from '../drills/DrillsComingSoonModal';
 
 export type ModernNavTab = 'drills' | 'courts' | 'coaches' | 'tournaments' | 'rankings' | 'magazine' | 'shop' | 'home';
 
@@ -28,7 +27,6 @@ export const ModernRallyHeader: React.FC<ModernRallyHeaderProps> = ({
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isDrillsComingSoonOpen, setIsDrillsComingSoonOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -75,16 +73,25 @@ export const ModernRallyHeader: React.FC<ModernRallyHeaderProps> = ({
         <nav className="hidden md:flex items-center gap-4 lg:gap-7">
           {navItems.map((item) => {
             if (item.isSpecial) {
+              const isActive = activeTab === item.id;
               return (
                 <button
                   key={item.id}
-                  onClick={() => setIsDrillsComingSoonOpen(true)}
-                  className="relative px-3.5 py-1.5 rounded-full bg-[#D7ED68]/15 hover:bg-[#D7ED68] text-[#D7ED68] hover:text-[#0B2238] border border-[#D7ED68]/60 shadow-[0_0_15px_rgba(215,237,104,0.3)] hover:shadow-[0_0_22px_rgba(215,237,104,0.6)] transition-all duration-200 cursor-pointer select-none flex items-center gap-1.5 text-sm lg:text-[15px] font-black group active:scale-95 mx-0.5"
-                  title="تمرینات تخصصی رالی - افتتاح به زودی"
+                  onClick={() => onSelectTab(item.id)}
+                  className={`relative px-3.5 py-1.5 rounded-full border transition-all duration-200 cursor-pointer select-none flex items-center gap-1.5 text-sm lg:text-[15px] font-black group active:scale-95 mx-0.5 ${
+                    isActive
+                      ? 'bg-[#D7ED68] text-[#0B2238] border-[#D7ED68] shadow-[0_0_20px_rgba(215,237,104,0.6)]'
+                      : 'bg-[#D7ED68]/15 hover:bg-[#D7ED68] text-[#D7ED68] hover:text-[#0B2238] border-[#D7ED68]/60 shadow-[0_0_15px_rgba(215,237,104,0.3)] hover:shadow-[0_0_22px_rgba(215,237,104,0.6)]'
+                  }`}
+                  title="سامانه هوشمند تمرینات تخصصی رالی"
                 >
-                  <span className="w-2 h-2 rounded-full bg-[#D7ED68] group-hover:bg-[#0B2238] animate-pulse" />
+                  <span className={`w-2 h-2 rounded-full animate-pulse ${isActive ? 'bg-[#0B2238]' : 'bg-[#D7ED68] group-hover:bg-[#0B2238]'}`} />
                   <span>{item.label}</span>
-                  <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-[#D7ED68] text-[#0B2238] font-black group-hover:bg-[#0B2238] group-hover:text-[#D7ED68] transition-colors">
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-black transition-colors ${
+                    isActive
+                      ? 'bg-[#0B2238] text-[#D7ED68]'
+                      : 'bg-[#D7ED68] text-[#0B2238] group-hover:bg-[#0B2238] group-hover:text-[#D7ED68]'
+                  }`}>
                     ویژه
                   </span>
                 </button>
@@ -164,21 +171,28 @@ export const ModernRallyHeader: React.FC<ModernRallyHeaderProps> = ({
         <div className="md:hidden bg-[#0B2238] border-b border-[#0C3E6E] px-4 py-4 space-y-2">
           {navItems.map((item) => {
             if (item.isSpecial) {
+              const isActive = activeTab === item.id;
               return (
                 <button
                   key={item.id}
                   onClick={() => {
-                    setIsDrillsComingSoonOpen(true);
+                    onSelectTab(item.id);
                     setIsMobileMenuOpen(false);
                   }}
-                  className="w-full flex items-center justify-between p-3 rounded-xl text-right text-sm font-black bg-[#D7ED68]/15 border border-[#D7ED68]/50 text-[#D7ED68] hover:bg-[#D7ED68] hover:text-[#0B2238] transition-all cursor-pointer shadow-[0_0_12px_rgba(215,237,104,0.2)]"
+                  className={`w-full flex items-center justify-between p-3 rounded-xl text-right text-sm font-black border transition-all cursor-pointer ${
+                    isActive
+                      ? 'bg-[#D7ED68] text-[#0B2238] border-[#D7ED68] shadow-[0_0_16px_rgba(215,237,104,0.4)]'
+                      : 'bg-[#D7ED68]/15 border-[#D7ED68]/50 text-[#D7ED68] hover:bg-[#D7ED68] hover:text-[#0B2238] shadow-[0_0_12px_rgba(215,237,104,0.2)]'
+                  }`}
                 >
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-[#D7ED68] animate-pulse" />
+                    <span className={`w-2 h-2 rounded-full animate-pulse ${isActive ? 'bg-[#0B2238]' : 'bg-[#D7ED68]'}`} />
                     <span>{item.label}</span>
                   </div>
-                  <span className="text-[10px] px-2 py-0.5 rounded-md bg-[#D7ED68] text-[#0B2238] font-black">
-                    به‌زودی
+                  <span className={`text-[10px] px-2 py-0.5 rounded-md font-black ${
+                    isActive ? 'bg-[#0B2238] text-[#D7ED68]' : 'bg-[#D7ED68] text-[#0B2238]'
+                  }`}>
+                    ویژه
                   </span>
                 </button>
               );
@@ -229,11 +243,6 @@ export const ModernRallyHeader: React.FC<ModernRallyHeaderProps> = ({
         </div>
       )}
 
-      {/* Drills Coming Soon Surprise Modal */}
-      <DrillsComingSoonModal
-        isOpen={isDrillsComingSoonOpen}
-        onClose={() => setIsDrillsComingSoonOpen(false)}
-      />
     </header>
   );
 };

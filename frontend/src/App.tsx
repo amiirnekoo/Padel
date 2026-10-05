@@ -13,6 +13,7 @@ import { RallyRankingsPage } from './pages/rally/RallyRankingsPage';
 import { RallyMagazinePage } from './pages/rally/RallyMagazinePage';
 import { RallyShopPage } from './pages/rally/RallyShopPage';
 import { RallyProductDetailPage } from './pages/rally/shop/RallyProductDetailPage';
+import { DrillsTeaserPage } from './pages/drills/DrillsTeaserPage';
 import { DrillsDirectoryPage } from './pages/drills/DrillsDirectoryPage';
 import { DrillDetailPage } from './pages/drills/DrillDetailPage';
 import { AppModalsContainer } from './components/rally/AppModalsContainer';
@@ -34,9 +35,7 @@ export const App: React.FC = () => {
     try {
       const saved = localStorage.getItem('padel_auth');
       return saved ? JSON.parse(saved) : null;
-    } catch {
-      return null;
-    }
+    } catch { return null; }
   });
 
   const [selectedClub, setSelectedClub] = useState<CourtClub | null>(null);
@@ -49,9 +48,7 @@ export const App: React.FC = () => {
     try {
       const saved = localStorage.getItem('rally_cart');
       return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
+    } catch { return []; }
   });
 
   const [courtFilterParam, setCourtFilterParam] = useState<{ sport?: SportType; area?: string }>({});
@@ -201,21 +198,11 @@ export const App: React.FC = () => {
                   />
                 )}
                 {activeTab === 'drills' && (
-                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                    {route.drillSlug ? (
-                      <DrillDetailPage
-                        slug={route.drillSlug}
-                        onBack={backToDrills}
-                        userToken={userSession?.token}
-                        onRequireAuth={() => setIsAuthOpen(true)}
-                      />
-                    ) : (
-                      <DrillsDirectoryPage
-                        onSelectDrill={(slug) => navigateToDrill(slug)}
-                        userToken={userSession?.token}
-                        onRequireAuth={() => setIsAuthOpen(true)}
-                      />
-                    )}
+                  <div className="w-full -mt-20 sm:-mt-24 pt-24 sm:pt-28 pb-12 bg-[#071524] min-h-[90vh]">
+                    <DrillsTeaserPage
+                      onNavigateToCourts={() => navigateToTab('courts')}
+                      onNavigateToTournaments={() => navigateToTab('tournaments')}
+                    />
                   </div>
                 )}
                 {activeTab === 'courts' && (
