@@ -14,8 +14,7 @@ import { RallyMagazinePage } from './pages/rally/RallyMagazinePage';
 import { RallyShopPage } from './pages/rally/RallyShopPage';
 import { RallyProductDetailPage } from './pages/rally/shop/RallyProductDetailPage';
 import { DrillsTeaserPage } from './pages/drills/DrillsTeaserPage';
-import { DrillsDirectoryPage } from './pages/drills/DrillsDirectoryPage';
-import { DrillDetailPage } from './pages/drills/DrillDetailPage';
+import { RallyTermsPage, RallyAboutPage, RallyContactPage } from './pages/rally/info';
 import { AppModalsContainer } from './components/rally/AppModalsContainer';
 import { UserSession } from './components/AuthModal';
 import { CourtClub, Coach, Tournament, TimeSlotItem, SportType, ShopProduct, CartItem, ShopOrderReceipt } from './types/rally';
@@ -225,16 +224,11 @@ export const App: React.FC = () => {
                     <RallyTournamentsPage onSelectTournament={setSelectedTournament} />
                   </div>
                 )}
-                {activeTab === 'rankings' && (
-                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                    <RallyRankingsPage />
-                  </div>
-                )}
-                {activeTab === 'magazine' && (
-                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                    <RallyMagazinePage />
-                  </div>
-                )}
+                {activeTab === 'rankings' && <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6"><RallyRankingsPage /></div>}
+                {activeTab === 'magazine' && <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6"><RallyMagazinePage /></div>}
+                {activeTab === 'terms' && <RallyTermsPage />}
+                {activeTab === 'about' && <RallyAboutPage />}
+                {activeTab === 'contact' && <RallyContactPage />}
                 {activeTab === 'shop' && (
                   <RallyShopPage
                     products={productsList}

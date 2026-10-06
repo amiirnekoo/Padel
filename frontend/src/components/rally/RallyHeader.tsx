@@ -26,7 +26,10 @@ export type RallyPageTab =
   | 'magazine'
   | 'shop'
   | 'partners'
-  | 'sponsors';
+  | 'sponsors'
+  | 'terms'
+  | 'about'
+  | 'contact';
 
 interface RallyHeaderProps {
   currentTab: RallyPageTab;

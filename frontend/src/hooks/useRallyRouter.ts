@@ -21,7 +21,10 @@ const TAB_TITLES: Record<RallyPageTab, string> = {
   magazine: 'مجله، اخبار، رویدادها و آموزش‌های تخصصی پدل | رالی',
   shop: 'فروشگاه تخصصی راکت و تجهیزات اورجینال پدل | رالی',
   partners: 'همکاری تجاری و باشگاه‌ها | رالی',
-  sponsors: 'اسپانسرها و حامیان رالی'
+  sponsors: 'اسپانسرها و حامیان رالی',
+  terms: 'قوانین، مقررات و رویه استرداد وجه | رالی',
+  about: 'درباره ما | پلتفرم ورزشی رالی',
+  contact: 'تماس با ما و ثبت شکایات | رالی'
 };
 
 export function parsePath(pathname: string): RouteState {
@@ -70,6 +73,14 @@ export function parsePath(pathname: string): RouteState {
       return { tab: 'magazine', productId: null, drillSlug: null, isAdmin: false, isPortal: false };
     case '/shop':
       return { tab: 'shop', productId: null, drillSlug: null, isAdmin: false, isPortal: false };
+    case '/terms':
+    case '/rules':
+    case '/privacy':
+      return { tab: 'terms', productId: null, drillSlug: null, isAdmin: false, isPortal: false };
+    case '/about':
+      return { tab: 'about', productId: null, drillSlug: null, isAdmin: false, isPortal: false };
+    case '/contact':
+      return { tab: 'contact', productId: null, drillSlug: null, isAdmin: false, isPortal: false };
     default:
       return { tab: 'home', productId: null, drillSlug: null, isAdmin: false, isPortal: false };
   }
