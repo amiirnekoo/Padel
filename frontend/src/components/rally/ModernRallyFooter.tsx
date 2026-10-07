@@ -95,10 +95,10 @@ export const ModernRallyFooter: React.FC<ModernRallyFooterProps> = ({
             </ul>
           </div>
 
-          {/* Quick Navigation 2: B2B */}
+          {/* Quick Navigation 2: Corporate & Legal */}
           <div className="space-y-3">
             <h4 className="text-sm font-black text-white border-r-2 border-[#D7ED68] pr-2.5">
-              باشگاه‌ها و شرکا
+              باشگاه‌ها و قوانین
             </h4>
             <ul className="space-y-2 text-xs font-semibold text-[#F5F4EF]/75">
               <li>
@@ -111,40 +111,48 @@ export const ModernRallyFooter: React.FC<ModernRallyFooterProps> = ({
               </li>
               <li>
                 <button
-                  onClick={() => onNavigateTab?.('sponsors')}
-                  className="hover:text-[#D7ED68] transition-colors cursor-pointer text-right"
+                  onClick={() => onNavigateTab?.('terms')}
+                  className="hover:text-[#D7ED68] transition-colors cursor-pointer text-right text-[#D7ED68]"
                 >
-                  فرصت‌های اسپانسری و تبلیغات
+                  قوانین و رویه استرداد وجه
                 </button>
               </li>
               <li>
                 <button
-                  onClick={() => onNavigateTab?.('partners')}
+                  onClick={() => onNavigateTab?.('about')}
                   className="hover:text-[#D7ED68] transition-colors cursor-pointer text-right"
                 >
-                  قوانین و استانداردهای کورت
+                  درباره پلتفرم رالی
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => onNavigateTab?.('contact')}
+                  className="hover:text-[#D7ED68] transition-colors cursor-pointer text-right"
+                >
+                  ثبت شکایات و پشتیبانی
                 </button>
               </li>
             </ul>
           </div>
 
-          {/* Contact Details */}
+          {/* Contact Details & Enamad */}
           <div className="space-y-3">
             <h4 className="text-sm font-black text-white border-r-2 border-[#D7ED68] pr-2.5">
-              ارتباط با ما
+              ارتباط و نماد اعتماد
             </h4>
-            <div className="space-y-2.5 text-xs text-[#F5F4EF]/80 font-medium">
+            <div className="space-y-2 text-xs text-[#F5F4EF]/80 font-medium">
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-[#D7ED68] shrink-0" />
                 <span dir="ltr">۰۲۱ - ۲۲۶۶۷۷۸۸</span>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-[#D7ED68] shrink-0" />
-                <span>support@rallysports.ir</span>
+                <span>info@raally.ir</span>
               </div>
               <div className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 text-[#D7ED68] shrink-0 mt-0.5" />
-                <span>تهران، خیابان سئول، برج ورزشی رالی</span>
+                <span>تهران، خ سئول، م ورزشی انقلاب</span>
               </div>
             </div>
           </div>
@@ -199,10 +207,34 @@ export const ModernRallyFooter: React.FC<ModernRallyFooterProps> = ({
             <ShieldCheck className="w-4 h-4 text-[#D7ED68]" />
             <span>کلیه حقوق این سامانه متعلق به پلتفرم ورزشی رالی (سال ۱۴۰۵) است.</span>
           </div>
-          <div className="flex items-center gap-4 text-slate-400 font-medium">
-            <span>حفظ حریم خصوصی</span>
+          <div className="flex items-center gap-3 text-slate-400 font-medium">
+            <button
+              onClick={() => onNavigateTab?.('terms')}
+              className="hover:text-[#D7ED68] transition-colors cursor-pointer"
+            >
+              حفظ حریم خصوصی
+            </button>
             <span>•</span>
-            <span>شرایط استفاده از خدمات</span>
+            <button
+              onClick={() => onNavigateTab?.('terms')}
+              className="hover:text-[#D7ED68] transition-colors cursor-pointer"
+            >
+              شرایط استفاده و استرداد وجه
+            </button>
+            <span>•</span>
+            <button
+              onClick={() => onNavigateTab?.('about')}
+              className="hover:text-[#D7ED68] transition-colors cursor-pointer"
+            >
+              درباره ما
+            </button>
+            <span>•</span>
+            <button
+              onClick={() => onNavigateTab?.('contact')}
+              className="hover:text-[#D7ED68] transition-colors cursor-pointer"
+            >
+              تماس و شکایات
+            </button>
           </div>
         </div>
 

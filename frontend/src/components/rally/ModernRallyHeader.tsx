@@ -41,6 +41,7 @@ export const ModernRallyHeader: React.FC<ModernRallyHeaderProps> = ({
     { id: 'courts' as ModernNavTab, label: 'زمین‌ها' },
     { id: 'coaches' as ModernNavTab, label: 'مربیان' },
     { id: 'tournaments' as ModernNavTab, label: 'مسابقات' },
+    { id: 'drills' as ModernNavTab, label: 'تمرینات تخصصی', isSpecial: true },
     { id: 'rankings' as ModernNavTab, label: 'رنکینگ' },
     { id: 'magazine' as ModernNavTab, label: 'اخبار و مقالات' },
     { id: 'shop' as ModernNavTab, label: 'فروشگاه' }
@@ -69,9 +70,35 @@ export const ModernRallyHeader: React.FC<ModernRallyHeaderProps> = ({
           </button>
         </div>
 
-        {/* Center: Desktop Navigation (Courts, Coaches, Tournaments, Shop) */}
-        <nav className="hidden md:flex items-center gap-6 lg:gap-9">
+        {/* Center: Desktop Navigation (Courts, Coaches, Tournaments, Drills, Rankings, Magazine, Shop) */}
+        <nav className="hidden md:flex items-center gap-4 lg:gap-7">
           {navItems.map((item) => {
+            if (item.isSpecial) {
+              const isActive = activeTab === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => onSelectTab(item.id)}
+                  className={`relative px-3.5 py-1.5 rounded-full border transition-all duration-200 cursor-pointer select-none flex items-center gap-1.5 text-sm lg:text-[15px] font-black group active:scale-95 mx-0.5 ${
+                    isActive
+                      ? 'bg-[#D7ED68] text-[#0B2238] border-[#D7ED68] shadow-[0_0_20px_rgba(215,237,104,0.6)]'
+                      : 'bg-[#D7ED68]/15 hover:bg-[#D7ED68] text-[#D7ED68] hover:text-[#0B2238] border-[#D7ED68]/60 shadow-[0_0_15px_rgba(215,237,104,0.3)] hover:shadow-[0_0_22px_rgba(215,237,104,0.6)]'
+                  }`}
+                  title="سامانه هوشمند تمرینات تخصصی رالی"
+                >
+                  <span className={`w-2 h-2 rounded-full animate-pulse ${isActive ? 'bg-[#0B2238]' : 'bg-[#D7ED68] group-hover:bg-[#0B2238]'}`} />
+                  <span>{item.label}</span>
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-black transition-colors ${
+                    isActive
+                      ? 'bg-[#0B2238] text-[#D7ED68]'
+                      : 'bg-[#D7ED68] text-[#0B2238] group-hover:bg-[#0B2238] group-hover:text-[#D7ED68]'
+                  }`}>
+                    ویژه
+                  </span>
+                </button>
+              );
+            }
+
             const isActive = activeTab === item.id;
             return (
               <button
@@ -143,23 +170,53 @@ export const ModernRallyHeader: React.FC<ModernRallyHeaderProps> = ({
       {/* Mobile Menu Dropdown */}
       {isMobileMenuOpen && (
         <div className="md:hidden bg-[#0B2238] border-b border-[#0C3E6E] px-4 py-4 space-y-2">
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => {
-                onSelectTab(item.id);
-                setIsMobileMenuOpen(false);
-              }}
-              className={`w-full flex items-center justify-between p-3 rounded-xl text-right text-sm font-bold transition-colors cursor-pointer ${
-                activeTab === item.id
-                  ? 'bg-white/10 text-[#D7ED68]'
-                  : 'text-slate-200 hover:bg-white/5'
-              }`}
-            >
-              <span>{item.label}</span>
-              <ArrowLeft className="w-4 h-4 opacity-70" />
-            </button>
-          ))}
+          {navItems.map((item) => {
+            if (item.isSpecial) {
+              const isActive = activeTab === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    onSelectTab(item.id);
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className={`w-full flex items-center justify-between p-3 rounded-xl text-right text-sm font-black border transition-all cursor-pointer ${
+                    isActive
+                      ? 'bg-[#D7ED68] text-[#0B2238] border-[#D7ED68] shadow-[0_0_16px_rgba(215,237,104,0.4)]'
+                      : 'bg-[#D7ED68]/15 border-[#D7ED68]/50 text-[#D7ED68] hover:bg-[#D7ED68] hover:text-[#0B2238] shadow-[0_0_12px_rgba(215,237,104,0.2)]'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className={`w-2 h-2 rounded-full animate-pulse ${isActive ? 'bg-[#0B2238]' : 'bg-[#D7ED68]'}`} />
+                    <span>{item.label}</span>
+                  </div>
+                  <span className={`text-[10px] px-2 py-0.5 rounded-md font-black ${
+                    isActive ? 'bg-[#0B2238] text-[#D7ED68]' : 'bg-[#D7ED68] text-[#0B2238]'
+                  }`}>
+                    ویژه
+                  </span>
+                </button>
+              );
+            }
+
+            return (
+              <button
+                key={item.id}
+                onClick={() => {
+                  onSelectTab(item.id);
+                  setIsMobileMenuOpen(false);
+                }}
+                className={`w-full flex items-center justify-between p-3 rounded-xl text-right text-sm font-bold transition-colors cursor-pointer ${
+                  activeTab === item.id
+                    ? 'bg-white/10 text-[#D7ED68]'
+                    : 'text-slate-200 hover:bg-white/5'
+                }`}
+              >
+                <span>{item.label}</span>
+                <ArrowLeft className="w-4 h-4 opacity-70" />
+              </button>
+            );
+          })}
           <div className="pt-2 border-t border-white/10">
             {userSession ? (
               <button
@@ -186,6 +243,7 @@ export const ModernRallyHeader: React.FC<ModernRallyHeaderProps> = ({
           </div>
         </div>
       )}
+
     </header>
   );
 };

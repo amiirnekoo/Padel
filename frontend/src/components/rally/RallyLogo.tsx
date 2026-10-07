@@ -14,15 +14,15 @@ export const RallyLogo: React.FC<RallyLogoProps> = ({
   return (
     <div className={`relative flex items-center shrink-0 ${className}`}>
       <img
-        src="/images/rally_logo.svg"
-        alt="رالی | RALI"
+        src="/images/rally_logo.svg?v=20261007_v3"
+        alt="رالی | RALLY"
         height={height}
         className="h-full w-auto object-contain select-none"
         onError={(e) => {
           // Fallback to crisp extracted PNG if needed
           const target = e.currentTarget;
-          if (!target.src.endsWith('rally_logo_crisp.png')) {
-            target.src = '/images/rally_logo_crisp.png';
+          if (!target.src.includes('rally_logo_crisp.png')) {
+            target.src = '/images/rally_logo_crisp.png?v=20261007_v3';
           }
         }}
       />

@@ -17,6 +17,10 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    emptyOutDir: false,
+    copyPublicDir: false,
+  },
   preview: {
     host: '0.0.0.0',
     port: 4173,
