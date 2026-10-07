@@ -232,8 +232,7 @@ class ProfileUpdatePayload(BaseModel):
     emergency_phone: Optional[str] = None
 
 
-# حافظه درخواست‌های ارتقای نقش (یا پایگاه داده)
-_UPGRADE_REQUESTS_STORE = []
+from backend.app.services.role_upgrade_service import RoleUpgradeService
 
 
 @router.post("/role-upgrade-request")
@@ -249,29 +248,25 @@ async def submit_role_upgrade_request(
             detail="نقش درخواستی نامعتبر است. تنها نقش‌های مربی (COACH) یا باشگاه‌دار (CLUB_OPERATOR) مجاز می‌باشند."
         )
 
-    tracking_id = f"RLY-REQ-{uuid.uuid4().hex[:7].upper()}"
-    record = {
-        "tracking_id": tracking_id,
-        "user_id": current_user_id,
-        "requested_role": payload.requested_role,
-        "full_name": payload.full_name,
-        "phone_number": payload.phone_number,
-        "national_code": payload.national_code,
-        "organization_name": payload.organization_name,
-        "experience_years": payload.experience_years,
-        "license_number": payload.license_number,
-        "description": payload.description,
-        "status": "PENDING_REVIEW",
-        "created_at": datetime.now().isoformat()
-    }
-    _UPGRADE_REQUESTS_STORE.append(record)
+    record = RoleUpgradeService.create_request(
+        user_id=current_user_id,
+        requested_role=payload.requested_role,
+        full_name=payload.full_name,
+        phone_number=payload.phone_number,
+        national_code=payload.national_code,
+        organization_name=payload.organization_name,
+        experience_years=payload.experience_years,
+        license_number=payload.license_number,
+        description=payload.description
+    )
 
     return {
         "success": True,
-        "tracking_id": tracking_id,
+        "tracking_id": record["tracking_id"],
         "status": "PENDING_REVIEW",
         "message": "درخواست ارتقای سطح کاربری شما با موفقیت در سامانه ثبت گردید و پس از ارزیابی مدارک توسط کارشناسان رالی فعال خواهد شد."
     }
+
 
 
 @router.get("/me")

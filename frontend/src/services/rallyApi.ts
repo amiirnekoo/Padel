@@ -1048,8 +1048,61 @@ export const rallyApi = {
     } catch {
       return { exists: false, is_available: false };
     }
+  },
+
+  /**
+   * دریافت لیست درخواست‌های ارتقای نقش کاربران (پنل ادمین)
+   */
+  async getAdminRoleUpgradeRequests(statusFilter?: string): Promise<any[]> {
+    try {
+      const q = statusFilter ? `?status_filter=${statusFilter}` : '';
+      const res = await fetch(`${API_BASE}/admin/role-upgrade-requests${q}`, {
+        headers: this.getAdminAuthHeaders(),
+      });
+      if (!res.ok) return [];
+      const data = await res.json();
+      return data.requests || [];
+    } catch {
+      return [];
+    }
+  },
+
+  /**
+   * تایید رسمی ارتقای نقش کاربر به مربی یا باشگاه‌دار (پنل ادمین)
+   */
+  async approveAdminRoleUpgradeRequest(trackingId: string): Promise<{ success: boolean; message?: string; error?: string }> {
+    try {
+      const res = await fetch(`${API_BASE}/admin/role-upgrade-requests/${trackingId}/approve`, {
+        method: 'POST',
+        headers: this.getAdminAuthHeaders(),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در تایید درخواست' };
+      return { success: true, message: data.message };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در ارتباط با سرور' };
+    }
+  },
+
+  /**
+   * رد درخواست ارتقای نقش (پنل ادمین)
+   */
+  async rejectAdminRoleUpgradeRequest(trackingId: string, reason?: string): Promise<{ success: boolean; message?: string; error?: string }> {
+    try {
+      const res = await fetch(`${API_BASE}/admin/role-upgrade-requests/${trackingId}/reject`, {
+        method: 'POST',
+        headers: this.getAdminAuthHeaders(),
+        body: JSON.stringify({ reason: reason || 'عدم احراز شرایط لازم' }),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در رد درخواست' };
+      return { success: true, message: data.message };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در ارتباط با سرور' };
+    }
   }
 };
+
 
 
 

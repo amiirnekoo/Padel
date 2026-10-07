@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   LayoutDashboard, Calendar, CalendarDays, Building2, UserCheck, DollarSign,
   Package, ShoppingCart, Newspaper, Trophy, Image as ImageIcon, Users, Zap,
-  ShieldAlert, ArrowLeft, RefreshCw, LogOut, Dumbbell
+  ShieldAlert, ShieldCheck, ArrowLeft, RefreshCw, LogOut, Dumbbell
 } from 'lucide-react';
 import { ShopProduct, MatchmakingGameItem } from '../../../types/rally';
 import { rallyApi } from '../../../services/rallyApi';
@@ -23,6 +23,7 @@ import { AdminIncidentModal } from '../../../components/rally/admin/AdminInciden
 import { AdminNewProductModal } from '../../../components/rally/admin/AdminNewProductModal';
 import { AdminLoginModal } from '../../../components/rally/admin/AdminLoginModal';
 import { AdminDrillsTab } from '../../../components/rally/admin/drills/AdminDrillsTab';
+import { AdminRoleRequestsTab } from '../../../components/rally/admin/AdminRoleRequestsTab';
 
 export type AdminTab =
   | 'overview'
@@ -37,6 +38,7 @@ export type AdminTab =
   | 'bookings'
   | 'clubs'
   | 'coaches'
+  | 'role-requests'
   | 'finances'
   | 'matches'
   | 'incidents';
@@ -133,6 +135,7 @@ export const AdminPortalPage: React.FC<AdminPortalPageProps> = ({
     { id: 'bookings', label: 'گزارش رزروها', icon: Calendar },
     { id: 'clubs', label: 'باشگاه‌ها و کورت‌ها', icon: Building2 },
     { id: 'coaches', label: 'مربیان و تاییدیه‌ها', icon: UserCheck },
+    { id: 'role-requests', label: 'درخواست‌های ارتقای نقش', icon: ShieldCheck },
     { id: 'finances', label: 'تراکنش‌ها و تسویه', icon: DollarSign },
     { id: 'matches', label: 'مانیتورینگ بازی‌ها', icon: Zap, count: matches.length },
     { id: 'incidents', label: 'گزارش‌های SOS', icon: ShieldAlert, count: openIncidentsCount, badgeColor: 'bg-red-500/20 text-red-300' }
@@ -240,6 +243,7 @@ export const AdminPortalPage: React.FC<AdminPortalPageProps> = ({
           {activeTab === 'bookings' && <AdminBookingsTab />}
           {activeTab === 'clubs' && <AdminClubsTab />}
           {activeTab === 'coaches' && <AdminCoachesTab />}
+          {activeTab === 'role-requests' && <AdminRoleRequestsTab />}
           {activeTab === 'finances' && <AdminFinancesTab />}
           {activeTab === 'matches' && <AdminMatchesMonitorTab matches={matches} onRefresh={fetchAdminData} />}
           {activeTab === 'incidents' && (

@@ -1105,3 +1105,62 @@ async def list_audit_logs(
         }
         for l in logs
     ]
+
+
+# -------------------------------------------------------------
+# Role Upgrade Requests Management
+# -------------------------------------------------------------
+from backend.app.services.role_upgrade_service import RoleUpgradeService
+
+class RejectUpgradePayload(BaseModel):
+    reason: Optional[str] = "عدم احراز شرایط یا نقص مدارک ارسالی"
+
+
+@router.get("/role-upgrade-requests")
+async def list_role_upgrade_requests(
+    status_filter: Optional[str] = None,
+    admin: dict = Depends(get_current_admin)
+):
+    """مشاهده لیست درخواست‌های ارتقای نقش کاربران به مربی یا مدیر باشگاه"""
+    requests = RoleUpgradeService.list_requests(status_filter=status_filter)
+    return {
+        "requests": requests,
+        "count": len(requests)
+    }
+
+
+@router.post("/role-upgrade-requests/{tracking_id}/approve")
+async def approve_role_upgrade_request(
+    tracking_id: str,
+    session: AsyncSession = Depends(get_db_session),
+    admin: dict = Depends(get_current_admin)
+):
+    """تایید رسمی درخواست و تغییر آنی نقش کاربر به COACH یا CLUB_OPERATOR در پایگاه داده"""
+    try:
+        updated = await RoleUpgradeService.approve_request(db=session, tracking_id=tracking_id)
+        return {
+            "success": True,
+            "message": f"درخواست {tracking_id} با موفقیت تایید شد و نقش کاربر ارتقا یافت.",
+            "request": updated
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@router.post("/role-upgrade-requests/{tracking_id}/reject")
+async def reject_role_upgrade_request(
+    tracking_id: str,
+    payload: RejectUpgradePayload,
+    admin: dict = Depends(get_current_admin)
+):
+    """رد درخواست ارتقای نقش به همراه درج علت"""
+    try:
+        updated = RoleUpgradeService.reject_request(tracking_id=tracking_id, reason=payload.reason)
+        return {
+            "success": True,
+            "message": f"درخواست {tracking_id} رد شد.",
+            "request": updated
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
