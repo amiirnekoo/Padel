@@ -164,13 +164,30 @@ export const ModernRallyFooter: React.FC<ModernRallyFooterProps> = ({
           <div className="flex items-center gap-5">
             {/* Enamad Trust Seal Card */}
             <div 
-              className="w-24 h-28 bg-white rounded-2xl p-2.5 flex items-center justify-center shadow-lg border border-slate-200/20 hover:scale-105 transition-transform duration-200 shrink-0"
+              className="relative w-24 h-28 bg-white rounded-2xl p-2.5 flex flex-col items-center justify-center shadow-lg border border-slate-200/30 hover:scale-105 transition-transform duration-200 shrink-0 overflow-hidden group cursor-pointer"
               title="نماد اعتماد الکترونیکی (اینماد)"
             >
+              {/* Fallback & Visual Foundation: Crisp vector emblem with official dual-stars */}
+              <div className="flex flex-col items-center justify-center w-full h-full pointer-events-none select-none">
+                <div className="flex items-center gap-1 mb-1 text-amber-500 font-bold">
+                  <span className="text-[11px] leading-none">★</span>
+                  <span className="text-[11px] leading-none">★</span>
+                </div>
+                <img 
+                  src="/images/enamad_icon.svg" 
+                  alt="اینماد" 
+                  className="w-10 h-10 object-contain drop-shadow-sm opacity-90 group-hover:opacity-100 transition-opacity" 
+                />
+                <span className="text-[9px] font-black text-[#1A365D] mt-1 tracking-tight">
+                  اینماد
+                </span>
+              </div>
+
+              {/* Dynamic Live Layer from Enamad Government Server */}
               <div 
-                className="flex items-center justify-center w-full h-full [&>a]:flex [&>a]:items-center [&>a]:justify-center [&>a]:w-full [&>a]:h-full [&>a>img]:max-h-20 [&>a>img]:w-auto [&>a>img]:object-contain"
+                className="absolute inset-0 flex items-center justify-center w-full h-full [&>a]:flex [&>a]:items-center [&>a]:justify-center [&>a]:w-full [&>a]:h-full [&>a>img]:max-h-20 [&>a>img]:w-auto [&>a>img]:object-contain z-10"
                 dangerouslySetInnerHTML={{
-                  __html: `<a referrerpolicy='origin' target='_blank' href='https://trustseal.enamad.ir/?id=6070546&Code=BqINEDxQIOxO7B1XzLdqc0zem1ShxPML'><img referrerpolicy='origin' src='https://trustseal.enamad.ir/logo.aspx?id=6070546&Code=BqINEDxQIOxO7B1XzLdqc0zem1ShxPML' alt='' style='cursor:pointer' code='BqINEDxQIOxO7B1XzLdqc0zem1ShxPML'></a>`
+                  __html: `<a referrerpolicy='origin' target='_blank' href='https://trustseal.enamad.ir/?id=6070546&Code=BqINEDxQIOxO7B1XzLdqc0zem1ShxPML'><img referrerpolicy='origin' src='https://trustseal.enamad.ir/logo.aspx?id=6070546&Code=BqINEDxQIOxO7B1XzLdqc0zem1ShxPML' alt='نماد اعتماد الکترونیکی' style='cursor:pointer' code='BqINEDxQIOxO7B1XzLdqc0zem1ShxPML'></a>`
                 }}
               />
             </div>
