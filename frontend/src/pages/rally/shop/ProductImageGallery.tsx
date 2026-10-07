@@ -20,7 +20,7 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = React.mem
   
   const thumbsContainerRef = useRef<HTMLDivElement>(null);
 
-  const validImages = images && images.length > 0 ? images : ['/images/rally_logo_crisp.png'];
+  const validImages = images && images.length > 0 ? images : ['/images/rally_logo_crisp.png?v=20261007_v2'];
   const currentImage = validImages[activeIdx] || validImages[0];
 
   const handlePrev = useCallback((e?: React.MouseEvent) => {

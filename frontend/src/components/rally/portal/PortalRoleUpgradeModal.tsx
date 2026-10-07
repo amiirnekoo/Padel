@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, ShieldCheck, Award, Building2, CheckCircle2, AlertCircle, ArrowLeft } from 'lucide-react';
+import { X, Building2, UserCheck, ShieldCheck, CheckCircle2, AlertCircle } from 'lucide-react';
 import { UserSession } from '../../AuthModal';
 import { rallyApi } from '../../../services/rallyApi';
 
@@ -14,15 +14,10 @@ export const PortalRoleUpgradeModal: React.FC<PortalRoleUpgradeModalProps> = ({
   onClose,
   userSession
 }) => {
-  const [requestedRole, setRequestedRole] = useState<'COACH' | 'CLUB_OPERATOR'>('COACH');
-  const [fullName, setFullName] = useState(userSession.fullName || '');
-  const [phoneNumber, setPhoneNumber] = useState(userSession.phoneNumber || '');
-  const [nationalCode, setNationalCode] = useState('');
-  const [organizationName, setOrganizationName] = useState('');
-  const [experienceYears, setExperienceYears] = useState<number>(3);
-  const [licenseNumber, setLicenseNumber] = useState('');
-  const [description, setDescription] = useState('');
-
+  const [targetRole, setTargetRole] = useState<'COACH' | 'CLUB_MANAGER'>('CLUB_MANAGER');
+  const [clubName, setClubName] = useState('');
+  const [licenseNo, setLicenseNo] = useState('');
+  const [bio, setBio] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successTrackingId, setSuccessTrackingId] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -36,202 +31,145 @@ export const PortalRoleUpgradeModal: React.FC<PortalRoleUpgradeModalProps> = ({
 
     try {
       const res = await rallyApi.requestRoleUpgrade({
-        requested_role: requestedRole,
-        full_name: fullName,
-        phone_number: phoneNumber,
-        national_code: nationalCode || undefined,
-        organization_name: requestedRole === 'CLUB_OPERATOR' ? organizationName : undefined,
-        experience_years: Number(experienceYears) || 0,
-        license_number: licenseNumber || undefined,
-        description: description || undefined
+        requested_role: targetRole,
+        full_name: userSession.fullName || 'کاربر متقاضی',
+        phone_number: userSession.phoneNumber,
+        organization_name: clubName.trim(),
+        license_number: licenseNo.trim(),
+        description: bio.trim(),
       });
 
-      if (res.success && res.tracking_id) {
-        setSuccessTrackingId(res.tracking_id);
+      if (res && res.success) {
+        setSuccessTrackingId(res.tracking_id || 'RALLY-UPG-OK');
       } else {
-        setErrorMsg(res.error || 'خطا در ثبت درخواست');
+        setErrorMsg(res?.error || 'خطا در ثبت درخواست');
       }
+    } catch (err: any) {
+      setErrorMsg(err?.message || 'خطا در اتصال به سرور');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 animate-in fade-in duration-150"
-      onClick={onClose}
-      dir="rtl"
-    >
-      <div
-        className="w-full max-w-lg bg-[#0B1E30] border border-white/10 rounded-3xl p-6 sm:p-7 shadow-2xl relative my-auto"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Close Button */}
+    <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4" dir="rtl">
+      <div className="bg-[#0B1E30] border border-white/10 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl relative">
         <button
           onClick={onClose}
-          className="absolute top-5 left-5 p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition-colors cursor-pointer"
+          className="absolute left-4 top-4 p-1 rounded-full text-slate-400 hover:text-white"
         >
-          <X className="w-4 h-4" />
+          <X className="w-5 h-5" />
         </button>
 
+        <div className="flex items-center gap-2.5 pb-2 border-b border-white/10">
+          <ShieldCheck className="w-6 h-6 text-rally-primary" />
+          <div>
+            <h3 className="font-bold text-white text-base">درخواست ارتقای سطح حساب کاربری</h3>
+            <p className="text-xs text-slate-400">پیوستن به جمع مربیان یا مجموعه‌های ورزشی رسمی رالی</p>
+          </div>
+        </div>
+
         {successTrackingId ? (
-          <div className="text-center py-6 space-y-4">
-            <div className="w-16 h-16 rounded-3xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
-              <CheckCircle2 className="w-8 h-8" />
-            </div>
-            <h3 className="text-lg font-black text-white">درخواست شما با موفقیت ثبت شد</h3>
-            <p className="text-xs text-slate-300 leading-relaxed max-w-sm mx-auto">
-              مدارک ارسالی شما جهت ارتقای سطح حساب کاربری بررسی خواهد شد. پس از تایید، دسترسی به پنل ویژه فعال می‌گردد.
+          <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl space-y-3 text-center">
+            <CheckCircle2 className="w-10 h-10 text-emerald-400 mx-auto" />
+            <h4 className="font-bold text-white text-sm">درخواست شما با موفقیت ثبت شد</h4>
+            <p className="text-xs text-slate-300 leading-relaxed">
+              مدارک شما در پنل مدیریت رالی بررسی خواهد شد و پس از احراز هویت، دسترسی پنل برای شما فعال می‌شود.
             </p>
-            <div className="p-3 bg-[#07131F] border border-white/10 rounded-2xl inline-block">
-              <span className="text-[10px] text-slate-400 block">کد پیگیری درخواست:</span>
-              <span className="text-sm font-black text-[#D7ED68] font-mono mt-0.5 block">{successTrackingId}</span>
+            <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-800 text-xs text-slate-300 font-mono">
+              کد پیگیری: <strong className="text-[#D7ED68]">{successTrackingId}</strong>
             </div>
-            <div className="pt-2">
-              <button
-                onClick={onClose}
-                className="px-6 py-2.5 rounded-xl bg-[#D7ED68] text-[#07131F] font-black text-xs cursor-pointer hover:brightness-110"
-              >
-                متوجه شدم
-              </button>
-            </div>
+            <button
+              onClick={onClose}
+              className="w-full py-2 bg-rally-primary text-white rounded-xl text-xs font-bold"
+            >
+              متوجه شدم
+            </button>
           </div>
         ) : (
-          <div>
-            <div className="flex items-center gap-2.5 mb-5">
-              <div className="w-10 h-10 rounded-2xl bg-[#D7ED68]/10 border border-[#D7ED68]/20 text-[#D7ED68] flex items-center justify-center">
-                <ShieldCheck className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="text-base font-bold text-white">درخواست ارتقای سطح کاربری</h3>
-                <p className="text-[11px] text-slate-300">پیوستن به جمع مربیان رسمی یا مدیران باشگاه‌های رالی</p>
-              </div>
-            </div>
-
+          <form onSubmit={handleSubmit} className="space-y-4">
             {errorMsg && (
-              <div className="mb-4 p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-300 text-xs flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-xs text-red-300 flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>{errorMsg}</span>
               </div>
             )}
 
-            {/* Role Type Selector */}
-            <div className="grid grid-cols-2 gap-2 mb-4 p-1 bg-[#07131F] rounded-2xl border border-white/10">
-              <button
-                type="button"
-                onClick={() => setRequestedRole('COACH')}
-                className={`flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                  requestedRole === 'COACH' ? 'bg-[#D7ED68] text-[#07131F] font-black shadow-md' : 'text-slate-300 hover:text-white'
-                }`}
-              >
-                <Award className="w-4 h-4" />
-                <span>مربی رسمی (Coach)</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setRequestedRole('CLUB_OPERATOR')}
-                className={`flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                  requestedRole === 'CLUB_OPERATOR' ? 'bg-[#D7ED68] text-[#07131F] font-black shadow-md' : 'text-slate-300 hover:text-white'
-                }`}
-              >
-                <Building2 className="w-4 h-4" />
-                <span>مدیر باشگاه (Club)</span>
-              </button>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-3.5">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="text-xs font-bold text-slate-300 block mb-1">نام و نام خانوادگی</label>
-                  <input
-                    type="text"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    required
-                    className="w-full bg-[#07131F] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#D7ED68]"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-xs font-bold text-slate-300 block mb-1">شماره همراه</label>
-                  <input
-                    type="text"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                    required
-                    className="w-full bg-[#07131F] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#D7ED68] font-mono"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="text-xs font-bold text-slate-300 block mb-1">کد ملی</label>
-                  <input
-                    type="text"
-                    value={nationalCode}
-                    onChange={(e) => setNationalCode(e.target.value)}
-                    placeholder="۱۰ رقم بدون خط تیره"
-                    className="w-full bg-[#07131F] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#D7ED68] font-mono"
-                  />
-                </div>
-
-                {requestedRole === 'CLUB_OPERATOR' ? (
-                  <div>
-                    <label className="text-xs font-bold text-slate-300 block mb-1">نام باشگاه / مجموعه</label>
-                    <input
-                      type="text"
-                      value={organizationName}
-                      onChange={(e) => setOrganizationName(e.target.value)}
-                      placeholder="مثال: باشگاه پدل انقلاب"
-                      required
-                      className="w-full bg-[#07131F] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#D7ED68]"
-                    />
-                  </div>
-                ) : (
-                  <div>
-                    <label className="text-xs font-bold text-slate-300 block mb-1">شماره مدرک مربیگری</label>
-                    <input
-                      type="text"
-                      value={licenseNumber}
-                      onChange={(e) => setLicenseNumber(e.target.value)}
-                      placeholder="شماره گواهی فدراسیون"
-                      className="w-full bg-[#07131F] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#D7ED68] font-mono"
-                    />
-                  </div>
-                )}
-              </div>
-
-              <div>
-                <label className="text-xs font-bold text-slate-300 block mb-1">سابقه و توضیحات تکمیلی</label>
-                <textarea
-                  rows={2}
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="سوابق ورزشی، شهر و منطقه فعالیت..."
-                  className="w-full bg-[#07131F] border border-white/10 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-[#D7ED68]"
-                />
-              </div>
-
-              <div className="pt-2 flex justify-end gap-2">
+            <div>
+              <label className="text-xs text-slate-300 font-bold block mb-1.5">نوع درخواست ارتقا:</label>
+              <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
-                  onClick={onClose}
-                  className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-bold cursor-pointer"
+                  onClick={() => setTargetRole('CLUB_MANAGER')}
+                  className={`py-2 rounded-xl text-xs font-bold border transition-colors flex items-center justify-center gap-1.5 ${
+                    targetRole === 'CLUB_MANAGER'
+                      ? 'bg-emerald-600 text-white border-emerald-500'
+                      : 'bg-slate-900 text-slate-400 border-white/10'
+                  }`}
                 >
-                  انصراف
+                  <Building2 className="w-4 h-4" />
+                  <span>مدیر باشگاه</span>
                 </button>
                 <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="px-5 py-2 rounded-xl bg-[#D7ED68] text-[#07131F] font-black text-xs hover:brightness-110 flex items-center gap-1.5 cursor-pointer"
+                  type="button"
+                  onClick={() => setTargetRole('COACH')}
+                  className={`py-2 rounded-xl text-xs font-bold border transition-colors flex items-center justify-center gap-1.5 ${
+                    targetRole === 'COACH'
+                      ? 'bg-blue-600 text-white border-blue-500'
+                      : 'bg-slate-900 text-slate-400 border-white/10'
+                  }`}
                 >
-                  <span>{isSubmitting ? 'در حال ارسال...' : 'ثبت نهایی درخواست'}</span>
+                  <UserCheck className="w-4 h-4" />
+                  <span>مربی پدل</span>
                 </button>
               </div>
-            </form>
-          </div>
+            </div>
+
+            {targetRole === 'CLUB_MANAGER' ? (
+              <div>
+                <label className="text-xs text-slate-300 font-bold block mb-1">نام مجموعه ورزشی / باشگاه:</label>
+                <input
+                  type="text"
+                  required
+                  value={clubName}
+                  onChange={(e) => setClubName(e.target.value)}
+                  placeholder="مثال: باشگاه پدل پادجی"
+                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rally-primary"
+                />
+              </div>
+            ) : (
+              <div>
+                <label className="text-xs text-slate-300 font-bold block mb-1">شماره پروانه مربیگری فدراسیون:</label>
+                <input
+                  type="text"
+                  required
+                  value={licenseNo}
+                  onChange={(e) => setLicenseNo(e.target.value)}
+                  placeholder="مثال: IR-PADEL-1403-998"
+                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rally-primary font-mono"
+                />
+              </div>
+            )}
+
+            <div>
+              <label className="text-xs text-slate-300 font-bold block mb-1">توضیحات و سوابق فعالیت:</label>
+              <textarea
+                rows={3}
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+                placeholder="تعداد کورت‌ها، آدرس مجموعه، تجهیزات یا تجربیات مربیگری..."
+                className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rally-primary resize-none"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full py-2.5 bg-rally-primary hover:bg-rally-primary/80 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition-all shadow-md cursor-pointer"
+            >
+              {isSubmitting ? 'در حال ارسال اطلاعات...' : 'ثبت درخواست رسمی ارتقای حساب'}
+            </button>
+          </form>
         )}
       </div>
     </div>

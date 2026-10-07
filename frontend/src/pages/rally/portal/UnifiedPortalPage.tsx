@@ -31,15 +31,23 @@ export const UnifiedPortalPage: React.FC<UnifiedPortalPageProps> = ({
   onNavigateToShop,
   onNavigateToDrills
 }) => {
-  const [activeTab, setActiveTab] = useState<PortalActiveTab>('OVERVIEW');
+  const isCoach = userSession.role === 'COACH';
+  const isClubOwner = ['CLUB_OPERATOR', 'CLUB_MANAGER', 'CLUB_OWNER', 'CLUB_ADMIN'].includes(userSession.role);
+
+  const [activeTab, setActiveTab] = useState<PortalActiveTab>(() => {
+    try {
+      const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+      if (params?.get('tab') === 'club' || params?.get('demo') === 'club' || params?.get('portal') === 'club' || isClubOwner) {
+        if (isClubOwner) return 'CLUB_HUB';
+      }
+      return 'OVERVIEW';
+    } catch { return 'OVERVIEW'; }
+  });
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
   const [bookingsCount, setBookingsCount] = useState<number>(0);
   const [ordersCount, setOrdersCount] = useState<number>(0);
   const [drillsCount, setDrillsCount] = useState<number>(0);
   const [nextBooking, setNextBooking] = useState<any | null>(null);
-
-  const isCoach = userSession.role === 'COACH';
-  const isClubOwner = ['CLUB_OPERATOR', 'CLUB_MANAGER', 'CLUB_OWNER', 'CLUB_ADMIN'].includes(userSession.role);
 
   // واکشی شاخص‌های کلی داشبورد
   useEffect(() => {

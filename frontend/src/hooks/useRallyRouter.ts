@@ -29,11 +29,13 @@ const TAB_TITLES: Record<RallyPageTab, string> = {
 
 export function parsePath(pathname: string): RouteState {
   const cleanPath = pathname.replace(/\/+$/, '') || '/';
+  const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+  const isPortalQuery = searchParams?.get('portal') === 'club' || searchParams?.get('demo') === 'club';
 
   if (cleanPath.startsWith('/admin')) {
     return { tab: 'home', productId: null, drillSlug: null, isAdmin: true, isPortal: false };
   }
-  if (cleanPath.startsWith('/portal')) {
+  if (cleanPath.startsWith('/portal') || isPortalQuery) {
     return { tab: 'home', productId: null, drillSlug: null, isAdmin: false, isPortal: true };
   }
 

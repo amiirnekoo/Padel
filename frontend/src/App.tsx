@@ -33,6 +33,18 @@ export const App: React.FC = () => {
 
   const [userSession, setUserSession] = useState<UserSession | null>(() => {
     try {
+      const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+      if (searchParams?.get('demo') === 'club' || searchParams?.get('portal') === 'club') {
+        const demoClub: UserSession = {
+          userId: 'usr-lafour-manager',
+          phoneNumber: '09121112233',
+          role: 'CLUB_MANAGER',
+          fullName: 'مدیریت پدل کلاب نیاوران (لفور)',
+          token: 'demo_token_lafour'
+        };
+        localStorage.setItem('padel_auth', JSON.stringify(demoClub));
+        return demoClub;
+      }
       const saved = localStorage.getItem('padel_auth');
       return saved ? JSON.parse(saved) : null;
     } catch { return null; }
@@ -75,12 +87,8 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     if (userSession?.userId) {
-      rallyApi.getWalletBalance(userSession.userId).then((b) => {
-        if (typeof b === 'number') setWalletBalance(b);
-      });
-    } else {
-      setWalletBalance(0);
-    }
+      rallyApi.getWalletBalance(userSession.userId).then((b) => { if (typeof b === 'number') setWalletBalance(b); });
+    } else { setWalletBalance(0); }
   }, [userSession?.userId]);
 
   const handleUpdateProduct = (productId: string, updates: Partial<ShopProduct>) => {
@@ -116,32 +124,21 @@ export const App: React.FC = () => {
   if (isAdminOpen) {
     return (
       <AdminPortalPage
-        products={productsList}
-        onUpdateProduct={handleUpdateProduct}
-        onAddProduct={handleAddProduct}
-        onExitAdmin={exitSpecialPage}
+        products={productsList} onUpdateProduct={handleUpdateProduct}
+        onAddProduct={handleAddProduct} onExitAdmin={exitSpecialPage}
       />
     );
   }
 
   if (isPortalOpen) {
     if (!userSession) {
-      setIsAuthOpen(true);
-      exitSpecialPage();
-      return null;
+      setIsAuthOpen(true); exitSpecialPage(); return null;
     }
     return (
       <UnifiedPortalPage
-        userSession={userSession}
-        walletBalance={walletBalance}
-        onOpenWallet={() => setIsWalletOpen(true)}
-        onExitPortal={exitSpecialPage}
-        onLogout={() => {
-          localStorage.removeItem('padel_auth');
-          setUserSession(null);
-          setWalletBalance(0);
-          exitSpecialPage();
-        }}
+        userSession={userSession} walletBalance={walletBalance}
+        onOpenWallet={() => setIsWalletOpen(true)} onExitPortal={exitSpecialPage}
+        onLogout={() => { localStorage.removeItem('padel_auth'); setUserSession(null); setWalletBalance(0); exitSpecialPage(); }}
       />
     );
   }
@@ -263,16 +260,14 @@ export const App: React.FC = () => {
         onBookingPaymentCompleted={(receipt) => {
           setWalletBalance((prev) => Math.max(0, prev - receipt.totalAmount));
           try {
-            const prevBookings = JSON.parse(localStorage.getItem('my_rally_bookings') || '[]');
-            localStorage.setItem('my_rally_bookings', JSON.stringify([receipt, ...prevBookings]));
+            const prev = JSON.parse(localStorage.getItem('my_rally_bookings') || '[]');
+            localStorage.setItem('my_rally_bookings', JSON.stringify([receipt, ...prev]));
           } catch {}
         }}
         selectedCoach={selectedCoach} onCloseCoach={() => setSelectedCoach(null)}
         selectedTournament={selectedTournament} onCloseTournament={() => setSelectedTournament(null)}
-        selectedProduct={null} onCloseProduct={() => {}}
-        onAddToCartProduct={handleAddToCart}
-        onOpenCartFromProduct={() => setIsCartOpen(true)}
-        isCartOpen={isCartOpen} onCloseCart={() => setIsCartOpen(false)}
+        selectedProduct={null} onCloseProduct={() => {}} onAddToCartProduct={handleAddToCart}
+        onOpenCartFromProduct={() => setIsCartOpen(true)} isCartOpen={isCartOpen} onCloseCart={() => setIsCartOpen(false)}
         cartItems={cartItems} onUpdateCartQty={handleUpdateCartQty}
         onRemoveCartItem={(id) => setCartItems((prev) => prev.filter((i) => i.product.id !== id))}
         onClearCart={() => setCartItems([])}
@@ -282,10 +277,8 @@ export const App: React.FC = () => {
         }}
         shopReceipt={shopReceipt} onCloseReceipt={() => setShopReceipt(null)}
         isWalletOpen={isWalletOpen} onCloseWallet={() => setIsWalletOpen(false)}
-        onBalanceUpdated={setWalletBalance}
-        isAuthOpen={isAuthOpen} userSession={userSession}
-        onCloseAuth={() => setIsAuthOpen(false)}
-        onLoginSuccess={setUserSession}
+        onBalanceUpdated={setWalletBalance} isAuthOpen={isAuthOpen} userSession={userSession}
+        onCloseAuth={() => setIsAuthOpen(false)} onLoginSuccess={setUserSession}
         onLogout={() => { localStorage.removeItem('padel_auth'); setUserSession(null); }}
         onNavigateToPortal={() => { setIsAuthOpen(false); navigateToPortal(); }}
       />

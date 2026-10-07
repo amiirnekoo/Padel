@@ -35,13 +35,18 @@ function scanProducts() {
 
     for (const prodId of productDirs) {
       const prodPath = path.join(brandPath, prodId);
-      const files = fs.readdirSync(prodPath, { withFileTypes: true })
-        .filter(f => f.isFile())
-        .map(f => f.name)
-        .filter(name => {
-          const ext = path.extname(name).toLowerCase();
-          return IMAGE_EXTS.has(ext) && !name.startsWith('.');
-        });
+      let files = [];
+      try {
+        files = fs.readdirSync(prodPath, { withFileTypes: true })
+          .filter(f => f.isFile())
+          .map(f => f.name)
+          .filter(name => {
+            const ext = path.extname(name).toLowerCase();
+            return IMAGE_EXTS.has(ext) && !name.startsWith('.');
+          });
+      } catch (err) {
+        continue;
+      }
 
       // Explicit official NOX image ordering for AT10 Genius 18K 2026
       const NOX_AT10_OFFICIAL_ORDER = [
