@@ -33,5 +33,7 @@ class Settings(BaseSettings):
     # Media & File Uploads
     UPLOAD_DIR: str = os.getenv("UPLOAD_DIR", "uploads")
     MAX_UPLOAD_SIZE_MB: int = 15
+    DRILLS_STORAGE_DIR: str = os.getenv("DRILLS_STORAGE_DIR", "storage/drills")
+    DRILLS_MAX_UPLOAD_SIZE_MB: int = int(os.getenv("DRILLS_MAX_UPLOAD_SIZE_MB", "60"))
 
 settings = Settings()

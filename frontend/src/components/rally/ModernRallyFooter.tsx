@@ -151,6 +151,48 @@ export const ModernRallyFooter: React.FC<ModernRallyFooterProps> = ({
 
         </div>
 
+        {/* Trust Badges & Licenses Row */}
+        <div className="py-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-5">
+            {/* Enamad Trust Seal Card */}
+            <div 
+              className="w-24 h-28 bg-white rounded-2xl p-2.5 flex items-center justify-center shadow-lg border border-slate-200/20 hover:scale-105 transition-transform duration-200 shrink-0"
+              title="نماد اعتماد الکترونیکی (اینماد)"
+            >
+              <div 
+                className="flex items-center justify-center w-full h-full [&>a]:flex [&>a]:items-center [&>a]:justify-center [&>a]:w-full [&>a]:h-full [&>a>img]:max-h-20 [&>a>img]:w-auto [&>a>img]:object-contain"
+                dangerouslySetInnerHTML={{
+                  __html: `<a referrerpolicy='origin' target='_blank' href='https://trustseal.enamad.ir/?id=6070546&Code=BqINEDxQIOxO7B1XzLdqc0zem1ShxPML'><img referrerpolicy='origin' src='https://trustseal.enamad.ir/logo.aspx?id=6070546&Code=BqINEDxQIOxO7B1XzLdqc0zem1ShxPML' alt='' style='cursor:pointer' code='BqINEDxQIOxO7B1XzLdqc0zem1ShxPML'></a>`
+                }}
+              />
+            </div>
+            
+            <div className="space-y-1.5 text-right">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-black text-white">نماد اعتماد الکترونیکی (اینماد)</span>
+                <span className="text-[11px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2.5 py-0.5 rounded-full font-bold">
+                  احراز هویت رسمی
+                </span>
+              </div>
+              <p className="text-xs text-[#F5F4EF]/75 max-w-lg leading-relaxed font-medium">
+                پلتفرم رالی دارای مجوز و تاییدیه رسمی از مرکز توسعه تجارت الکترونیکی وزارت صنعت، معدن و تجارت است. کلیه تراکنش‌ها از طریق درگاه‌های امن شاپرک پردازش و تضمین می‌گردند.
+              </p>
+            </div>
+          </div>
+
+          {/* Security & Payment Badges */}
+          <div className="flex flex-wrap items-center gap-3 text-xs text-slate-300">
+            <div className="flex items-center gap-2 bg-[#0C243B] px-3.5 py-2.5 rounded-xl border border-white/5 font-semibold">
+              <ShieldCheck className="w-4 h-4 text-[#D7ED68]" />
+              <span>پرداخت امن شاپرک</span>
+            </div>
+            <div className="flex items-center gap-2 bg-[#0C243B] px-3.5 py-2.5 rounded-xl border border-white/5 font-semibold">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>رمزنگاری سراسری ۲۵۶ بیتی SSL</span>
+            </div>
+          </div>
+        </div>
+
         {/* Bottom Bar: Copyright & Safety */}
         <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#66706D]">
           <div className="flex items-center gap-2 text-slate-400">

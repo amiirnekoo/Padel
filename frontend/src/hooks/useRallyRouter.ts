@@ -5,12 +5,14 @@ import { ShopProduct } from '../types/rally';
 export interface RouteState {
   tab: RallyPageTab;
   productId: string | null;
+  drillSlug: string | null;
   isAdmin: boolean;
   isPortal: boolean;
 }
 
 const TAB_TITLES: Record<RallyPageTab, string> = {
   home: 'رالی پدل | تقویم زنده، رزرو زمین و فروشگاه تخصصی',
+  drills: 'تمرینات تخصصی پدل و تنیس | رالی',
   courts: 'رزرو آنلاین زمین‌ها و کورت‌های پدل و تنیس | رالی',
   matchmaking: 'حریف‌یابی و مسابقات دوستانه پدل | رالی',
   coaches: 'رزرو مربیان رسمی و بین‌المللی پدل | رالی',
@@ -26,41 +28,50 @@ export function parsePath(pathname: string): RouteState {
   const cleanPath = pathname.replace(/\/+$/, '') || '/';
 
   if (cleanPath.startsWith('/admin')) {
-    return { tab: 'home', productId: null, isAdmin: true, isPortal: false };
+    return { tab: 'home', productId: null, drillSlug: null, isAdmin: true, isPortal: false };
   }
   if (cleanPath.startsWith('/portal')) {
-    return { tab: 'home', productId: null, isAdmin: false, isPortal: true };
+    return { tab: 'home', productId: null, drillSlug: null, isAdmin: false, isPortal: true };
+  }
+
+  // Check drill detail page: /drills/:slug
+  const drillMatch = cleanPath.match(/^\/drills\/(.+)$/);
+  if (drillMatch) {
+    const rawSlug = decodeURIComponent(drillMatch[1]);
+    return { tab: 'drills', productId: null, drillSlug: rawSlug, isAdmin: false, isPortal: false };
   }
 
   // Check product page: /shop/:id or /product/:id
   const shopMatch = cleanPath.match(/^\/shop\/(.+)$/);
   if (shopMatch) {
     const rawId = decodeURIComponent(shopMatch[1]);
-    return { tab: 'shop', productId: rawId, isAdmin: false, isPortal: false };
+    return { tab: 'shop', productId: rawId, drillSlug: null, isAdmin: false, isPortal: false };
   }
   const prodMatch = cleanPath.match(/^\/product\/(.+)$/);
   if (prodMatch) {
     const rawId = decodeURIComponent(prodMatch[1]);
-    return { tab: 'shop', productId: rawId, isAdmin: false, isPortal: false };
+    return { tab: 'shop', productId: rawId, drillSlug: null, isAdmin: false, isPortal: false };
   }
 
   switch (cleanPath) {
+    case '/drills':
+      return { tab: 'drills', productId: null, drillSlug: null, isAdmin: false, isPortal: false };
     case '/courts':
-      return { tab: 'courts', productId: null, isAdmin: false, isPortal: false };
+      return { tab: 'courts', productId: null, drillSlug: null, isAdmin: false, isPortal: false };
     case '/coaches':
-      return { tab: 'coaches', productId: null, isAdmin: false, isPortal: false };
+      return { tab: 'coaches', productId: null, drillSlug: null, isAdmin: false, isPortal: false };
     case '/matchmaking':
-      return { tab: 'matchmaking', productId: null, isAdmin: false, isPortal: false };
+      return { tab: 'matchmaking', productId: null, drillSlug: null, isAdmin: false, isPortal: false };
     case '/tournaments':
-      return { tab: 'tournaments', productId: null, isAdmin: false, isPortal: false };
+      return { tab: 'tournaments', productId: null, drillSlug: null, isAdmin: false, isPortal: false };
     case '/rankings':
-      return { tab: 'rankings', productId: null, isAdmin: false, isPortal: false };
+      return { tab: 'rankings', productId: null, drillSlug: null, isAdmin: false, isPortal: false };
     case '/magazine':
-      return { tab: 'magazine', productId: null, isAdmin: false, isPortal: false };
+      return { tab: 'magazine', productId: null, drillSlug: null, isAdmin: false, isPortal: false };
     case '/shop':
-      return { tab: 'shop', productId: null, isAdmin: false, isPortal: false };
+      return { tab: 'shop', productId: null, drillSlug: null, isAdmin: false, isPortal: false };
     default:
-      return { tab: 'home', productId: null, isAdmin: false, isPortal: false };
+      return { tab: 'home', productId: null, drillSlug: null, isAdmin: false, isPortal: false };
   }
 }
 
@@ -93,6 +104,10 @@ export function useRallyRouter(allProducts: ShopProduct[]) {
         return;
       }
     }
+    if (route.drillSlug) {
+      document.title = 'جزئیات تمرین تخصصی | رالی';
+      return;
+    }
     document.title = TAB_TITLES[route.tab] || 'رالی پدل | مرجع ورزش‌های راکتی ایران';
   }, [route, allProducts]);
 
@@ -101,7 +116,24 @@ export function useRallyRouter(allProducts: ShopProduct[]) {
     if (window.location.pathname !== targetUrl) {
       window.history.pushState({}, '', targetUrl);
     }
-    setRoute({ tab, productId: null, isAdmin: false, isPortal: false });
+    setRoute({ tab, productId: null, drillSlug: null, isAdmin: false, isPortal: false });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  const navigateToDrill = useCallback((drillSlug: string) => {
+    const targetUrl = `/drills/${encodeURIComponent(drillSlug)}`;
+    if (window.location.pathname !== targetUrl) {
+      window.history.pushState({}, '', targetUrl);
+    }
+    setRoute({ tab: 'drills', productId: null, drillSlug, isAdmin: false, isPortal: false });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  const backToDrills = useCallback(() => {
+    if (window.location.pathname !== '/drills') {
+      window.history.pushState({}, '', '/drills');
+    }
+    setRoute({ tab: 'drills', productId: null, drillSlug: null, isAdmin: false, isPortal: false });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
@@ -110,7 +142,7 @@ export function useRallyRouter(allProducts: ShopProduct[]) {
     if (window.location.pathname !== targetUrl) {
       window.history.pushState({}, '', targetUrl);
     }
-    setRoute({ tab: 'shop', productId, isAdmin: false, isPortal: false });
+    setRoute({ tab: 'shop', productId, drillSlug: null, isAdmin: false, isPortal: false });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
@@ -118,7 +150,7 @@ export function useRallyRouter(allProducts: ShopProduct[]) {
     if (window.location.pathname !== '/shop') {
       window.history.pushState({}, '', '/shop');
     }
-    setRoute({ tab: 'shop', productId: null, isAdmin: false, isPortal: false });
+    setRoute({ tab: 'shop', productId: null, drillSlug: null, isAdmin: false, isPortal: false });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
@@ -126,7 +158,7 @@ export function useRallyRouter(allProducts: ShopProduct[]) {
     if (window.location.pathname !== '/portal') {
       window.history.pushState({}, '', '/portal');
     }
-    setRoute({ tab: 'home', productId: null, isAdmin: false, isPortal: true });
+    setRoute({ tab: 'home', productId: null, drillSlug: null, isAdmin: false, isPortal: true });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
@@ -134,7 +166,7 @@ export function useRallyRouter(allProducts: ShopProduct[]) {
     if (window.location.pathname !== '/admin') {
       window.history.pushState({}, '', '/admin');
     }
-    setRoute({ tab: 'home', productId: null, isAdmin: true, isPortal: false });
+    setRoute({ tab: 'home', productId: null, drillSlug: null, isAdmin: true, isPortal: false });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
@@ -142,13 +174,15 @@ export function useRallyRouter(allProducts: ShopProduct[]) {
     if (window.location.pathname !== '/') {
       window.history.pushState({}, '', '/');
     }
-    setRoute({ tab: 'home', productId: null, isAdmin: false, isPortal: false });
+    setRoute({ tab: 'home', productId: null, drillSlug: null, isAdmin: false, isPortal: false });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
   return {
     route,
     navigateToTab,
+    navigateToDrill,
+    backToDrills,
     navigateToProduct,
     backToShop,
     navigateToPortal,

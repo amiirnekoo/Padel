@@ -17,8 +17,13 @@ from backend.app.models.content import ArticleCategory, Article, SiteBanner, Med
 from backend.app.models.tournament import Tournament, PlayerRanking
 from backend.app.models.admin_user import AdminUser
 from backend.app.models.waitlist import WaitlistEntry, InAppNotification
+from backend.app.models.drill import Drill, DrillMedia, UserDrillActivity, DrillCompletionEvent
 
 __all__ = [
+    "Drill",
+    "DrillMedia",
+    "UserDrillActivity",
+    "DrillCompletionEvent",
     "WaitlistEntry",
     "InAppNotification",
     "Base",

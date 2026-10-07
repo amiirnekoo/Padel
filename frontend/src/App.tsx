@@ -13,6 +13,8 @@ import { RallyRankingsPage } from './pages/rally/RallyRankingsPage';
 import { RallyMagazinePage } from './pages/rally/RallyMagazinePage';
 import { RallyShopPage } from './pages/rally/RallyShopPage';
 import { RallyProductDetailPage } from './pages/rally/shop/RallyProductDetailPage';
+import { DrillsDirectoryPage } from './pages/drills/DrillsDirectoryPage';
+import { DrillDetailPage } from './pages/drills/DrillDetailPage';
 import { AppModalsContainer } from './components/rally/AppModalsContainer';
 import { UserSession } from './components/AuthModal';
 import { CourtClub, Coach, Tournament, TimeSlotItem, SportType, ShopProduct, CartItem, ShopOrderReceipt } from './types/rally';
@@ -61,7 +63,7 @@ export const App: React.FC = () => {
     } catch { return MOCK_SHOP_PRODUCTS; }
   });
 
-  const { route, navigateToTab, navigateToProduct, backToShop, navigateToPortal, navigateToAdmin, exitSpecialPage } = useRallyRouter(productsList);
+  const { route, navigateToTab, navigateToDrill, backToDrills, navigateToProduct, backToShop, navigateToPortal, navigateToAdmin, exitSpecialPage } = useRallyRouter(productsList);
 
   const activeTab = route.tab;
   const isAdminOpen = route.isAdmin;
@@ -197,6 +199,24 @@ export const App: React.FC = () => {
                     onAddToCartProduct={handleAddToCart}
                     cartProductIds={new Set(cartItems.map((i) => i.product.id))}
                   />
+                )}
+                {activeTab === 'drills' && (
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    {route.drillSlug ? (
+                      <DrillDetailPage
+                        slug={route.drillSlug}
+                        onBack={backToDrills}
+                        userToken={userSession?.token}
+                        onRequireAuth={() => setIsAuthOpen(true)}
+                      />
+                    ) : (
+                      <DrillsDirectoryPage
+                        onSelectDrill={(slug) => navigateToDrill(slug)}
+                        userToken={userSession?.token}
+                        onRequireAuth={() => setIsAuthOpen(true)}
+                      />
+                    )}
+                  </div>
                 )}
                 {activeTab === 'courts' && (
                   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">

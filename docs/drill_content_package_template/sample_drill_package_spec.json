@@ -1,0 +1,97 @@
+{
+  "$comment": "⚠️ این یک بسته نمونه فنی و آزمایشی است؛ محتوای واقعی و بازبینی ورزشی باید توسط تهیه‌کننده و بازبین رسمی تایید شود. این فایل به عنوان Seed عمومی دیتابیس استفاده نمی‌شود.",
+  "package_type": "TECHNICAL_SAMPLE_ONLY",
+  "metadata": {
+    "package_version": "1.0.0",
+    "drill_slug": "bandeja-foundation-sample",
+    "sport": "PADEL",
+    "level": "BEGINNER"
+  },
+  "content": {
+    "title": "آموزش گام‌به‌گام ضربه باندخا (Bandeja) پایه",
+    "sport": "PADEL",
+    "category": "TECHNIQUE",
+    "level": "BEGINNER",
+    "participant_type": "SOLO",
+    "summary": "ضربه دفاعی-حمله‌ای حیاتی در پدل برای حفظ تور و کنترل لوب‌های حریف در عمق زمین.",
+    "objective": "تسلط بر موقعیت‌گیری جانبی، زاویه ضربه و فرود توپ با پیچ ملایم برای ممانعت از حمله حریف.",
+    "duration_minutes": 20,
+    "equipment_required": [
+      "راکت پدل استاندارد",
+      "۶ عدد توپ تمرینی",
+      "کورت پدل"
+    ],
+    "steps": [
+      {
+        "step_number": 1,
+        "title": "گام برعکس و استقرار جانبی (Cross Step)",
+        "instruction": "به محض مشاهده لوب حریف، با گام ضربدری به پهلو بچرخید. شانه غیرضربه رو به تور باشد و راکت در ارتفاع گوش آماده شود.",
+        "reps_or_time": "۱۰ تکرار بدون توپ",
+        "key_focus": "انتقال سریع وزن به پای عقب"
+      },
+      {
+        "step_number": 2,
+        "title": "نقطه تماس و امتداد ضربه (Impact & Follow-Through)",
+        "instruction": "توپ را در ارتفاع سر و در سمت راست بدن با زاویه باز صفحه راکت لمس کرده و ضربه را به سمت جلو و پهلو امتداد دهید.",
+        "reps_or_time": "۲۰ تکرار با تغذیه توپ",
+        "key_focus": "برخورد نرم با توپ بدون نیاز به قدرت انفجاری اسماش"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "mistake": "ضربه زدن در پشت سر با وضعیت روبه‌رو به تور",
+        "correction": "چرخش کامل به پهلو و ممانعت از افتادن توپ در پشت سر؛ اگر توپ رد شد باید اجازه دهید به شیشه بخورد."
+      },
+      {
+        "mistake": "پایین انداختن سر راکت مشابه ضربه تنیس",
+        "correction": "سر راکت باید همواره موازی یا اندکی بالاتر از مچ دست بماند."
+      }
+    ],
+    "safety_precautions": [
+      "قبل از شروع تمرینات بالای سر، حتما عضلات روتاتور کاف و سرشانه را با کش تمرینی گرم کنید.",
+      "مراقب فاصله گام‌ها با دیواره شیشه‌ای پشت کورت باشید."
+    ]
+  },
+  "media_assets": [
+    {
+      "media_type": "IMAGE",
+      "file_name": "bandeja_cover.webp",
+      "mime_type": "image/webp",
+      "is_cover": true,
+      "provenance": "REAL_RECORDING",
+      "usage_rights_status": "OWNED",
+      "license_details": "عکاسی اختصاصی باشگاه پدل رالی - آکادمی انقلاب",
+      "language": "fa"
+    },
+    {
+      "media_type": "VIDEO",
+      "file_name": "bandeja_technique.mp4",
+      "mime_type": "video/mp4",
+      "is_cover": false,
+      "video_duration_seconds": 110,
+      "aspect_ratio": "16:9",
+      "provenance": "REAL_RECORDING",
+      "usage_rights_status": "OWNED",
+      "license_details": "ویدئوی تمرینی ضبط‌شده در آکادمی پدل",
+      "language": "fa"
+    },
+    {
+      "media_type": "SUBTITLE",
+      "file_name": "bandeja_subtitles.vtt",
+      "mime_type": "text/vtt",
+      "is_cover": false,
+      "provenance": "REAL_RECORDING",
+      "usage_rights_status": "OWNED",
+      "license_details": "زیرنویس همگام فارسی با اصطلاحات تخصصی پدل",
+      "language": "fa"
+    }
+  ],
+  "sample_review_checklist": {
+    "suitability_approved": true,
+    "media_sync_approved": true,
+    "movement_clarity_approved": true,
+    "pedagogical_notes": "توالی حرکت استقرار و ضربه دقیق است؛ مناسب آموزش سطح پایه و متوسط.",
+    "safety_notes": "تاکید بر عدم پریدن در صورت عدم تعادل پای عقب رعایت شده است.",
+    "verified_media_ids": ["media-sample-01", "media-sample-02"]
+  }
+}
