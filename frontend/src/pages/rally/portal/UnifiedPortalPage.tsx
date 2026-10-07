@@ -1,9 +1,16 @@
-import React, { useState } from 'react';
-import { User, Building, Award, ArrowLeft, LogOut, ShieldCheck } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ArrowLeft, LogOut, ShieldCheck } from 'lucide-react';
 import { UserSession } from '../../../components/AuthModal';
+import { PortalSidebarNav, PortalActiveTab } from '../../../components/rally/portal/PortalSidebarNav';
+import { PortalOverviewTab } from '../../../components/rally/portal/PortalOverviewTab';
 import { PortalPlayerTab } from './PortalPlayerTab';
+import { PortalShopOrdersTab } from '../../../components/rally/portal/PortalShopOrdersTab';
+import { PortalSavedDrillsTab } from '../../../components/rally/portal/PortalSavedDrillsTab';
+import { PortalPlayerPassportTab } from '../../../components/rally/portal/PortalPlayerPassportTab';
+import { PortalRoleUpgradeModal } from '../../../components/rally/portal/PortalRoleUpgradeModal';
 import { PortalClubTab } from './PortalClubTab';
 import { PortalCoachTab } from './PortalCoachTab';
+import { rallyApi } from '../../../services/rallyApi';
 
 interface UnifiedPortalPageProps {
   userSession: UserSession;
@@ -11,38 +18,95 @@ interface UnifiedPortalPageProps {
   onOpenWallet: () => void;
   onExitPortal: () => void;
   onLogout: () => void;
+  onNavigateToShop?: () => void;
+  onNavigateToDrills?: () => void;
 }
-
-export type PortalRoleView = 'PLAYER' | 'CLUB_OWNER' | 'COACH';
 
 export const UnifiedPortalPage: React.FC<UnifiedPortalPageProps> = ({
   userSession,
   walletBalance,
   onOpenWallet,
   onExitPortal,
-  onLogout
+  onLogout,
+  onNavigateToShop,
+  onNavigateToDrills
 }) => {
-  const [currentRoleView, setCurrentRoleView] = useState<PortalRoleView>(
-    userSession.role === 'CLUB_OWNER' ? 'CLUB_OWNER' : userSession.role === 'COACH' ? 'COACH' : 'PLAYER'
-  );
+  const [activeTab, setActiveTab] = useState<PortalActiveTab>('OVERVIEW');
+  const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
+  const [bookingsCount, setBookingsCount] = useState<number>(0);
+  const [ordersCount, setOrdersCount] = useState<number>(0);
+  const [drillsCount, setDrillsCount] = useState<number>(0);
+  const [nextBooking, setNextBooking] = useState<any | null>(null);
+
+  const isCoach = userSession.role === 'COACH';
+  const isClubOwner = ['CLUB_OPERATOR', 'CLUB_MANAGER', 'CLUB_OWNER', 'CLUB_ADMIN'].includes(userSession.role);
+
+  // واکشی شاخص‌های کلی داشبورد
+  useEffect(() => {
+    const fetchPortalStats = async () => {
+      try {
+        const [bookingsData, ordersData, drillsData] = await Promise.all([
+          rallyApi.getMyBookings(),
+          rallyApi.getMyShopOrders(),
+          rallyApi.getMySavedDrills()
+        ]);
+
+        if (Array.isArray(bookingsData)) {
+          const todayStr = new Date().toISOString().split('T')[0];
+          const activeBookings = bookingsData.filter(
+            (b) => (!b.slot_date || b.slot_date >= todayStr) && !b.status?.includes('CANCELLED')
+          );
+          setBookingsCount(activeBookings.length);
+          if (activeBookings.length > 0) {
+            setNextBooking(activeBookings[0]);
+          }
+        }
+
+        if (Array.isArray(ordersData)) {
+          setOrdersCount(ordersData.length);
+        }
+
+        if (Array.isArray(drillsData)) {
+          setDrillsCount(drillsData.length);
+        }
+      } catch {
+        // خطای شبکه بی‌پاسخ نمی‌ماند و مقادیر امن می‌مانند
+      }
+    };
+
+    fetchPortalStats();
+  }, []);
+
+  // حفاظت از گیت نقش‌ها (Role Guard)
+  const handleSelectTab = (tab: PortalActiveTab) => {
+    if (tab === 'COACH_HUB' && !isCoach) {
+      setIsUpgradeModalOpen(true);
+      return;
+    }
+    if (tab === 'CLUB_HUB' && !isClubOwner) {
+      setIsUpgradeModalOpen(true);
+      return;
+    }
+    setActiveTab(tab);
+  };
 
   return (
     <div className="min-h-screen bg-[#07131F] text-slate-100 flex flex-col font-sans" dir="rtl">
-      {/* Portal Top Bar */}
-      <header className="bg-[#0B1E30] border-b border-white/10 px-4 sm:px-6 py-3.5 flex items-center justify-between sticky top-0 z-30">
+      {/* Portal Top Navigation Header - Solid, Zero Blur */}
+      <header className="bg-[#0B1E30] border-b border-white/10 px-4 sm:px-6 py-3.5 flex items-center justify-between sticky top-0 z-30 shadow-md">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-[#0C3E6E] border border-white/20 text-[#D7ED68] flex items-center justify-center font-black text-sm">
             R
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-extrabold text-sm text-white">پورتال اختصاصی اعضای رالی</span>
+              <span className="font-extrabold text-sm text-white">پورتال اعضای رالی</span>
               <span className="bg-[#D7ED68]/20 text-[#D7ED68] border border-[#D7ED68]/30 text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1">
                 <ShieldCheck className="w-3 h-3" />
-                {userSession.fullName}
+                {userSession.fullName || 'ورزشکار'}
               </span>
             </div>
-            <span className="text-[10px] text-slate-400">داشبورد متمرکز رزروها، باشگاه‌ها و خدمات ورزشی</span>
+            <span className="text-[10px] text-slate-400">داشبورد متمرکز رزرو، فروشگاه، تمرینات و رنکینگ</span>
           </div>
         </div>
 
@@ -65,69 +129,75 @@ export const UnifiedPortalPage: React.FC<UnifiedPortalPageProps> = ({
         </div>
       </header>
 
-      {/* Role Navigation Selector Bar */}
-      <div className="bg-[#0B2238] border-b border-white/10 px-4 sm:px-6 py-3">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-2 text-xs">
-            <span className="text-slate-400 font-bold">بخش اختصاصی:</span>
-            <div className="flex bg-[#07131F] p-1 rounded-xl border border-white/10">
-              <button
-                onClick={() => setCurrentRoleView('PLAYER')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  currentRoleView === 'PLAYER' ? 'bg-[#D7ED68] text-[#172320] shadow-sm' : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                <User className="w-3.5 h-3.5" />
-                <span>پنل بازیکن (رزروها و کیف پول)</span>
-              </button>
+      {/* Main Layout Container */}
+      <div className="max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex-1 flex flex-col lg:flex-row gap-6 items-start">
+        {/* Modular Sidebar Navigation */}
+        <PortalSidebarNav
+          activeTab={activeTab}
+          onSelectTab={handleSelectTab}
+          userSession={userSession}
+          onOpenUpgradeModal={() => setIsUpgradeModalOpen(true)}
+        />
 
-              <button
-                onClick={() => setCurrentRoleView('CLUB_OWNER')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  currentRoleView === 'CLUB_OWNER' ? 'bg-[#D7ED68] text-[#172320] shadow-sm' : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                <Building className="w-3.5 h-3.5" />
-                <span>پنل باشگاه‌دار (کورت‌ها و سانس‌ها)</span>
-              </button>
+        {/* Tab Content Canvas */}
+        <main className="flex-1 w-full min-w-0">
+          {activeTab === 'OVERVIEW' && (
+            <PortalOverviewTab
+              userSession={userSession}
+              walletBalance={walletBalance}
+              bookingsCount={bookingsCount}
+              ordersCount={ordersCount}
+              drillsCount={drillsCount}
+              nextBooking={nextBooking}
+              onOpenWallet={onOpenWallet}
+              onSelectTab={handleSelectTab}
+              onNavigateToCourts={onExitPortal}
+            />
+          )}
 
-              <button
-                onClick={() => setCurrentRoleView('COACH')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  currentRoleView === 'COACH' ? 'bg-[#D7ED68] text-[#172320] shadow-sm' : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                <Award className="w-3.5 h-3.5" />
-                <span>پنل مربی (کلاس‌ها و شاگردان)</span>
-              </button>
-            </div>
-          </div>
+          {activeTab === 'BOOKINGS' && (
+            <PortalPlayerTab
+              userSession={userSession}
+              walletBalance={walletBalance}
+              onOpenWallet={onOpenWallet}
+              onNavigateToCourts={onExitPortal}
+            />
+          )}
 
-          <div className="text-[11px] text-slate-400">
-            شماره همراه: <strong className="font-mono text-white">{userSession.phoneNumber}</strong>
-          </div>
-        </div>
+          {activeTab === 'ORDERS' && (
+            <PortalShopOrdersTab
+              onNavigateToShop={onNavigateToShop || onExitPortal}
+            />
+          )}
+
+          {activeTab === 'DRILLS' && (
+            <PortalSavedDrillsTab
+              onNavigateToDrills={onNavigateToDrills || onExitPortal}
+            />
+          )}
+
+          {activeTab === 'PASSPORT' && (
+            <PortalPlayerPassportTab
+              userSession={userSession}
+            />
+          )}
+
+          {activeTab === 'COACH_HUB' && isCoach && (
+            <PortalCoachTab />
+          )}
+
+          {activeTab === 'CLUB_HUB' && isClubOwner && (
+            <PortalClubTab />
+          )}
+        </main>
       </div>
 
-      {/* Main Role Content */}
-      <main className="flex-1 max-w-6xl w-full mx-auto p-4 sm:p-6 lg:p-8">
-        {currentRoleView === 'PLAYER' && (
-          <PortalPlayerTab
-            userSession={userSession}
-            walletBalance={walletBalance}
-            onOpenWallet={onOpenWallet}
-            onNavigateToCourts={onExitPortal}
-          />
-        )}
-
-        {currentRoleView === 'CLUB_OWNER' && (
-          <PortalClubTab />
-        )}
-
-        {currentRoleView === 'COACH' && (
-          <PortalCoachTab />
-        )}
-      </main>
+      {/* Role Upgrade Modal */}
+      <PortalRoleUpgradeModal
+        isOpen={isUpgradeModalOpen}
+        onClose={() => setIsUpgradeModalOpen(false)}
+        userSession={userSession}
+      />
     </div>
   );
 };

@@ -82,3 +82,16 @@ async def checkout_shop_order(
         return order
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.get("/orders/my-orders")
+async def get_my_shop_orders(
+    current_user_id: str = Depends(get_current_user_id)
+):
+    """لیست سفارشات فروشگاه ثبت‌شده توسط کاربر احراز هویت شده جاری"""
+    orders = ShopService.get_user_orders(user_id=current_user_id)
+    return {
+        "orders": orders,
+        "count": len(orders)
+    }
+

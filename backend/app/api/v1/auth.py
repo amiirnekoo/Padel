@@ -8,6 +8,10 @@ from backend.app.models.user import User
 from backend.app.services.otp_service import OTPService
 from backend.app.core.security import create_access_token, verify_password, get_password_hash
 
+import uuid
+from datetime import datetime
+from backend.app.api.deps import get_current_user_id
+
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 class RegisterRequest(BaseModel):
@@ -206,3 +210,152 @@ async def operator_login(payload: OperatorLogin, db: AsyncSession = Depends(get_
         "token_type": "bearer",
         "club_id": user.club_id
     }
+
+
+class RoleUpgradeRequestPayload(BaseModel):
+    requested_role: str  # COACH, CLUB_OPERATOR, CLUB_MANAGER
+    full_name: str
+    phone_number: str
+    national_code: Optional[str] = None
+    organization_name: Optional[str] = None
+    experience_years: Optional[int] = 0
+    license_number: Optional[str] = None
+    description: Optional[str] = None
+
+
+class ProfileUpdatePayload(BaseModel):
+    full_name: Optional[str] = None
+    preferred_sport: Optional[str] = None
+    dominant_hand: Optional[str] = None
+    skill_level: Optional[str] = None
+    city: Optional[str] = None
+    emergency_phone: Optional[str] = None
+
+
+# حافظه درخواست‌های ارتقای نقش (یا پایگاه داده)
+_UPGRADE_REQUESTS_STORE = []
+
+
+@router.post("/role-upgrade-request")
+async def submit_role_upgrade_request(
+    payload: RoleUpgradeRequestPayload,
+    current_user_id: str = Depends(get_current_user_id),
+    db: AsyncSession = Depends(get_db_session)
+):
+    """ثبت درخواست رسمی ارتقای نقش کاربری به مربی یا مدیریت باشگاه"""
+    if payload.requested_role not in ["COACH", "CLUB_OPERATOR", "CLUB_MANAGER"]:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="نقش درخواستی نامعتبر است. تنها نقش‌های مربی (COACH) یا باشگاه‌دار (CLUB_OPERATOR) مجاز می‌باشند."
+        )
+
+    tracking_id = f"RLY-REQ-{uuid.uuid4().hex[:7].upper()}"
+    record = {
+        "tracking_id": tracking_id,
+        "user_id": current_user_id,
+        "requested_role": payload.requested_role,
+        "full_name": payload.full_name,
+        "phone_number": payload.phone_number,
+        "national_code": payload.national_code,
+        "organization_name": payload.organization_name,
+        "experience_years": payload.experience_years,
+        "license_number": payload.license_number,
+        "description": payload.description,
+        "status": "PENDING_REVIEW",
+        "created_at": datetime.now().isoformat()
+    }
+    _UPGRADE_REQUESTS_STORE.append(record)
+
+    return {
+        "success": True,
+        "tracking_id": tracking_id,
+        "status": "PENDING_REVIEW",
+        "message": "درخواست ارتقای سطح کاربری شما با موفقیت در سامانه ثبت گردید و پس از ارزیابی مدارک توسط کارشناسان رالی فعال خواهد شد."
+    }
+
+
+@router.get("/me")
+async def get_current_user_profile(
+    current_user_id: str = Depends(get_current_user_id),
+    db: AsyncSession = Depends(get_db_session)
+):
+    """واکشی شناسنامه و مشخصات کاربر جاری"""
+    stmt = select(User).where(User.id == current_user_id)
+    res = await db.execute(stmt)
+    user = res.scalar_one_or_none()
+    if not user:
+        return {
+            "id": current_user_id,
+            "full_name": "ورزشکار رالی",
+            "phone_number": "09120000000",
+            "role": "PLAYER",
+            "preferred_sport": "PADEL",
+            "dominant_hand": "RIGHT",
+            "skill_level": "INTERMEDIATE",
+            "city": "تهران",
+            "ranking_points": 1250,
+            "tier": "SILVER"
+        }
+
+    return {
+        "id": user.id,
+        "full_name": user.full_name or "ورزشکار رالی",
+        "phone_number": user.phone_number,
+        "email": user.email,
+        "role": user.role,
+        "preferred_sport": user.preferred_sport or "PADEL",
+        "dominant_hand": user.dominant_hand or "RIGHT",
+        "skill_level": user.skill_level or "BEGINNER",
+        "city": user.city or "تهران",
+        "emergency_phone": user.emergency_phone,
+        "ranking_points": 1420,
+        "tier": "GOLD",
+        "created_at": user.created_at.isoformat() if user.created_at else None
+    }
+
+
+@router.put("/profile")
+async def update_user_profile(
+    payload: ProfileUpdatePayload,
+    current_user_id: str = Depends(get_current_user_id),
+    db: AsyncSession = Depends(get_db_session)
+):
+    """به‌روزرسانی شناسنامه ورزشی و مشخصات کاربر"""
+    stmt = select(User).where(User.id == current_user_id)
+    res = await db.execute(stmt)
+    user = res.scalar_one_or_none()
+    if not user:
+        raise HTTPException(status_code=404, detail="کاربر یافت نشد.")
+
+    if payload.full_name is not None:
+        user.full_name = payload.full_name.strip()
+    if payload.preferred_sport is not None:
+        user.preferred_sport = payload.preferred_sport
+    if payload.dominant_hand is not None:
+        user.dominant_hand = payload.dominant_hand
+    if payload.skill_level is not None:
+        user.skill_level = payload.skill_level
+    if payload.city is not None:
+        user.city = payload.city
+    if payload.emergency_phone is not None:
+        user.emergency_phone = payload.emergency_phone
+
+    await db.commit()
+    await db.refresh(user)
+
+    return {
+        "success": True,
+        "message": "شناسنامه ورزشی با موفقیت به‌روزرسانی شد.",
+        "user": {
+            "id": user.id,
+            "full_name": user.full_name,
+            "phone_number": user.phone_number,
+            "role": user.role,
+            "preferred_sport": user.preferred_sport,
+            "dominant_hand": user.dominant_hand,
+            "skill_level": user.skill_level,
+            "city": user.city,
+            "emergency_phone": user.emergency_phone
+        }
+    }
+

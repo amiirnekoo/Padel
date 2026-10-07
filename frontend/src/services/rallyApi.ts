@@ -123,6 +123,107 @@ export const rallyApi = {
   },
 
   /**
+   * دریافت سفارشات ثبت‌شده کاربر از فروشگاه
+   */
+  async getMyShopOrders(): Promise<any[]> {
+    try {
+      const headers = this.getUserAuthHeaders();
+      const res = await fetch(`${API_BASE}/shop/orders/my-orders`, { headers });
+      if (!res.ok) return [];
+      const data = await res.json();
+      return data.orders || [];
+    } catch {
+      return [];
+    }
+  },
+
+  /**
+   * دریافت تمرینات و دریل‌های نشان‌شده کاربر
+   */
+  async getMySavedDrills(): Promise<any[]> {
+    try {
+      const headers = this.getUserAuthHeaders();
+      const res = await fetch(`${API_BASE}/drills/my/activities?type=bookmarks`, { headers });
+      if (!res.ok) return [];
+      const data = await res.json();
+      return data.items || [];
+    } catch {
+      return [];
+    }
+  },
+
+  /**
+   * ثبت رسمی درخواست ارتقای نقش مربی یا باشگاه‌دار
+   */
+  async requestRoleUpgrade(payload: {
+    requested_role: 'COACH' | 'CLUB_OPERATOR' | 'CLUB_MANAGER';
+    full_name: string;
+    phone_number: string;
+    national_code?: string;
+    organization_name?: string;
+    experience_years?: number;
+    license_number?: string;
+    description?: string;
+  }): Promise<{ success: boolean; tracking_id?: string; message?: string; error?: string }> {
+    try {
+      const headers = this.getUserAuthHeaders();
+      const res = await fetch(`${API_BASE}/auth/role-upgrade-request`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        return { success: false, error: data.detail || 'خطا در ثبت درخواست ارتقای نقش' };
+      }
+      return { success: true, tracking_id: data.tracking_id, message: data.message };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در برقراری ارتباط با سرور' };
+    }
+  },
+
+  /**
+   * واکشی شناسنامه ورزشی و مشخصات کاربر
+   */
+  async getUserProfile(): Promise<any | null> {
+    try {
+      const headers = this.getUserAuthHeaders();
+      const res = await fetch(`${API_BASE}/auth/me`, { headers });
+      if (!res.ok) return null;
+      return await res.json();
+    } catch {
+      return null;
+    }
+  },
+
+  /**
+   * به‌روزرسانی شناسنامه ورزشی و مشخصات کاربر
+   */
+  async updateUserProfile(payload: {
+    full_name?: string;
+    preferred_sport?: string;
+    dominant_hand?: string;
+    skill_level?: string;
+    city?: string;
+    emergency_phone?: string;
+  }): Promise<{ success: boolean; user?: any; error?: string }> {
+    try {
+      const headers = this.getUserAuthHeaders();
+      const res = await fetch(`${API_BASE}/auth/profile`, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در به‌روزرسانی مشخصات' };
+      return { success: true, user: data.user };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در اتصال به سرور' };
+    }
+  },
+
+
+  /**
    * قفل اتمیک ۱۰ دقیقه‌ای سانس در بک‌اند جهت جلوگیری از همروندی
    */
   async holdSlot(slotId: string, userId?: string) {

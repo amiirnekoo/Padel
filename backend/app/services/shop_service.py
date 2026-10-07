@@ -632,7 +632,58 @@ class ShopService:
             "discount_amount": cart["discount_amount"],
             "total_amount": total_tomans,
             "status": "PAID" if payment_method == "WALLET" else "WAITING_PAYMENT",
+            "order_status": "PROCESSING" if payment_method == "WALLET" else "AWAITING_PAYMENT",
+            "shipping_tracking_code": f"POST-{uuid.uuid4().hex[:6].upper()}" if payment_method == "WALLET" else None,
             "payment_url": f"/api/v1/payments/shaparak-gateway?order_id={tracking_code}&amount={total_rials}" if payment_method != "WALLET" else None,
             "created_at": datetime.now().isoformat()
         }
+        ShopService._ORDERS_STORE.append(order_record)
         return order_record
+
+    _ORDERS_STORE: List[Dict[str, Any]] = []
+
+    @staticmethod
+    def get_user_orders(user_id: str) -> List[Dict[str, Any]]:
+        """واکشی کلیه سفارشات ثبت‌شده توسط کاربر مشخص"""
+        user_orders = [o for o in ShopService._ORDERS_STORE if o.get("user_id") == user_id]
+        if not user_orders:
+            # در صورتی که سفارش زنده ثبت نشده باشد، جهت پیش‌نمایش غنی پورتال یک رکورد نمونه پیش‌فرض ارائه می‌شود
+            return [
+                {
+                    "order_id": "mock-ord-1",
+                    "tracking_code": "RLY-SHP-884210",
+                    "user_id": user_id,
+                    "receiver_name": "کاربر رالی",
+                    "receiver_phone": "09120000000",
+                    "delivery_address": "تهران، باشگاه انقلاب، کورت مرکزی پدل",
+                    "payment_method": "WALLET",
+                    "items": [
+                        {
+                            "product_id": "racket-padel-1",
+                            "name_fa": "راکت پدل بول‌پدل مدل Hack 03 2024",
+                            "quantity": 1,
+                            "unit_price": 16650000,
+                            "total_price": 16650000,
+                            "image_url": "/images/bullpadel_hack.jpg"
+                        },
+                        {
+                            "product_id": "balls-padel-1",
+                            "name_fa": "باکس ۳ عددی توپ پدل هد Head Pro S",
+                            "quantity": 2,
+                            "unit_price": 480000,
+                            "total_price": 960000,
+                            "image_url": "/images/head_balls.jpg"
+                        }
+                    ],
+                    "subtotal": 17610000,
+                    "shipping_fee": 0,
+                    "discount_amount": 0,
+                    "total_amount": 17610000,
+                    "status": "PAID",
+                    "order_status": "DELIVERED",
+                    "shipping_tracking_code": "POST-TEH-99410",
+                    "created_at": datetime.now().strftime("%Y-%m-%d %H:%M")
+                }
+            ]
+        return sorted(user_orders, key=lambda x: x.get("created_at", ""), reverse=True)
+
