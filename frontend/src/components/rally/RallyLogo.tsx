@@ -15,7 +15,7 @@ export const RallyLogo: React.FC<RallyLogoProps> = ({
     <div className={`relative flex items-center shrink-0 ${className}`}>
       <img
         src="/images/rally_logo.svg"
-        alt="رالی | RALI"
+        alt="رالی | RALLY"
         height={height}
         className="h-full w-auto object-contain select-none"
         onError={(e) => {

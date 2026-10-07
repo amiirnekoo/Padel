@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "node scripts/scanProductImages.cjs && vite",
-    "build": "node scripts/scanProductImages.cjs && tsc && vite build",
+    "build": "node scripts/scanProductImages.cjs && tsc && vite build && node scripts/copyPublicSafe.cjs",
     "preview": "vite preview"
   },
   "dependencies": {
