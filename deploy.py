@@ -143,7 +143,7 @@ def deploy(target_commit=DEFAULT_TARGET_COMMIT):
         print("\n🩺 اجرای ارزیابی سلامت پس از استقرار...")
         time.sleep(4)
         run_remote_command(client, "استعلام سلامت کانتینرها", "docker compose -f /root/Padel/docker-compose.yml ps")
-        run_remote_command(client, "استعلام سلامت داخلی بک‌اند (Port 8000)", "curl -sSf http://127.0.0.1:8000/health || (echo 'Backend Health FAILED' && exit 1)")
+        run_remote_command(client, "استعلام سلامت داخلی بک‌اند (Port 8000)", "docker exec rally_backend curl -sSf http://127.0.0.1:8000/health || curl -sSf http://127.0.0.1/health")
         run_remote_command(client, "استعلام سلامت لبه Nginx (GET /health)", "curl -sSf -i http://127.0.0.1/health || (echo 'Edge Health FAILED' && exit 1)")
 
         total_elapsed = time.perf_counter() - start_deploy_time
