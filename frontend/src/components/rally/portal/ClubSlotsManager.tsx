@@ -69,7 +69,9 @@ export const ClubSlotsManager: React.FC<ClubSlotsManagerProps> = ({
                 return (
                   <tr key={s.id} className="hover:bg-white/5 transition-colors">
                     <td className="p-3.5 font-bold text-white text-xs">
-                      <div className="font-extrabold text-slate-100">{s.time}</div>
+                      <div className="font-extrabold text-slate-100">
+                        {s.time.includes(' - ') ? s.time.replace(' - ', ' تا ') : s.time}
+                      </div>
                       {isOffPeak && (
                         <span className="text-[10px] font-bold text-sky-400 bg-sky-500/10 border border-sky-500/20 px-2 py-0.5 rounded-md inline-block mt-1">
                           ⚡ ساعت روز (آف‌پیک)
@@ -77,7 +79,12 @@ export const ClubSlotsManager: React.FC<ClubSlotsManagerProps> = ({
                       )}
                     </td>
                     <td className="p-3.5 text-xs">
-                      <span className="font-extrabold text-[#D7ED68] text-xs">{s.price.toLocaleString('fa-IR')}</span>
+                      <div className="flex items-baseline gap-1">
+                        <span className="font-black text-[#D7ED68] text-sm">
+                          {s.price.toLocaleString('fa-IR')}
+                        </span>
+                        <span className="text-[10px] text-slate-400 font-normal">تومان</span>
+                      </div>
                     </td>
                     <td className="p-3.5">
                       {s.status === 'OPEN' && (
@@ -105,11 +112,19 @@ export const ClubSlotsManager: React.FC<ClubSlotsManagerProps> = ({
                     </td>
                     <td className="p-3.5 text-xs truncate">
                       {s.bookedBy ? (
-                        <div className="space-y-0.5">
+                        <div className="space-y-1">
                           <div className="text-white font-extrabold text-xs truncate">{s.bookedBy}</div>
                           <div className="flex items-center gap-1.5 flex-wrap">
-                            {s.phone && <span className="text-slate-400 text-[11px]" dir="ltr">({s.phone})</span>}
-                            {s.paymentMethod && <span className="text-amber-300 text-[10px] bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">{s.paymentMethod}</span>}
+                            {s.phone && (
+                              <span dir="ltr" className="text-slate-300 text-[11px] bg-slate-900/90 px-1.5 py-0.5 rounded border border-white/10 font-medium tracking-wide">
+                                {s.phone}
+                              </span>
+                            )}
+                            {s.paymentMethod && (
+                              <span className="text-amber-300 text-[10px] bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20 font-bold">
+                                {s.paymentMethod}
+                              </span>
+                            )}
                           </div>
                         </div>
                       ) : (

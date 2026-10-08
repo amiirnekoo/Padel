@@ -1,7 +1,8 @@
-/* Local Vazirmatn Font-Face (Zero reliance on blocked Google CDN) */
+/* Dual-resilient Vazirmatn Font-Face (Bundled Asset + Public Fallback) */
 @font-face {
   font-family: 'Vazirmatn';
-  src: url('/fonts/Vazirmatn-Regular.woff2') format('woff2');
+  src: url('./assets/fonts/Vazirmatn-Regular.woff2') format('woff2'),
+       url('/fonts/Vazirmatn-Regular.woff2') format('woff2');
   font-weight: 300;
   font-style: normal;
   font-display: swap;
@@ -9,7 +10,8 @@
 
 @font-face {
   font-family: 'Vazirmatn';
-  src: url('/fonts/Vazirmatn-Regular.woff2') format('woff2');
+  src: url('./assets/fonts/Vazirmatn-Regular.woff2') format('woff2'),
+       url('/fonts/Vazirmatn-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -17,7 +19,8 @@
 
 @font-face {
   font-family: 'Vazirmatn';
-  src: url('/fonts/Vazirmatn-Medium.woff2') format('woff2');
+  src: url('./assets/fonts/Vazirmatn-Medium.woff2') format('woff2'),
+       url('/fonts/Vazirmatn-Medium.woff2') format('woff2');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -25,7 +28,8 @@
 
 @font-face {
   font-family: 'Vazirmatn';
-  src: url('/fonts/Vazirmatn-SemiBold.woff2') format('woff2');
+  src: url('./assets/fonts/Vazirmatn-SemiBold.woff2') format('woff2'),
+       url('/fonts/Vazirmatn-SemiBold.woff2') format('woff2');
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -33,7 +37,8 @@
 
 @font-face {
   font-family: 'Vazirmatn';
-  src: url('/fonts/Vazirmatn-Bold.woff2') format('woff2');
+  src: url('./assets/fonts/Vazirmatn-Bold.woff2') format('woff2'),
+       url('/fonts/Vazirmatn-Bold.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -41,7 +46,8 @@
 
 @font-face {
   font-family: 'Vazirmatn';
-  src: url('/fonts/Vazirmatn-Bold.woff2') format('woff2');
+  src: url('./assets/fonts/Vazirmatn-Bold.woff2') format('woff2'),
+       url('/fonts/Vazirmatn-Bold.woff2') format('woff2');
   font-weight: 800;
   font-style: normal;
   font-display: swap;
@@ -49,7 +55,8 @@
 
 @font-face {
   font-family: 'Vazirmatn';
-  src: url('/fonts/Vazirmatn-Black.woff2') format('woff2');
+  src: url('./assets/fonts/Vazirmatn-Black.woff2') format('woff2'),
+       url('/fonts/Vazirmatn-Black.woff2') format('woff2');
   font-weight: 900;
   font-style: normal;
   font-display: swap;

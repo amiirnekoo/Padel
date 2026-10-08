@@ -10,16 +10,11 @@
 ## اقدامات انجام‌شده
 
 ### ۱. اصلاح سراسری فونت و تایپوگرافی (Vazirmatn)
-- **پیکربندی Tailwind:** افزودن وزیرمتن به فونت مونو (`fontFamily.mono: ['Vazirmatn', 'Inter', 'system-ui', 'sans-serif']`) در `tailwind.config.js` برای جلوگیری از سقوط فونت‌های سیستم عامل ویندوز روی Consolas/Courier هنگام مواجهه با اعداد و حروف فارسی.
-- **استایل‌های سراسری (`index.css`):**
-  - اضافه شدن وزن‌های ۳۰۰ و ۸۰۰ به تعاریف `@font-face` فونت وزیرمتن.
-  - الزام صریح ارث‌بری فونت وزیرمتن برای کلیه المان‌های جدول و فرم (`table`, `thead`, `tbody`, `button`, `input`, `select`, `textarea`).
-- **پاکسازی کلاس‌های `font-mono`:**
-  - جدول سانس‌ها و کارت‌های کورت (`ClubSlotsManager.tsx`, `ClubTimelineGrid.tsx`, `QuickManualBookingModal.tsx`, `ManualBookingModal.tsx`, `ClubSettlementModal.tsx`).
-  - صفحات و تب‌های حسابداری باشگاه و مربی (`ClubAccountingTab.tsx`, `CoachAccountingTab.tsx`).
-  - بخش مربیگری و شاگردان (`PortalCoachTab.tsx`).
-  - شناسنامه و پاسپورت ورزشی بازیکن (`PortalPlayerPassportTab.tsx`).
-  - سفارشات فروشگاه و تمرینات نشان‌شده (`PortalShopOrdersTab.tsx`, `PortalSavedDrillsTab.tsx`, `PortalRoleUpgradeModal.tsx`).
+- **باندل مستقیم فونت در Vite Asset Pipeline:** انتقال فونت‌ها به `src/assets/fonts/` و اتصال مستقیم در `@font-face` تا Vite فایل‌ها را با شناسه هش یکتا و MIME Type استاندارد `font/woff2` بیلد کند و مرورگر دچار خطای ۴۰۴ یا سقوط به Segoe UI نشود.
+- **پیش‌بارگذاری فونت (Preload):** اضافه شدن تگ‌های `<link rel="preload">` در `<head>` برای دریافت فوری فونت‌ها پیش از رندر CSS.
+- **حل تداخل پروسه سرگردان پورت ۳۰۰۰:** متوقف‌سازی پروسه به جا مانده از پوشه تلاقی گوگل‌درایو که درخواست فونت‌ها را به HTML ریدایرکت می‌کرد.
+- **رفع وارونگی جهت ساعت سانس‌ها (BiDi Fix):** با توجه به اینکه کاراکتر خط فاصله در متن راست‌به‌چپ باعث معکوس شدن ساعت (مثلاً `۰۹:۳۰ - ۰۸:۰۰` به جای `۰۸:۰۰ - ۰۹:۳۰`) می‌شد، سیستم با پیونددهنده فارسی «تا» استانداردسازی شد (`۰۸:۰۰ تا ۰۹:۳۰`).
+- **تکمیل فرمت مبالغ و شماره تماس:** درج صریح واحد پول «تومان» با استایل برجسته و ایزوله‌سازی شماره تماس مشتری با بج LTR جهت جلوگیری از درهم‌پیچیدگی پرانتزها.
 
 ### ۲. تفکیک کامل و ایزوله نقش‌ها در پرتال (Role-Based Isolation)
 - **معماری سایدبار (`PortalSidebarNav.tsx`):**

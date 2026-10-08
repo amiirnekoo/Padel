@@ -36,13 +36,13 @@ const INITIAL_CLUBS: ClubInfo[] = [
 
 const DEFAULT_SLOTS: Record<string, CourtSlotItem[]> = {
   'lavoor-0': [
-    { id: 'lav-1-1', time: '۰۸:۰۰ - ۰۹:۳۰', price: 2200000, status: 'OPEN' },
-    { id: 'lav-1-2', time: '۰۹:۳۰ - ۱۱:۰۰', price: 2200000, status: 'BOOKED', bookedBy: 'امیر نکوزاده', phone: '09121112233', paymentMethod: 'آنلاین درگاه' },
-    { id: 'lav-1-3', time: '۱۱:۰۰ - ۱۲:۳۰', price: 2200000, status: 'OPEN' },
-    { id: 'lav-1-4', time: '۱۶:۳۰ - ۱۸:۰۰', price: 2800000, status: 'BOOKED', bookedBy: 'رزرو تلفنی باجه', phone: '09355554433', paymentMethod: 'کارت‌خوان باشگاه' },
-    { id: 'lav-1-5', time: '۱۸:۰۰ - ۱۹:۳۰', price: 2800000, status: 'OPEN' },
-    { id: 'lav-1-6', time: '۱۹:۳۰ - ۲۱:۰۰', price: 2800000, status: 'LOCKED' },
-    { id: 'lav-1-7', time: '۲۱:۰۰ - ۲۲:۳۰', price: 2600000, status: 'OPEN' },
+    { id: 'lav-1-1', time: '۰۸:۰۰ تا ۰۹:۳۰', price: 2200000, status: 'OPEN' },
+    { id: 'lav-1-2', time: '۰۹:۳۰ تا ۱۱:۰۰', price: 2200000, status: 'BOOKED', bookedBy: 'امیر نکوزاده', phone: '09121112233', paymentMethod: 'آنلاین درگاه' },
+    { id: 'lav-1-3', time: '۱۱:۰۰ تا ۱۲:۳۰', price: 2200000, status: 'OPEN' },
+    { id: 'lav-1-4', time: '۱۶:۳۰ تا ۱۸:۰۰', price: 2800000, status: 'BOOKED', bookedBy: 'رزرو تلفنی باجه', phone: '09355554433', paymentMethod: 'کارت‌خوان باشگاه' },
+    { id: 'lav-1-5', time: '۱۸:۰۰ تا ۱۹:۳۰', price: 2800000, status: 'OPEN' },
+    { id: 'lav-1-6', time: '۱۹:۳۰ تا ۲۱:۰۰', price: 2800000, status: 'LOCKED' },
+    { id: 'lav-1-7', time: '۲۱:۰۰ تا ۲۲:۳۰', price: 2600000, status: 'OPEN' },
   ],
 };
 
