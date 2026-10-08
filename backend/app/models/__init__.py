@@ -18,8 +18,10 @@ from backend.app.models.tournament import Tournament, PlayerRanking
 from backend.app.models.admin_user import AdminUser
 from backend.app.models.waitlist import WaitlistEntry, InAppNotification
 from backend.app.models.drill import Drill, DrillMedia, UserDrillActivity, DrillCompletionEvent
+from backend.app.models.accounting import FinancialTransaction
 
 __all__ = [
+    "FinancialTransaction",
     "Drill",
     "DrillMedia",
     "UserDrillActivity",

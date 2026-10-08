@@ -1100,6 +1100,156 @@ export const rallyApi = {
     } catch (err: any) {
       return { success: false, error: err?.message || 'خطا در ارتباط با سرور' };
     }
+  },
+
+  /**
+   * دریافت تراز و خلاصه سود و زیان مالی باشگاه
+   */
+  async getClubAccountingSummary(clubId: string, startDate?: string, endDate?: string): Promise<any | null> {
+    try {
+      const params = new URLSearchParams();
+      if (startDate) params.append('start_date', startDate);
+      if (endDate) params.append('end_date', endDate);
+      const query = params.toString() ? `?${params.toString()}` : '';
+      const res = await fetch(`${API_BASE}/accounting/club/${clubId}/summary${query}`, {
+        headers: this.getUserAuthHeaders(),
+      });
+      if (!res.ok) return null;
+      return await res.json();
+    } catch {
+      return null;
+    }
+  },
+
+  /**
+   * دریافت لیست تراکنش‌های دفتر کل باشگاه
+   */
+  async getClubTransactions(clubId: string, paramsObj?: { type?: string; category?: string }): Promise<any[]> {
+    try {
+      const params = new URLSearchParams();
+      if (paramsObj?.type) params.append('transaction_type', paramsObj.type);
+      if (paramsObj?.category) params.append('category', paramsObj.category);
+      const query = params.toString() ? `?${params.toString()}` : '';
+      const res = await fetch(`${API_BASE}/accounting/club/${clubId}/transactions${query}`, {
+        headers: this.getUserAuthHeaders(),
+      });
+      if (!res.ok) return [];
+      return await res.json();
+    } catch {
+      return [];
+    }
+  },
+
+  /**
+   * ثبت تراکنش مالی دستی برای باشگاه
+   */
+  async createClubTransaction(clubId: string, payload: any): Promise<{ success: boolean; data?: any; error?: string }> {
+    try {
+      const res = await fetch(`${API_BASE}/accounting/club/${clubId}/transactions`, {
+        method: 'POST',
+        headers: this.getUserAuthHeaders(),
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در ثبت تراکنش' };
+      return { success: true, data };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در اتصال به سرور' };
+    }
+  },
+
+  /**
+   * حذف یک سند از دفتر کل باشگاه
+   */
+  async deleteClubTransaction(clubId: string, txId: string): Promise<{ success: boolean; error?: string }> {
+    try {
+      const res = await fetch(`${API_BASE}/accounting/club/${clubId}/transactions/${txId}`, {
+        method: 'DELETE',
+        headers: this.getUserAuthHeaders(),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        return { success: false, error: data.detail || 'خطا در حذف سند' };
+      }
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در ارتباط با سرور' };
+    }
+  },
+
+  /**
+   * دریافت تراز و خلاصه مالی مربی
+   */
+  async getCoachAccountingSummary(coachId: string, startDate?: string, endDate?: string): Promise<any | null> {
+    try {
+      const params = new URLSearchParams();
+      if (startDate) params.append('start_date', startDate);
+      if (endDate) params.append('end_date', endDate);
+      const query = params.toString() ? `?${params.toString()}` : '';
+      const res = await fetch(`${API_BASE}/accounting/coach/${coachId}/summary${query}`, {
+        headers: this.getUserAuthHeaders(),
+      });
+      if (!res.ok) return null;
+      return await res.json();
+    } catch {
+      return null;
+    }
+  },
+
+  /**
+   * دریافت لیست تراکنش‌های مالی مربی
+   */
+  async getCoachTransactions(coachId: string, paramsObj?: { type?: string; category?: string }): Promise<any[]> {
+    try {
+      const params = new URLSearchParams();
+      if (paramsObj?.type) params.append('transaction_type', paramsObj.type);
+      if (paramsObj?.category) params.append('category', paramsObj.category);
+      const query = params.toString() ? `?${params.toString()}` : '';
+      const res = await fetch(`${API_BASE}/accounting/coach/${coachId}/transactions${query}`, {
+        headers: this.getUserAuthHeaders(),
+      });
+      if (!res.ok) return [];
+      return await res.json();
+    } catch {
+      return [];
+    }
+  },
+
+  /**
+   * ثبت تراکنش مالی جدید برای مربی
+   */
+  async createCoachTransaction(coachId: string, payload: any): Promise<{ success: boolean; data?: any; error?: string }> {
+    try {
+      const res = await fetch(`${API_BASE}/accounting/coach/${coachId}/transactions`, {
+        method: 'POST',
+        headers: this.getUserAuthHeaders(),
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در ثبت تراکنش' };
+      return { success: true, data };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در ارتباط با سرور' };
+    }
+  },
+
+  /**
+   * حذف سند مالی مربی
+   */
+  async deleteCoachTransaction(coachId: string, txId: string): Promise<{ success: boolean; error?: string }> {
+    try {
+      const res = await fetch(`${API_BASE}/accounting/coach/${coachId}/transactions/${txId}`, {
+        method: 'DELETE',
+        headers: this.getUserAuthHeaders(),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        return { success: false, error: data.detail || 'خطا در حذف سند' };
+      }
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در ارتباط با سرور' };
+    }
   }
 };
 
