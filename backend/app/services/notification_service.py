@@ -177,6 +177,52 @@ class NotificationService:
         db.add(log)
         await db.commit()
         await db.refresh(log)
+    @staticmethod
+    async def send_manual_booking_sms(
+        db: AsyncSession,
+        recipient_phone: str,
+        customer_name: str,
+        club_name: str,
+        court_name: str,
+        slot_time: str,
+        slot_date: str,
+        tracking_code: str
+    ) -> NotificationLog:
+        """Sends desk/manual booking SMS to the player with tracking code and details via Kavenegar."""
+        tokens = {
+            "token": tracking_code,
+            "token2": club_name.replace(" ", "-"),
+            "token3": slot_time.replace(":", "-"),
+            "customer": customer_name,
+            "court": court_name,
+            "date": slot_date
+        }
+
+        provider = NotificationService._provider()
+        res = await provider.send_pattern_sms(
+            receptor=recipient_phone,
+            template="booking_confirmation_player",
+            tokens=tokens
+        )
+        if not res.success:
+            # Fallback to direct SMS if lookup pattern is not configured
+            direct_msg = f"{customer_name} گرامی، رزرو شما در {club_name} ({court_name}) برای ساعت {slot_time} مورخ {slot_date} ثبت شد. کد پیگیری: {tracking_code}"
+            res = await provider.send_sms(receptor=recipient_phone, message=direct_msg)
+
+        log = NotificationLog(
+            id=str(uuid.uuid4()),
+            recipient=recipient_phone,
+            event_type="BOOKING_MANUAL_DESK",
+            template_name="booking_confirmation_player",
+            provider=res.provider,
+            tokens_json=json.dumps(tokens, ensure_ascii=False),
+            status="DELIVERED" if res.success else "FAILED",
+            message_id=res.message_id,
+            error_message=res.error
+        )
+        db.add(log)
+        await db.commit()
+        await db.refresh(log)
         return log
 
     @staticmethod

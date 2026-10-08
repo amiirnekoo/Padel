@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DollarSign, Plus, Trash2, CheckCircle2, AlertCircle, Award } from 'lucide-react';
 import { rallyApi } from '../../../../services/rallyApi';
 import { NewTransactionModal, NewTransactionPayload } from './NewTransactionModal';
+import { CoachPrivacyBanner } from './CoachPrivacyBanner';
 
 interface CoachAccountingTabProps {
   coachId: string;
@@ -151,6 +152,9 @@ export const CoachAccountingTab: React.FC<CoachAccountingTabProps> = ({ coachId,
           </button>
         </div>
       </div>
+
+      {/* 100% Coach Trainee Privacy & Data Protection Seal */}
+      <CoachPrivacyBanner />
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">

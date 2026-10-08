@@ -105,17 +105,25 @@ export const CourtCard: React.FC<CourtCardProps> = ({
 
           <div className="flex flex-wrap gap-1.5">
             {displaySlots.length > 0 ? (
-              displaySlots.map((slot) => (
-                <button
-                  key={slot.slotId}
-                  onClick={() => onSelectDirectSlot(club, slot)}
-                  className="px-3 py-1.5 rounded-full border border-sky-600/25 bg-sky-50 text-sky-800 hover:bg-sky-700 hover:text-white text-xs font-bold transition-all cursor-pointer flex items-center gap-1"
-                  title={`${slot.startTime} تا ${slot.endTime} - ${slot.price.toLocaleString('fa-IR')} تومان`}
-                >
-                  <Clock className="w-3 h-3" />
-                  <span>{slot.startTime}</span>
-                </button>
-              ))
+              displaySlots.map((slot) => {
+                const isDaySlot = slot.startTime < '17:00';
+                return (
+                  <button
+                    key={slot.slotId}
+                    onClick={() => onSelectDirectSlot(club, slot)}
+                    className={`px-3 py-1.5 rounded-full border text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                      isDaySlot
+                        ? 'border-amber-300/60 bg-amber-50 text-amber-900 hover:bg-amber-600 hover:text-white'
+                        : 'border-sky-600/25 bg-sky-50 text-sky-800 hover:bg-sky-700 hover:text-white'
+                    }`}
+                    title={`${slot.startTime} تا ${slot.endTime} - ${slot.price.toLocaleString('fa-IR')} تومان ${isDaySlot ? '(تعرفه روز/آف‌پیک)' : ''}`}
+                  >
+                    <Clock className="w-3 h-3" />
+                    <span>{slot.startTime}</span>
+                    {isDaySlot && <span className="text-[10px] text-amber-600 font-black">☀️</span>}
+                  </button>
+                );
+              })
             ) : (
               <span className="text-xs text-gray-400 py-1 font-medium">سانس آزادی برای زمان انتخابی موجود نیست</span>
             )}

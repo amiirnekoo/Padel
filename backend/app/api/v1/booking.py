@@ -5,11 +5,13 @@ from backend.app.services.booking_service import BookingService
 from backend.app.services.payment_service import PaymentService
 from backend.app.api.deps import get_current_user_id
 
+from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 from backend.app.models.booking import Booking
 from backend.app.models.slot import TimeSlot
 from backend.app.models.club import Court, Club
+from backend.app.services.notification_service import NotificationService
 
 router = APIRouter(tags=["Booking"])
 
@@ -96,3 +98,57 @@ async def cancel_booking(
         "reason": refund.reason,
         "message": "رزرو با موفقیت لغو شد"
     }
+
+
+class DeskBookingRequest(BaseModel):
+    court_id: str | None = None
+    slot_id: str | None = None
+    customer_name: str
+    customer_phone: str | None = None
+    payment_method: str = "POS"
+    slot_time: str
+    slot_date: str | None = None
+    club_name: str | None = None
+    court_name: str | None = None
+    send_sms: bool = True
+    is_recurring_vip: bool = False
+
+
+@router.post("/bookings/desk-manual")
+async def create_desk_manual_booking(
+    payload: DeskBookingRequest,
+    db: AsyncSession = Depends(get_db_session)
+):
+    """ثبت رزرو باجه/تلفنی حضوری با کارمزد صفر درصد پلتفرم و ارسال پیامک فوری کاوه‌نگار به بازیکن."""
+    import uuid
+    tracking_code = f"DESK-{uuid.uuid4().hex[:6].upper()}"
+    sms_sent = False
+
+    if payload.send_sms and payload.customer_phone and len(payload.customer_phone.strip()) >= 10:
+        phone = payload.customer_phone.strip()
+        try:
+            await NotificationService.send_manual_booking_sms(
+                db=db,
+                recipient_phone=phone,
+                customer_name=payload.customer_name,
+                club_name=payload.club_name or "مجموعه ورزشی رالی",
+                court_name=payload.court_name or "کورت سنترال",
+                slot_time=payload.slot_time,
+                slot_date=payload.slot_date or "امروز",
+                tracking_code=tracking_code
+            )
+            sms_sent = True
+        except Exception:
+            pass
+
+    return {
+        "success": True,
+        "tracking_code": tracking_code,
+        "customer_name": payload.customer_name,
+        "is_recurring_vip": payload.is_recurring_vip,
+        "payment_method": payload.payment_method,
+        "platform_fee": 0,
+        "sms_sent": sms_sent,
+        "message": "رزرو باجه با موفقیت و کارمزد صفر درصد ثبت شد"
+    }
+

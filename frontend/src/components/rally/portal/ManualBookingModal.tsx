@@ -9,6 +9,8 @@ export interface CourtSlotItem {
   bookedBy?: string;
   phone?: string;
   paymentMethod?: string;
+  isRecurringVip?: boolean;
+  isOffPeak?: boolean;
 }
 
 interface ManualBookingModalProps {
@@ -17,9 +19,13 @@ interface ManualBookingModalProps {
   customerName: string;
   customerPhone: string;
   payMethod: string;
+  isVipRecurring?: boolean;
+  sendSms?: boolean;
   onCustomerNameChange: (val: string) => void;
   onCustomerPhoneChange: (val: string) => void;
   onPayMethodChange: (val: string) => void;
+  onIsVipRecurringChange?: (val: boolean) => void;
+  onSendSmsChange?: (val: boolean) => void;
   onClose: () => void;
   onConfirm: () => void;
 }
@@ -30,9 +36,13 @@ export const ManualBookingModal: React.FC<ManualBookingModalProps> = ({
   customerName,
   customerPhone,
   payMethod,
+  isVipRecurring = false,
+  sendSms = true,
   onCustomerNameChange,
   onCustomerPhoneChange,
   onPayMethodChange,
+  onIsVipRecurringChange,
+  onSendSmsChange,
   onClose,
   onConfirm
 }) => {
@@ -56,6 +66,7 @@ export const ManualBookingModal: React.FC<ManualBookingModalProps> = ({
           </div>
           <div>
             مبلغ سانس: <strong className="text-[#D7ED68] font-mono">{slot.price.toLocaleString('fa-IR')} تومان</strong>
+            <span className="text-[10px] text-emerald-400 mr-2 font-bold">(کارمزد پلتفرم: ۰٪)</span>
           </div>
         </div>
         <div className="space-y-3">
@@ -70,7 +81,7 @@ export const ManualBookingModal: React.FC<ManualBookingModalProps> = ({
             />
           </div>
           <div>
-            <label className="text-[11px] text-slate-300 block mb-1">شماره تماس (اختیاری جهت پیامک):</label>
+            <label className="text-[11px] text-slate-300 block mb-1">شماره تماس (جهت پیامک کاوه‌نگار):</label>
             <input
               type="text"
               value={customerPhone}
@@ -80,17 +91,44 @@ export const ManualBookingModal: React.FC<ManualBookingModalProps> = ({
             />
           </div>
           <div>
-            <label className="text-[11px] text-slate-300 block mb-1">روش پرداخت:</label>
+            <label className="text-[11px] text-slate-300 block mb-1">روش پرداخت در باشگاه:</label>
             <select
               value={payMethod}
               onChange={(e) => onPayMethodChange(e.target.value)}
               className="w-full bg-[#0B1724] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rally-primary"
             >
-              <option value="POS">دستگاه کارت‌خوان باشگاه (POS)</option>
-              <option value="CASH">نقدی / واریز به کارت باشگاه</option>
+              <option value="POS">دستگاه کارت‌خوان باشگاه (POS) - ۰٪ کارمزد</option>
+              <option value="CASH">نقدی باجه / واریز مستقیم به کارت باشگاه</option>
             </select>
           </div>
+
+          {/* VIP Recurring Toggle */}
+          <label className="flex items-center gap-2 p-2 bg-[#0B1724] border border-white/5 rounded-xl cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={isVipRecurring}
+              onChange={(e) => onIsVipRecurringChange?.(e.target.checked)}
+              className="w-3.5 h-3.5 text-amber-500 rounded bg-slate-900 border-white/20"
+            />
+            <span className="text-[11px] font-bold text-amber-300">
+              👑 قرارداد سانس هفتگی ثابت (VIP)
+            </span>
+          </label>
+
+          {/* Kavenegar SMS Toggle */}
+          <label className="flex items-center gap-2 p-2 bg-[#0B1724] border border-white/5 rounded-xl cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={sendSms}
+              onChange={(e) => onSendSmsChange?.(e.target.checked)}
+              className="w-3.5 h-3.5 text-[#D7ED68] rounded bg-slate-900 border-white/20"
+            />
+            <span className="text-[11px] font-bold text-slate-300">
+              📲 ارسال پیامک رسمی کاوه‌نگار با لینک لوکیشن
+            </span>
+          </label>
         </div>
+
         <div className="flex gap-2 pt-2">
           <button
             onClick={onConfirm}

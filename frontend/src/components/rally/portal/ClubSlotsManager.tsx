@@ -58,27 +58,49 @@ export const ClubSlotsManager: React.FC<ClubSlotsManagerProps> = ({
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5 text-slate-300">
-              {currentSlots.map((s) => (
-                <tr key={s.id} className="hover:bg-white/5 transition-colors">
-                  <td className="p-3 font-bold text-white font-mono">{s.time}</td>
-                  <td className="p-3 font-mono text-[#D7ED68]">{s.price.toLocaleString('fa-IR')}</td>
-                  <td className="p-3">
-                    {s.status === 'OPEN' && (
-                      <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full text-[10px] font-bold">
-                        آماده رزرو
-                      </span>
-                    )}
-                    {s.status === 'BOOKED' && (
-                      <span className="bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded-full text-[10px] font-bold">
-                        رزرو قطعی
-                      </span>
-                    )}
-                    {s.status === 'LOCKED' && (
-                      <span className="bg-slate-700/40 text-slate-400 border border-slate-700 px-2 py-0.5 rounded-full text-[10px] font-bold">
-                        بسته شده
-                      </span>
-                    )}
-                  </td>
+              {currentSlots.map((s) => {
+                const isOffPeak = s.isOffPeak || (
+                  s.time.startsWith('۰۸') || s.time.startsWith('۰۹') ||
+                  s.time.startsWith('۱۰') || s.time.startsWith('۱۱') ||
+                  s.time.startsWith('۱۲') || s.time.startsWith('۱۳') ||
+                  s.time.startsWith('۱۴') || s.time.startsWith('۱۵') ||
+                  s.time.startsWith('۱۶')
+                );
+                return (
+                  <tr key={s.id} className="hover:bg-white/5 transition-colors">
+                    <td className="p-3 font-bold text-white font-mono">
+                      <div>{s.time}</div>
+                      {isOffPeak && (
+                        <span className="text-[9px] font-bold text-sky-400 bg-sky-500/10 border border-sky-500/20 px-1.5 py-0.5 rounded-md inline-block mt-1">
+                          ⚡ ساعت روز (آف‌پیک)
+                        </span>
+                      )}
+                    </td>
+                    <td className="p-3 font-mono text-[#D7ED68]">{s.price.toLocaleString('fa-IR')}</td>
+                    <td className="p-3">
+                      {s.status === 'OPEN' && (
+                        <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full text-[10px] font-bold">
+                          آماده رزرو
+                        </span>
+                      )}
+                      {s.status === 'BOOKED' && (
+                        <div className="flex flex-col gap-1 items-start">
+                          <span className="bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded-full text-[10px] font-bold">
+                            رزرو قطعی
+                          </span>
+                          {s.isRecurringVip && (
+                            <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-full text-[9px] font-black">
+                              👑 هفتگی VIP
+                            </span>
+                          )}
+                        </div>
+                      )}
+                      {s.status === 'LOCKED' && (
+                        <span className="bg-slate-700/40 text-slate-400 border border-slate-700 px-2 py-0.5 rounded-full text-[10px] font-bold">
+                          بسته شده
+                        </span>
+                      )}
+                    </td>
                   <td className="p-3 text-[11px] truncate">
                     {s.bookedBy ? (
                       <div>
@@ -122,7 +144,8 @@ export const ClubSlotsManager: React.FC<ClubSlotsManagerProps> = ({
                     </div>
                   </td>
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
         </div>

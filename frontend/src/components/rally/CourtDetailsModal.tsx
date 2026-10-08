@@ -154,9 +154,16 @@ export const CourtDetailsModal: React.FC<CourtDetailsModalProps> = ({
                             : 'opacity-60 bg-gray-50/70 cursor-not-allowed'
                         } ${isSelected ? 'bg-rally-primary/5 font-bold' : ''}`}
                       >
-                        <td className="py-3 px-3 flex items-center gap-1.5 font-bold">
-                          <Clock className="w-3.5 h-3.5 text-gray-400" />
-                          <span>{slot.startTime} تا {slot.endTime}</span>
+                        <td className="py-3 px-3 font-bold">
+                          <div className="flex items-center gap-1.5">
+                            <Clock className="w-3.5 h-3.5 text-gray-400" />
+                            <span>{slot.startTime} تا {slot.endTime}</span>
+                          </div>
+                          {slot.startTime < '17:00' && (
+                            <span className="text-[9px] font-bold text-sky-700 bg-sky-50 border border-sky-200 px-1.5 py-0.5 rounded-md inline-block mt-1">
+                              ⚡ تعرفه ویژه روز (آف‌پیک)
+                            </span>
+                          )}
                         </td>
                         <td className="py-3 px-3 font-extrabold text-rally-charcoal">
                           {slot.price.toLocaleString('fa-IR')} <span className="text-[10px] text-gray-500 font-normal">تومان</span>

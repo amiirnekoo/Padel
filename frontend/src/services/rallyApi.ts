@@ -1265,6 +1265,39 @@ export const rallyApi = {
     } catch {
       return null;
     }
+  },
+
+  /**
+   * ثبت رزرو باجه / تلفنی حضوری با کارمزد صفر درصد و پیامک کاوه‌نگار
+   */
+  async createDeskBooking(payload: {
+    court_id?: string;
+    slot_id?: string;
+    customer_name: string;
+    customer_phone?: string;
+    payment_method?: string;
+    slot_time: string;
+    slot_date?: string;
+    club_name?: string;
+    court_name?: string;
+    send_sms?: boolean;
+    is_recurring_vip?: boolean;
+  }): Promise<{ success: boolean; tracking_code?: string; error?: string }> {
+    try {
+      const res = await fetch(`${API_BASE}/bookings/desk-manual`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...this.getUserAuthHeaders(),
+        },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در ثبت رزرو باجه' };
+      return data;
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در برقراری ارتباط' };
+    }
   }
 };
 

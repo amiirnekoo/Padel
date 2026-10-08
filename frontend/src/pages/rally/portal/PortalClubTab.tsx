@@ -70,6 +70,8 @@ export const PortalClubTab: React.FC = () => {
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [payMethod, setPayMethod] = useState('POS');
+  const [isVipRecurring, setIsVipRecurring] = useState(false);
+  const [sendSms, setSendSms] = useState(true);
   const [isNewCourtModalOpen, setIsNewCourtModalOpen] = useState(false);
 
   const toggleSlotLock = async (slotId: string) => {
@@ -84,15 +86,30 @@ export const PortalClubTab: React.FC = () => {
 
   const handleConfirmManualBooking = () => {
     if (!modalSlot || !customerName.trim()) return;
-    const updated = currentSlots.map((s) => (s.id === modalSlot.id ? {
+    const targetSlot = modalSlot;
+    const updated = currentSlots.map((s) => (s.id === targetSlot.id ? {
       ...s,
       status: 'BOOKED' as const,
       bookedBy: customerName.trim(),
       phone: customerPhone.trim() || '—',
       paymentMethod: payMethod === 'POS' ? 'کارت‌خوان باشگاه' : 'نقدی باجه',
+      isRecurringVip: isVipRecurring,
     } : s));
     setSlotsState((prev) => ({ ...prev, [slotKey]: updated }));
     setModalSlot(null);
+
+    // ارسال به بک‌اند جهت ثبت سند و ارسال پیامک کاوه‌نگار به بازیکن
+    rallyApi.createDeskBooking({
+      slot_id: targetSlot.id,
+      customer_name: customerName.trim(),
+      customer_phone: customerPhone.trim(),
+      payment_method: payMethod,
+      slot_time: targetSlot.time,
+      club_name: currentClub.name,
+      court_name: currentCourt,
+      send_sms: sendSms,
+      is_recurring_vip: isVipRecurring,
+    }).catch(() => {});
   };
 
   const handleAddNewCourt = (payload: NewCourtPayload) => {
@@ -197,6 +214,8 @@ export const PortalClubTab: React.FC = () => {
               setCustomerName('');
               setCustomerPhone('');
               setPayMethod('POS');
+              setIsVipRecurring(false);
+              setSendSms(true);
             }}
             onToggleSlotLock={toggleSlotLock}
             onOpenNewCourtModal={() => setIsNewCourtModalOpen(true)}
@@ -210,9 +229,13 @@ export const PortalClubTab: React.FC = () => {
         customerName={customerName}
         customerPhone={customerPhone}
         payMethod={payMethod}
+        isVipRecurring={isVipRecurring}
+        sendSms={sendSms}
         onCustomerNameChange={setCustomerName}
         onCustomerPhoneChange={setCustomerPhone}
         onPayMethodChange={setPayMethod}
+        onIsVipRecurringChange={setIsVipRecurring}
+        onSendSmsChange={setSendSms}
         onClose={() => setModalSlot(null)}
         onConfirm={handleConfirmManualBooking}
       />

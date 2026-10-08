@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DollarSign, TrendingUp, TrendingDown, Plus, Trash2, Calendar, FileText, CheckCircle2, AlertCircle } from 'lucide-react';
 import { rallyApi } from '../../../../services/rallyApi';
 import { NewTransactionModal, NewTransactionPayload } from './NewTransactionModal';
+import { ClubZeroFeeDeskBanner } from './ClubZeroFeeDeskBanner';
 
 interface ClubAccountingTabProps {
   clubId: string;
@@ -156,6 +157,9 @@ export const ClubAccountingTab: React.FC<ClubAccountingTabProps> = ({ clubId, cl
           </button>
         </div>
       </div>
+
+      {/* 0% Platform Fee Banner for Desk / POS Booking */}
+      <ClubZeroFeeDeskBanner />
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
