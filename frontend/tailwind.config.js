@@ -112,6 +112,7 @@ export default {
       },
       fontFamily: {
         sans: ['Vazirmatn', 'Inter', 'system-ui', 'sans-serif'],
+        mono: ['Vazirmatn', 'Inter', 'system-ui', 'sans-serif'],
       },
       spacing: {
         // Strict 8px grid scale

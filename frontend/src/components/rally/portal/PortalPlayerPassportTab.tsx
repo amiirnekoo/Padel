@@ -48,18 +48,18 @@ export const PortalPlayerPassportTab: React.FC<PortalPlayerPassportTabProps> = (
                   احراز هویت شده
                 </span>
               </div>
-              <p className="text-xs text-slate-400 mt-1 font-mono">{userSession.phoneNumber}</p>
+              <p className="text-xs text-slate-400 mt-1" dir="ltr">{userSession.phoneNumber}</p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
             <div className="bg-slate-900 border border-white/10 px-4 py-2 rounded-xl text-center">
               <span className="text-[10px] text-slate-400 block">رنکینگ استانی</span>
-              <span className="text-base font-black text-[#D7ED68] font-mono">#۴۲</span>
+              <span className="text-base font-extrabold text-[#D7ED68]">#۴۲</span>
             </div>
             <div className="bg-slate-900 border border-white/10 px-4 py-2 rounded-xl text-center">
               <span className="text-[10px] text-slate-400 block">امتیاز رالی (RP)</span>
-              <span className="text-base font-black text-white font-mono">۱,۴۸۰</span>
+              <span className="text-base font-extrabold text-white">۱,۴۸۰</span>
             </div>
           </div>
         </div>

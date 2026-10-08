@@ -73,7 +73,7 @@ export const QuickManualBookingModal: React.FC<QuickManualBookingModalProps> = (
           {/* Price Badge */}
           <div className="bg-[#0B1724] border border-white/10 p-3.5 rounded-2xl flex items-center justify-between">
             <span className="text-xs text-slate-400">مبلغ سانس ۹۰ دقیقه‌ای:</span>
-            <span className="text-sm font-black text-[#D7ED68] font-mono">
+            <span className="text-sm font-black text-[#D7ED68]">
               {slot.price.toLocaleString('fa-IR')} تومان
             </span>
           </div>
@@ -104,7 +104,7 @@ export const QuickManualBookingModal: React.FC<QuickManualBookingModalProps> = (
                 placeholder="۰۹۱۲۳۴۵۶۷۸۹"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="w-full bg-[#07131F] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white font-mono placeholder-slate-500 focus:outline-none focus:border-[#D7ED68]"
+                className="w-full bg-[#07131F] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#D7ED68]"
               />
             </div>
           </div>

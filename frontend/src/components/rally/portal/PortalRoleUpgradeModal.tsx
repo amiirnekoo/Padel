@@ -76,7 +76,7 @@ export const PortalRoleUpgradeModal: React.FC<PortalRoleUpgradeModalProps> = ({
             <p className="text-xs text-slate-300 leading-relaxed">
               مدارک شما در پنل مدیریت رالی بررسی خواهد شد و پس از احراز هویت، دسترسی پنل برای شما فعال می‌شود.
             </p>
-            <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-800 text-xs text-slate-300 font-mono">
+            <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-800 text-xs text-slate-300">
               کد پیگیری: <strong className="text-[#D7ED68]">{successTrackingId}</strong>
             </div>
             <button
@@ -146,7 +146,7 @@ export const PortalRoleUpgradeModal: React.FC<PortalRoleUpgradeModalProps> = ({
                   value={licenseNo}
                   onChange={(e) => setLicenseNo(e.target.value)}
                   placeholder="مثال: IR-PADEL-1403-998"
-                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rally-primary font-mono"
+                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rally-primary"
                 />
               </div>
             )}

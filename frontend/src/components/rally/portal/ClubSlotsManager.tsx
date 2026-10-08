@@ -42,19 +42,19 @@ export const ClubSlotsManager: React.FC<ClubSlotsManagerProps> = ({
         <div className="overflow-x-auto">
           <table className="w-full table-fixed text-right text-xs">
             <colgroup>
+              <col className="w-40" />
+              <col className="w-32" />
               <col className="w-28" />
-              <col className="w-28" />
-              <col className="w-28" />
-              <col className="w-48" />
+              <col className="w-auto" />
               <col className="w-36" />
             </colgroup>
-            <thead className="bg-[#0B1724] text-slate-400 font-bold border-b border-white/5">
+            <thead className="bg-[#091522] text-slate-300 font-extrabold text-xs border-b border-white/10">
               <tr>
-                <th className="p-3">زمان سانس</th>
-                <th className="p-3">مبلغ (تومان)</th>
-                <th className="p-3">وضعیت</th>
-                <th className="p-3">اطلاعات مشتری</th>
-                <th className="p-3 text-center">عملیات اپراتور</th>
+                <th className="p-3.5">زمان سانس</th>
+                <th className="p-3.5">مبلغ (تومان)</th>
+                <th className="p-3.5">وضعیت</th>
+                <th className="p-3.5">اطلاعات مشتری</th>
+                <th className="p-3.5 text-center">عملیات اپراتور</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5 text-slate-300">
@@ -68,82 +68,86 @@ export const ClubSlotsManager: React.FC<ClubSlotsManagerProps> = ({
                 );
                 return (
                   <tr key={s.id} className="hover:bg-white/5 transition-colors">
-                    <td className="p-3 font-bold text-white font-mono">
-                      <div>{s.time}</div>
+                    <td className="p-3.5 font-bold text-white text-xs">
+                      <div className="font-extrabold text-slate-100">{s.time}</div>
                       {isOffPeak && (
-                        <span className="text-[9px] font-bold text-sky-400 bg-sky-500/10 border border-sky-500/20 px-1.5 py-0.5 rounded-md inline-block mt-1">
+                        <span className="text-[10px] font-bold text-sky-400 bg-sky-500/10 border border-sky-500/20 px-2 py-0.5 rounded-md inline-block mt-1">
                           ⚡ ساعت روز (آف‌پیک)
                         </span>
                       )}
                     </td>
-                    <td className="p-3 font-mono text-[#D7ED68]">{s.price.toLocaleString('fa-IR')}</td>
-                    <td className="p-3">
+                    <td className="p-3.5 text-xs">
+                      <span className="font-extrabold text-[#D7ED68] text-xs">{s.price.toLocaleString('fa-IR')}</span>
+                    </td>
+                    <td className="p-3.5">
                       {s.status === 'OPEN' && (
-                        <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full text-[10px] font-bold">
+                        <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-0.5 rounded-full text-[11px] font-bold inline-block">
                           آماده رزرو
                         </span>
                       )}
                       {s.status === 'BOOKED' && (
                         <div className="flex flex-col gap-1 items-start">
-                          <span className="bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded-full text-[10px] font-bold">
+                          <span className="bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2.5 py-0.5 rounded-full text-[11px] font-bold inline-block">
                             رزرو قطعی
                           </span>
                           {s.isRecurringVip && (
-                            <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-full text-[9px] font-black">
+                            <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-full text-[9px] font-black inline-block">
                               👑 هفتگی VIP
                             </span>
                           )}
                         </div>
                       )}
                       {s.status === 'LOCKED' && (
-                        <span className="bg-slate-700/40 text-slate-400 border border-slate-700 px-2 py-0.5 rounded-full text-[10px] font-bold">
+                        <span className="bg-slate-700/40 text-slate-400 border border-slate-700 px-2.5 py-0.5 rounded-full text-[11px] font-bold inline-block">
                           بسته شده
                         </span>
                       )}
                     </td>
-                  <td className="p-3 text-[11px] truncate">
-                    {s.bookedBy ? (
-                      <div>
-                        <span className="text-white font-bold">{s.bookedBy}</span>
-                        {s.phone && <span className="text-slate-400 mr-1 font-mono">({s.phone})</span>}
-                        {s.paymentMethod && <span className="text-amber-400 mr-1 text-[10px]">[{s.paymentMethod}]</span>}
-                      </div>
-                    ) : (
-                      <span className="text-slate-500">—</span>
-                    )}
-                  </td>
-                  <td className="p-3 text-center">
-                    <div className="flex items-center justify-center gap-1.5">
-                      {s.status === 'OPEN' && (
-                        <>
-                          <button
-                            onClick={() => onOpenManualBooking(s)}
-                            className="px-2 py-1 bg-rally-primary/20 hover:bg-rally-primary/30 text-white rounded-lg text-[10px] font-bold border border-rally-primary/40 flex items-center gap-1 cursor-pointer transition-colors"
-                          >
-                            <PhoneCall className="w-3 h-3 text-[#D7ED68]" />
-                            <span>ثبت باجه</span>
-                          </button>
+                    <td className="p-3.5 text-xs truncate">
+                      {s.bookedBy ? (
+                        <div className="space-y-0.5">
+                          <div className="text-white font-extrabold text-xs truncate">{s.bookedBy}</div>
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            {s.phone && <span className="text-slate-400 text-[11px]" dir="ltr">({s.phone})</span>}
+                            {s.paymentMethod && <span className="text-amber-300 text-[10px] bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">{s.paymentMethod}</span>}
+                          </div>
+                        </div>
+                      ) : (
+                        <span className="text-slate-500 text-xs">—</span>
+                      )}
+                    </td>
+                    <td className="p-3.5 text-center">
+                      <div className="flex items-center justify-center gap-1.5">
+                        {s.status === 'OPEN' && (
+                          <>
+                            <button
+                              onClick={() => onOpenManualBooking(s)}
+                              className="px-2.5 py-1.5 bg-rally-primary/20 hover:bg-rally-primary/30 text-white rounded-xl text-xs font-bold border border-rally-primary/40 flex items-center gap-1 cursor-pointer transition-colors"
+                            >
+                              <PhoneCall className="w-3.5 h-3.5 text-[#D7ED68]" />
+                              <span>ثبت باجه</span>
+                            </button>
+                            <button
+                              onClick={() => onToggleSlotLock(s.id)}
+                              className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold border border-slate-700 cursor-pointer transition-colors"
+                              title="بستن سانس"
+                            >
+                              <Lock className="w-3.5 h-3.5" />
+                            </button>
+                          </>
+                        )}
+                        {s.status === 'LOCKED' && (
                           <button
                             onClick={() => onToggleSlotLock(s.id)}
-                            className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-[10px] font-bold border border-slate-700 cursor-pointer transition-colors"
-                            title="بستن سانس"
+                            className="px-3 py-1.5 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 rounded-xl text-xs font-bold border border-emerald-500/30 flex items-center gap-1 cursor-pointer transition-colors"
                           >
-                            <Lock className="w-3 h-3" />
+                            <Unlock className="w-3.5 h-3.5" />
+                            <span>بازگشایی</span>
                           </button>
-                        </>
-                      )}
-                      {s.status === 'LOCKED' && (
-                        <button
-                          onClick={() => onToggleSlotLock(s.id)}
-                          className="px-2.5 py-1 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 rounded-lg text-[10px] font-bold border border-emerald-500/30 flex items-center gap-1 cursor-pointer transition-colors"
-                        >
-                          <Unlock className="w-3 h-3" />
-                          <span>بازگشایی</span>
-                        </button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
                 );
               })}
             </tbody>

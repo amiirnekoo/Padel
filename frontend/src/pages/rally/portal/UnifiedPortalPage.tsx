@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, LogOut, ShieldCheck } from 'lucide-react';
 import { UserSession } from '../../../components/AuthModal';
-import { PortalSidebarNav, PortalActiveTab } from '../../../components/rally/portal/PortalSidebarNav';
+import { PortalSidebarNav, PortalActiveTab, PortalViewRole } from '../../../components/rally/portal/PortalSidebarNav';
 import { PortalOverviewTab } from '../../../components/rally/portal/PortalOverviewTab';
 import { PortalPlayerTab } from './PortalPlayerTab';
 import { PortalShopOrdersTab } from '../../../components/rally/portal/PortalShopOrdersTab';
@@ -32,18 +32,33 @@ export const UnifiedPortalPage: React.FC<UnifiedPortalPageProps> = ({
   onNavigateToDrills
 }) => {
   const isAdmin = ['ADMIN', 'SUPER_ADMIN'].includes(userSession.role);
-  const isCoach = userSession.role === 'COACH' || isAdmin;
-  const isClubOwner = ['CLUB_OPERATOR', 'CLUB_MANAGER', 'CLUB_OWNER', 'CLUB_ADMIN'].includes(userSession.role) || isAdmin;
+  const isClubOwnerRole = ['CLUB_OPERATOR', 'CLUB_MANAGER', 'CLUB_OWNER', 'CLUB_ADMIN'].includes(userSession.role);
+  const isCoachRole = userSession.role === 'COACH';
+
+  // Determine initial view role (isolated perspective)
+  const [viewRole, setViewRole] = useState<PortalViewRole>(() => {
+    try {
+      const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+      if (params?.get('tab') === 'club' || params?.get('demo') === 'club' || params?.get('portal') === 'club') {
+        return 'CLUB';
+      }
+      if (isClubOwnerRole) return 'CLUB';
+      if (isCoachRole) return 'COACH';
+      return isAdmin ? 'CLUB' : 'PLAYER';
+    } catch { return 'PLAYER'; }
+  });
 
   const [activeTab, setActiveTab] = useState<PortalActiveTab>(() => {
     try {
       const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
-      if (params?.get('tab') === 'club' || params?.get('demo') === 'club' || params?.get('portal') === 'club' || isClubOwner) {
-        if (isClubOwner) return 'CLUB_HUB';
+      if (params?.get('tab') === 'club' || params?.get('demo') === 'club' || params?.get('portal') === 'club' || isClubOwnerRole) {
+        return 'CLUB_HUB';
       }
+      if (isCoachRole) return 'COACH_HUB';
       return 'OVERVIEW';
     } catch { return 'OVERVIEW'; }
   });
+
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
   const [bookingsCount, setBookingsCount] = useState<number>(0);
   const [ordersCount, setOrdersCount] = useState<number>(0);
@@ -86,17 +101,15 @@ export const UnifiedPortalPage: React.FC<UnifiedPortalPageProps> = ({
     fetchPortalStats();
   }, []);
 
-  // حفاظت از گیت نقش‌ها (Role Guard)
   const handleSelectTab = (tab: PortalActiveTab) => {
-    if (tab === 'COACH_HUB' && !isCoach) {
-      setIsUpgradeModalOpen(true);
-      return;
-    }
-    if (tab === 'CLUB_HUB' && !isClubOwner) {
-      setIsUpgradeModalOpen(true);
-      return;
-    }
     setActiveTab(tab);
+  };
+
+  const handleAdminViewRoleChange = (newRole: PortalViewRole) => {
+    setViewRole(newRole);
+    if (newRole === 'CLUB') setActiveTab('CLUB_HUB');
+    else if (newRole === 'COACH') setActiveTab('COACH_HUB');
+    else setActiveTab('OVERVIEW');
   };
 
   return (
@@ -115,7 +128,13 @@ export const UnifiedPortalPage: React.FC<UnifiedPortalPageProps> = ({
                 {userSession.fullName || 'ورزشکار'}
               </span>
             </div>
-            <span className="text-[10px] text-slate-400">داشبورد متمرکز رزرو، فروشگاه، تمرینات و رنکینگ</span>
+            <span className="text-[10px] text-slate-400">
+              {viewRole === 'CLUB'
+                ? 'پنل اختصاصی مدیریت باشگاه و کورت‌ها'
+                : viewRole === 'COACH'
+                ? 'پنل رسمی مربیگری و کلاس‌های آموزشی'
+                : 'داشبورد متمرکز رزرو، فروشگاه، تمرینات و رنکینگ'}
+            </span>
           </div>
         </div>
 
@@ -146,6 +165,8 @@ export const UnifiedPortalPage: React.FC<UnifiedPortalPageProps> = ({
           onSelectTab={handleSelectTab}
           userSession={userSession}
           onOpenUpgradeModal={() => setIsUpgradeModalOpen(true)}
+          viewRole={viewRole}
+          onViewRoleChange={isAdmin ? handleAdminViewRoleChange : undefined}
         />
 
         {/* Tab Content Canvas */}
@@ -161,6 +182,7 @@ export const UnifiedPortalPage: React.FC<UnifiedPortalPageProps> = ({
               onOpenWallet={onOpenWallet}
               onSelectTab={handleSelectTab}
               onNavigateToCourts={onExitPortal}
+              viewRole={viewRole}
             />
           )}
 
@@ -191,11 +213,11 @@ export const UnifiedPortalPage: React.FC<UnifiedPortalPageProps> = ({
             />
           )}
 
-          {activeTab === 'COACH_HUB' && isCoach && (
+          {activeTab === 'COACH_HUB' && (
             <PortalCoachTab />
           )}
 
-          {activeTab === 'CLUB_HUB' && isClubOwner && (
+          {activeTab === 'CLUB_HUB' && (
             <PortalClubTab />
           )}
         </main>

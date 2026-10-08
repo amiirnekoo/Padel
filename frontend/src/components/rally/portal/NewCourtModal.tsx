@@ -102,7 +102,7 @@ export const NewCourtModal: React.FC<NewCourtModalProps> = ({
                 required
                 value={defaultPrice}
                 onChange={(e) => setDefaultPrice(Number(e.target.value))}
-                className="w-full bg-[#0B1724] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rally-primary font-mono text-[#D7ED68]"
+                className="w-full bg-[#0B1724] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rally-primary font-bold text-[#D7ED68]"
               />
             </div>
           </div>
@@ -112,7 +112,7 @@ export const NewCourtModal: React.FC<NewCourtModalProps> = ({
             <select
               value={glassType}
               onChange={(e) => setGlassType(e.target.value)}
-              className="w-full bg-[#0B1724] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rally-primary"
+              className="w-full bg-[#0B1724] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rally-primary font-bold"
             >
               <option value="سوپر پانورامیک بدون ستون (Super Panoramic)">سوپر پانورامیک ۱۲ میل بدون ستون (دید ۳۶۰ درجه)</option>
               <option value="پانوراما با پایه‌های گوشه‌ای">پانوراما با پایه‌های گوشه‌ای استاندارد</option>
@@ -125,7 +125,7 @@ export const NewCourtModal: React.FC<NewCourtModalProps> = ({
             <select
               value={turfColor}
               onChange={(e) => setTurfColor(e.target.value)}
-              className="w-full bg-[#0B1724] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rally-primary"
+              className="w-full bg-[#0B1724] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rally-primary font-bold"
             >
               <option value="چمن آبی موندو استاندارد رسمی WPT">چمن موندو آبی رسمی WPT (تکسچرد)</option>
               <option value="چمن مشکی موندو پرمیوم">چمن مشکی موندو پرمیوم</option>
@@ -140,7 +140,7 @@ export const NewCourtModal: React.FC<NewCourtModalProps> = ({
                 type="text"
                 value={openTime}
                 onChange={(e) => setOpenTime(e.target.value)}
-                className="w-full bg-[#0B1724] border border-white/10 rounded-xl px-3 py-2 text-xs text-white text-center font-mono"
+                className="w-full bg-[#0B1724] border border-white/10 rounded-xl px-3 py-2 text-xs text-white text-center font-bold"
               />
             </div>
             <div>
@@ -149,7 +149,7 @@ export const NewCourtModal: React.FC<NewCourtModalProps> = ({
                 type="text"
                 value={closeTime}
                 onChange={(e) => setCloseTime(e.target.value)}
-                className="w-full bg-[#0B1724] border border-white/10 rounded-xl px-3 py-2 text-xs text-white text-center font-mono"
+                className="w-full bg-[#0B1724] border border-white/10 rounded-xl px-3 py-2 text-xs text-white text-center font-bold"
               />
             </div>
           </div>

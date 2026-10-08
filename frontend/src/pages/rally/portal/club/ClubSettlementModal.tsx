@@ -87,7 +87,7 @@ export const ClubSettlementModal: React.FC<ClubSettlementModalProps> = ({
           <div className="p-5 rounded-2xl bg-[#0B1724] border border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <span className="text-xs text-slate-400">موجودی آماده تسویه باشگاه:</span>
-              <p className="text-2xl font-black text-[#D7ED68] font-mono mt-1">
+              <p className="text-2xl font-black text-[#D7ED68] mt-1">
                 {balance.toLocaleString('fa-IR')} <span className="text-xs font-normal text-slate-300">تومان</span>
               </p>
               <span className="text-[10px] text-emerald-400 flex items-center gap-1 mt-1">
@@ -112,7 +112,7 @@ export const ClubSettlementModal: React.FC<ClubSettlementModalProps> = ({
               <Building className="w-4 h-4 text-slate-400" />
               <div>
                 <span className="text-slate-400 block text-[10px]">شماره شبای تاییدشده باشگاه:</span>
-                <span className="text-white font-mono font-bold tracking-wider">
+                <span className="text-white font-bold tracking-wider">
                   IR82 0120 0000 0000 1234 5678
                 </span>
               </div>
@@ -148,8 +148,8 @@ export const ClubSettlementModal: React.FC<ClubSettlementModalProps> = ({
                 <tbody className="divide-y divide-white/5 text-slate-300 text-[11px]">
                   {MOCK_SETTLEMENTS.map((s) => (
                     <tr key={s.id} className="hover:bg-white/5 transition-colors">
-                      <td className="p-3 font-mono text-slate-400">{s.trackingCode}</td>
-                      <td className="p-3 font-mono font-bold text-white">
+                      <td className="p-3 text-slate-400">{s.trackingCode}</td>
+                      <td className="p-3 font-bold text-white">
                         {s.amount.toLocaleString('fa-IR')} ت
                       </td>
                       <td className="p-3 text-slate-400">{s.date}</td>

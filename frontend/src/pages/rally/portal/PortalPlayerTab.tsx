@@ -224,7 +224,7 @@ export const PortalPlayerTab: React.FC<PortalPlayerTabProps> = ({
                           {b.slot_date ? `تاریخ: ${b.slot_date} | ` : ''}
                           ساعت: {b.start_time ? `${b.start_time} تا ${b.end_time}` : 'سانس انتخابی'}
                         </span>
-                        <span>کد پیگیری: <strong className="font-mono text-white font-bold">{b.tracking_code}</strong></span>
+                        <span>کد پیگیری: <strong className="text-white font-extrabold" dir="ltr">{b.tracking_code}</strong></span>
                       </div>
                     </div>
 

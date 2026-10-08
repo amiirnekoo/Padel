@@ -62,10 +62,10 @@ export const ManualBookingModal: React.FC<ManualBookingModalProps> = ({
         </div>
         <div className="text-xs text-slate-400 space-y-1">
           <div>
-            سانس انتخابی: <strong className="text-white font-mono">{slot.time}</strong>
+            سانس انتخابی: <strong className="text-white font-extrabold">{slot.time}</strong>
           </div>
           <div>
-            مبلغ سانس: <strong className="text-[#D7ED68] font-mono">{slot.price.toLocaleString('fa-IR')} تومان</strong>
+            مبلغ سانس: <strong className="text-[#D7ED68] font-extrabold">{slot.price.toLocaleString('fa-IR')} تومان</strong>
             <span className="text-[10px] text-emerald-400 mr-2 font-bold">(کارمزد پلتفرم: ۰٪)</span>
           </div>
         </div>
@@ -77,7 +77,7 @@ export const ManualBookingModal: React.FC<ManualBookingModalProps> = ({
               value={customerName}
               onChange={(e) => onCustomerNameChange(e.target.value)}
               placeholder="مثال: علی رضایی"
-              className="w-full bg-[#0B1724] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rally-primary"
+              className="w-full bg-[#0B1724] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rally-primary font-bold"
             />
           </div>
           <div>
@@ -87,7 +87,8 @@ export const ManualBookingModal: React.FC<ManualBookingModalProps> = ({
               value={customerPhone}
               onChange={(e) => onCustomerPhoneChange(e.target.value)}
               placeholder="۰۹۱۲..."
-              className="w-full bg-[#0B1724] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rally-primary font-mono"
+              className="w-full bg-[#0B1724] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rally-primary font-bold"
+              dir="ltr"
             />
           </div>
           <div>

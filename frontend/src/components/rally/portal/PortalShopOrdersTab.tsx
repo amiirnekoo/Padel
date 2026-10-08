@@ -92,16 +92,16 @@ export const PortalShopOrdersTab: React.FC<PortalShopOrdersTabProps> = ({ onNavi
               <div className="space-y-1.5">
                 <div className="flex items-center gap-2">
                   <span className="font-bold text-white text-sm">سفارش #{o.order_id}</span>
-                  <span className="text-xs font-mono text-slate-400">{o.created_at}</span>
+                  <span className="text-xs text-slate-400">{o.created_at}</span>
                 </div>
                 <div className="text-xs text-slate-300">
                   <span>مبلغ کل: </span>
-                  <strong className="text-[#D7ED68] font-mono">{o.total_amount?.toLocaleString('fa-IR')} تومان</strong>
+                  <strong className="text-[#D7ED68] font-extrabold">{o.total_amount?.toLocaleString('fa-IR')} تومان</strong>
                 </div>
                 {o.tracking_code && (
-                  <div className="text-[11px] text-slate-400 flex items-center gap-1 font-mono">
+                  <div className="text-[11px] text-slate-400 flex items-center gap-1">
                     <Truck className="w-3 h-3 text-sky-400" />
-                    <span>کد رهگیری پست پیشتاز: {o.tracking_code}</span>
+                    <span>کد رهگیری پست پیشتاز: <strong className="text-slate-200 font-bold" dir="ltr">{o.tracking_code}</strong></span>
                   </div>
                 )}
               </div>

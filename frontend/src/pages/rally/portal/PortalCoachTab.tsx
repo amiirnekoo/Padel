@@ -139,7 +139,7 @@ export const PortalCoachTab: React.FC = () => {
                     type="number"
                     value={tempRate}
                     onChange={(e) => setTempRate(Number(e.target.value))}
-                    className="w-full bg-[#0B1724] border border-white/20 rounded-lg px-2 py-1 text-sm text-white font-mono"
+                    className="w-full bg-[#0B1724] border border-white/20 rounded-lg px-2 py-1 text-sm text-white font-bold"
                   />
                   <button onClick={handleSaveRate} className="p-1 bg-rally-primary rounded text-white">
                     <Save className="w-3.5 h-3.5" />
@@ -193,7 +193,7 @@ export const PortalCoachTab: React.FC = () => {
                     </div>
                     <div className="flex items-center gap-4 text-[11px] text-slate-400">
                       <span className="flex items-center gap-1"><Clock className="w-3 h-3 text-slate-400" /> {req.requestedDate}</span>
-                      <span className="flex items-center gap-1 font-mono"><Phone className="w-3 h-3 text-slate-400" /> {req.studentPhone}</span>
+                      <span className="flex items-center gap-1 font-bold" dir="ltr"><Phone className="w-3 h-3 text-slate-400" /> {req.studentPhone}</span>
                     </div>
                   </div>
 
@@ -268,7 +268,7 @@ export const PortalCoachTab: React.FC = () => {
                     <span>تعداد جلسات: </span>
                     <strong className="text-white">{pkg.sessionsCount} جلسه</strong>
                   </div>
-                  <div className="text-sm font-bold text-[#D7ED68] font-mono">
+                  <div className="text-sm font-extrabold text-[#D7ED68]">
                     {pkg.price.toLocaleString('fa-IR')} تومان
                   </div>
                 </div>

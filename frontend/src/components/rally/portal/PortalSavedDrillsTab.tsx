@@ -94,7 +94,7 @@ export const PortalSavedDrillsTab: React.FC<PortalSavedDrillsTabProps> = ({ onNa
                   <Award className="w-3.5 h-3.5 text-amber-400" />
                   {d.level}
                 </span>
-                <span className="flex items-center gap-1 font-mono">
+                <span className="flex items-center gap-1">
                   <Clock className="w-3.5 h-3.5" />
                   {d.duration_minutes} دقیقه
                 </span>

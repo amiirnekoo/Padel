@@ -240,7 +240,7 @@ export const ClubAccountingTab: React.FC<ClubAccountingTabProps> = ({ clubId, cl
                       </td>
                       <td className="py-3 px-4 text-slate-300">
                         <span className="block">{PAYMENT_NAMES[tx.payment_method] || tx.payment_method}</span>
-                        {tx.reference_id && <span className="text-[10px] text-slate-400 font-mono block">کد: {tx.reference_id}</span>}
+                        {tx.reference_id && <span className="text-[10px] text-slate-400 block" dir="ltr">کد: {tx.reference_id}</span>}
                       </td>
                       <td className="py-3 px-4 font-black">
                         <span className={isIncome ? 'text-emerald-400' : 'text-rose-400'}>

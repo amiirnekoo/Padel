@@ -63,7 +63,7 @@ export const ClubTimelineGrid: React.FC<ClubTimelineGridProps> = ({
           </colgroup>
           <thead className="bg-[#091420] text-slate-300 font-bold border-b border-white/5">
             <tr>
-              <th className="p-3.5 text-center text-slate-400 font-mono text-[11px]">ساعت سانس</th>
+              <th className="p-3.5 text-center text-slate-400 font-bold text-[11px]">ساعت سانس</th>
               {courts.map((court) => (
                 <th key={court.id} className="p-3.5 border-r border-white/5">
                   <div className="flex items-center justify-between">
@@ -91,7 +91,7 @@ export const ClubTimelineGrid: React.FC<ClubTimelineGridProps> = ({
             {timeRows.map((time) => (
               <tr key={time} className="hover:bg-white/[0.02] transition-colors">
                 {/* Time Column */}
-                <td className="p-3 font-mono font-bold text-slate-300 text-center text-xs bg-[#091420]/60 border-l border-white/5">
+                <td className="p-3 font-bold text-slate-300 text-center text-xs bg-[#091420]/60 border-l border-white/5">
                   {time}
                 </td>
 
@@ -115,7 +115,7 @@ export const ClubTimelineGrid: React.FC<ClubTimelineGridProps> = ({
                         <div className="p-2.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/15 border border-emerald-500/20 transition-all flex items-center justify-between gap-2 group">
                           <div>
                             <span className="text-[10px] font-bold text-emerald-400 block">آماده رزرو آنلاین</span>
-                            <span className="text-xs font-mono font-bold text-white">
+                            <span className="text-xs font-bold text-white">
                               {slot.price.toLocaleString('fa-IR')} ت
                             </span>
                           </div>
@@ -147,7 +147,7 @@ export const ClubTimelineGrid: React.FC<ClubTimelineGridProps> = ({
                               <Globe className="w-3 h-3" />
                               <span>{slot.bookedBy || 'رزرو آنلاین رالی'}</span>
                             </div>
-                            <span className="text-[10px] text-slate-400 font-mono mt-0.5 block">
+                            <span className="text-[10px] text-slate-400 mt-0.5 block">
                               {slot.phone || 'پرداخت شاپرک'}
                             </span>
                           </div>
