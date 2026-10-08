@@ -26,8 +26,9 @@ export const PortalOverviewTab: React.FC<PortalOverviewTabProps> = ({
   onSelectTab,
   onNavigateToCourts
 }) => {
-  const isClubOwner = ['CLUB_OPERATOR', 'CLUB_MANAGER', 'CLUB_OWNER', 'CLUB_ADMIN'].includes(userSession.role);
-  const isCoach = userSession.role === 'COACH';
+  const isAdmin = ['ADMIN', 'SUPER_ADMIN'].includes(userSession.role);
+  const isClubOwner = ['CLUB_OPERATOR', 'CLUB_MANAGER', 'CLUB_OWNER', 'CLUB_ADMIN'].includes(userSession.role) || isAdmin;
+  const isCoach = userSession.role === 'COACH' || isAdmin;
 
   return (
     <div className="space-y-6" dir="rtl">
@@ -37,7 +38,7 @@ export const PortalOverviewTab: React.FC<PortalOverviewTabProps> = ({
           <div className="flex items-center gap-2">
             <h2 className="text-lg font-black text-white">خوش آمدید، {userSession.fullName || 'ورزشکار رالی'}</h2>
             <span className="text-[10px] font-bold bg-[#D7ED68]/20 text-[#D7ED68] px-2 py-0.5 rounded-md border border-[#D7ED68]/30">
-              {isClubOwner ? 'مدیر باشگاه' : isCoach ? 'مربی رسمی' : 'بازیکن رسمی رالی'}
+              {isAdmin ? 'مدیر ارشد سامانه (دسترسی کامل)' : isClubOwner ? 'مدیر باشگاه' : isCoach ? 'مربی رسمی' : 'بازیکن رسمی رالی'}
             </span>
           </div>
           <p className="text-xs text-slate-400 mt-1">

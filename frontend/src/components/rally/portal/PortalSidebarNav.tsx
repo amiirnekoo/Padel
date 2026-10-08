@@ -24,8 +24,9 @@ export const PortalSidebarNav: React.FC<PortalSidebarNavProps> = ({
   userSession,
   onOpenUpgradeModal
 }) => {
-  const isCoach = userSession.role === 'COACH';
-  const isClubOwner = ['CLUB_OPERATOR', 'CLUB_MANAGER', 'CLUB_OWNER', 'CLUB_ADMIN'].includes(userSession.role);
+  const isAdmin = ['ADMIN', 'SUPER_ADMIN'].includes(userSession.role);
+  const isCoach = userSession.role === 'COACH' || isAdmin;
+  const isClubOwner = ['CLUB_OPERATOR', 'CLUB_MANAGER', 'CLUB_OWNER', 'CLUB_ADMIN'].includes(userSession.role) || isAdmin;
 
   const navItems = [
     { id: 'OVERVIEW' as PortalActiveTab, label: 'نمای کلی پرتال', icon: LayoutDashboard },

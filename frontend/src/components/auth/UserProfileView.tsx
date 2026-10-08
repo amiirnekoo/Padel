@@ -92,6 +92,8 @@ export const UserProfileView: React.FC<UserProfileViewProps> = ({
               <Award className="w-4 h-4 text-[#D7ED68]" />
             ) : currentUser.role === 'CLUB_MANAGER' ? (
               <Building2 className="w-4 h-4 text-[#D7ED68]" />
+            ) : currentUser.role === 'ADMIN' ? (
+              <Shield className="w-4 h-4 text-[#D7ED68]" />
             ) : (
               <UserCheck className="w-4 h-4 text-[#D7ED68]" />
             )}
@@ -100,6 +102,8 @@ export const UserProfileView: React.FC<UserProfileViewProps> = ({
                 ? 'ورود به پنل اختصاصی مربی (شاگردان و سانس‌ها)'
                 : currentUser.role === 'CLUB_MANAGER'
                 ? 'ورود به پنل مدیریت باشگاه (زمین‌ها و سانس‌ها)'
+                : currentUser.role === 'ADMIN'
+                ? 'ورود به پرتال مدیریت (دسترسی کامل باشگاه و مربی)'
                 : 'مشاهده داشبورد بازیکن و سوابق رزرو'}
             </span>
           </div>

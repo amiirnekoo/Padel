@@ -31,8 +31,9 @@ export const UnifiedPortalPage: React.FC<UnifiedPortalPageProps> = ({
   onNavigateToShop,
   onNavigateToDrills
 }) => {
-  const isCoach = userSession.role === 'COACH';
-  const isClubOwner = ['CLUB_OPERATOR', 'CLUB_MANAGER', 'CLUB_OWNER', 'CLUB_ADMIN'].includes(userSession.role);
+  const isAdmin = ['ADMIN', 'SUPER_ADMIN'].includes(userSession.role);
+  const isCoach = userSession.role === 'COACH' || isAdmin;
+  const isClubOwner = ['CLUB_OPERATOR', 'CLUB_MANAGER', 'CLUB_OWNER', 'CLUB_ADMIN'].includes(userSession.role) || isAdmin;
 
   const [activeTab, setActiveTab] = useState<PortalActiveTab>(() => {
     try {

@@ -1250,6 +1250,21 @@ export const rallyApi = {
     } catch (err: any) {
       return { success: false, error: err?.message || 'خطا در ارتباط با سرور' };
     }
+  },
+
+  /**
+   * دریافت پروفایل کاربر جاری و تطبیق نقش
+   */
+  async getMe(): Promise<any | null> {
+    try {
+      const res = await fetch(`${API_BASE}/auth/me`, {
+        headers: this.getUserAuthHeaders(),
+      });
+      if (!res.ok) return null;
+      return await res.json();
+    } catch {
+      return null;
+    }
   }
 };
 

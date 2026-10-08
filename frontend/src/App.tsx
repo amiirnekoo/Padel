@@ -88,6 +88,13 @@ export const App: React.FC = () => {
   useEffect(() => {
     if (userSession?.userId) {
       rallyApi.getWalletBalance(userSession.userId).then((b) => { if (typeof b === 'number') setWalletBalance(b); });
+      rallyApi.getMe().then((me) => {
+        if (me?.role && me.role !== userSession.role) {
+          const upd = { ...userSession, role: me.role, fullName: me.full_name || userSession.fullName };
+          setUserSession(upd);
+          try { localStorage.setItem('padel_auth', JSON.stringify(upd)); } catch {}
+        }
+      });
     } else { setWalletBalance(0); }
   }, [userSession?.userId]);
 
@@ -197,18 +204,9 @@ export const App: React.FC = () => {
                 {activeTab === 'drills' && (
                   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                     {route.drillSlug ? (
-                      <DrillDetailPage
-                        slug={route.drillSlug}
-                        onBack={backToDrills}
-                        userToken={userSession?.token}
-                        onRequireAuth={() => setIsAuthOpen(true)}
-                      />
+                      <DrillDetailPage slug={route.drillSlug} onBack={backToDrills} userToken={userSession?.token} onRequireAuth={() => setIsAuthOpen(true)} />
                     ) : (
-                      <DrillsDirectoryPage
-                        onSelectDrill={(slug) => navigateToDrill(slug)}
-                        userToken={userSession?.token}
-                        onRequireAuth={() => setIsAuthOpen(true)}
-                      />
+                      <DrillsDirectoryPage onSelectDrill={(slug) => navigateToDrill(slug)} userToken={userSession?.token} onRequireAuth={() => setIsAuthOpen(true)} />
                     )}
                   </div>
                 )}
