@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Phone, KeyRound, ArrowRight } from 'lucide-react';
+import { Phone, KeyRound, ArrowRight, Sparkles } from 'lucide-react';
 import { UserSession } from '../AuthModal';
 
 interface OtpLoginFormProps {
@@ -85,8 +85,9 @@ export const OtpLoginForm: React.FC<OtpLoginFormProps> = ({
 
   return (
     <div dir="rtl">
-      <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl text-amber-200 text-xs leading-relaxed mb-3">
-        ⚠️ سامانه پیامک خدماتی (OTP) در این نسخه غیرفعال است. ورود تنها از طریق کلمه عبور امکان‌پذیر است.
+      <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-300 text-xs leading-relaxed mb-3 flex items-center gap-2">
+        <Sparkles className="w-4 h-4 text-[#D7ED68] shrink-0" />
+        <span>ورود سریع و مستقیم با پیامک یکبار مصرف کاوه‌نگار (بدون نیاز به حفظ کلمه عبور)</span>
       </div>
       {step === 'PHONE' ? (
         <form onSubmit={handleRequestOtp} className="space-y-4">

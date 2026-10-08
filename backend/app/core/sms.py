@@ -124,6 +124,16 @@ class KavenegarSmsProvider(BaseSmsProvider):
                     data = res.json()
                     msg_id = str(data.get("entries", [{}])[0].get("messageid", "KVN-OK"))
                     return SmsResult(success=True, message_id=msg_id, provider="kavenegar", recipient=receptor)
+
+                # Fallback to direct SMS if template is not registered or approved yet
+                token_val = params.get("token", "")
+                if "otp" in template.lower():
+                    direct_msg = f"کد تأیید ورود شما به سامانه رالی: {token_val}"
+                else:
+                    direct_msg = f"اطلاع‌رسانی سامانه رالی: {token_val}"
+                direct_res = await self.send_sms(receptor, direct_msg)
+                if direct_res.success:
+                    return direct_res
                 return SmsResult(success=False, provider="kavenegar", recipient=receptor, error=res.text)
         except Exception as e:
             logger.error(f"Kavenegar SMS dispatch failed: {e}")

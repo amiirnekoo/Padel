@@ -1,4 +1,5 @@
 import os
+import sys
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
@@ -28,8 +29,9 @@ class Settings(BaseSettings):
     PAYMENT_GATEWAY_PROVIDER: str = os.getenv("PAYMENT_GATEWAY_PROVIDER", "MOCK")
     ZARINPAL_MERCHANT_ID: str = os.getenv("ZARINPAL_MERCHANT_ID", "00000000-0000-0000-0000-000000000000")
     REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
-    SMS_PROVIDER: str = os.getenv("SMS_PROVIDER", "mock")
+    SMS_PROVIDER: str = os.getenv("SMS_PROVIDER", "mock" if "pytest" in sys.modules else "kavenegar")
     KAVENEGAR_API_KEY: str = os.getenv("KAVENEGAR_API_KEY", "743742706A6450434E54574F6D6A6948394E7A4D4B6D4F41784154424E36672B644E536B5A6563436242413D")
+    KAVENEGAR_OTP_TEMPLATE: str = os.getenv("KAVENEGAR_OTP_TEMPLATE", "rally-otp")
 
     # Media & File Uploads
     UPLOAD_DIR: str = os.getenv("UPLOAD_DIR", "uploads")
