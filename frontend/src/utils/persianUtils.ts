@@ -137,3 +137,45 @@ export function calculateDirectDistanceKm(
   return Math.round(R * c * 10) / 10;
 }
 
+const PERSIAN_DIGIT_MAP = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+
+/**
+ * تبدیل قطعی ارقام انگلیسی و عربی به ارقام فارسی استاندارد
+ */
+export function toPersianDigits(input: string | number | null | undefined): string {
+  if (input === null || input === undefined) return '';
+  return input
+    .toString()
+    .replace(/[0-9]/g, (d) => PERSIAN_DIGIT_MAP[parseInt(d, 10)])
+    .replace(/[\u0660-\u0669]/g, (d) => PERSIAN_DIGIT_MAP[d.charCodeAt(0) - 0x0660]);
+}
+
+/**
+ * قالب‌بندی مبلغ به ریال/تومان با جداکننده سه‌رقمی و ارقام تمام‌فارسی
+ */
+export function formatPersianPrice(amount: number | string | null | undefined): string {
+  if (amount === null || amount === undefined || isNaN(Number(amount))) return '۰';
+  const num = Math.round(Number(amount));
+  const formattedEn = num.toLocaleString('en-US');
+  return toPersianDigits(formattedEn);
+}
+
+/**
+ * فرمت‌دهی امن ساعت سانس‌ها، جایگزینی خط تیره با «تا»، و تصحیح ترتیب زمانی در موتور BiDi
+ */
+export function formatSlotTimeString(timeStr: string | null | undefined): string {
+  if (!timeStr) return '';
+  const parts = timeStr.split(/\s*[-–—]|\s+تا\s+/).map((s) => s.trim()).filter(Boolean);
+  if (parts.length === 2) {
+    let [p1, p2] = parts;
+    const m1 = parseTimeToMinutes(p1);
+    const m2 = parseTimeToMinutes(p2);
+    // اگر p1 > p2 و سانس مربوط به بامداد روز بعد نباشد، ترتیب را اصلاح کن
+    if (m1 > m2 && m2 > 360) {
+      [p1, p2] = [p2, p1];
+    }
+    return `${toPersianDigits(p1)} تا ${toPersianDigits(p2)}`;
+  }
+  return toPersianDigits(timeStr);
+}
+

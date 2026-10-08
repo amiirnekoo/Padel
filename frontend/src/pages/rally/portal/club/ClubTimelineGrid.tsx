@@ -1,6 +1,7 @@
 import React from 'react';
 import { PhoneCall, Globe, Lock, Unlock, UserCheck, Award, CreditCard, Sparkles, Plus } from 'lucide-react';
 import { GridSlotItem, CourtHeaderItem } from './types';
+import { formatSlotTimeString, formatPersianPrice } from '../../../../utils/persianUtils';
 
 interface ClubTimelineGridProps {
   courts: CourtHeaderItem[];
@@ -91,8 +92,8 @@ export const ClubTimelineGrid: React.FC<ClubTimelineGridProps> = ({
             {timeRows.map((time) => (
               <tr key={time} className="hover:bg-white/[0.02] transition-colors">
                 {/* Time Column */}
-                <td className="p-3 font-bold text-slate-300 text-center text-xs bg-[#091420]/60 border-l border-white/5">
-                  {time}
+                <td className="p-3 font-bold text-slate-300 text-center text-xs bg-[#091420]/60 border-l border-white/5" dir="rtl">
+                  {formatSlotTimeString(time)}
                 </td>
 
                 {/* Court Columns */}
@@ -116,7 +117,7 @@ export const ClubTimelineGrid: React.FC<ClubTimelineGridProps> = ({
                           <div>
                             <span className="text-[10px] font-bold text-emerald-400 block">آماده رزرو آنلاین</span>
                             <span className="text-xs font-bold text-white">
-                              {slot.price.toLocaleString('fa-IR')} ت
+                              {formatPersianPrice(slot.price)} ت
                             </span>
                           </div>
                           <div className="flex items-center gap-1">

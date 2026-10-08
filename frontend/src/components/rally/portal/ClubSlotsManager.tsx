@@ -1,6 +1,7 @@
 import React from 'react';
 import { PhoneCall, Lock, Unlock, Plus } from 'lucide-react';
 import { CourtSlotItem } from './ManualBookingModal';
+import { formatSlotTimeString, formatPersianPrice } from '../../../utils/persianUtils';
 
 interface ClubSlotsManagerProps {
   currentCourt: string;
@@ -69,8 +70,8 @@ export const ClubSlotsManager: React.FC<ClubSlotsManagerProps> = ({
                 return (
                   <tr key={s.id} className="hover:bg-white/5 transition-colors">
                     <td className="p-3.5 font-bold text-white text-xs">
-                      <div className="font-extrabold text-slate-100">
-                        {s.time.includes(' - ') ? s.time.replace(' - ', ' تا ') : s.time}
+                      <div className="font-extrabold text-slate-100" dir="rtl">
+                        {formatSlotTimeString(s.time)}
                       </div>
                       {isOffPeak && (
                         <span className="text-[10px] font-bold text-sky-400 bg-sky-500/10 border border-sky-500/20 px-2 py-0.5 rounded-md inline-block mt-1">
@@ -81,7 +82,7 @@ export const ClubSlotsManager: React.FC<ClubSlotsManagerProps> = ({
                     <td className="p-3.5 text-xs">
                       <div className="flex items-baseline gap-1">
                         <span className="font-black text-[#D7ED68] text-sm">
-                          {s.price.toLocaleString('fa-IR')}
+                          {formatPersianPrice(s.price)}
                         </span>
                         <span className="text-[10px] text-slate-400 font-normal">تومان</span>
                       </div>

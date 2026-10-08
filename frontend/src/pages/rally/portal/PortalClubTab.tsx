@@ -58,11 +58,11 @@ export const PortalClubTab: React.FC = () => {
 
   const [slotsState, setSlotsState] = useState<Record<string, CourtSlotItem[]>>(DEFAULT_SLOTS);
   const currentSlots = slotsState[slotKey] || [
-    { id: `${slotKey}-1`, time: '۰۸:۰۰ - ۰۹:۳۰', price: 2200000, status: 'OPEN' },
-    { id: `${slotKey}-2`, time: '۰۹:۳۰ - ۱۱:۰۰', price: 2200000, status: 'OPEN' },
-    { id: `${slotKey}-3`, time: '۱۶:۳۰ - ۱۸:۰۰', price: 2800000, status: 'OPEN' },
-    { id: `${slotKey}-4`, time: '۱۸:۰۰ - ۱۹:۳۰', price: 2800000, status: 'OPEN' },
-    { id: `${slotKey}-5`, time: '۱۹:۳۰ - ۲۱:۰۰', price: 2800000, status: 'LOCKED' },
+    { id: `${slotKey}-1`, time: '۰۸:۰۰ تا ۰۹:۳۰', price: 2200000, status: 'OPEN' },
+    { id: `${slotKey}-2`, time: '۰۹:۳۰ تا ۱۱:۰۰', price: 2200000, status: 'OPEN' },
+    { id: `${slotKey}-3`, time: '۱۶:۳۰ تا ۱۸:۰۰', price: 2800000, status: 'OPEN' },
+    { id: `${slotKey}-4`, time: '۱۸:۰۰ تا ۱۹:۳۰', price: 2800000, status: 'OPEN' },
+    { id: `${slotKey}-5`, time: '۱۹:۳۰ تا ۲۱:۰۰', price: 2800000, status: 'LOCKED' },
   ];
 
   // Modals state

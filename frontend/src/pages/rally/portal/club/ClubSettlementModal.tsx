@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X, DollarSign, ArrowUpRight, CheckCircle2, Building, ShieldCheck, Clock } from 'lucide-react';
+import { toPersianDigits, formatPersianPrice } from '../../../../utils/persianUtils';
 
 interface SettlementRecord {
   id: string;
@@ -87,8 +88,9 @@ export const ClubSettlementModal: React.FC<ClubSettlementModalProps> = ({
           <div className="p-5 rounded-2xl bg-[#0B1724] border border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <span className="text-xs text-slate-400">موجودی آماده تسویه باشگاه:</span>
-              <p className="text-2xl font-black text-[#D7ED68] mt-1">
-                {balance.toLocaleString('fa-IR')} <span className="text-xs font-normal text-slate-300">تومان</span>
+              <p className="text-2xl font-black text-[#D7ED68] mt-1 flex items-baseline gap-1.5">
+                <span>{formatPersianPrice(balance)}</span>
+                <span className="text-xs font-normal text-slate-300">تومان</span>
               </p>
               <span className="text-[10px] text-emerald-400 flex items-center gap-1 mt-1">
                 <ShieldCheck className="w-3.5 h-3.5" />
@@ -148,11 +150,11 @@ export const ClubSettlementModal: React.FC<ClubSettlementModalProps> = ({
                 <tbody className="divide-y divide-white/5 text-slate-300 text-[11px]">
                   {MOCK_SETTLEMENTS.map((s) => (
                     <tr key={s.id} className="hover:bg-white/5 transition-colors">
-                      <td className="p-3 text-slate-400">{s.trackingCode}</td>
+                      <td className="p-3 text-slate-400">{toPersianDigits(s.trackingCode)}</td>
                       <td className="p-3 font-bold text-white">
-                        {s.amount.toLocaleString('fa-IR')} ت
+                        {formatPersianPrice(s.amount)} ت
                       </td>
-                      <td className="p-3 text-slate-400">{s.date}</td>
+                      <td className="p-3 text-slate-400">{toPersianDigits(s.date)}</td>
                       <td className="p-3 text-center">
                         {s.status === 'PAID' ? (
                           <span className="text-emerald-400 font-bold flex items-center justify-center gap-1">

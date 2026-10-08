@@ -3,6 +3,7 @@ import { DollarSign, Plus, Trash2, CheckCircle2, AlertCircle, Award } from 'luci
 import { rallyApi } from '../../../../services/rallyApi';
 import { NewTransactionModal, NewTransactionPayload } from './NewTransactionModal';
 import { CoachPrivacyBanner } from './CoachPrivacyBanner';
+import { toPersianDigits, formatPersianPrice } from '../../../../utils/persianUtils';
 
 interface CoachAccountingTabProps {
   coachId: string;
@@ -160,27 +161,37 @@ export const CoachAccountingTab: React.FC<CoachAccountingTabProps> = ({ coachId,
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
         <div className="bg-[#0B1E30] border border-white/10 p-4 rounded-2xl">
           <span className="text-xs text-slate-400">کل درآمد تدریس (ناخالص)</span>
-          <p className="text-lg font-black text-emerald-400 mt-1">{totalIncome.toLocaleString()} <span className="text-xs font-normal text-slate-300">تومان</span></p>
+          <p className="text-lg font-black text-emerald-400 mt-1 flex items-baseline gap-1">
+            <span>{formatPersianPrice(totalIncome)}</span>
+            <span className="text-xs font-normal text-slate-300">تومان</span>
+          </p>
           <span className="text-[10px] text-slate-400 mt-1 block">خصوصی، پکیج و کارگاه</span>
         </div>
 
         <div className="bg-[#0B1E30] border border-white/10 p-4 rounded-2xl">
           <span className="text-xs text-slate-400">کسورات و هزینه‌های مربی</span>
-          <p className="text-lg font-black text-rose-400 mt-1">{totalExpense.toLocaleString()} <span className="text-xs font-normal text-slate-300">تومان</span></p>
+          <p className="text-lg font-black text-rose-400 mt-1 flex items-baseline gap-1">
+            <span>{formatPersianPrice(totalExpense)}</span>
+            <span className="text-xs font-normal text-slate-300">تومان</span>
+          </p>
           <span className="text-[10px] text-slate-400 mt-1 block">اجاره زمین و خرید توپ</span>
         </div>
 
         <div className="bg-[#0B1E30] border border-white/10 p-4 rounded-2xl">
           <span className="text-xs text-slate-400">دریافتی خالص مربی</span>
-          <p className={`text-lg font-black mt-1 ${netProfit >= 0 ? 'text-[#D7ED68]' : 'text-rose-400'}`}>
-            {netProfit.toLocaleString()} <span className="text-xs font-normal text-slate-300">تومان</span>
+          <p className={`text-lg font-black mt-1 flex items-baseline gap-1 ${netProfit >= 0 ? 'text-[#D7ED68]' : 'text-rose-400'}`}>
+            <span>{formatPersianPrice(netProfit)}</span>
+            <span className="text-xs font-normal text-slate-300">تومان</span>
           </p>
           <span className="text-[10px] text-slate-400 mt-1 block">سود خالص واریزی</span>
         </div>
 
         <div className="bg-[#0B1E30] border border-white/10 p-4 rounded-2xl">
           <span className="text-xs text-slate-400">تعداد کل اسناد مالی</span>
-          <p className="text-lg font-black text-white mt-1">{summary?.transactions_count || transactions.length} <span className="text-xs font-normal text-slate-300">سند</span></p>
+          <p className="text-lg font-black text-white mt-1 flex items-baseline gap-1">
+            <span>{toPersianDigits(summary?.transactions_count || transactions.length)}</span>
+            <span className="text-xs font-normal text-slate-300">سند</span>
+          </p>
           <span className="text-[10px] text-slate-400 mt-1 block">ثبت در دفتر حساب</span>
         </div>
       </div>
@@ -189,7 +200,7 @@ export const CoachAccountingTab: React.FC<CoachAccountingTabProps> = ({ coachId,
       <div className="bg-[#0B1E30] border border-white/10 rounded-2xl overflow-hidden shadow-lg">
         <div className="p-3.5 border-b border-white/10 flex items-center justify-between bg-[#07131F]">
           <span className="text-xs font-black text-white">ریز اسناد مالی و دریافتی از شاگردان</span>
-          <span className="text-[11px] text-slate-400">{transactions.length} رکورد مالی</span>
+          <span className="text-[11px] text-slate-400">{toPersianDigits(transactions.length)} رکورد مالی</span>
         </div>
 
         <div className="overflow-x-auto">
@@ -235,11 +246,11 @@ export const CoachAccountingTab: React.FC<CoachAccountingTabProps> = ({ coachId,
                       </td>
                       <td className="py-3 px-4 text-slate-300">
                         <span className="block">{PAYMENT_NAMES[tx.payment_method] || tx.payment_method}</span>
-                        {tx.reference_id && <span className="text-[10px] text-slate-400 block" dir="ltr">کد: {tx.reference_id}</span>}
+                        {tx.reference_id && <span className="text-[10px] text-slate-400 block">کد: {toPersianDigits(tx.reference_id)}</span>}
                       </td>
                       <td className="py-3 px-4 font-black">
                         <span className={isIncome ? 'text-emerald-400' : 'text-rose-400'}>
-                          {isIncome ? '+' : '-'} {tx.amount.toLocaleString()}
+                          {isIncome ? '+' : '-'} {formatPersianPrice(tx.amount)}
                         </span>
                       </td>
                       <td className="py-3 px-4 text-center">

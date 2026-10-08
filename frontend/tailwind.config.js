@@ -111,8 +111,8 @@ export default {
         'ultra': '114rem'
       },
       fontFamily: {
-        sans: ['Vazirmatn', 'Inter', 'system-ui', 'sans-serif'],
-        mono: ['Vazirmatn', 'Inter', 'system-ui', 'sans-serif'],
+        sans: ['Vazirmatn', 'sans-serif'],
+        mono: ['Vazirmatn', 'sans-serif'],
       },
       spacing: {
         // Strict 8px grid scale

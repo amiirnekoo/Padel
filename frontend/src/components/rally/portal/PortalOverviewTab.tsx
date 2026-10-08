@@ -2,6 +2,7 @@ import React from 'react';
 import { Calendar, Wallet, ShoppingBag, Dumbbell, ArrowLeft, Building2, UserCheck } from 'lucide-react';
 import { UserSession } from '../../AuthModal';
 import { PortalActiveTab, PortalViewRole } from './PortalSidebarNav';
+import { toPersianDigits, formatPersianPrice } from '../../../utils/persianUtils';
 
 interface PortalOverviewTabProps {
   userSession: UserSession;
@@ -94,8 +95,9 @@ export const PortalOverviewTab: React.FC<PortalOverviewTabProps> = ({
             <span className="text-xs text-slate-400">موجودی کیف پول</span>
             <Wallet className="w-4 h-4 text-[#D7ED68]" />
           </div>
-          <p className="text-xl font-black text-[#D7ED68] mt-2">
-            {walletBalance.toLocaleString('fa-IR')} <span className="text-xs font-normal text-slate-300">تومان</span>
+          <p className="text-xl font-black text-[#D7ED68] mt-2 flex items-baseline gap-1.5">
+            <span>{formatPersianPrice(walletBalance)}</span>
+            <span className="text-xs font-normal text-slate-300">تومان</span>
           </p>
           <button
             onClick={onOpenWallet}
@@ -113,7 +115,10 @@ export const PortalOverviewTab: React.FC<PortalOverviewTabProps> = ({
             <span className="text-xs text-slate-400">رزروهای فعال کورت</span>
             <Calendar className="w-4 h-4 text-emerald-400" />
           </div>
-          <p className="text-xl font-black text-white mt-2">{bookingsCount} سانس</p>
+          <p className="text-xl font-black text-white mt-2 flex items-baseline gap-1.5">
+            <span>{toPersianDigits(bookingsCount)}</span>
+            <span className="text-xs font-normal text-slate-300">سانس</span>
+          </p>
           <span className="text-[10px] text-slate-500 mt-2 block">مشاهده جزئیات و رسید</span>
         </div>
 
@@ -125,7 +130,10 @@ export const PortalOverviewTab: React.FC<PortalOverviewTabProps> = ({
             <span className="text-xs text-slate-400">سفارشات فروشگاه</span>
             <ShoppingBag className="w-4 h-4 text-blue-400" />
           </div>
-          <p className="text-xl font-black text-white mt-2">{ordersCount} سفارش</p>
+          <p className="text-xl font-black text-white mt-2 flex items-baseline gap-1.5">
+            <span>{toPersianDigits(ordersCount)}</span>
+            <span className="text-xs font-normal text-slate-300">سفارش</span>
+          </p>
           <span className="text-[10px] text-slate-500 mt-2 block">پیگیری پستی مرسولات</span>
         </div>
 
@@ -137,7 +145,10 @@ export const PortalOverviewTab: React.FC<PortalOverviewTabProps> = ({
             <span className="text-xs text-slate-400">تمرینات نشان‌شده</span>
             <Dumbbell className="w-4 h-4 text-amber-400" />
           </div>
-          <p className="text-xl font-black text-white mt-2">{drillsCount} تمرین</p>
+          <p className="text-xl font-black text-white mt-2 flex items-baseline gap-1.5">
+            <span>{toPersianDigits(drillsCount)}</span>
+            <span className="text-xs font-normal text-slate-300">تمرین</span>
+          </p>
           <span className="text-[10px] text-slate-500 mt-2 block">ویدیوهای تکنیکی اختصاصی</span>
         </div>
       </div>
