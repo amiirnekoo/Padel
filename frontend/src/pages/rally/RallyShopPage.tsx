@@ -33,10 +33,18 @@ export const RallyShopPage: React.FC<RallyShopPageProps> = ({
       if (selectedBrand !== 'ALL' && p.brand.toLowerCase() !== selectedBrand.toLowerCase()) return false;
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase().trim();
+        const tagMatch = p.tags && p.tags.some(t => t.toLowerCase().includes(q));
+        const yearMatch = (p.year && p.year.toString().includes(q)) || (q === '۲۰۲۷' && p.year === 2027) || (q === '۲۰۲۶' && p.year === 2026);
+        const womenMatch = (q === 'بانوان' || q === 'زنانه' || q === 'women') && p.is_women;
+        const newMatch = (q === 'new' || q === 'جدید') && (p.is_new || p.year === 2027);
         const match =
           p.name_fa.toLowerCase().includes(q) ||
           p.name_en.toLowerCase().includes(q) ||
-          p.brand.toLowerCase().includes(q);
+          p.brand.toLowerCase().includes(q) ||
+          tagMatch ||
+          yearMatch ||
+          womenMatch ||
+          newMatch;
         if (!match) return false;
       }
       return true;

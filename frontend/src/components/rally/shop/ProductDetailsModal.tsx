@@ -58,10 +58,20 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
             <span className="bg-rally-primary text-white text-xs font-bold px-2.5 py-1 rounded-lg">
               {product.brand}
             </span>
-            {product.year === 2026 && (
+            {product.year === 2027 ? (
+              <span className="bg-gradient-to-r from-amber-400 to-yellow-400 text-slate-950 text-xs font-black px-2.5 py-0.5 rounded-lg flex items-center gap-1 shadow-xs border border-amber-300">
+                <Sparkles className="w-3 h-3 text-slate-950" />
+                NEW ۲۰۲۷
+              </span>
+            ) : product.year === 2026 ? (
               <span className="bg-amber-500/10 text-amber-700 border border-amber-300 text-xs font-black px-2 py-0.5 rounded-lg flex items-center gap-1">
                 <Sparkles className="w-3 h-3 text-amber-500" />
-                کلکسیون ۲۰۲۶
+                ۲۰۲۶
+              </span>
+            ) : null}
+            {product.is_women && (
+              <span className="bg-rose-50 text-rose-700 border border-rose-300 text-xs font-black px-2 py-0.5 rounded-lg">
+                👩 ویژه بانوان
               </span>
             )}
             <span className="hidden sm:inline text-xs text-gray-400 font-mono">کد: {product.id}</span>
@@ -243,19 +253,9 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
 
                 {/* Qty Selector */}
                 <div className="flex items-center border border-gray-300 rounded-xl overflow-hidden">
-                  <button
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="px-2.5 py-1 bg-gray-50 text-gray-700 hover:bg-gray-100 font-bold text-xs"
-                  >
-                    -
-                  </button>
+                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="px-2.5 py-1 bg-gray-50 text-gray-700 hover:bg-gray-100 font-bold text-xs">-</button>
                   <span className="px-3 py-1 text-xs font-bold text-gray-900">{quantity}</span>
-                  <button
-                    onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
-                    className="px-2.5 py-1 bg-gray-50 text-gray-700 hover:bg-gray-100 font-bold text-xs"
-                  >
-                    +
-                  </button>
+                  <button onClick={() => setQuantity(Math.min(product.stock, quantity + 1))} className="px-2.5 py-1 bg-gray-50 text-gray-700 hover:bg-gray-100 font-bold text-xs">+</button>
                 </div>
               </div>
 
@@ -266,17 +266,7 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                     isAdded ? 'bg-sky-600 text-white' : 'bg-rally-primary text-white hover:bg-rally-primary-dark'
                   }`}
                 >
-                  {isAdded ? (
-                    <>
-                      <Check className="w-4 h-4" />
-                      <span>به سبد اضافه شد</span>
-                    </>
-                  ) : (
-                    <>
-                      <ShoppingCart className="w-4 h-4" />
-                      <span>افزودن به سبد خرید</span>
-                    </>
-                  )}
+                  {isAdded ? <><Check className="w-4 h-4" /><span>به سبد اضافه شد</span></> : <><ShoppingCart className="w-4 h-4" /><span>افزودن به سبد خرید</span></>}
                 </button>
 
                 <button

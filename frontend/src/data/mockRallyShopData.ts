@@ -1,9 +1,11 @@
 import { ShopProduct } from '../types/rally';
 import productImagesManifest from './productImagesManifest.json';
+import { NOX_NEW_RACKETS } from './noxRacketsData';
 
 const MANIFEST = (productImagesManifest || {}) as Record<string, string[]>;
 
 const RAW_SHOP_PRODUCTS: ShopProduct[] = [
+  ...NOX_NEW_RACKETS,
   {
     "id": "nox-at10-genius-18k-2026",
     "name_fa": "راکت پدل نوکس مدل AT10 Luxury Genius 18K Alum ۲۰۲۶ آگوستین تاپیا",

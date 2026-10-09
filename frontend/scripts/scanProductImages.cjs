@@ -101,13 +101,68 @@ function scanProducts() {
         return rankA - rankB;
       });
     } else {
+      // Natural sort
       filteredFiles.sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
+      
+      // Known official front face cover images for NOX rackets
+      const OFFICIAL_FRONT_COVERS = {
+        'nox-at10-genius-12k-2026': 'store_1',
+        'nox-at10-genius-attack-18k-2026': 'store_1',
+        'nox-equation-soft-advanced-2026': '4653383',
+        'Genius 18K Alum by Agustín Tapia 2027': '8207354',
+        'Genius Attack 18K Alum by Agustín Tapia 2027': '8801520',
+        'Genius 12K Alum XTREM by Agustín Tapia 2027': '8511530',
+        'Genius Attack 12K Alum XTREM by Agustín Tapia 2027': '3659832',
+        'Genius 12K Alum XTREM Lite by Agustín Tapia 2027': '9502961',
+        'Ventus Hybrid 12K XTREM by Edu Alonso 2027': '2077072',
+        'Ventus Attack 12K XTREM by Aimar Goñi 2027': '6084305',
+        'Ventus Control 3K by Miguel Lamperti 2027': '6216966',
+        'Ventus Control 12K by Aranzazu Osoro 2027': '5172734',
+        'Ventus Hybrid 12K Lite 2027': '8644376',
+        'AT10 Luxury Genius Attack 12K Alum XTREM 2026 by Agustín Tapia': '3810595',
+        'EA10 Ventus Hybrid 12K XTREM by Edu Alonso': '9207640',
+        'VK10 Ventus Control 12K by Aranzazu Osoro': '3301494',
+        'Ventus Hybrid 12K Lite': '2355266',
+      };
+
+      const coverKey = OFFICIAL_FRONT_COVERS[prodId];
+      if (coverKey) {
+        const coverIdx = filteredFiles.findIndex(f => f.includes(coverKey));
+        if (coverIdx > 0) {
+          const [coverFile] = filteredFiles.splice(coverIdx, 1);
+          filteredFiles.unshift(coverFile);
+        }
+      }
     }
 
     if (filteredFiles.length > 0) {
-      manifest[prodId] = filteredFiles.map(file => `/images/products/${relDir}/${file}`);
+      const urls = filteredFiles.map(file => `/images/products/${relDir}/${file}`);
+      manifest[prodId] = urls;
       totalImages += filteredFiles.length;
       totalProductsWithImages++;
+
+      // Canonical slug aliases for standardized IDs
+      const SLUG_ALIASES = {
+        'Genius 18K Alum by Agustín Tapia 2027': 'nox-genius-18k-alum-2027',
+        'Genius Attack 18K Alum by Agustín Tapia 2027': 'nox-genius-attack-18k-alum-2027',
+        'Genius 12K Alum XTREM by Agustín Tapia 2027': 'nox-genius-12k-alum-xtrem-2027',
+        'Genius Attack 12K Alum XTREM by Agustín Tapia 2027': 'nox-genius-attack-12k-alum-xtrem-2027',
+        'Genius 12K Alum XTREM Lite by Agustín Tapia 2027': 'nox-genius-12k-alum-xtrem-lite-2027',
+        'Ventus Hybrid 12K XTREM by Edu Alonso 2027': 'nox-ventus-hybrid-12k-xtrem-2027',
+        'Ventus Attack 12K XTREM by Aimar Goñi 2027': 'nox-ventus-attack-12k-xtrem-2027',
+        'Ventus Control 3K by Miguel Lamperti 2027': 'nox-ventus-control-3k-2027',
+        'Ventus Control 12K by Aranzazu Osoro 2027': 'nox-ventus-control-12k-2027',
+        'Ventus Hybrid 12K Lite 2027': 'nox-ventus-hybrid-12k-lite-2027',
+        'AT10 Luxury Genius Attack 12K Alum XTREM 2026 by Agustín Tapia': 'nox-at10-genius-attack-12k-2026',
+        'EA10 Ventus Hybrid 12K XTREM by Edu Alonso': 'nox-ea10-ventus-hybrid-12k-2026',
+        'VK10 Ventus Control 12K by Aranzazu Osoro': 'nox-vk10-ventus-control-12k-2026',
+        'Ventus Hybrid 12K Lite': 'nox-ventus-hybrid-12k-lite-2026'
+      };
+
+      const alias = SLUG_ALIASES[prodId];
+      if (alias) {
+        manifest[alias] = urls;
+      }
     } else {
       manifest[prodId] = [];
     }

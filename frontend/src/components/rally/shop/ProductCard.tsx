@@ -56,10 +56,20 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
           )}
 
           {/* Top Badges */}
-          <div className="absolute top-3 right-3 flex flex-col gap-1.5 z-10">
-            {Boolean(product.year && product.year >= 2026) && (
+          <div className="absolute top-3 right-3 flex flex-col items-end gap-1.5 z-10">
+            {product.year === 2027 ? (
+              <span className="inline-flex items-center gap-1 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-slate-950 text-[10px] font-black px-2.5 py-0.5 rounded-full shadow-md border border-amber-200">
+                <Zap className="w-3 h-3 fill-slate-950 text-slate-950 flex-shrink-0" />
+                <span>NEW ۲۰۲۷</span>
+              </span>
+            ) : Boolean(product.year && product.year === 2026) ? (
               <span className="bg-amber-400 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm">
                 ۲۰۲۶
+              </span>
+            ) : null}
+            {product.is_women && (
+              <span className="inline-flex items-center gap-1 bg-gradient-to-r from-pink-600 to-rose-500 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full shadow-md border border-pink-300/40">
+                <span>👩 ویژه بانوان</span>
               </span>
             )}
             {product.discount_percent > 0 && (
@@ -113,6 +123,11 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
             <span className="bg-gray-100 px-2 py-0.5 rounded-md font-medium">
               {product.balance}
             </span>
+            {product.is_women && (
+              <span className="bg-pink-50 text-pink-700 border border-pink-200/60 px-2 py-0.5 rounded-md font-bold">
+                بانوان
+              </span>
+            )}
           </div>
 
           <div className="mt-2 flex items-center gap-1.5 text-xs text-sky-700 font-medium">

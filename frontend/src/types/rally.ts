@@ -137,7 +137,10 @@ export interface ShopProduct {
   series?: string; // e.g. Luxury Series, Pro Series
   player_signature?: string; // e.g. Agustín Tapia, Miguel Lamperti
   images?: string[]; // Multiple high-res photos
-  year?: number; // e.g. 2026
+  year?: number; // e.g. 2026, 2027
+  is_new?: boolean;
+  is_women?: boolean;
+  gender?: 'ALL' | 'MEN' | 'WOMEN';
   features?: string[]; // Bullet features / technologies
   colors?: string[];
   sizes?: string[];
