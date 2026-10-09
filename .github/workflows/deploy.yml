@@ -49,18 +49,23 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/001-court-booking-engine' || github.ref == 'refs/heads/main'
     steps:
-      - name: Execute Remote SSH Deployment
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: 213.176.121.117
-          username: root
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          passphrase: ${{ secrets.SSH_PASSPHRASE }}
-          script: |
-            cd /root/Padel
-            git fetch origin
-            git checkout ${{ github.ref_name }}
-            git pull origin ${{ github.ref_name }}
-            docker compose build
-            docker compose up -d
-            docker system prune -f
+      - name: Deploy via Native SSH
+        env:
+          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_PASS: ${{ secrets.SSH_PASSPHRASE }}
+          BRANCH_NAME: ${{ github.ref_name }}
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          sudo apt-get update -qq && sudo apt-get install -y -qq sshpass
+
+          DEPLOY_SCRIPT="cd /root/Padel && git fetch origin && git checkout $BRANCH_NAME && git reset --hard origin/$BRANCH_NAME && docker compose build && docker compose up -d && docker system prune -f"
+
+          if [ -n "$SSH_PASS" ]; then
+            sshpass -P passphrase -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -i ~/.ssh/deploy_key root@213.176.121.117 "$DEPLOY_SCRIPT" || \
+            ssh -o StrictHostKeyChecking=no -i ~/.ssh/deploy_key root@213.176.121.117 "$DEPLOY_SCRIPT"
+          else
+            ssh -o StrictHostKeyChecking=no -i ~/.ssh/deploy_key root@213.176.121.117 "$DEPLOY_SCRIPT"
+          fi
