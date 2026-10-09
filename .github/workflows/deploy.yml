@@ -1,7 +1,5 @@
 name: Continuous Integration & Deployment (CI/CD)
-<div dir="rtl">
-workflow استقرار خودکار و آزمون‌های مداوم پروژه Padel / Rally
-</div>
+# workflow استقرار خودکار و آزمون‌های مداوم پروژه Padel / Rally
 
 on:
   push:
