@@ -41,24 +41,11 @@ export function getInitialUserSession(): UserSession | null {
 
 export function getInitialShopProducts(): ShopProduct[] {
   try {
-    const CURRENT_CACHE_VER = '20261009_v3_nox2027';
-    const cacheVersion = localStorage.getItem('rally_shop_cache_ver');
-    if (cacheVersion !== CURRENT_CACHE_VER) {
-      localStorage.removeItem('rally_shop_products');
-      localStorage.setItem('rally_shop_cache_ver', CURRENT_CACHE_VER);
-      return MOCK_SHOP_PRODUCTS;
-    }
-    const saved = localStorage.getItem('rally_shop_products');
-    if (saved) {
-      const parsed: ShopProduct[] = JSON.parse(saved);
-      const existingIds = new Set(parsed.map(p => p.id));
-      const hasMissing = MOCK_SHOP_PRODUCTS.some(p => !existingIds.has(p.id));
-      if (hasMissing) {
-        localStorage.setItem('rally_shop_products', JSON.stringify(MOCK_SHOP_PRODUCTS));
-        return MOCK_SHOP_PRODUCTS;
-      }
-      return parsed;
-    }
+    // Purge legacy shop product caches to guarantee always-fresh catalog
+    localStorage.removeItem('rally_shop_products');
+    localStorage.removeItem('rally_shop_cache_ver');
     return MOCK_SHOP_PRODUCTS;
-  } catch { return MOCK_SHOP_PRODUCTS; }
+  } catch {
+    return MOCK_SHOP_PRODUCTS;
+  }
 }

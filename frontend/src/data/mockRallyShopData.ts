@@ -158,12 +158,12 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
     "surface": "کربن ۳K با لمس مخملی",
     "core": "فوم افسانه‌ای کلاسیک HR3 Core نوکس",
     "warranty": "گارانتی رسمی ۶ ماهه سلامت فیزیکی رالی",
-    "image_url": "/images/products/nox/rackets/nox-ml10-pro-cup-luxury-2026/1.jpg",
+    "image_url": "/images/products/nox/rackets/Ventus Control 3K by Miguel Lamperti 2027/ventus-control-3k-by-miguel-lamperti-2027-palas-paventus327nox-6216966.webp",
     "images": [
-      "/images/products/nox/rackets/nox-ml10-pro-cup-luxury-2026/1.jpg",
-      "/images/products/nox/rackets/nox-ml10-pro-cup-luxury-2026/2.jpg",
-      "/images/products/nox/rackets/nox-ml10-pro-cup-luxury-2026/3.jpg",
-      "/images/products/nox/rackets/nox-ml10-pro-cup-luxury-2026/4.jpg"
+      "/images/products/nox/rackets/Ventus Control 3K by Miguel Lamperti 2027/ventus-control-3k-by-miguel-lamperti-2027-palas-paventus327nox-6216966.webp",
+      "/images/products/nox/rackets/Ventus Control 3K by Miguel Lamperti 2027/ventus-control-3k-by-miguel-lamperti-2027-palas-paventus327nox-9391453.webp",
+      "/images/products/nox/rackets/Ventus Control 3K by Miguel Lamperti 2027/ventus-control-3k-by-miguel-lamperti-2027-palas-paventus327nox-2256832.webp",
+      "/images/products/nox/rackets/Ventus Control 3K by Miguel Lamperti 2027/ventus-control-3k-by-miguel-lamperti-2027-palas-paventus327nox-6868860.webp"
     ],
     "rating": 4.97,
     "reviews_count": 85,
