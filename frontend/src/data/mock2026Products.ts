@@ -20,12 +20,12 @@ export const MOCK_2026_PRODUCTS: ShopProduct[] = [
     "surface": "کربن ۱۸K آلومینایز بافت‌دار زبر 3D",
     "core": "فوم هوشمند چندلایه MLD Black EVA",
     "warranty": "گارانتی رسمی ۶ ماهه سلامت فیزیکی رالی",
-    "image_url": "/images/products/nox/nox-at10-genius-18k-2026/1.jpg",
+    "image_url": "/images/products/nox/rackets/nox-at10-genius-18k-2026/1.jpg",
     "images": [
-      "/images/products/nox/nox-at10-genius-18k-2026/1.jpg",
-      "/images/products/nox/nox-at10-genius-18k-2026/2.jpg",
-      "/images/products/nox/nox-at10-genius-18k-2026/3.jpg",
-      "/images/products/nox/nox-at10-genius-18k-2026/4.jpg"
+      "/images/products/nox/rackets/nox-at10-genius-18k-2026/1.jpg",
+      "/images/products/nox/rackets/nox-at10-genius-18k-2026/2.jpg",
+      "/images/products/nox/rackets/nox-at10-genius-18k-2026/3.jpg",
+      "/images/products/nox/rackets/nox-at10-genius-18k-2026/4.jpg"
     ],
     "rating": 4.98,
     "reviews_count": 64,
@@ -66,12 +66,12 @@ export const MOCK_2026_PRODUCTS: ShopProduct[] = [
     "surface": "کربن ۱۲K متراکم بافت‌دار",
     "core": "فوم چندلایه MLD Black EVA",
     "warranty": "گارانتی رسمی ۶ ماهه سلامت فیزیکی رالی",
-    "image_url": "/images/products/nox/nox-at10-genius-12k-2026/1.jpg",
+    "image_url": "/images/products/nox/rackets/nox-at10-genius-12k-2026/1.jpg",
     "images": [
-      "/images/products/nox/nox-at10-genius-12k-2026/1.jpg",
-      "/images/products/nox/nox-at10-genius-12k-2026/2.jpg",
-      "/images/products/nox/nox-at10-genius-12k-2026/3.jpg",
-      "/images/products/nox/nox-at10-genius-12k-2026/4.jpg"
+      "/images/products/nox/rackets/nox-at10-genius-12k-2026/1.jpg",
+      "/images/products/nox/rackets/nox-at10-genius-12k-2026/2.jpg",
+      "/images/products/nox/rackets/nox-at10-genius-12k-2026/3.jpg",
+      "/images/products/nox/rackets/nox-at10-genius-12k-2026/4.jpg"
     ],
     "rating": 4.95,
     "reviews_count": 42,
@@ -109,12 +109,12 @@ export const MOCK_2026_PRODUCTS: ShopProduct[] = [
     "surface": "کربن ۱۸K آلومینایز بافت‌دار",
     "core": "فوم چندلایه MLD Black EVA",
     "warranty": "گارانتی رسمی ۶ ماهه سلامت فیزیکی رالی",
-    "image_url": "/images/products/nox/nox-at10-genius-attack-18k-2026/1.jpg",
+    "image_url": "/images/products/nox/rackets/nox-at10-genius-attack-18k-2026/1.jpg",
     "images": [
-      "/images/products/nox/nox-at10-genius-attack-18k-2026/1.jpg",
-      "/images/products/nox/nox-at10-genius-attack-18k-2026/2.jpg",
-      "/images/products/nox/nox-at10-genius-attack-18k-2026/3.jpg",
-      "/images/products/nox/nox-at10-genius-attack-18k-2026/4.jpg"
+      "/images/products/nox/rackets/nox-at10-genius-attack-18k-2026/1.jpg",
+      "/images/products/nox/rackets/nox-at10-genius-attack-18k-2026/2.jpg",
+      "/images/products/nox/rackets/nox-at10-genius-attack-18k-2026/3.jpg",
+      "/images/products/nox/rackets/nox-at10-genius-attack-18k-2026/4.jpg"
     ],
     "rating": 4.96,
     "reviews_count": 29,
@@ -152,12 +152,12 @@ export const MOCK_2026_PRODUCTS: ShopProduct[] = [
     "surface": "کربن ۳K با الیاف نقره متالایز",
     "core": "فوم کلاسیک HR3 Core نوکس",
     "warranty": "گارانتی ۶ ماهه اصالت رالی",
-    "image_url": "/images/products/nox/nox-ml10-pro-cup-luxury-2026/1.jpg",
+    "image_url": "/images/products/nox/rackets/nox-ml10-pro-cup-luxury-2026/1.jpg",
     "images": [
-      "/images/products/nox/nox-ml10-pro-cup-luxury-2026/1.jpg",
-      "/images/products/nox/nox-ml10-pro-cup-luxury-2026/2.jpg",
-      "/images/products/nox/nox-ml10-pro-cup-luxury-2026/3.jpg",
-      "/images/products/nox/nox-ml10-pro-cup-luxury-2026/4.jpg"
+      "/images/products/nox/rackets/nox-ml10-pro-cup-luxury-2026/1.jpg",
+      "/images/products/nox/rackets/nox-ml10-pro-cup-luxury-2026/2.jpg",
+      "/images/products/nox/rackets/nox-ml10-pro-cup-luxury-2026/3.jpg",
+      "/images/products/nox/rackets/nox-ml10-pro-cup-luxury-2026/4.jpg"
     ],
     "rating": 4.97,
     "reviews_count": 85,
@@ -195,12 +195,12 @@ export const MOCK_2026_PRODUCTS: ShopProduct[] = [
     "surface": "کربن آلومینایز Alum 12K",
     "core": "فوم چندلایه HR3",
     "warranty": "گارانتی ۶ ماهه سلامت فیزیکی رالی",
-    "image_url": "/images/products/nox/nox-vk10-future-2026/1.jpg",
+    "image_url": "/images/products/nox/rackets/nox-vk10-future-2026/1.jpg",
     "images": [
-      "/images/products/nox/nox-vk10-future-2026/1.jpg",
-      "/images/products/nox/nox-vk10-future-2026/2.jpg",
-      "/images/products/nox/nox-vk10-future-2026/3.jpg",
-      "/images/products/nox/nox-vk10-future-2026/4.jpg"
+      "/images/products/nox/rackets/nox-vk10-future-2026/1.jpg",
+      "/images/products/nox/rackets/nox-vk10-future-2026/2.jpg",
+      "/images/products/nox/rackets/nox-vk10-future-2026/3.jpg",
+      "/images/products/nox/rackets/nox-vk10-future-2026/4.jpg"
     ],
     "rating": 4.9,
     "reviews_count": 21,
@@ -230,12 +230,12 @@ export const MOCK_2026_PRODUCTS: ShopProduct[] = [
     "surface": "فایبرگلاس 3K تقویت شده زبر",
     "core": "فوم نرم HR3",
     "warranty": "ضمانت اصالت و سلامت فیزیکی رالی",
-    "image_url": "/images/products/nox/nox-equation-advanced-2026/1.jpg",
+    "image_url": "/images/products/nox/rackets/nox-equation-advanced-2026/1.jpg",
     "images": [
-      "/images/products/nox/nox-equation-advanced-2026/1.jpg",
-      "/images/products/nox/nox-equation-advanced-2026/2.jpg",
-      "/images/products/nox/nox-equation-advanced-2026/3.jpg",
-      "/images/products/nox/nox-equation-advanced-2026/4.jpg"
+      "/images/products/nox/rackets/nox-equation-advanced-2026/1.jpg",
+      "/images/products/nox/rackets/nox-equation-advanced-2026/2.jpg",
+      "/images/products/nox/rackets/nox-equation-advanced-2026/3.jpg",
+      "/images/products/nox/rackets/nox-equation-advanced-2026/4.jpg"
     ],
     "rating": 4.88,
     "reviews_count": 49,
@@ -265,12 +265,12 @@ export const MOCK_2026_PRODUCTS: ShopProduct[] = [
     "surface": "پارچه پلی‌استر تقویت شده ضدآب و ضدسایش",
     "core": "محفظه ترمو عایق حرارتی TermoTech",
     "warranty": "ضمانت اصالت رالی",
-    "image_url": "/images/products/nox/nox-paletero-at10-competition-xl-2026/1.jpg",
+    "image_url": "/images/products/nox/bags/nox-paletero-at10-competition-xl-2026/1.jpg",
     "images": [
-      "/images/products/nox/nox-paletero-at10-competition-xl-2026/1.jpg",
-      "/images/products/nox/nox-paletero-at10-competition-xl-2026/2.jpg",
-      "/images/products/nox/nox-paletero-at10-competition-xl-2026/3.jpg",
-      "/images/products/nox/nox-paletero-at10-competition-xl-2026/4.jpg"
+      "/images/products/nox/bags/nox-paletero-at10-competition-xl-2026/1.jpg",
+      "/images/products/nox/bags/nox-paletero-at10-competition-xl-2026/2.jpg",
+      "/images/products/nox/bags/nox-paletero-at10-competition-xl-2026/3.jpg",
+      "/images/products/nox/bags/nox-paletero-at10-competition-xl-2026/4.jpg"
     ],
     "rating": 4.95,
     "reviews_count": 31,
@@ -300,12 +300,12 @@ export const MOCK_2026_PRODUCTS: ShopProduct[] = [
     "surface": "پلی‌استر تنفسی مقاوم",
     "core": "فوم ضدضربه ضربه‌گیر راکت",
     "warranty": "ضمانت اصالت رالی",
-    "image_url": "/images/products/nox/nox-pro-series-backpack-2026/1.jpg",
+    "image_url": "/images/products/nox/bags/nox-pro-series-backpack-2026/1.jpg",
     "images": [
-      "/images/products/nox/nox-pro-series-backpack-2026/1.jpg",
-      "/images/products/nox/nox-pro-series-backpack-2026/2.jpg",
-      "/images/products/nox/nox-pro-series-backpack-2026/3.jpg",
-      "/images/products/nox/nox-pro-series-backpack-2026/4.jpg"
+      "/images/products/nox/bags/nox-pro-series-backpack-2026/1.jpg",
+      "/images/products/nox/bags/nox-pro-series-backpack-2026/2.jpg",
+      "/images/products/nox/bags/nox-pro-series-backpack-2026/3.jpg",
+      "/images/products/nox/bags/nox-pro-series-backpack-2026/4.jpg"
     ],
     "rating": 4.9,
     "reviews_count": 27,
@@ -334,12 +334,12 @@ export const MOCK_2026_PRODUCTS: ShopProduct[] = [
     "surface": "برزنت ضدآب",
     "core": "پوشش داخلی عایق",
     "warranty": "ضمانت اصالت فیزیکی",
-    "image_url": "/images/products/nox/nox-thermo-street-bag-2026/1.jpg",
+    "image_url": "/images/products/nox/bags/nox-thermo-street-bag-2026/1.jpg",
     "images": [
-      "/images/products/nox/nox-thermo-street-bag-2026/1.jpg",
-      "/images/products/nox/nox-thermo-street-bag-2026/2.jpg",
-      "/images/products/nox/nox-thermo-street-bag-2026/3.jpg",
-      "/images/products/nox/nox-thermo-street-bag-2026/4.jpg"
+      "/images/products/nox/bags/nox-thermo-street-bag-2026/1.jpg",
+      "/images/products/nox/bags/nox-thermo-street-bag-2026/2.jpg",
+      "/images/products/nox/bags/nox-thermo-street-bag-2026/3.jpg",
+      "/images/products/nox/bags/nox-thermo-street-bag-2026/4.jpg"
     ],
     "rating": 4.85,
     "reviews_count": 14,
@@ -368,12 +368,12 @@ export const MOCK_2026_PRODUCTS: ShopProduct[] = [
     "surface": "پلی‌استر الاستین کشسان ۴ جهته",
     "core": "فناوری خشک‌شوندگی سریع Balance Fresh",
     "warranty": "ضمانت اصالت و سلامت پارچه",
-    "image_url": "/images/products/nox/nox-pro-fit-jersey-tapia-2026/1.jpg",
+    "image_url": "/images/products/nox/apparel/nox-pro-fit-jersey-tapia-2026/1.jpg",
     "images": [
-      "/images/products/nox/nox-pro-fit-jersey-tapia-2026/1.jpg",
-      "/images/products/nox/nox-pro-fit-jersey-tapia-2026/2.jpg",
-      "/images/products/nox/nox-pro-fit-jersey-tapia-2026/3.jpg",
-      "/images/products/nox/nox-pro-fit-jersey-tapia-2026/4.jpg"
+      "/images/products/nox/apparel/nox-pro-fit-jersey-tapia-2026/1.jpg",
+      "/images/products/nox/apparel/nox-pro-fit-jersey-tapia-2026/2.jpg",
+      "/images/products/nox/apparel/nox-pro-fit-jersey-tapia-2026/3.jpg",
+      "/images/products/nox/apparel/nox-pro-fit-jersey-tapia-2026/4.jpg"
     ],
     "rating": 4.92,
     "reviews_count": 38,
@@ -403,12 +403,12 @@ export const MOCK_2026_PRODUCTS: ShopProduct[] = [
     "surface": "میکروفیبر پلی‌آمید ضدچروک",
     "core": "جیب‌های عمیق مخصوص ۲ توپ پدل",
     "warranty": "ضمانت اصالت رالی",
-    "image_url": "/images/products/nox/nox-technical-shorts-2026/1.jpg",
+    "image_url": "/images/products/nox/apparel/nox-technical-shorts-2026/1.jpg",
     "images": [
-      "/images/products/nox/nox-technical-shorts-2026/1.jpg",
-      "/images/products/nox/nox-technical-shorts-2026/2.jpg",
-      "/images/products/nox/nox-technical-shorts-2026/3.jpg",
-      "/images/products/nox/nox-technical-shorts-2026/4.jpg"
+      "/images/products/nox/apparel/nox-technical-shorts-2026/1.jpg",
+      "/images/products/nox/apparel/nox-technical-shorts-2026/2.jpg",
+      "/images/products/nox/apparel/nox-technical-shorts-2026/3.jpg",
+      "/images/products/nox/apparel/nox-technical-shorts-2026/4.jpg"
     ],
     "rating": 4.86,
     "reviews_count": 19,
@@ -437,12 +437,12 @@ export const MOCK_2026_PRODUCTS: ShopProduct[] = [
     "surface": "سیلیکون پزشکی چسبنده بافت‌دار",
     "core": "جذب ارتعاشات تا ۸۵٪",
     "warranty": "ضمانت اصالت کالا",
-    "image_url": "/images/products/nox/nox-custom-grip-silicone-2026/1.jpg",
+    "image_url": "/images/products/nox/accessories/nox-custom-grip-silicone-2026/1.jpg",
     "images": [
-      "/images/products/nox/nox-custom-grip-silicone-2026/1.jpg",
-      "/images/products/nox/nox-custom-grip-silicone-2026/2.jpg",
-      "/images/products/nox/nox-custom-grip-silicone-2026/3.jpg",
-      "/images/products/nox/nox-custom-grip-silicone-2026/4.jpg"
+      "/images/products/nox/accessories/nox-custom-grip-silicone-2026/1.jpg",
+      "/images/products/nox/accessories/nox-custom-grip-silicone-2026/2.jpg",
+      "/images/products/nox/accessories/nox-custom-grip-silicone-2026/3.jpg",
+      "/images/products/nox/accessories/nox-custom-grip-silicone-2026/4.jpg"
     ],
     "rating": 4.98,
     "reviews_count": 112,
@@ -472,12 +472,12 @@ export const MOCK_2026_PRODUCTS: ShopProduct[] = [
     "surface": "پلی‌یورتان چسبنده تاکی (Tacky) سوراخ‌دار",
     "core": "جاذب فوق‌العاده عرق دست",
     "warranty": "ضمانت اصالت رالی",
-    "image_url": "/images/products/nox/nox-pro-overgrip-perforated-3pack/1.jpg",
+    "image_url": "/images/products/nox/accessories/nox-pro-overgrip-perforated-3pack/1.jpg",
     "images": [
-      "/images/products/nox/nox-pro-overgrip-perforated-3pack/1.jpg",
-      "/images/products/nox/nox-pro-overgrip-perforated-3pack/2.jpg",
-      "/images/products/nox/nox-pro-overgrip-perforated-3pack/3.jpg",
-      "/images/products/nox/nox-pro-overgrip-perforated-3pack/4.jpg"
+      "/images/products/nox/accessories/nox-pro-overgrip-perforated-3pack/1.jpg",
+      "/images/products/nox/accessories/nox-pro-overgrip-perforated-3pack/2.jpg",
+      "/images/products/nox/accessories/nox-pro-overgrip-perforated-3pack/3.jpg",
+      "/images/products/nox/accessories/nox-pro-overgrip-perforated-3pack/4.jpg"
     ],
     "rating": 4.91,
     "reviews_count": 78,
@@ -507,12 +507,12 @@ export const MOCK_2026_PRODUCTS: ShopProduct[] = [
     "surface": "بافت نرم نایلونی ضدحساسیت",
     "core": "قفل مگنتیک استاندارد فدراسیون",
     "warranty": "ضمانت اصالت کالا",
-    "image_url": "/images/products/nox/nox-smartstrap-luxury-pack/1.jpg",
+    "image_url": "/images/products/nox/accessories/nox-smartstrap-luxury-pack/1.jpg",
     "images": [
-      "/images/products/nox/nox-smartstrap-luxury-pack/1.jpg",
-      "/images/products/nox/nox-smartstrap-luxury-pack/2.jpg",
-      "/images/products/nox/nox-smartstrap-luxury-pack/3.jpg",
-      "/images/products/nox/nox-smartstrap-luxury-pack/4.jpg"
+      "/images/products/nox/accessories/nox-smartstrap-luxury-pack/1.jpg",
+      "/images/products/nox/accessories/nox-smartstrap-luxury-pack/2.jpg",
+      "/images/products/nox/accessories/nox-smartstrap-luxury-pack/3.jpg",
+      "/images/products/nox/accessories/nox-smartstrap-luxury-pack/4.jpg"
     ],
     "rating": 4.89,
     "reviews_count": 34,
@@ -542,12 +542,12 @@ export const MOCK_2026_PRODUCTS: ShopProduct[] = [
     "surface": "بافت مات کربنی ضدخش 3M",
     "core": "چسب فوق قوی ۳M بدون آسیب به رنگ راکت",
     "warranty": "ضمانت اصالت فیزیکی",
-    "image_url": "/images/products/nox/nox-titanium-frame-protector/1.jpg",
+    "image_url": "/images/products/nox/accessories/nox-titanium-frame-protector/1.jpg",
     "images": [
-      "/images/products/nox/nox-titanium-frame-protector/1.jpg",
-      "/images/products/nox/nox-titanium-frame-protector/2.jpg",
-      "/images/products/nox/nox-titanium-frame-protector/3.jpg",
-      "/images/products/nox/nox-titanium-frame-protector/4.jpg"
+      "/images/products/nox/accessories/nox-titanium-frame-protector/1.jpg",
+      "/images/products/nox/accessories/nox-titanium-frame-protector/2.jpg",
+      "/images/products/nox/accessories/nox-titanium-frame-protector/3.jpg",
+      "/images/products/nox/accessories/nox-titanium-frame-protector/4.jpg"
     ],
     "rating": 4.93,
     "reviews_count": 52,
@@ -1110,12 +1110,12 @@ export const MOCK_2026_PRODUCTS: ShopProduct[] = [
     "surface": "کربن هیبریدی با تکنولوژی Auxetic 2.0",
     "core": "پاور فوم متراکم Power Foam",
     "warranty": "گارانتی ۶ ماهه اصالت رالی",
-    "image_url": "/images/products/head/head-extreme-pro-2026/1.jpg",
+    "image_url": "/images/products/head/rackets/head-extreme-pro-2026/1.jpg",
     "images": [
-      "/images/products/head/head-extreme-pro-2026/1.jpg",
-      "/images/products/head/head-extreme-pro-2026/2.jpg",
-      "/images/products/head/head-extreme-pro-2026/3.jpg",
-      "/images/products/head/head-extreme-pro-2026/4.jpg"
+      "/images/products/head/rackets/head-extreme-pro-2026/1.jpg",
+      "/images/products/head/rackets/head-extreme-pro-2026/2.jpg",
+      "/images/products/head/rackets/head-extreme-pro-2026/3.jpg",
+      "/images/products/head/rackets/head-extreme-pro-2026/4.jpg"
     ],
     "rating": 4.97,
     "reviews_count": 55,
@@ -1153,12 +1153,12 @@ export const MOCK_2026_PRODUCTS: ShopProduct[] = [
     "surface": "کربن ۱۲K یکپارچه انقلابی بدون سوراخ اضافی",
     "core": "پاور فوم ضدضربه",
     "warranty": "گارانتی اصالت رالی",
-    "image_url": "/images/products/head/head-extreme-one-2026/1.jpg",
+    "image_url": "/images/products/head/rackets/head-extreme-one-2026/1.jpg",
     "images": [
-      "/images/products/head/head-extreme-one-2026/1.jpg",
-      "/images/products/head/head-extreme-one-2026/2.jpg",
-      "/images/products/head/head-extreme-one-2026/3.jpg",
-      "/images/products/head/head-extreme-one-2026/4.jpg"
+      "/images/products/head/rackets/head-extreme-one-2026/1.jpg",
+      "/images/products/head/rackets/head-extreme-one-2026/2.jpg",
+      "/images/products/head/rackets/head-extreme-one-2026/3.jpg",
+      "/images/products/head/rackets/head-extreme-one-2026/4.jpg"
     ],
     "rating": 4.95,
     "reviews_count": 48,
@@ -1188,12 +1188,12 @@ export const MOCK_2026_PRODUCTS: ShopProduct[] = [
     "surface": "کربن ۱۲K مات با ساختار شفاف کریستالی",
     "core": "پاور فوم",
     "warranty": "گارانتی ۶ ماهه اصالت رالی",
-    "image_url": "/images/products/head/head-speed-pro-x-2026/1.jpg",
+    "image_url": "/images/products/head/rackets/head-speed-pro-x-2026/1.jpg",
     "images": [
-      "/images/products/head/head-speed-pro-x-2026/1.jpg",
-      "/images/products/head/head-speed-pro-x-2026/2.jpg",
-      "/images/products/head/head-speed-pro-x-2026/3.jpg",
-      "/images/products/head/head-speed-pro-x-2026/4.jpg"
+      "/images/products/head/rackets/head-speed-pro-x-2026/1.jpg",
+      "/images/products/head/rackets/head-speed-pro-x-2026/2.jpg",
+      "/images/products/head/rackets/head-speed-pro-x-2026/3.jpg",
+      "/images/products/head/rackets/head-speed-pro-x-2026/4.jpg"
     ],
     "rating": 4.96,
     "reviews_count": 41,
@@ -1223,12 +1223,12 @@ export const MOCK_2026_PRODUCTS: ShopProduct[] = [
     "surface": "کربن فایبرگلاس دو رویه متفاوت (Flip Design)",
     "core": "فوم کنترل Control Foam",
     "warranty": "گارانتی ۶ ماهه سلامت رالی",
-    "image_url": "/images/products/head/head-gravity-pro-2026/1.jpg",
+    "image_url": "/images/products/head/rackets/head-gravity-pro-2026/1.jpg",
     "images": [
-      "/images/products/head/head-gravity-pro-2026/1.jpg",
-      "/images/products/head/head-gravity-pro-2026/2.jpg",
-      "/images/products/head/head-gravity-pro-2026/3.jpg",
-      "/images/products/head/head-gravity-pro-2026/4.jpg"
+      "/images/products/head/rackets/head-gravity-pro-2026/1.jpg",
+      "/images/products/head/rackets/head-gravity-pro-2026/2.jpg",
+      "/images/products/head/rackets/head-gravity-pro-2026/3.jpg",
+      "/images/products/head/rackets/head-gravity-pro-2026/4.jpg"
     ],
     "rating": 4.93,
     "reviews_count": 33,
@@ -1257,12 +1257,12 @@ export const MOCK_2026_PRODUCTS: ShopProduct[] = [
     "surface": "کربن هیبریدی با بافت Extreme Spin",
     "core": "پاور فوم",
     "warranty": "گارانتی اصالت رالی",
-    "image_url": "/images/products/head/head-extreme-motion-2026/1.jpg",
+    "image_url": "/images/products/head/rackets/head-extreme-motion-2026/1.jpg",
     "images": [
-      "/images/products/head/head-extreme-motion-2026/1.jpg",
-      "/images/products/head/head-extreme-motion-2026/2.jpg",
-      "/images/products/head/head-extreme-motion-2026/3.jpg",
-      "/images/products/head/head-extreme-motion-2026/4.jpg"
+      "/images/products/head/rackets/head-extreme-motion-2026/1.jpg",
+      "/images/products/head/rackets/head-extreme-motion-2026/2.jpg",
+      "/images/products/head/rackets/head-extreme-motion-2026/3.jpg",
+      "/images/products/head/rackets/head-extreme-motion-2026/4.jpg"
     ],
     "rating": 4.94,
     "reviews_count": 36,
@@ -1291,12 +1291,12 @@ export const MOCK_2026_PRODUCTS: ShopProduct[] = [
     "surface": "کربن هیبریدی با لمس نرم Auxetic",
     "core": "پاور فوم",
     "warranty": "گارانتی اصالت رالی",
-    "image_url": "/images/products/head/head-speed-motion-2026/1.jpg",
+    "image_url": "/images/products/head/rackets/head-speed-motion-2026/1.jpg",
     "images": [
-      "/images/products/head/head-speed-motion-2026/1.jpg",
-      "/images/products/head/head-speed-motion-2026/2.jpg",
-      "/images/products/head/head-speed-motion-2026/3.jpg",
-      "/images/products/head/head-speed-motion-2026/4.jpg"
+      "/images/products/head/rackets/head-speed-motion-2026/1.jpg",
+      "/images/products/head/rackets/head-speed-motion-2026/2.jpg",
+      "/images/products/head/rackets/head-speed-motion-2026/3.jpg",
+      "/images/products/head/rackets/head-speed-motion-2026/4.jpg"
     ],
     "rating": 4.91,
     "reviews_count": 29,
@@ -1325,12 +1325,12 @@ export const MOCK_2026_PRODUCTS: ShopProduct[] = [
     "surface": "کربن ۳K بافت‌دار",
     "core": "فوم کنترل",
     "warranty": "گارانتی اصالت رالی",
-    "image_url": "/images/products/head/head-radical-pro-2026/1.jpg",
+    "image_url": "/images/products/head/rackets/head-radical-pro-2026/1.jpg",
     "images": [
-      "/images/products/head/head-radical-pro-2026/1.jpg",
-      "/images/products/head/head-radical-pro-2026/2.jpg",
-      "/images/products/head/head-radical-pro-2026/3.jpg",
-      "/images/products/head/head-radical-pro-2026/4.jpg"
+      "/images/products/head/rackets/head-radical-pro-2026/1.jpg",
+      "/images/products/head/rackets/head-radical-pro-2026/2.jpg",
+      "/images/products/head/rackets/head-radical-pro-2026/3.jpg",
+      "/images/products/head/rackets/head-radical-pro-2026/4.jpg"
     ],
     "rating": 4.89,
     "reviews_count": 20,
@@ -1359,12 +1359,12 @@ export const MOCK_2026_PRODUCTS: ShopProduct[] = [
     "surface": "پارچه پلی‌استر تقویت شده ضدآب",
     "core": "محفظه محافظت حرارتی Climate Control CCT+",
     "warranty": "ضمانت اصالت رالی",
-    "image_url": "/images/products/head/head-tour-padel-bag-monstercombi-2026/1.jpg",
+    "image_url": "/images/products/head/bags/head-tour-padel-bag-monstercombi-2026/1.jpg",
     "images": [
-      "/images/products/head/head-tour-padel-bag-monstercombi-2026/1.jpg",
-      "/images/products/head/head-tour-padel-bag-monstercombi-2026/2.jpg",
-      "/images/products/head/head-tour-padel-bag-monstercombi-2026/3.jpg",
-      "/images/products/head/head-tour-padel-bag-monstercombi-2026/4.jpg"
+      "/images/products/head/bags/head-tour-padel-bag-monstercombi-2026/1.jpg",
+      "/images/products/head/bags/head-tour-padel-bag-monstercombi-2026/2.jpg",
+      "/images/products/head/bags/head-tour-padel-bag-monstercombi-2026/3.jpg",
+      "/images/products/head/bags/head-tour-padel-bag-monstercombi-2026/4.jpg"
     ],
     "rating": 4.94,
     "reviews_count": 32,
@@ -1394,12 +1394,12 @@ export const MOCK_2026_PRODUCTS: ShopProduct[] = [
     "surface": "پلی‌استر بازیافتی rPET اکولوژیک",
     "core": "محفظه تهویه‌دار مجزای کفش",
     "warranty": "ضمانت اصالت فیزیکی",
-    "image_url": "/images/products/head/head-pro-backpack-28l-2026/1.jpg",
+    "image_url": "/images/products/head/bags/head-pro-backpack-28l-2026/1.jpg",
     "images": [
-      "/images/products/head/head-pro-backpack-28l-2026/1.jpg",
-      "/images/products/head/head-pro-backpack-28l-2026/2.jpg",
-      "/images/products/head/head-pro-backpack-28l-2026/3.jpg",
-      "/images/products/head/head-pro-backpack-28l-2026/4.jpg"
+      "/images/products/head/bags/head-pro-backpack-28l-2026/1.jpg",
+      "/images/products/head/bags/head-pro-backpack-28l-2026/2.jpg",
+      "/images/products/head/bags/head-pro-backpack-28l-2026/3.jpg",
+      "/images/products/head/bags/head-pro-backpack-28l-2026/4.jpg"
     ],
     "rating": 4.89,
     "reviews_count": 25,
@@ -1428,12 +1428,12 @@ export const MOCK_2026_PRODUCTS: ShopProduct[] = [
     "surface": "فناوری MXM تهویه میکروفیبر هد",
     "core": "تنفس‌پذیر و خنک‌کننده",
     "warranty": "ضمانت اصالت رالی",
-    "image_url": "/images/products/head/head-club-technical-polo-2026/1.jpg",
+    "image_url": "/images/products/head/apparel/head-club-technical-polo-2026/1.jpg",
     "images": [
-      "/images/products/head/head-club-technical-polo-2026/1.jpg",
-      "/images/products/head/head-club-technical-polo-2026/2.jpg",
-      "/images/products/head/head-club-technical-polo-2026/3.jpg",
-      "/images/products/head/head-club-technical-polo-2026/4.jpg"
+      "/images/products/head/apparel/head-club-technical-polo-2026/1.jpg",
+      "/images/products/head/apparel/head-club-technical-polo-2026/2.jpg",
+      "/images/products/head/apparel/head-club-technical-polo-2026/3.jpg",
+      "/images/products/head/apparel/head-club-technical-polo-2026/4.jpg"
     ],
     "rating": 4.9,
     "reviews_count": 22,
@@ -1462,12 +1462,12 @@ export const MOCK_2026_PRODUCTS: ShopProduct[] = [
     "surface": "پلی‌استر کشسان ۴ جهته",
     "core": "جیب‌های عمیق توپ",
     "warranty": "ضمانت اصالت رالی",
-    "image_url": "/images/products/head/head-club-court-shorts-2026/1.jpg",
+    "image_url": "/images/products/head/apparel/head-club-court-shorts-2026/1.jpg",
     "images": [
-      "/images/products/head/head-club-court-shorts-2026/1.jpg",
-      "/images/products/head/head-club-court-shorts-2026/2.jpg",
-      "/images/products/head/head-club-court-shorts-2026/3.jpg",
-      "/images/products/head/head-club-court-shorts-2026/4.jpg"
+      "/images/products/head/apparel/head-club-court-shorts-2026/1.jpg",
+      "/images/products/head/apparel/head-club-court-shorts-2026/2.jpg",
+      "/images/products/head/apparel/head-club-court-shorts-2026/3.jpg",
+      "/images/products/head/apparel/head-club-court-shorts-2026/4.jpg"
     ],
     "rating": 4.86,
     "reviews_count": 17,
@@ -1496,12 +1496,12 @@ export const MOCK_2026_PRODUCTS: ShopProduct[] = [
     "surface": "نمد طبیعی متراکم با دوام مضاعف",
     "core": "هسته لاستیکی جهنده پرسرعت (Speed)",
     "warranty": "ضمانت پلمپ تحت فشار اورجینال",
-    "image_url": "/images/products/head/head-padel-pro-s-can-3balls/1.jpg",
+    "image_url": "/images/products/head/balls/head-padel-pro-s-can-3balls/1.jpg",
     "images": [
-      "/images/products/head/head-padel-pro-s-can-3balls/1.jpg",
-      "/images/products/head/head-padel-pro-s-can-3balls/2.jpg",
-      "/images/products/head/head-padel-pro-s-can-3balls/3.jpg",
-      "/images/products/head/head-padel-pro-s-can-3balls/4.jpg"
+      "/images/products/head/balls/head-padel-pro-s-can-3balls/1.jpg",
+      "/images/products/head/balls/head-padel-pro-s-can-3balls/2.jpg",
+      "/images/products/head/balls/head-padel-pro-s-can-3balls/3.jpg",
+      "/images/products/head/balls/head-padel-pro-s-can-3balls/4.jpg"
     ],
     "rating": 4.99,
     "reviews_count": 185,
@@ -1532,12 +1532,12 @@ export const MOCK_2026_PRODUCTS: ShopProduct[] = [
     "surface": "نمد مقاوم",
     "core": "هسته کنترل محور کلاسیک",
     "warranty": "ضمانت پلمپ گاز اورجینال",
-    "image_url": "/images/products/head/head-padel-pro-can-3balls/1.jpg",
+    "image_url": "/images/products/head/balls/head-padel-pro-can-3balls/1.jpg",
     "images": [
-      "/images/products/head/head-padel-pro-can-3balls/1.jpg",
-      "/images/products/head/head-padel-pro-can-3balls/2.jpg",
-      "/images/products/head/head-padel-pro-can-3balls/3.jpg",
-      "/images/products/head/head-padel-pro-can-3balls/4.jpg"
+      "/images/products/head/balls/head-padel-pro-can-3balls/1.jpg",
+      "/images/products/head/balls/head-padel-pro-can-3balls/2.jpg",
+      "/images/products/head/balls/head-padel-pro-can-3balls/3.jpg",
+      "/images/products/head/balls/head-padel-pro-can-3balls/4.jpg"
     ],
     "rating": 4.94,
     "reviews_count": 92,
@@ -1566,12 +1566,12 @@ export const MOCK_2026_PRODUCTS: ShopProduct[] = [
     "surface": "پلی‌یورتان متخلخل تاکی",
     "core": "جاذب رطوبت بدون لغزش",
     "warranty": "ضمانت اصالت رالی",
-    "image_url": "/images/products/head/head-prime-pro-overgrip-3pack/1.jpg",
+    "image_url": "/images/products/head/accessories/head-prime-pro-overgrip-3pack/1.jpg",
     "images": [
-      "/images/products/head/head-prime-pro-overgrip-3pack/1.jpg",
-      "/images/products/head/head-prime-pro-overgrip-3pack/2.jpg",
-      "/images/products/head/head-prime-pro-overgrip-3pack/3.jpg",
-      "/images/products/head/head-prime-pro-overgrip-3pack/4.jpg"
+      "/images/products/head/accessories/head-prime-pro-overgrip-3pack/1.jpg",
+      "/images/products/head/accessories/head-prime-pro-overgrip-3pack/2.jpg",
+      "/images/products/head/accessories/head-prime-pro-overgrip-3pack/3.jpg",
+      "/images/products/head/accessories/head-prime-pro-overgrip-3pack/4.jpg"
     ],
     "rating": 4.93,
     "reviews_count": 64,
@@ -1600,12 +1600,12 @@ export const MOCK_2026_PRODUCTS: ShopProduct[] = [
     "surface": "پلی‌یورتان ضخیم ضدسایش کریستالی",
     "core": "چسب شفاف ۳M",
     "warranty": "ضمانت اصالت فیزیکی",
-    "image_url": "/images/products/head/head-protection-tape-transparent/1.jpg",
+    "image_url": "/images/products/head/accessories/head-protection-tape-transparent/1.jpg",
     "images": [
-      "/images/products/head/head-protection-tape-transparent/1.jpg",
-      "/images/products/head/head-protection-tape-transparent/2.jpg",
-      "/images/products/head/head-protection-tape-transparent/3.jpg",
-      "/images/products/head/head-protection-tape-transparent/4.jpg"
+      "/images/products/head/accessories/head-protection-tape-transparent/1.jpg",
+      "/images/products/head/accessories/head-protection-tape-transparent/2.jpg",
+      "/images/products/head/accessories/head-protection-tape-transparent/3.jpg",
+      "/images/products/head/accessories/head-protection-tape-transparent/4.jpg"
     ],
     "rating": 4.9,
     "reviews_count": 41,

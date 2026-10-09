@@ -23,12 +23,12 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
     "surface": "کربن ۱۸K آلومینایز بافت‌دار زبر 3D Spin+",
     "core": "فوم هوشمند چندلایه MLD Black EVA",
     "warranty": "گارانتی رسمی ۶ ماهه اصالت و سلامت فیزیکی رالی",
-    "image_url": "/images/products/nox/nox-at10-genius-18k-2026/1.jpg",
+    "image_url": "/images/products/nox/rackets/nox-at10-genius-18k-2026/1.jpg",
     "images": [
-      "/images/products/nox/nox-at10-genius-18k-2026/1.jpg",
-      "/images/products/nox/nox-at10-genius-18k-2026/2.jpg",
-      "/images/products/nox/nox-at10-genius-18k-2026/3.jpg",
-      "/images/products/nox/nox-at10-genius-18k-2026/4.jpg"
+      "/images/products/nox/rackets/nox-at10-genius-18k-2026/1.jpg",
+      "/images/products/nox/rackets/nox-at10-genius-18k-2026/2.jpg",
+      "/images/products/nox/rackets/nox-at10-genius-18k-2026/3.jpg",
+      "/images/products/nox/rackets/nox-at10-genius-18k-2026/4.jpg"
     ],
     "rating": 4.98,
     "reviews_count": 64,
@@ -69,12 +69,12 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
     "surface": "کربن ۱۲K متراکم بافت‌دار",
     "core": "فوم چندلایه MLD Black EVA",
     "warranty": "گارانتی رسمی ۶ ماهه سلامت فیزیکی رالی",
-    "image_url": "/images/products/nox/nox-at10-genius-12k-2026/1.jpg",
+    "image_url": "/images/products/nox/rackets/nox-at10-genius-12k-2026/1.jpg",
     "images": [
-      "/images/products/nox/nox-at10-genius-12k-2026/1.jpg",
-      "/images/products/nox/nox-at10-genius-12k-2026/2.jpg",
-      "/images/products/nox/nox-at10-genius-12k-2026/3.jpg",
-      "/images/products/nox/nox-at10-genius-12k-2026/4.jpg"
+      "/images/products/nox/rackets/nox-at10-genius-12k-2026/1.jpg",
+      "/images/products/nox/rackets/nox-at10-genius-12k-2026/2.jpg",
+      "/images/products/nox/rackets/nox-at10-genius-12k-2026/3.jpg",
+      "/images/products/nox/rackets/nox-at10-genius-12k-2026/4.jpg"
     ],
     "rating": 4.95,
     "reviews_count": 42,
@@ -113,12 +113,12 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
     "surface": "کربن ۱۸K آلومینایز بافت‌دار",
     "core": "فوم چندلایه MLD Black EVA",
     "warranty": "گارانتی رسمی ۶ ماهه سلامت فیزیکی رالی",
-    "image_url": "/images/products/nox/nox-at10-genius-attack-18k-2026/1.jpg",
+    "image_url": "/images/products/nox/rackets/nox-at10-genius-attack-18k-2026/1.jpg",
     "images": [
-      "/images/products/nox/nox-at10-genius-attack-18k-2026/1.jpg",
-      "/images/products/nox/nox-at10-genius-attack-18k-2026/2.jpg",
-      "/images/products/nox/nox-at10-genius-attack-18k-2026/3.jpg",
-      "/images/products/nox/nox-at10-genius-attack-18k-2026/4.jpg"
+      "/images/products/nox/rackets/nox-at10-genius-attack-18k-2026/1.jpg",
+      "/images/products/nox/rackets/nox-at10-genius-attack-18k-2026/2.jpg",
+      "/images/products/nox/rackets/nox-at10-genius-attack-18k-2026/3.jpg",
+      "/images/products/nox/rackets/nox-at10-genius-attack-18k-2026/4.jpg"
     ],
     "rating": 4.96,
     "reviews_count": 29,
@@ -156,12 +156,12 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
     "surface": "کربن ۳K با لمس مخملی",
     "core": "فوم افسانه‌ای کلاسیک HR3 Core نوکس",
     "warranty": "گارانتی رسمی ۶ ماهه سلامت فیزیکی رالی",
-    "image_url": "/images/products/nox/nox-ml10-pro-cup-luxury-2026/1.jpg",
+    "image_url": "/images/products/nox/rackets/nox-ml10-pro-cup-luxury-2026/1.jpg",
     "images": [
-      "/images/products/nox/nox-ml10-pro-cup-luxury-2026/1.jpg",
-      "/images/products/nox/nox-ml10-pro-cup-luxury-2026/2.jpg",
-      "/images/products/nox/nox-ml10-pro-cup-luxury-2026/3.jpg",
-      "/images/products/nox/nox-ml10-pro-cup-luxury-2026/4.jpg"
+      "/images/products/nox/rackets/nox-ml10-pro-cup-luxury-2026/1.jpg",
+      "/images/products/nox/rackets/nox-ml10-pro-cup-luxury-2026/2.jpg",
+      "/images/products/nox/rackets/nox-ml10-pro-cup-luxury-2026/3.jpg",
+      "/images/products/nox/rackets/nox-ml10-pro-cup-luxury-2026/4.jpg"
     ],
     "rating": 4.97,
     "reviews_count": 85,
@@ -199,10 +199,10 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
     "surface": "کربن Alum 12K",
     "core": "فوم متراکم HR3 Core",
     "warranty": "ضمانت اصالت و سلامت فیزیکی رالی",
-    "image_url": "/images/products/nox/nox-vk10-future-2026/1.jpg",
+    "image_url": "/images/products/nox/rackets/nox-vk10-future-2026/1.jpg",
     "images": [
-      "/images/products/nox/nox-vk10-future-2026/1.jpg",
-      "/images/products/nox/nox-vk10-future-2026/2.jpg"
+      "/images/products/nox/rackets/nox-vk10-future-2026/1.jpg",
+      "/images/products/nox/rackets/nox-vk10-future-2026/2.jpg"
     ],
     "rating": 4.9,
     "reviews_count": 21,
@@ -234,11 +234,11 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
     "surface": "توری تنفس‌پذیر مش سه‌بعدی",
     "core": "زیره لاتکس شاه‌ماهی مخصوص چمن شنی پدل",
     "warranty": "ضمانت اصالت ۱۰۰٪ نوکس اسپانیا",
-    "image_url": "/images/products/nox/nox-at10-lux-shoes-2026/1.jpg",
+    "image_url": "/images/products/nox/shoes/nox-at10-lux-shoes-2026/1.jpg",
     "images": [
-      "/images/products/nox/nox-at10-lux-shoes-2026/1.jpg",
-      "/images/products/nox/nox-at10-lux-shoes-2026/2.jpg",
-      "/images/products/nox/nox-at10-lux-shoes-2026/3.jpg"
+      "/images/products/nox/shoes/nox-at10-lux-shoes-2026/1.jpg",
+      "/images/products/nox/shoes/nox-at10-lux-shoes-2026/2.jpg",
+      "/images/products/nox/shoes/nox-at10-lux-shoes-2026/3.jpg"
     ],
     "rating": 4.95,
     "reviews_count": 38,
@@ -273,10 +273,10 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
     "surface": "برزنت پلیمری ضد آب",
     "core": "محفظه عایق حرارتی TermoTech",
     "warranty": "ضمانت اصالت و دوخت رالی",
-    "image_url": "/images/products/nox/nox-paletero-at10-competition-xl-2026/1.jpg",
+    "image_url": "/images/products/nox/bags/nox-paletero-at10-competition-xl-2026/1.jpg",
     "images": [
-      "/images/products/nox/nox-paletero-at10-competition-xl-2026/1.jpg",
-      "/images/products/nox/nox-paletero-at10-competition-xl-2026/2.jpg"
+      "/images/products/nox/bags/nox-paletero-at10-competition-xl-2026/1.jpg",
+      "/images/products/nox/bags/nox-paletero-at10-competition-xl-2026/2.jpg"
     ],
     "rating": 4.92,
     "reviews_count": 31,
@@ -306,9 +306,9 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
     "surface": "پلی‌استر تقویت شده ضد خش",
     "core": "بندهای دوشی طبی پددار",
     "warranty": "ضمانت اصالت و سلامت رالی",
-    "image_url": "/images/products/nox/nox-pro-series-backpack-2026/1.jpg",
+    "image_url": "/images/products/nox/bags/nox-pro-series-backpack-2026/1.jpg",
     "images": [
-      "/images/products/nox/nox-pro-series-backpack-2026/1.jpg"
+      "/images/products/nox/bags/nox-pro-series-backpack-2026/1.jpg"
     ],
     "rating": 4.88,
     "reviews_count": 19,
@@ -338,9 +338,9 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
     "surface": "پلی‌یورتان متخلخل با جذب عرق",
     "core": "چسبندگی بالا بدون لیز خوردن دست",
     "warranty": "ضمانت اصالت کالا",
-    "image_url": "/images/products/nox/nox-pro-overgrip-perforated-3pack/1.jpg",
+    "image_url": "/images/products/nox/accessories/nox-pro-overgrip-perforated-3pack/1.jpg",
     "images": [
-      "/images/products/nox/nox-pro-overgrip-perforated-3pack/1.jpg"
+      "/images/products/nox/accessories/nox-pro-overgrip-perforated-3pack/1.jpg"
     ],
     "rating": 4.96,
     "reviews_count": 92,
@@ -370,9 +370,9 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
     "surface": "سیلیکون مدیکال انعطاف‌پذیر",
     "core": "جذب تا ۵۲٪ ارتعاشات ضربه",
     "warranty": "ضمانت اصالت نوکس",
-    "image_url": "/images/products/nox/nox-custom-grip-silicone-2026/1.jpg",
+    "image_url": "/images/products/nox/accessories/nox-custom-grip-silicone-2026/1.jpg",
     "images": [
-      "/images/products/nox/nox-custom-grip-silicone-2026/1.jpg"
+      "/images/products/nox/accessories/nox-custom-grip-silicone-2026/1.jpg"
     ],
     "rating": 4.94,
     "reviews_count": 47,
@@ -402,9 +402,9 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
     "surface": "نئوپرن ضد حساسیت",
     "core": "سگک قفل مغناطیسی محکم",
     "warranty": "ضمانت اصالت",
-    "image_url": "/images/products/nox/nox-smartstrap-luxury-pack/1.jpg",
+    "image_url": "/images/products/nox/accessories/nox-smartstrap-luxury-pack/1.jpg",
     "images": [
-      "/images/products/nox/nox-smartstrap-luxury-pack/1.jpg"
+      "/images/products/nox/accessories/nox-smartstrap-luxury-pack/1.jpg"
     ],
     "rating": 4.89,
     "reviews_count": 25,
@@ -434,9 +434,9 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
     "surface": "پلیمر فوق متراکم زبر ضد ضربه",
     "core": "چسب پرقدرت 3M بدون اثر گذاری",
     "warranty": "ضمانت اصالت",
-    "image_url": "/images/products/nox/nox-titanium-frame-protector/1.jpg",
+    "image_url": "/images/products/nox/accessories/nox-titanium-frame-protector/1.jpg",
     "images": [
-      "/images/products/nox/nox-titanium-frame-protector/1.jpg"
+      "/images/products/nox/accessories/nox-titanium-frame-protector/1.jpg"
     ],
     "rating": 4.91,
     "reviews_count": 33,
@@ -466,9 +466,9 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
     "surface": "نمد بافته شده متراکم زرد فلورسنت",
     "core": "هسته لاستیکی تیتانیومی بادوام",
     "warranty": "ضمانت پرش و ماندگاری باد",
-    "image_url": "/images/products/nox/nox-pro-titanium-padel-balls-can/1.jpg",
+    "image_url": "/images/products/nox/balls/nox-pro-titanium-padel-balls-can/1.jpg",
     "images": [
-      "/images/products/nox/nox-pro-titanium-padel-balls-can/1.jpg"
+      "/images/products/nox/balls/nox-pro-titanium-padel-balls-can/1.jpg"
     ],
     "rating": 4.93,
     "reviews_count": 55,
@@ -498,9 +498,9 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
     "surface": "پارچه فنی نانو میکروفیبر خنک‌کننده",
     "core": "سیستم خروج سریع تعریق Balance Fresh",
     "warranty": "ضمانت اصالت پوشاک نوکس",
-    "image_url": "/images/products/nox/nox-pro-fit-jersey-tapia-2026/1.jpg",
+    "image_url": "/images/products/nox/apparel/nox-pro-fit-jersey-tapia-2026/1.jpg",
     "images": [
-      "/images/products/nox/nox-pro-fit-jersey-tapia-2026/1.jpg"
+      "/images/products/nox/apparel/nox-pro-fit-jersey-tapia-2026/1.jpg"
     ],
     "rating": 4.88,
     "reviews_count": 14,
@@ -530,12 +530,12 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
     "surface": "کربن هیبریدی با فناوری زبر Extreme Spin",
     "core": "فوم انفجاری Power Foam",
     "warranty": "گارانتی رسمی ۶ ماهه اصالت رالی",
-    "image_url": "/images/products/head/head-extreme-pro-2026/1.jpg",
+    "image_url": "/images/products/head/rackets/head-extreme-pro-2026/1.jpg",
     "images": [
-      "/images/products/head/head-extreme-pro-2026/1.jpg",
-      "/images/products/head/head-extreme-pro-2026/2.jpg",
-      "/images/products/head/head-extreme-pro-2026/3.jpg",
-      "/images/products/head/head-extreme-pro-2026/4.jpg"
+      "/images/products/head/rackets/head-extreme-pro-2026/1.jpg",
+      "/images/products/head/rackets/head-extreme-pro-2026/2.jpg",
+      "/images/products/head/rackets/head-extreme-pro-2026/3.jpg",
+      "/images/products/head/rackets/head-extreme-pro-2026/4.jpg"
     ],
     "rating": 4.97,
     "reviews_count": 51,
@@ -575,11 +575,11 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
     "surface": "کربن گرافیتی بافت‌دار",
     "core": "فوم کنترلی Control Foam",
     "warranty": "گارانتی رسمی ۶ ماهه اصالت رالی",
-    "image_url": "/images/products/head/head-gravity-pro-2026/1.jpg",
+    "image_url": "/images/products/head/rackets/head-gravity-pro-2026/1.jpg",
     "images": [
-      "/images/products/head/head-gravity-pro-2026/1.jpg",
-      "/images/products/head/head-gravity-pro-2026/2.jpg",
-      "/images/products/head/head-gravity-pro-2026/3.jpg"
+      "/images/products/head/rackets/head-gravity-pro-2026/1.jpg",
+      "/images/products/head/rackets/head-gravity-pro-2026/2.jpg",
+      "/images/products/head/rackets/head-gravity-pro-2026/3.jpg"
     ],
     "rating": 4.94,
     "reviews_count": 39,
@@ -612,10 +612,10 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
     "surface": "کربن ۱۲K نمایان شفاف",
     "core": "فوم پاسخ‌سریع Power Foam",
     "warranty": "گارانتی رسمی ۶ ماهه سلامت فیزیکی رالی",
-    "image_url": "/images/products/head/head-speed-pro-x-2026/1.jpg",
+    "image_url": "/images/products/head/rackets/head-speed-pro-x-2026/1.jpg",
     "images": [
-      "/images/products/head/head-speed-pro-x-2026/1.jpg",
-      "/images/products/head/head-speed-pro-x-2026/2.jpg"
+      "/images/products/head/rackets/head-speed-pro-x-2026/1.jpg",
+      "/images/products/head/rackets/head-speed-pro-x-2026/2.jpg"
     ],
     "rating": 4.95,
     "reviews_count": 36,
@@ -647,9 +647,9 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
     "surface": "کربن ۳K بافت زنبوری",
     "core": "فوم نرم کنترلی Control Foam",
     "warranty": "گارانتی رسمی ۶ ماهه رالی",
-    "image_url": "/images/products/head/head-radical-pro-2026/1.jpg",
+    "image_url": "/images/products/head/rackets/head-radical-pro-2026/1.jpg",
     "images": [
-      "/images/products/head/head-radical-pro-2026/1.jpg"
+      "/images/products/head/rackets/head-radical-pro-2026/1.jpg"
     ],
     "rating": 4.91,
     "reviews_count": 24,
@@ -678,9 +678,9 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
     "surface": "پلی‌استر و ترموپلاستیک مقاوم",
     "core": "تکنولوژی عایق CCT+ Climate Control",
     "warranty": "ضمانت اصالت هد",
-    "image_url": "/images/products/head/head-tour-padel-bag-monstercombi-2026/1.jpg",
+    "image_url": "/images/products/head/bags/head-tour-padel-bag-monstercombi-2026/1.jpg",
     "images": [
-      "/images/products/head/head-tour-padel-bag-monstercombi-2026/1.jpg"
+      "/images/products/head/bags/head-tour-padel-bag-monstercombi-2026/1.jpg"
     ],
     "rating": 4.92,
     "reviews_count": 27,
@@ -710,9 +710,9 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
     "surface": "نمد طبیعی زرد فلورسنت پرسرعت",
     "core": "هسته لاستیکی تحت فشار شدید",
     "warranty": "ضمانت اصالت و سلامت بسته گاز",
-    "image_url": "/images/products/head/head-padel-pro-s-can-3balls/1.jpg",
+    "image_url": "/images/products/head/balls/head-padel-pro-s-can-3balls/1.jpg",
     "images": [
-      "/images/products/head/head-padel-pro-s-can-3balls/1.jpg"
+      "/images/products/head/balls/head-padel-pro-s-can-3balls/1.jpg"
     ],
     "rating": 4.98,
     "reviews_count": 110,
@@ -742,12 +742,12 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
     "surface": "الگوی زه‌کشی ۱۸/۲۰ کنترلی متراکم",
     "core": "گرافین Auxetic 2.0 با ثبات پیچشی بی‌نظیر",
     "warranty": "گارانتی رسمی ۶ ماهه اصالت رالی",
-    "image_url": "/images/products/head/head-speed-pro-2026-tennis/1.jpg",
+    "image_url": "/images/products/head/rackets/head-speed-pro-2026-tennis/1.jpg",
     "images": [
-      "/images/products/head/head-speed-pro-2026-tennis/1.jpg",
-      "/images/products/head/head-speed-pro-2026-tennis/2.jpg",
-      "/images/products/head/head-speed-pro-2026-tennis/3.jpg",
-      "/images/products/head/head-speed-pro-2026-tennis/4.jpg"
+      "/images/products/head/rackets/head-speed-pro-2026-tennis/1.jpg",
+      "/images/products/head/rackets/head-speed-pro-2026-tennis/2.jpg",
+      "/images/products/head/rackets/head-speed-pro-2026-tennis/3.jpg",
+      "/images/products/head/rackets/head-speed-pro-2026-tennis/4.jpg"
     ],
     "rating": 4.99,
     "reviews_count": 78,
@@ -787,10 +787,10 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
     "surface": "الگوی زه‌کشی ۱۸/۲۰ مسابقه‌ای",
     "core": "فناوری انتقال گرافیتی Auxetic 2.0",
     "warranty": "گارانتی رسمی ۶ ماهه اصالت رالی",
-    "image_url": "/images/products/head/head-gravity-pro-2026-tennis/1.jpg",
+    "image_url": "/images/products/head/rackets/head-gravity-pro-2026-tennis/1.jpg",
     "images": [
-      "/images/products/head/head-gravity-pro-2026-tennis/1.jpg",
-      "/images/products/head/head-gravity-pro-2026-tennis/2.jpg"
+      "/images/products/head/rackets/head-gravity-pro-2026-tennis/1.jpg",
+      "/images/products/head/rackets/head-gravity-pro-2026-tennis/2.jpg"
     ],
     "rating": 4.96,
     "reviews_count": 44,
@@ -824,10 +824,10 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
     "surface": "الگوی زه‌کشی ۱۶/۱۹ اسپین قدرتی",
     "core": "ساختار کربن انعطاف‌پذیر Morph Beam",
     "warranty": "گارانتی رسمی ۶ ماهه اصالت رالی",
-    "image_url": "/images/products/head/head-boom-pro-2026-tennis/1.jpg",
+    "image_url": "/images/products/head/rackets/head-boom-pro-2026-tennis/1.jpg",
     "images": [
-      "/images/products/head/head-boom-pro-2026-tennis/1.jpg",
-      "/images/products/head/head-boom-pro-2026-tennis/2.jpg"
+      "/images/products/head/rackets/head-boom-pro-2026-tennis/1.jpg",
+      "/images/products/head/rackets/head-boom-pro-2026-tennis/2.jpg"
     ],
     "rating": 4.93,
     "reviews_count": 32,
@@ -860,10 +860,10 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
     "surface": "رویه توری مش مهندسی شده با تهویه ۳۶۰ درجه",
     "core": "زیره شیاردار عمیق Herringbone مخصوص سریدن روی خاک رس",
     "warranty": "ضمانت اصالت ۱۰۰٪ هد اتریش",
-    "image_url": "/images/products/head/head-sprint-pro-clay-shoes/1.jpg",
+    "image_url": "/images/products/head/shoes/head-sprint-pro-clay-shoes/1.jpg",
     "images": [
-      "/images/products/head/head-sprint-pro-clay-shoes/1.jpg",
-      "/images/products/head/head-sprint-pro-clay-shoes/2.jpg"
+      "/images/products/head/shoes/head-sprint-pro-clay-shoes/1.jpg",
+      "/images/products/head/shoes/head-sprint-pro-clay-shoes/2.jpg"
     ],
     "rating": 4.94,
     "reviews_count": 42,
@@ -898,9 +898,9 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
     "surface": "پارچه برزنتی ریپ‌استاپ ضد آب",
     "core": "عایق حرارتی CCT+ محافظ زه و فریم راکت",
     "warranty": "ضمانت اصالت و کیفیت هد",
-    "image_url": "/images/products/head/head-tour-team-12r-tennis-bag-2026/1.jpg",
+    "image_url": "/images/products/head/bags/head-tour-team-12r-tennis-bag-2026/1.jpg",
     "images": [
-      "/images/products/head/head-tour-team-12r-tennis-bag-2026/1.jpg"
+      "/images/products/head/bags/head-tour-team-12r-tennis-bag-2026/1.jpg"
     ],
     "rating": 4.93,
     "reviews_count": 29,
@@ -930,9 +930,9 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
     "surface": "نمد اختصاصی SmartOptik چسبنده به خاک",
     "core": "هسته لاستیکی غنی از الاستومر Encore",
     "warranty": "ضمانت پرش و ماندگاری باد",
-    "image_url": "/images/products/head/head-tour-xt-clay-tennis-balls-4can/1.jpg",
+    "image_url": "/images/products/head/balls/head-tour-xt-clay-tennis-balls-4can/1.jpg",
     "images": [
-      "/images/products/head/head-tour-xt-clay-tennis-balls-4can/1.jpg"
+      "/images/products/head/balls/head-tour-xt-clay-tennis-balls-4can/1.jpg"
     ],
     "rating": 4.96,
     "reviews_count": 67,
@@ -962,9 +962,9 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
     "surface": "پلی‌یورتان چسبنده با جذب فوری رطوبت",
     "core": "چسب اتصال ابتدایی و انتهای نوار",
     "warranty": "ضمانت اصالت",
-    "image_url": "/images/products/head/head-prime-pro-overgrip-3pack/1.jpg",
+    "image_url": "/images/products/head/accessories/head-prime-pro-overgrip-3pack/1.jpg",
     "images": [
-      "/images/products/head/head-prime-pro-overgrip-3pack/1.jpg"
+      "/images/products/head/accessories/head-prime-pro-overgrip-3pack/1.jpg"
     ],
     "rating": 4.92,
     "reviews_count": 58,
@@ -994,9 +994,9 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
     "surface": "سیلیکون فشرده جاذب ارتعاش",
     "core": "اتصال محکم بدون افتادن حین بازی",
     "warranty": "ضمانت اصالت",
-    "image_url": "/images/products/head/head-pro-damp-vibration-dampener/1.jpg",
+    "image_url": "/images/products/head/accessories/head-pro-damp-vibration-dampener/1.jpg",
     "images": [
-      "/images/products/head/head-pro-damp-vibration-dampener/1.jpg"
+      "/images/products/head/accessories/head-pro-damp-vibration-dampener/1.jpg"
     ],
     "rating": 4.9,
     "reviews_count": 34,
@@ -1026,9 +1026,9 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
     "surface": "پلی‌استر فنی ضد عرق با محافظ UV",
     "core": "فناوری انتقال رطوبت سریع MXM هد",
     "warranty": "ضمانت اصالت پوشاک هد",
-    "image_url": "/images/products/head/head-club-technical-polo-2026/1.jpg",
+    "image_url": "/images/products/head/apparel/head-club-technical-polo-2026/1.jpg",
     "images": [
-      "/images/products/head/head-club-technical-polo-2026/1.jpg"
+      "/images/products/head/apparel/head-club-technical-polo-2026/1.jpg"
     ],
     "rating": 4.89,
     "reviews_count": 18,
