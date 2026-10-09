@@ -20,6 +20,16 @@ export default defineConfig({
   build: {
     emptyOutDir: false,
     copyPublicDir: false,
+    chunkSizeWarningLimit: 600,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom'],
+          'vendor-motion': ['framer-motion'],
+          'vendor-icons': ['lucide-react'],
+        },
+      },
+    },
   },
   preview: {
     host: '0.0.0.0',
