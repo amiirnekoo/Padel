@@ -61,6 +61,15 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
           sudo apt-get update -qq && sudo apt-get install -y -qq sshpass
 
+          # Check if SSH_KEY is present
+          if [ -z "$SSH_KEY" ]; then
+            echo "❌ SSH_KEY secret is EMPTY or NOT SET in repository secrets!" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+
+          echo "### SSH Debug Telemetry" >> $GITHUB_STEP_SUMMARY
+          ssh -vvv -o StrictHostKeyChecking=no -o ConnectTimeout=10 -i ~/.ssh/deploy_key root@213.176.121.117 "uptime" 2>&1 | tee -a $GITHUB_STEP_SUMMARY || true
+
           DEPLOY_SCRIPT="cd /root/Padel && git fetch origin && git checkout $BRANCH_NAME && git reset --hard origin/$BRANCH_NAME && docker compose build && docker compose up -d && docker system prune -f"
 
           if [ -n "$SSH_PASS" ]; then
