@@ -30,6 +30,7 @@ jobs:
         env:
           PYTHONPATH: .
         run: |
+          set -o pipefail
           python -m pytest backend/tests -v --tb=short 2>&1 | tee -a $GITHUB_STEP_SUMMARY
 
       - name: Set up Node.js
@@ -49,32 +50,48 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/001-court-booking-engine' || github.ref == 'refs/heads/main'
     steps:
-      - name: Deploy via Native SSH
+      - name: Deploy via SSH
         env:
           SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_PASS: ${{ secrets.SSH_PASSPHRASE }}
+          SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
           BRANCH_NAME: ${{ github.ref_name }}
         run: |
-          mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
-          echo "$SSH_KEY" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
+          set -e
           sudo apt-get update -qq && sudo apt-get install -y -qq sshpass
 
-          # Check if SSH_KEY is present
-          if [ -z "$SSH_KEY" ]; then
-            echo "❌ SSH_KEY secret is EMPTY or NOT SET in repository secrets!" >> $GITHUB_STEP_SUMMARY
-            exit 1
-          fi
-
-          echo "### SSH Debug Telemetry" >> $GITHUB_STEP_SUMMARY
-          ssh -vvv -o StrictHostKeyChecking=no -o ConnectTimeout=10 -i ~/.ssh/deploy_key root@213.176.121.117 "uptime" 2>&1 | tee -a $GITHUB_STEP_SUMMARY || true
+          SERVER_IP="213.176.121.117"
+          SERVER_USER="root"
+          PASS="${SERVER_PASSWORD:-655crYvKR5}"
 
           DEPLOY_SCRIPT="cd /root/Padel && git fetch origin && git checkout $BRANCH_NAME && git reset --hard origin/$BRANCH_NAME && docker compose build && docker compose up -d && docker system prune -f"
 
-          if [ -n "$SSH_PASS" ]; then
-            sshpass -P passphrase -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -i ~/.ssh/deploy_key root@213.176.121.117 "$DEPLOY_SCRIPT" || \
-            ssh -o StrictHostKeyChecking=no -i ~/.ssh/deploy_key root@213.176.121.117 "$DEPLOY_SCRIPT"
-          else
-            ssh -o StrictHostKeyChecking=no -i ~/.ssh/deploy_key root@213.176.121.117 "$DEPLOY_SCRIPT"
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+          # 1. Attempt Key-Based SSH if key is provided
+          KEY_SUCCESS=0
+          if [ -n "$SSH_KEY" ]; then
+            echo "$SSH_KEY" > ~/.ssh/deploy_key
+            chmod 600 ~/.ssh/deploy_key
+            echo "Attempting SSH connection with deployment key..."
+            if [ -n "$SSH_PASS" ]; then
+              if sshpass -P passphrase -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -o ConnectTimeout=15 -i ~/.ssh/deploy_key "$SERVER_USER@$SERVER_IP" "$DEPLOY_SCRIPT"; then
+                KEY_SUCCESS=1
+              fi
+            else
+              if ssh -o StrictHostKeyChecking=no -o ConnectTimeout=15 -i ~/.ssh/deploy_key "$SERVER_USER@$SERVER_IP" "$DEPLOY_SCRIPT"; then
+                KEY_SUCCESS=1
+              fi
+            fi
           fi
+
+          # 2. Resilient Fallback to Password Auth (sshpass) if Key Auth failed or wasn't provided
+          if [ $KEY_SUCCESS -eq 0 ]; then
+            echo "SSH key connection not available or failed. Using password authentication fallback..."
+            sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no -o ConnectTimeout=20 "$SERVER_USER@$SERVER_IP" "$DEPLOY_SCRIPT"
+            echo "✅ Deployment completed successfully via password authentication fallback!"
+          else
+            echo "✅ Deployment completed successfully via SSH key!"
+          fi
+
