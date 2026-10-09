@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { ShoppingCart, Check, Star, ShieldCheck, Zap } from 'lucide-react';
+import { ShoppingCart, Check, Star, ShieldCheck, Zap, Sparkles } from 'lucide-react';
 import { ShopProduct } from '../../../types/rally';
+import { getRacketVerdict } from '../../../data/racketVerdictData';
 
 interface ProductCardProps {
   product: ShopProduct;
@@ -26,6 +27,8 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
   };
 
   const isPadel = product.sport === 'PADEL';
+  const isRacket = product.category === 'PADEL_RACKET' || (isPadel && (product.shape || product.weight));
+  const verdict = isRacket ? getRacketVerdict(product) : null;
 
   return (
     <div
@@ -92,11 +95,19 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
             </span>
           </div>
 
-          {/* Bottom Overlay with Stock */}
+          {/* Bottom Overlay with Stock and Verdict Score */}
           <div className="absolute bottom-2 right-2 left-2 flex items-center justify-between pointer-events-none">
-            <div className="flex items-center gap-1 bg-slate-900/90 text-amber-400 text-xs px-2 py-0.5 rounded-full font-bold">
-              <Star className="w-3.5 h-3.5 fill-current" />
-              <span>{product.rating}</span>
+            <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1 bg-slate-900/90 text-amber-400 text-xs px-2 py-0.5 rounded-full font-bold">
+                <Star className="w-3.5 h-3.5 fill-current" />
+                <span>{product.rating}</span>
+              </div>
+              {verdict && (
+                <div className="flex items-center gap-1 bg-cyan-950/95 text-cyan-300 border border-cyan-500/40 text-[10px] px-2 py-0.5 rounded-full font-black">
+                  <span className="text-[8px] text-cyan-400 font-mono">VERDICT</span>
+                  <span>{verdict.overallScore.toFixed(1)}</span>
+                </div>
+              )}
             </div>
             {product.stock <= 5 && (
               <span className="bg-amber-500/90 text-slate-950 text-[10px] font-bold px-2 py-0.5 rounded-full">

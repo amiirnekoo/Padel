@@ -4,6 +4,7 @@ import { ShopProduct } from '../../../types/rally';
 import { ProductImageGallery } from './ProductImageGallery';
 import { ProductBuyBox } from './ProductBuyBox';
 import { ProductTechnicalAnalysis } from './ProductTechnicalAnalysis';
+import { RacketVerdictSection } from '../../../components/rally/shop/verdict/RacketVerdictSection';
 import { ProductCard } from '../../../components/rally/shop/ProductCard';
 
 interface RallyProductDetailPageProps {
@@ -91,6 +92,9 @@ export const RallyProductDetailPage: React.FC<RallyProductDetailPageProps> = Rea
           <ProductTechnicalAnalysis product={product} />
         </div>
       </div>
+
+      {/* Racket Verdict & 8-Parameter Radar Section */}
+      <RacketVerdictSection product={product} />
 
       {/* Related & Complementary Products Carousel */}
       {relatedProducts.length > 0 && (

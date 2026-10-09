@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Star, ShieldCheck, Truck, ShoppingCart, Check, Award, Flame, ChevronRight, ChevronLeft, Sparkles, Image as ImageIcon } from 'lucide-react';
 import { ShopProduct } from '../../../types/rally';
+import { getRacketVerdict } from '../../../data/racketVerdictData';
 
 interface ProductDetailsModalProps {
   product: ShopProduct | null;
@@ -21,6 +22,9 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
   const [isAdded, setIsAdded] = useState(false);
 
   if (!product) return null;
+
+  const isRacket = product.category === 'PADEL_RACKET' || (product.sport === 'PADEL' && (product.shape || product.weight));
+  const verdict = isRacket ? getRacketVerdict(product) : null;
 
   const galleryImages = (product.images && product.images.length > 0)
     ? product.images
@@ -45,6 +49,10 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
     { label: 'شکل هندسی فریم', value: product.shape },
     { label: 'جنس سطح راکت', value: product.surface },
     { label: 'هسته فومی (Core)', value: product.core },
+    ...(verdict ? [
+      { label: 'پروفایل سبک بازی', value: verdict.playProfile_fa },
+      { label: 'سفتی شاسی و فوم', value: verdict.stiffness.label_fa }
+    ] : []),
     { label: 'گارانتی و پشتیبانی', value: product.warranty }
   ];
 
@@ -180,6 +188,12 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                   <span>{product.rating}</span>
                 </div>
                 <span className="text-xs text-gray-400">({product.reviews_count} نظر کارشناسی)</span>
+                {verdict && (
+                  <span className="bg-cyan-950 text-cyan-300 border border-cyan-500/40 text-[10px] font-black px-2 py-0.5 rounded-md flex items-center gap-1 shadow-xs">
+                    <Sparkles className="w-2.5 h-2.5 text-cyan-400" />
+                    <span>نمره ورردیکت: {verdict.overallScore.toFixed(1)}</span>
+                  </span>
+                )}
               </div>
 
               <h2 className="text-base sm:text-lg font-black text-gray-900 leading-tight">
