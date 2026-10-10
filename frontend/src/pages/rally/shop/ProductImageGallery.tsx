@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { Maximize2, X, ChevronRight, ChevronLeft, Image as ImageIcon, ZoomIn } from 'lucide-react';
 import { useDragScroll } from '../../../hooks/useDragScroll';
 import { ProPlayerProfile } from '../../../data/proPlayersData';
@@ -46,6 +47,16 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = React.mem
       }
     }
   }, [activeIdx]);
+
+  // Lock body scroll while Lightbox is open to eliminate background bleed and misalignment
+  useEffect(() => {
+    if (!isLightboxOpen) return;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [isLightboxOpen]);
 
   // Keyboard navigation for Lightbox
   useEffect(() => {
@@ -208,23 +219,21 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = React.mem
       )}
 
       {/* Fullscreen Lightbox Modal */}
-      {isLightboxOpen && (
+      {/* Fullscreen Lightbox Modal via Portal */}
+      {isLightboxOpen && typeof document !== 'undefined' && createPortal(
         <div
-          className="fixed inset-0 z-50 bg-slate-950/95 flex flex-col justify-between p-4 animate-in fade-in duration-150"
+          className="fixed inset-0 z-[9999] bg-slate-950/95 flex flex-col justify-between p-4 animate-in fade-in duration-150 select-none"
           onClick={() => setIsLightboxOpen(false)}
+          onWheel={(e) => e.stopPropagation()}
         >
           {/* Lightbox Header */}
           <div className="flex items-center justify-between text-white max-w-6xl w-full mx-auto pb-2">
             <div className="flex items-center gap-2">
-              <span className="bg-sky-600 text-white text-xs font-bold px-2 py-0.5 rounded">
-                {brand}
-              </span>
+              <span className="bg-sky-600 text-white text-xs font-bold px-2 py-0.5 rounded">{brand}</span>
               <span className="text-sm font-bold text-slate-200 line-clamp-1">{productName}</span>
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-xs text-slate-300 font-medium">
-                {activeIdx + 1} از {validImages.length}
-              </span>
+              <span className="text-xs text-slate-300 font-medium">{activeIdx + 1} از {validImages.length}</span>
               <button
                 onClick={() => setIsLightboxOpen(false)}
                 className="w-9 h-9 rounded-full bg-slate-800 text-slate-200 hover:text-white hover:bg-slate-700 flex items-center justify-center cursor-pointer transition-colors"
@@ -235,17 +244,8 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = React.mem
           </div>
 
           {/* Lightbox Main Image Stage */}
-          <div
-            className="flex-1 relative max-w-5xl w-full mx-auto flex items-center justify-center p-2"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <img
-              src={currentImage}
-              alt={productName}
-              className="max-h-[75vh] max-w-full object-contain drop-shadow-2xl"
-            />
-
-            {/* Arrows */}
+          <div className="flex-1 relative max-w-5xl w-full mx-auto flex items-center justify-center p-2" onClick={(e) => e.stopPropagation()}>
+            <img src={currentImage} alt={productName} className="max-h-[75vh] max-w-full object-contain drop-shadow-2xl" />
             {validImages.length > 1 && (
               <>
                 <button
@@ -266,10 +266,7 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = React.mem
 
           {/* Lightbox Bottom Thumbnails */}
           {validImages.length > 1 && (
-            <div
-              className="flex items-center justify-center gap-2 overflow-x-auto py-2 no-scrollbar max-w-4xl mx-auto w-full"
-              onClick={(e) => e.stopPropagation()}
-            >
+            <div className="flex items-center justify-center gap-2 overflow-x-auto py-2 no-scrollbar max-w-4xl mx-auto w-full" onClick={(e) => e.stopPropagation()}>
               {validImages.map((img, idx) => (
                 <button
                   key={idx}
@@ -283,7 +280,8 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = React.mem
               ))}
             </div>
           )}
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
