@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingCart, Check, Star, ShieldCheck, Zap, Sparkles } from 'lucide-react';
+import { ShoppingCart, Check, Star, Zap } from 'lucide-react';
 import { ShopProduct } from '../../../types/rally';
 import { getRacketVerdict } from '../../../data/racketVerdictData';
 
@@ -66,11 +66,6 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
                 <span>NEW ۲۰۲۷</span>
               </span>
             )}
-            {product.is_women && (
-              <span className="inline-flex items-center gap-1 bg-gradient-to-r from-pink-600 to-rose-500 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full shadow-md border border-pink-300/40">
-                <span>👩 ویژه بانوان</span>
-              </span>
-            )}
             {product.discount_percent > 0 && (
               <span className="bg-red-500 text-white text-[11px] font-black px-2.5 py-1 rounded-full shadow-md">
                 ٪{product.discount_percent} تخفیف
@@ -128,11 +123,6 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
                 بانوان
               </span>
             )}
-          </div>
-
-          <div className="mt-2 flex items-center gap-1.5 text-xs text-sky-700 font-medium">
-            <ShieldCheck className="w-3.5 h-3.5 flex-shrink-0" />
-            <span className="truncate">{product.warranty}</span>
           </div>
         </div>
       </div>
