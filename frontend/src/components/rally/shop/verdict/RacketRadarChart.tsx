@@ -138,6 +138,16 @@ export const RacketRadarChart: React.FC<RacketRadarChartProps> = React.memo(({
 
             return (
               <g key={axis.key}>
+                {/* دایره نامرئی با شعاع بزرگتر برای دریافت پایدار رویداد ماوس بدون لرزش */}
+                <circle
+                  cx={pt.x}
+                  cy={pt.y}
+                  r={14}
+                  fill="transparent"
+                  className="cursor-pointer"
+                  onMouseEnter={() => handleMouseEnter(axis.key)}
+                  onMouseLeave={handleMouseLeave}
+                />
                 <circle
                   cx={pt.x}
                   cy={pt.y}
@@ -145,15 +155,13 @@ export const RacketRadarChart: React.FC<RacketRadarChartProps> = React.memo(({
                   fill={isHovered ? '#ffffff' : '#D7ED68'}
                   stroke={isHovered ? '#D7ED68' : '#0B2238'}
                   strokeWidth={isHovered ? 2.5 : 1.5}
-                  className="transition-all duration-200 cursor-pointer"
-                  onMouseEnter={() => handleMouseEnter(axis.key)}
-                  onMouseLeave={handleMouseLeave}
+                  className="pointer-events-none transition-transform duration-150"
                 />
               </g>
             );
           })}
 
-          {/* برچسب‌های متنی دور چارت */}
+          {/* برچسب‌های متنی دور چارت با اندازه فونت ثابت بدون پرش */}
           {RADAR_AXES.map((axis, i) => {
             const pt = getCoordinates(i, 1.22);
             const val = parameters[axis.key] || 7.0;
@@ -166,10 +174,10 @@ export const RacketRadarChart: React.FC<RacketRadarChartProps> = React.memo(({
                 y={pt.y}
                 textAnchor="middle"
                 dominantBaseline="central"
-                fontSize={isHovered ? '11' : '10'}
+                fontSize="10"
                 fontWeight={isHovered ? '800' : '600'}
                 fill={isHovered ? '#D7ED68' : '#94a3b8'}
-                className="cursor-pointer transition-all duration-200"
+                className="cursor-pointer transition-colors duration-150"
                 onMouseEnter={() => handleMouseEnter(axis.key)}
                 onMouseLeave={handleMouseLeave}
               >

@@ -32,8 +32,10 @@ export const RacketParametersBreakdown: React.FC<RacketParametersBreakdownProps>
   hoveredKey,
   onHoverParam
 }) => {
+  const activeItem = hoveredKey ? PARAM_ITEMS.find((it) => it.key === hoveredKey) : null;
+
   return (
-    <div className="flex flex-col gap-4 p-4 sm:p-5 bg-slate-900/60 rounded-2xl border border-slate-800">
+    <div className="flex flex-col gap-3.5 p-4 sm:p-5 bg-slate-900/60 rounded-2xl border border-slate-800">
       
       {/* عنوان تفکیک نمرات با رنگ لایم رالی */}
       <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
@@ -45,8 +47,8 @@ export const RacketParametersBreakdown: React.FC<RacketParametersBreakdownProps>
         </span>
       </div>
 
-      {/* لیست نوارهای پارامترها */}
-      <div className="grid grid-cols-1 gap-2.5">
+      {/* لیست نوارهای پارامترها با ارتفاع کاملاً ثابت بدون پرش */}
+      <div className="grid grid-cols-1 gap-2">
         {PARAM_ITEMS.map((item) => {
           const val = parameters[item.key] || 7.0;
           const isHovered = hoveredKey === item.key;
@@ -57,7 +59,7 @@ export const RacketParametersBreakdown: React.FC<RacketParametersBreakdownProps>
               key={item.key}
               onMouseEnter={() => onHoverParam && onHoverParam(item.key)}
               onMouseLeave={() => onHoverParam && onHoverParam(null)}
-              className={`flex flex-col gap-1 p-2 rounded-xl transition-all cursor-pointer ${
+              className={`flex flex-col gap-1 p-2 rounded-xl transition-colors duration-150 cursor-pointer ${
                 isHovered ? 'bg-slate-800/90 ring-1 ring-[#D7ED68]/50' : 'hover:bg-slate-800/40'
               }`}
             >
@@ -83,7 +85,7 @@ export const RacketParametersBreakdown: React.FC<RacketParametersBreakdownProps>
               {/* نوار گرافیکی هماهنگ با تم کورت بلو و لایم رالی */}
               <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
                 <div
-                  className={`h-full rounded-full transition-all duration-500 ${
+                  className={`h-full rounded-full transition-all duration-300 ${
                     isHovered
                       ? 'bg-gradient-to-r from-sky-500 via-blue-400 to-[#D7ED68]'
                       : 'bg-gradient-to-r from-sky-600 via-blue-500 to-[#D7ED68]'
@@ -91,15 +93,23 @@ export const RacketParametersBreakdown: React.FC<RacketParametersBreakdownProps>
                   style={{ width: `${percent}%` }}
                 />
               </div>
-
-              {isHovered && (
-                <span className="text-[10px] text-slate-300 animate-in fade-in duration-150">
-                  {item.description}
-                </span>
-              )}
             </div>
           );
         })}
+      </div>
+
+      {/* نوار توضیحات ثابت فاکتور انتخابی جهت جلوگیری قطعی از لرزش یا تغییر ارتفاع */}
+      <div className="h-8 flex items-center px-3 bg-slate-950/70 rounded-xl border border-slate-800 text-[11px] text-slate-300 overflow-hidden">
+        {activeItem ? (
+          <p className="flex items-center gap-1.5 truncate animate-in fade-in duration-100">
+            <span className="font-bold text-[#D7ED68] flex-shrink-0">{activeItem.label_fa}:</span>
+            <span className="truncate">{activeItem.description}</span>
+          </p>
+        ) : (
+          <span className="text-slate-500 text-[10px]">
+            برای مشاهده کارکرد تخصصی، نشانگر ماوس را روی هر فاکتور ببرید.
+          </span>
+        )}
       </div>
 
       {/* اسلایدر میزان سفتی و حس تماس (FEEL • STIFFNESS GAUGE) */}

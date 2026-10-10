@@ -16,32 +16,19 @@ export const RacketCommunityReviews: React.FC<RacketCommunityReviewsProps> = Rea
   const [reviews, setReviews] = useState<CommunityReview[]>([]);
   const [showForm, setShowForm] = useState(false);
 
-  // بارگذاری نظرات از حافظه کلاینت و داده‌های پیش‌فرض
+  // بارگذاری فقط نظرات واقعی از حافظه محلی
   useEffect(() => {
     try {
       const stored = localStorage.getItem(`rally_reviews_${productId}`);
       if (stored) {
         setReviews(JSON.parse(stored));
       } else {
-        const initial = SAMPLE_COMMUNITY_REVIEWS[productId] || [
-          {
-            id: `rev-${productId}-default`,
-            userName: 'سهراب مرادی',
-            playerLevel: 'متوسط (باشگاه FGB انقلاب)',
-            rating: 8.6,
-            scores: { power: 7.5, control: 9.0, comfort: 9.2 },
-            comment: `تجربه بازی فوق‌العاده‌ای با راکت ${productName} داشتم. انتقال نیرو بسیار یکنواخت است و در بازی‌های پر فشار خستگی دست حس نمی‌شود.`,
-            date: '۵ روز پیش',
-            likesCount: 11,
-            isVerifiedPlayer: true
-          }
-        ];
-        setReviews(initial);
+        setReviews([]);
       }
     } catch {
-      // fallback
+      setReviews([]);
     }
-  }, [productId, productName]);
+  }, [productId]);
 
   // ثبت نظر جدید
   const handleAddNewReview = (newReviewData: {
@@ -115,8 +102,25 @@ export const RacketCommunityReviews: React.FC<RacketCommunityReviewsProps> = Rea
         />
       )}
 
-      {/* لیست نظرات ثبت‌شده */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+      {/* لیست نظرات ثبت‌شده یا وضعیت آماده برای اولین نظر */}
+      {reviews.length === 0 ? (
+        <div className="bg-slate-900/50 p-6 rounded-2xl border border-slate-800 text-center flex flex-col items-center justify-center gap-2">
+          <MessageSquare className="w-8 h-8 text-slate-600 mb-1" />
+          <p className="text-xs font-bold text-slate-300">
+            هنوز نظری برای این راکت ثبت نشده است
+          </p>
+          <p className="text-[11px] text-slate-500 max-w-sm">
+            اگر با این راکت در کورت بازی کرده‌اید، اولین بازیکنی باشید که عملکرد فنی و حس ضربه آن را ارزیابی می‌کند.
+          </p>
+          <button
+            onClick={() => setShowForm(true)}
+            className="mt-2 px-4 py-2 rounded-xl text-xs font-black bg-[#D7ED68] hover:bg-[#c7de54] text-slate-950 transition-all cursor-pointer shadow-sm"
+          >
+            ثبت اولین نظر و امتیاز
+          </button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
         {reviews.map((rev) => (
           <div
             key={rev.id}
@@ -175,7 +179,8 @@ export const RacketCommunityReviews: React.FC<RacketCommunityReviewsProps> = Rea
             </div>
           </div>
         ))}
-      </div>
+        </div>
+      )}
 
     </div>
   );
