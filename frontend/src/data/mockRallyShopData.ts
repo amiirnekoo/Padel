@@ -1045,13 +1045,13 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
 
 export const MOCK_SHOP_PRODUCTS: ShopProduct[] = RAW_SHOP_PRODUCTS.map((p) => {
   const customImages = MANIFEST[p.id];
-  if (customImages && customImages.length > 0) {
-    return {
-      ...p,
-      image_url: customImages[0],
-      images: customImages,
-    };
-  }
-  return p;
+  const base = (customImages && customImages.length > 0)
+    ? { ...p, image_url: customImages[0], images: customImages }
+    : p;
+  return {
+    ...base,
+    rating: 0,
+    reviews_count: 0
+  };
 });
 

@@ -3,6 +3,7 @@ import { X, Star, ShieldCheck, Truck, ShoppingCart, Check, Award, Flame, Chevron
 import { ShopProduct } from '../../../types/rally';
 import { getRacketVerdict } from '../../../data/racketVerdictData';
 import { getProPlayerForProduct } from '../../../data/proPlayersData';
+import { useProductRating } from '../../../utils/productRatingUtils';
 
 interface ProductDetailsModalProps {
   product: ShopProduct | null;
@@ -27,6 +28,7 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
   const isRacket = product.category === 'PADEL_RACKET' || (product.sport === 'PADEL' && (product.shape || product.weight));
   const verdict = isRacket ? getRacketVerdict(product) : null;
   const proPlayer = getProPlayerForProduct(product);
+  const ratingSummary = useProductRating(product.id);
 
   const galleryImages = (product.images && product.images.length > 0) ? product.images : [product.image_url];
 
@@ -41,14 +43,12 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
   const SPECS = [
     { label: 'برند سازنده', value: product.brand },
     { label: 'سال عرضه', value: product.year ? `${product.year}` : '۲۰۲۶' },
-    { label: 'سطح بازیکن', value: product.level === 'PRO' ? 'حرفه‌ای / قهرمانی' : product.level === 'ADVANCED' ? 'پیشرفته' : 'متوسط' },
-    { label: 'وزن فیزیکی', value: product.weight },
-    { label: 'نقطه تعادل (Balance)', value: product.balance },
-    { label: 'شکل هندسی فریم', value: product.shape },
-    { label: 'جنس سطح راکت', value: product.surface },
-    { label: 'هسته فومی (Core)', value: product.core },
-    ...(verdict ? [{ label: 'پروفایل سبک بازی', value: verdict.playProfile_fa }, { label: 'سفتی شاسی و فوم', value: verdict.stiffness.label_fa }] : []),
-    { label: 'گارانتی و پشتیبانی', value: product.warranty }
+    { label: 'سطح بازیکن', value: product.level === 'PRO' ? 'حرفه‌ای' : product.level === 'ADVANCED' ? 'پیشرفته' : 'متوسط' },
+    { label: 'وزن فیزیکی', value: product.weight }, { label: 'نقطه تعادل', value: product.balance },
+    { label: 'شکل هندسی', value: product.shape }, { label: 'جنس رویه', value: product.surface },
+    { label: 'هسته فوم', value: product.core },
+    ...(verdict ? [{ label: 'سبک بازی', value: verdict.playProfile_fa }, { label: 'سفتی شاسی', value: verdict.stiffness.label_fa }] : []),
+    { label: 'گارانتی', value: product.warranty }
   ];
 
   return (
@@ -63,14 +63,11 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
             </span>
             {product.year === 2027 && (
               <span className="bg-gradient-to-r from-amber-400 to-yellow-400 text-slate-950 text-xs font-black px-2.5 py-0.5 rounded-lg flex items-center gap-1 shadow-xs border border-amber-300">
-                <Sparkles className="w-3 h-3 text-slate-950" />
-                NEW ۲۰۲۷
+                <Sparkles className="w-3 h-3 text-slate-950" /> NEW ۲۰۲۷
               </span>
             )}
             {product.is_women && (
-              <span className="bg-rose-50 text-rose-700 border border-rose-300 text-xs font-black px-2 py-0.5 rounded-lg">
-                👩 ویژه بانوان
-              </span>
+              <span className="bg-rose-50 text-rose-700 border border-rose-300 text-xs font-black px-2 py-0.5 rounded-lg">👩 ویژه بانوان</span>
             )}
             <span className="hidden sm:inline text-xs text-gray-400 font-mono">کد: {product.id}</span>
           </div>
@@ -177,29 +174,29 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
           <div className="md:col-span-7 flex flex-col justify-between">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <div className="flex items-center gap-1 text-amber-500 text-xs font-bold">
-                  <Star className="w-3.5 h-3.5 fill-current" />
-                  <span>{product.rating}</span>
-                </div>
-                <span className="text-xs text-gray-400">({product.reviews_count} نظر کارشناسی)</span>
+                {ratingSummary.reviewsCount > 0 && ratingSummary.averageRating !== null ? (
+                  <div className="flex items-center gap-1 text-amber-500 text-xs font-bold">
+                    <Star className="w-3.5 h-3.5 fill-current" />
+                    <span>{ratingSummary.averageRating.toFixed(1)}</span>
+                    <span className="text-xs text-gray-400 font-normal">({ratingSummary.reviewsCount} نظر)</span>
+                  </div>
+                ) : (
+                  <span className="text-xs text-gray-400">بدون نظر ثبت‌شده</span>
+                )}
                 {verdict && (
-                  <span className="bg-slate-900 text-[#D7ED68] border border-[#D7ED68]/40 text-[10px] font-black px-2 py-0.5 rounded-md flex items-center gap-1 shadow-xs">
+                  <span
+                    className="bg-slate-900 text-[#D7ED68] border border-[#D7ED68]/40 text-[10px] font-black px-2 py-0.5 rounded-md flex items-center gap-1 shadow-xs"
+                    title="نمره ارزیابی فنی و آزمایشگاهی (مرجع رسمی: PadelVerdict و لابراتوار Testea Padel)"
+                  >
                     <Sparkles className="w-2.5 h-2.5 text-[#D7ED68]" />
                     <span>نمره ورردیکت: {verdict.overallScore.toFixed(1)}</span>
                   </span>
                 )}
               </div>
 
-              <h2 className="text-base sm:text-lg font-black text-gray-900 leading-tight">
-                {product.name_fa}
-              </h2>
-              <p className="text-[11px] text-gray-400 font-mono mt-0.5 mb-2.5">
-                {product.name_en}
-              </p>
-
-              <p className="text-xs text-gray-600 leading-relaxed bg-gray-50 p-2.5 rounded-xl border border-gray-100 mb-3">
-                {product.description}
-              </p>
+              <h2 className="text-base sm:text-lg font-black text-gray-900 leading-tight">{product.name_fa}</h2>
+              <p className="text-[11px] text-gray-400 font-mono mt-0.5 mb-2.5">{product.name_en}</p>
+              <p className="text-xs text-gray-600 leading-relaxed bg-gray-50 p-2.5 rounded-xl border border-gray-100 mb-3">{product.description}</p>
 
               {/* Bullet Features */}
               {product.features && product.features.length > 0 && (

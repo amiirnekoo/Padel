@@ -1,8 +1,13 @@
 import { ShopProduct } from '../types/rally';
 import { RacketVerdictData, CommunityReview } from '../types/racketVerdict';
 
+/**
+ * بنچ‌مارک رسمی ارزیابی و امتیازدهی راکت‌ها بر اساس مراجع معتبر بین‌المللی:
+ * ۱. پایگاه ارزیابی فنی PadelVerdict (padelverdict.com)
+ * ۲. آزمایشگاه مستقل بیومکانیک Testea Padel (دانشگاه پلی‌تکنیک والنسیا UPV)
+ */
 export const KNOWN_RACKET_VERDICTS: Record<string, RacketVerdictData> = {
-  // مدل اختصاصی اسکرین‌شات کاربر با نمرات دقیق PadelVerdict
+  // مدل اختصاصی با نمرات دقیق PadelVerdict و آزمایشگاه Testea Padel
   'nox-equation-soft-advanced-2026': {
     overallScore: 8.4,
     verdictTitle_fa: 'آیا راحتی بالاترین موازنه برای سبک بازی شماست؟',

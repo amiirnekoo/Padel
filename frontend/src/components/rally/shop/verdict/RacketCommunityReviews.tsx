@@ -3,6 +3,7 @@ import { Star, MessageSquare, ThumbsUp, Sparkles, UserCheck } from 'lucide-react
 import { CommunityReview } from '../../../../types/racketVerdict';
 import { SAMPLE_COMMUNITY_REVIEWS } from '../../../../data/racketVerdictData';
 import { RacketReviewForm } from './RacketReviewForm';
+import { notifyReviewUpdated } from '../../../../utils/productRatingUtils';
 
 interface RacketCommunityReviewsProps {
   productId: string;
@@ -54,6 +55,7 @@ export const RacketCommunityReviews: React.FC<RacketCommunityReviewsProps> = Rea
     setReviews(updated);
     try {
       localStorage.setItem(`rally_reviews_${productId}`, JSON.stringify(updated));
+      notifyReviewUpdated(productId);
     } catch {
       // ignore
     }

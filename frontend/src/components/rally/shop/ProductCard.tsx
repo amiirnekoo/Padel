@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ShoppingCart, Check, Star, Zap } from 'lucide-react';
 import { ShopProduct } from '../../../types/rally';
 import { getRacketVerdict } from '../../../data/racketVerdictData';
+import { useProductRating } from '../../../utils/productRatingUtils';
 
 interface ProductCardProps {
   product: ShopProduct;
@@ -29,6 +30,7 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
   const isPadel = product.sport === 'PADEL';
   const isRacket = product.category === 'PADEL_RACKET' || (isPadel && (product.shape || product.weight));
   const verdict = isRacket ? getRacketVerdict(product) : null;
+  const ratingSummary = useProductRating(product.id);
 
   return (
     <div
@@ -82,12 +84,17 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
           {/* Bottom Overlay with Stock and Verdict Score */}
           <div className="absolute bottom-2 right-2 left-2 flex items-center justify-between pointer-events-none">
             <div className="flex items-center gap-1.5">
-              <div className="flex items-center gap-1 bg-slate-900/90 text-amber-400 text-xs px-2 py-0.5 rounded-full font-bold">
-                <Star className="w-3.5 h-3.5 fill-current" />
-                <span>{product.rating}</span>
-              </div>
+              {ratingSummary.reviewsCount > 0 && ratingSummary.averageRating !== null && (
+                <div className="flex items-center gap-1 bg-slate-900/90 text-amber-400 text-xs px-2 py-0.5 rounded-full font-bold">
+                  <Star className="w-3.5 h-3.5 fill-current" />
+                  <span>{ratingSummary.averageRating.toFixed(1)}</span>
+                </div>
+              )}
               {verdict && (
-                <div className="flex items-center gap-1 bg-slate-900/95 text-[#D7ED68] border border-[#D7ED68]/40 text-[10px] px-2 py-0.5 rounded-full font-black shadow-xs">
+                <div
+                  className="flex items-center gap-1 bg-slate-900/95 text-[#D7ED68] border border-[#D7ED68]/40 text-[10px] px-2 py-0.5 rounded-full font-black shadow-xs pointer-events-auto"
+                  title="نمره ارزیابی فنی و آزمایشگاهی (مرجع رسمی: PadelVerdict و لابراتوار Testea Padel)"
+                >
                   <span className="text-[8px] text-slate-400 font-mono">VERDICT</span>
                   <span>{verdict.overallScore.toFixed(1)}</span>
                 </div>

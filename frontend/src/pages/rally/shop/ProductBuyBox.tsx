@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ShoppingCart, Check, Star, ShieldCheck, Truck, RefreshCw, Sparkles, Award } from 'lucide-react';
 import { ShopProduct } from '../../../types/rally';
+import { useProductRating } from '../../../utils/productRatingUtils';
 
 interface ProductBuyBoxProps {
   product: ShopProduct;
@@ -18,6 +19,7 @@ export const ProductBuyBox: React.FC<ProductBuyBoxProps> = React.memo(({
   const [selectedWeight, setSelectedWeight] = useState(product.weight || 'استاندارد مسابقه‌ای');
 
   const isPadel = product.sport === 'PADEL';
+  const ratingSummary = useProductRating(product.id);
   const savings = product.discount_percent > 0
     ? (product.original_price - product.price) * quantity
     : 0;
@@ -49,12 +51,19 @@ export const ProductBuyBox: React.FC<ProductBuyBoxProps> = React.memo(({
           </span>
         </div>
 
-        {/* Rating */}
-        <div className="flex items-center gap-1.5 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200 text-amber-800 text-xs font-bold">
-          <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
-          <span>{product.rating}</span>
-          <span className="text-slate-400">({product.reviews_count} نظر)</span>
-        </div>
+        {/* Real Community Rating */}
+        {ratingSummary.reviewsCount > 0 && ratingSummary.averageRating !== null ? (
+          <div className="flex items-center gap-1.5 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200 text-amber-800 text-xs font-bold">
+            <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
+            <span>{ratingSummary.averageRating.toFixed(1)}</span>
+            <span className="text-slate-400">({ratingSummary.reviewsCount} نظر)</span>
+          </div>
+        ) : (
+          <div className="flex items-center gap-1.5 bg-slate-100 px-2.5 py-1 rounded-full border border-slate-200 text-slate-500 text-xs font-medium">
+            <Star className="w-3.5 h-3.5 text-slate-400" />
+            <span>بدون نظر ثبت‌شده</span>
+          </div>
+        )}
       </div>
 
       {/* Titles */}
