@@ -37,7 +37,6 @@ export const ModernRallyHeader: React.FC<ModernRallyHeaderProps> = ({
   }, []);
 
   const navItems = [
-    { id: 'drills' as ModernNavTab, label: 'تمرینات تخصصی' },
     { id: 'courts' as ModernNavTab, label: 'زمین‌ها' },
     { id: 'coaches' as ModernNavTab, label: 'مربیان' },
     { id: 'tournaments' as ModernNavTab, label: 'مسابقات' },
