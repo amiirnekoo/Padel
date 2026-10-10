@@ -1,15 +1,16 @@
-import { useRef, useCallback, useState } from 'react';
+import { useRef, useCallback, useEffect } from 'react';
 
 /**
  * 🖱️ useDragScroll
- * Enables freeform horizontal click-and-drag (Grab-to-Scroll) for track containers.
- * Prevents accidental image selection when dragging, prevents browser ghost image drag,
- * and handles smooth mouse wheel horizontal scrolling.
+ * Enables ultra-smooth 1:1 horizontal click-and-drag (Grab-to-Scroll) for track containers.
+ * - Uses window-level event listeners during active drag so dragging never stutters when mouse leaves the element.
+ * - Pure 1:1 direct tracking (instant movement with zero delay).
+ * - Disables CSS scroll-behavior during drag for instantaneous response.
+ * - Prevents accidental item clicks when a drag gesture was made.
+ * - Does NOT intercept mouse wheel events, preserving natural page vertical scrolling.
  */
 export function useDragScroll<T extends HTMLElement = HTMLDivElement>() {
   const containerRef = useRef<T | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  
   const isDownRef = useRef(false);
   const startXRef = useRef(0);
   const scrollLeftRef = useRef(0);
@@ -18,80 +19,68 @@ export function useDragScroll<T extends HTMLElement = HTMLDivElement>() {
   const onMouseDown = useCallback((e: React.MouseEvent) => {
     const el = containerRef.current;
     if (!el) return;
-    
+
     // Only respond to main left click
     if (e.button !== 0) return;
 
     isDownRef.current = true;
     hasDraggedRef.current = false;
-    startXRef.current = e.pageX - el.offsetLeft;
+    startXRef.current = e.clientX;
     scrollLeftRef.current = el.scrollLeft;
-    
-    // Temporarily disable CSS smooth scrolling during active drag for 1:1 responsive feel
-    el.classList.remove('scroll-smooth');
-    setIsDragging(true);
-  }, []);
 
-  const onMouseMove = useCallback((e: React.MouseEvent) => {
-    if (!isDownRef.current) return;
-    const el = containerRef.current;
-    if (!el) return;
+    // Immediate 1:1 responsiveness with zero CSS transition lag
+    el.style.scrollBehavior = 'auto';
+    el.style.cursor = 'grabbing';
+    document.body.style.userSelect = 'none';
 
-    e.preventDefault();
-    const x = e.pageX - el.offsetLeft;
-    const walk = (x - startXRef.current) * 1.4; // 1.4x speed for satisfying glide
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      if (!isDownRef.current) return;
+      const currentEl = containerRef.current;
+      if (!currentEl) return;
 
-    if (Math.abs(walk) > 4) {
-      hasDraggedRef.current = true;
-    }
+      const deltaX = moveEvent.clientX - startXRef.current;
+      if (Math.abs(deltaX) > 4) {
+        hasDraggedRef.current = true;
+      }
 
-    el.scrollLeft = scrollLeftRef.current - walk;
-  }, []);
+      // 1:1 direct instant tracking
+      currentEl.scrollLeft = scrollLeftRef.current - deltaX;
+    };
 
-  const onMouseUp = useCallback(() => {
-    isDownRef.current = false;
-    setIsDragging(false);
-    const el = containerRef.current;
-    if (el) {
-      // Re-enable smooth scrolling after drag finishes
-      setTimeout(() => {
-        el.classList.add('scroll-smooth');
-      }, 50);
-    }
-  }, []);
-
-  const onMouseLeave = useCallback(() => {
-    if (isDownRef.current) {
+    const handleMouseUp = () => {
       isDownRef.current = false;
-      setIsDragging(false);
-      const el = containerRef.current;
-      if (el) {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+
+      const currentEl = containerRef.current;
+      if (currentEl) {
+        currentEl.style.cursor = 'grab';
+        // Restore smooth scrolling after drag finishes for programmatic navigation
         setTimeout(() => {
-          el.classList.add('scroll-smooth');
+          if (currentEl) {
+            currentEl.style.scrollBehavior = '';
+          }
         }, 50);
       }
-    }
+      document.body.style.removeProperty('user-select');
+    };
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    window.addEventListener('mouseup', handleMouseUp);
   }, []);
 
-  // Handle horizontal mouse wheel rolling
-  const onWheel = useCallback((e: React.WheelEvent) => {
-    const el = containerRef.current;
-    if (!el) return;
-    if (e.deltaY !== 0) {
-      el.scrollLeft += e.deltaY;
-    }
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      document.body.style.removeProperty('user-select');
+    };
   }, []);
 
   return {
     containerRef,
-    isDragging,
     hasDraggedRef,
     dragProps: {
       onMouseDown,
-      onMouseMove,
-      onMouseUp,
-      onMouseLeave,
-      onWheel,
     },
   };
 }

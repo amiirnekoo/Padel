@@ -19,7 +19,7 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = React.mem
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [imgErrors, setImgErrors] = useState<Record<number, boolean>>({});
   
-  const { containerRef: thumbsContainerRef, isDragging, hasDraggedRef, dragProps } = useDragScroll<HTMLDivElement>();
+  const { containerRef: thumbsContainerRef, hasDraggedRef, dragProps } = useDragScroll<HTMLDivElement>();
 
   const validImages = images && images.length > 0 ? images : ['/images/rally_logo_crisp.png?v=20261007_v2'];
   const currentImage = validImages[activeIdx] || validImages[0];
@@ -133,9 +133,7 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = React.mem
         <div className="relative">
           <div
             ref={thumbsContainerRef}
-            className={`flex items-center gap-2 overflow-x-auto py-1 px-0.5 no-scrollbar scroll-smooth select-none ${
-              isDragging ? 'cursor-grabbing' : 'cursor-grab'
-            }`}
+            className="flex items-center gap-2 overflow-x-auto py-1 px-0.5 no-scrollbar scroll-smooth select-none cursor-grab active:cursor-grabbing"
             {...dragProps}
           >
             {validImages.map((img, idx) => (
@@ -147,9 +145,7 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = React.mem
                   if (hasDraggedRef.current) return;
                   setActiveIdx(idx);
                 }}
-                className={`relative flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white p-1.5 border transition-all duration-200 overflow-hidden select-none ${
-                  isDragging ? 'cursor-grabbing' : 'cursor-grab'
-                } ${
+                className={`relative flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white p-1.5 border transition-all duration-200 overflow-hidden select-none cursor-grab active:cursor-grabbing ${
                   activeIdx === idx
                     ? `${accentRing} shadow-sm scale-102`
                     : 'border-slate-200 opacity-60 hover:opacity-100 hover:border-slate-300'
