@@ -7,7 +7,6 @@ import { ProductTechnicalAnalysis } from './ProductTechnicalAnalysis';
 import { RacketVerdictSection } from '../../../components/rally/shop/verdict/RacketVerdictSection';
 import { ProductCard } from '../../../components/rally/shop/ProductCard';
 import { getProPlayerForProduct } from '../../../data/proPlayersData';
-import { ProPlayerEndorsementCard } from './ProPlayerEndorsementCard';
 
 interface RallyProductDetailPageProps {
   product: ShopProduct;
@@ -86,9 +85,6 @@ export const RallyProductDetailPage: React.FC<RallyProductDetailPageProps> = Rea
 
         {/* Buy Box & Key Details Column (6 cols on desktop) */}
         <div className="lg:col-span-6 flex flex-col gap-6">
-          {/* Pro Player Official Endorsement Card (if signature pro racket) */}
-          {proPlayer && <ProPlayerEndorsementCard player={proPlayer} />}
-
           <ProductBuyBox
             product={product}
             onAddToCart={(p, qty) => onAddToCart(p, qty)}

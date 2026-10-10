@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Maximize2, X, ChevronRight, ChevronLeft, Image as ImageIcon, ZoomIn } from 'lucide-react';
 import { useDragScroll } from '../../../hooks/useDragScroll';
 import { ProPlayerProfile } from '../../../data/proPlayersData';
-import { ProPlayerGalleryBadge } from './ProPlayerGalleryBadge';
 
 interface ProductImageGalleryProps {
   images: string[];
@@ -82,9 +81,7 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = React.mem
             alt={`${productName} - تصویر ${activeIdx + 1}`}
             onError={() => setImgErrors(prev => ({ ...prev, [activeIdx]: true }))}
             className="w-full h-full object-contain p-5 transition-transform duration-300 ease-out group-hover:scale-[1.02]"
-            style={{
-              imageRendering: '-webkit-optimize-contrast',
-            }}
+            style={{ imageRendering: '-webkit-optimize-contrast' }}
           />
         )}
 
@@ -93,44 +90,49 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = React.mem
           {activeIdx + 1} از {validImages.length}
         </div>
 
+        {/* Pro Player Minimalist Circular Headshot (Like user's Roger Federer reference) */}
+        {proPlayer && (
+          <div
+            className="absolute top-4 left-4 sm:top-5 sm:left-5 z-20 w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden border-2 border-slate-200/90 shadow-md bg-[#EEF0F2] flex-shrink-0 hover:scale-105 transition-transform duration-200 select-none cursor-pointer"
+            title={`راکت رسمی ${proPlayer.name_fa} (${proPlayer.name_en})`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={proPlayer.avatar_url}
+              alt={proPlayer.name_fa}
+              className="w-full h-full object-cover pointer-events-none"
+              draggable={false}
+            />
+          </div>
+        )}
+
         {/* Lightbox Trigger Button */}
         <button
           onClick={(e) => {
             e.stopPropagation();
             setIsLightboxOpen(true);
           }}
-          className="absolute top-4 left-4 z-10 w-9 h-9 rounded-full bg-white/95 text-slate-700 hover:text-slate-950 hover:bg-white shadow-md flex items-center justify-center transition-all cursor-pointer"
+          className={`absolute z-10 w-9 h-9 rounded-full bg-white/95 text-slate-700 hover:text-slate-950 hover:bg-white shadow-md flex items-center justify-center transition-all cursor-pointer ${
+            proPlayer ? 'bottom-3 left-3 sm:bottom-4 sm:left-4' : 'top-4 left-4'
+          }`}
           title="مشاهده بزرگنمایی و جزئیات باکیفیت"
         >
           <Maximize2 className="w-4 h-4" />
         </button>
 
-        {/* Pro Player Signature Corner Badge */}
-        <ProPlayerGalleryBadge player={proPlayer} />
-
         {/* Desktop Click for Fullscreen Hint */}
-        {!proPlayer && (
-          <div className="hidden sm:flex absolute bottom-3 right-3 left-3 items-center justify-center gap-1.5 py-1 px-3 rounded-full text-[11px] font-medium transition-opacity duration-200 pointer-events-none bg-slate-900/75 text-white/90 shadow-sm opacity-0 group-hover:opacity-100">
-            <ZoomIn className="w-3.5 h-3.5 text-sky-400" />
-            <span>برای مشاهده کیفیت بالا و تمام‌صفحه کلیک کنید</span>
-          </div>
-        )}
+        <div className="hidden sm:flex absolute bottom-3 right-3 left-3 items-center justify-center gap-1.5 py-1 px-3 rounded-full text-[11px] font-medium transition-opacity duration-200 pointer-events-none bg-slate-900/75 text-white/90 shadow-sm opacity-0 group-hover:opacity-100">
+          <ZoomIn className="w-3.5 h-3.5 text-sky-400" />
+          <span>برای مشاهده کیفیت بالا و تمام‌صفحه کلیک کنید</span>
+        </div>
 
         {/* Arrow Navigators on Main Stage */}
         {validImages.length > 1 && (
           <>
-            <button
-              onClick={handlePrev}
-              className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/90 hover:bg-white shadow-md text-slate-700 hover:text-slate-950 flex items-center justify-center transition-all cursor-pointer opacity-80 sm:opacity-0 group-hover:opacity-100"
-              title="تصویر قبلی"
-            >
+            <button onClick={handlePrev} className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/90 hover:bg-white shadow-md text-slate-700 hover:text-slate-950 flex items-center justify-center transition-all cursor-pointer opacity-80 sm:opacity-0 group-hover:opacity-100" title="تصویر قبلی">
               <ChevronRight className="w-5 h-5" />
             </button>
-            <button
-              onClick={handleNext}
-              className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/90 hover:bg-white shadow-md text-slate-700 hover:text-slate-950 flex items-center justify-center transition-all cursor-pointer opacity-80 sm:opacity-0 group-hover:opacity-100"
-              title="تصویر بعدی"
-            >
+            <button onClick={handleNext} className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/90 hover:bg-white shadow-md text-slate-700 hover:text-slate-950 flex items-center justify-center transition-all cursor-pointer opacity-80 sm:opacity-0 group-hover:opacity-100" title="تصویر بعدی">
               <ChevronLeft className="w-5 h-5" />
             </button>
           </>

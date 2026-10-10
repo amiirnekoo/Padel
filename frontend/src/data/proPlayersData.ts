@@ -28,7 +28,7 @@ export const PRO_PLAYERS: Record<string, ProPlayerProfile> = {
     name_fa: 'آگوستین تاپیا',
     name_en: 'Agustín Tapia',
     nickname_fa: 'موتزارت پدل جهان (The Mozart)',
-    avatar_url: '/images/players/agustin_tapia_avatar.webp',
+    avatar_url: '/images/players/agustin_tapia_circle.webp',
     bust_url: '/images/players/agustin_tapia_bust.webp',
     action_photo_url: '/images/players/agustin_tapia_nox_hd.jpg',
     ranking_fip: 1,

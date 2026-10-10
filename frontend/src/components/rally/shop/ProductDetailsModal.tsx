@@ -3,7 +3,6 @@ import { X, Star, ShieldCheck, Truck, ShoppingCart, Check, Award, Flame, Chevron
 import { ShopProduct } from '../../../types/rally';
 import { getRacketVerdict } from '../../../data/racketVerdictData';
 import { getProPlayerForProduct } from '../../../data/proPlayersData';
-import { ProPlayerGalleryBadge } from '../../../pages/rally/shop/ProPlayerGalleryBadge';
 
 interface ProductDetailsModalProps {
   product: ShopProduct | null;
@@ -29,9 +28,7 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
   const verdict = isRacket ? getRacketVerdict(product) : null;
   const proPlayer = getProPlayerForProduct(product);
 
-  const galleryImages = (product.images && product.images.length > 0)
-    ? product.images
-    : [product.image_url];
+  const galleryImages = (product.images && product.images.length > 0) ? product.images : [product.image_url];
 
   const handleAdd = () => {
     onAddToCart(product, quantity);
@@ -39,9 +36,7 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
     setTimeout(() => setIsAdded(false), 2000);
   };
 
-  const handleImgError = (idx: number) => {
-    setImgErrors(prev => ({ ...prev, [idx]: true }));
-  };
+  const handleImgError = (idx: number) => setImgErrors(prev => ({ ...prev, [idx]: true }));
 
   const SPECS = [
     { label: 'برند سازنده', value: product.brand },
@@ -110,8 +105,15 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                 />
               )}
 
-              {/* Pro Player Signature Corner Badge */}
-              <ProPlayerGalleryBadge player={proPlayer} />
+              {/* Pro Player Minimalist Circular Headshot */}
+              {proPlayer && (
+                <div
+                  className="absolute top-2.5 left-2.5 z-20 w-11 h-11 rounded-full overflow-hidden border-2 border-slate-200/90 shadow-md bg-[#EEF0F2] flex-shrink-0"
+                  title={`راکت رسمی ${proPlayer.name_fa} (${proPlayer.name_en})`}
+                >
+                  <img src={proPlayer.avatar_url} alt={proPlayer.name_fa} className="w-full h-full object-cover pointer-events-none" draggable={false} />
+                </div>
+              )}
 
               {/* Prev / Next buttons */}
               {galleryImages.length > 1 && (
