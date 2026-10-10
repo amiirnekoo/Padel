@@ -72,7 +72,7 @@ export const RacketRadarChart: React.FC<RacketRadarChartProps> = React.memo(({
   return (
     <div className="flex flex-col items-center justify-center p-3 select-none">
       <div className="flex items-center justify-between w-full mb-1 px-2">
-        <span className="text-[11px] font-bold tracking-wider text-cyan-400">
+        <span className="text-[11px] font-black tracking-wider text-[#D7ED68]">
           رادار عملکرد ۸ گانه (PERFORMANCE RADAR)
         </span>
         <span className="text-[10px] text-slate-400">
@@ -119,17 +119,17 @@ export const RacketRadarChart: React.FC<RacketRadarChartProps> = React.memo(({
             );
           })}
 
-          {/* پلی‌گان رنگی نمرات راکت */}
+          {/* پلی‌گان رنگی نمرات راکت با رنگ لایم رالی */}
           <polygon
             points={polygonPoints}
-            fill="rgba(6, 182, 212, 0.28)"
-            stroke="#06b6d4"
+            fill="rgba(215, 237, 104, 0.22)"
+            stroke="#D7ED68"
             strokeWidth="2.5"
             strokeLinejoin="round"
             className="transition-all duration-300"
           />
 
-          {/* نقاط (نودها) روی رئوس */}
+          {/* نقاط (نودها) روی رئوس با رنگ لایم رالی */}
           {RADAR_AXES.map((axis, i) => {
             const val = parameters[axis.key] || 7.0;
             const ratio = Math.min(1, Math.max(0, val / 10));
@@ -142,8 +142,8 @@ export const RacketRadarChart: React.FC<RacketRadarChartProps> = React.memo(({
                   cx={pt.x}
                   cy={pt.y}
                   r={isHovered ? 6 : 4}
-                  fill={isHovered ? '#38bdf8' : '#06b6d4'}
-                  stroke="#ffffff"
+                  fill={isHovered ? '#ffffff' : '#D7ED68'}
+                  stroke={isHovered ? '#D7ED68' : '#0B2238'}
                   strokeWidth={isHovered ? 2.5 : 1.5}
                   className="transition-all duration-200 cursor-pointer"
                   onMouseEnter={() => handleMouseEnter(axis.key)}
@@ -168,7 +168,7 @@ export const RacketRadarChart: React.FC<RacketRadarChartProps> = React.memo(({
                 dominantBaseline="central"
                 fontSize={isHovered ? '11' : '10'}
                 fontWeight={isHovered ? '800' : '600'}
-                fill={isHovered ? '#38bdf8' : '#94a3b8'}
+                fill={isHovered ? '#D7ED68' : '#94a3b8'}
                 className="cursor-pointer transition-all duration-200"
                 onMouseEnter={() => handleMouseEnter(axis.key)}
                 onMouseLeave={handleMouseLeave}

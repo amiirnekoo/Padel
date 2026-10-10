@@ -35,9 +35,9 @@ export const RacketParametersBreakdown: React.FC<RacketParametersBreakdownProps>
   return (
     <div className="flex flex-col gap-4 p-4 sm:p-5 bg-slate-900/60 rounded-2xl border border-slate-800">
       
-      {/* عنوان تفکیک نمرات */}
+      {/* عنوان تفکیک نمرات با رنگ لایم رالی */}
       <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
-        <span className="text-xs font-black text-cyan-400">
+        <span className="text-xs font-black text-[#D7ED68]">
           تفکیک نمرات ۸ پارامتر کلیدی (SCORE BREAKDOWN)
         </span>
         <span className="text-[10px] text-slate-400 font-mono">
@@ -58,12 +58,12 @@ export const RacketParametersBreakdown: React.FC<RacketParametersBreakdownProps>
               onMouseEnter={() => onHoverParam && onHoverParam(item.key)}
               onMouseLeave={() => onHoverParam && onHoverParam(null)}
               className={`flex flex-col gap-1 p-2 rounded-xl transition-all cursor-pointer ${
-                isHovered ? 'bg-slate-800/90 ring-1 ring-cyan-500/50' : 'hover:bg-slate-800/40'
+                isHovered ? 'bg-slate-800/90 ring-1 ring-[#D7ED68]/50' : 'hover:bg-slate-800/40'
               }`}
             >
               <div className="flex items-center justify-between text-xs">
                 <div className="flex items-center gap-1.5">
-                  <span className={`font-bold transition-colors ${isHovered ? 'text-cyan-300' : 'text-slate-200'}`}>
+                  <span className={`font-bold transition-colors ${isHovered ? 'text-[#D7ED68]' : 'text-slate-200'}`}>
                     {item.label_fa}
                   </span>
                   <span className="text-[10px] text-slate-500 font-mono">
@@ -80,20 +80,20 @@ export const RacketParametersBreakdown: React.FC<RacketParametersBreakdownProps>
                 </div>
               </div>
 
-              {/* نوار گرافیکی */}
+              {/* نوار گرافیکی هماهنگ با تم کورت بلو و لایم رالی */}
               <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
                 <div
                   className={`h-full rounded-full transition-all duration-500 ${
                     isHovered
-                      ? 'bg-gradient-to-r from-cyan-400 to-sky-300'
-                      : 'bg-gradient-to-r from-cyan-500 to-teal-400'
+                      ? 'bg-gradient-to-r from-sky-500 via-blue-400 to-[#D7ED68]'
+                      : 'bg-gradient-to-r from-sky-600 via-blue-500 to-[#D7ED68]'
                   }`}
                   style={{ width: `${percent}%` }}
                 />
               </div>
 
               {isHovered && (
-                <span className="text-[10px] text-cyan-200/80 animate-in fade-in duration-150">
+                <span className="text-[10px] text-slate-300 animate-in fade-in duration-150">
                   {item.description}
                 </span>
               )}
@@ -108,7 +108,7 @@ export const RacketParametersBreakdown: React.FC<RacketParametersBreakdownProps>
           <span className="font-bold text-slate-300 text-[11px]">
             میزان سفتی و حس ضربه (FEEL • STIFFNESS)
           </span>
-          <span className="font-mono font-bold text-cyan-400 text-xs">
+          <span className="font-mono font-black text-[#D7ED68] text-xs">
             {stiffness.label_en || `${stiffness.value}/100 • Soft`}
           </span>
         </div>
@@ -118,7 +118,7 @@ export const RacketParametersBreakdown: React.FC<RacketParametersBreakdownProps>
           {/* خط پیوسته نوار */}
           <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden relative">
             <div
-              className="h-full bg-gradient-to-r from-emerald-500 via-cyan-500 to-amber-500 rounded-full"
+              className="h-full bg-gradient-to-r from-emerald-500 via-sky-500 to-amber-500 rounded-full"
               style={{ width: '100%' }}
             />
           </div>

@@ -103,8 +103,8 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
                 <span>{product.rating}</span>
               </div>
               {verdict && (
-                <div className="flex items-center gap-1 bg-cyan-950/95 text-cyan-300 border border-cyan-500/40 text-[10px] px-2 py-0.5 rounded-full font-black">
-                  <span className="text-[8px] text-cyan-400 font-mono">VERDICT</span>
+                <div className="flex items-center gap-1 bg-slate-900/95 text-[#D7ED68] border border-[#D7ED68]/40 text-[10px] px-2 py-0.5 rounded-full font-black shadow-xs">
+                  <span className="text-[8px] text-slate-400 font-mono">VERDICT</span>
                   <span>{verdict.overallScore.toFixed(1)}</span>
                 </div>
               )}

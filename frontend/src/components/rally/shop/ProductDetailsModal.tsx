@@ -49,10 +49,7 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
     { label: 'شکل هندسی فریم', value: product.shape },
     { label: 'جنس سطح راکت', value: product.surface },
     { label: 'هسته فومی (Core)', value: product.core },
-    ...(verdict ? [
-      { label: 'پروفایل سبک بازی', value: verdict.playProfile_fa },
-      { label: 'سفتی شاسی و فوم', value: verdict.stiffness.label_fa }
-    ] : []),
+    ...(verdict ? [{ label: 'پروفایل سبک بازی', value: verdict.playProfile_fa }, { label: 'سفتی شاسی و فوم', value: verdict.stiffness.label_fa }] : []),
     { label: 'گارانتی و پشتیبانی', value: product.warranty }
   ];
 
@@ -189,8 +186,8 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                 </div>
                 <span className="text-xs text-gray-400">({product.reviews_count} نظر کارشناسی)</span>
                 {verdict && (
-                  <span className="bg-cyan-950 text-cyan-300 border border-cyan-500/40 text-[10px] font-black px-2 py-0.5 rounded-md flex items-center gap-1 shadow-xs">
-                    <Sparkles className="w-2.5 h-2.5 text-cyan-400" />
+                  <span className="bg-slate-900 text-[#D7ED68] border border-[#D7ED68]/40 text-[10px] font-black px-2 py-0.5 rounded-md flex items-center gap-1 shadow-xs">
+                    <Sparkles className="w-2.5 h-2.5 text-[#D7ED68]" />
                     <span>نمره ورردیکت: {verdict.overallScore.toFixed(1)}</span>
                   </span>
                 )}

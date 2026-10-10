@@ -30,16 +30,16 @@ export const RacketVerdictSection: React.FC<RacketVerdictSectionProps> = React.m
       <RacketVerdictCard product={product} verdict={verdict} />
 
       {/* ۲. بخش رادار عملکرد و تفکیک ۸ پارامتر (Performance Radar & Breakdown) */}
-      <div className="bg-[#0b1329] text-white rounded-3xl p-5 sm:p-7 border border-cyan-500/20 shadow-xl flex flex-col gap-5">
+      <div className="bg-[#0B2238] text-white rounded-3xl p-5 sm:p-7 border border-slate-700/80 shadow-xl flex flex-col gap-5">
         
         {/* سربرگ خروجی الگوریتم */}
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-cyan-500/20 pb-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-700/60 pb-4">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-cyan-950 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+            <div className="w-8 h-8 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center text-[#D7ED68]">
               <BarChart3 className="w-4 h-4" />
             </div>
             <div>
-              <span className="text-[10px] tracking-widest font-black text-cyan-400 block">
+              <span className="text-[10px] tracking-widest font-black text-[#D7ED68] block">
                 ALGORITHM OUTPUT
               </span>
               <h3 className="text-sm sm:text-base font-black text-white">
@@ -48,8 +48,8 @@ export const RacketVerdictSection: React.FC<RacketVerdictSectionProps> = React.m
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5 text-xs text-slate-400 bg-slate-900/80 px-3 py-1.5 rounded-xl border border-slate-800">
-            <Award className="w-3.5 h-3.5 text-amber-400" />
+          <div className="flex items-center gap-1.5 text-xs text-slate-400 bg-slate-900/90 px-3 py-1.5 rounded-xl border border-slate-800">
+            <Award className="w-3.5 h-3.5 text-[#D7ED68]" />
             <span>نمره‌دهی براساس تست فیزیکی و فیدبک مربیان</span>
           </div>
         </div>
@@ -57,7 +57,7 @@ export const RacketVerdictSection: React.FC<RacketVerdictSectionProps> = React.m
         {/* گرید ۲ ستونه: سمت چپ رادار، سمت راست نوارهای تفکیکی */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
           {/* ستون رادار چارت (۵ ستون) */}
-          <div className="lg:col-span-5 flex flex-col items-center justify-center bg-slate-950/60 p-4 rounded-2xl border border-slate-800/80">
+          <div className="lg:col-span-5 flex flex-col items-center justify-center bg-slate-900/80 p-4 rounded-2xl border border-slate-800">
             <RacketRadarChart
               parameters={verdict.parameters}
               activeKey={hoveredParam}
@@ -77,8 +77,8 @@ export const RacketVerdictSection: React.FC<RacketVerdictSectionProps> = React.m
         </div>
 
         {/* راهنمای کوتاه پارامترها */}
-        <div className="flex items-center gap-2 p-3 bg-slate-900/50 rounded-xl border border-slate-800 text-[11px] text-slate-400">
-          <HelpCircle className="w-4 h-4 text-cyan-400 flex-shrink-0" />
+        <div className="flex items-center gap-2 p-3 bg-slate-900/60 rounded-xl border border-slate-800 text-[11px] text-slate-400">
+          <HelpCircle className="w-4 h-4 text-[#D7ED68] flex-shrink-0" />
           <span>
             امتیاز هر پارامتر حاصل تلفیق جنس کربن، دانسیته فوم داخلی، گرانیگاه (Balance) و ضریب درگ آیرودینامیک شاسی راکت است.
           </span>
