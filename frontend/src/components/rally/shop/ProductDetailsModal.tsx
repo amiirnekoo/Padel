@@ -134,12 +134,14 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
 
             {/* Thumbnail Strip */}
             {galleryImages.length > 1 && (
-              <div className="flex items-center gap-2 overflow-x-auto pb-1">
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 select-none">
                 {galleryImages.map((img, i) => (
                   <button
                     key={img + i}
+                    type="button"
+                    draggable={false}
                     onClick={() => setSelectedImgIdx(i)}
-                    className={`relative w-14 h-14 rounded-xl border-2 overflow-hidden flex-shrink-0 bg-slate-50 transition-all ${
+                    className={`relative w-14 h-14 rounded-xl border-2 overflow-hidden flex-shrink-0 bg-slate-50 transition-all cursor-pointer ${
                       selectedImgIdx === i ? 'border-rally-primary ring-2 ring-rally-primary/20' : 'border-gray-200 opacity-60 hover:opacity-100'
                     }`}
                   >
@@ -152,7 +154,9 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                         src={img}
                         alt={`نمای ${i + 1}`}
                         onError={() => handleImgError(i)}
-                        className="w-full h-full object-contain p-1"
+                        draggable={false}
+                        onDragStart={(e) => e.preventDefault()}
+                        className="w-full h-full object-contain p-1 pointer-events-none"
                       />
                     )}
                   </button>

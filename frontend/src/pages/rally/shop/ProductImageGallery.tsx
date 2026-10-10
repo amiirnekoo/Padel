@@ -1,5 +1,6 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Maximize2, X, ChevronRight, ChevronLeft, Image as ImageIcon, ZoomIn } from 'lucide-react';
+import { useDragScroll } from '../../../hooks/useDragScroll';
 
 interface ProductImageGalleryProps {
   images: string[];
@@ -18,7 +19,7 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = React.mem
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [imgErrors, setImgErrors] = useState<Record<number, boolean>>({});
   
-  const thumbsContainerRef = useRef<HTMLDivElement>(null);
+  const { containerRef: thumbsContainerRef, isDragging, hasDraggedRef, dragProps } = useDragScroll<HTMLDivElement>();
 
   const validImages = images && images.length > 0 ? images : ['/images/rally_logo_crisp.png?v=20261007_v2'];
   const currentImage = validImages[activeIdx] || validImages[0];
@@ -132,24 +133,44 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = React.mem
         <div className="relative">
           <div
             ref={thumbsContainerRef}
-            className="flex items-center gap-2 overflow-x-auto py-1 px-0.5 no-scrollbar scroll-smooth"
+            className={`flex items-center gap-2 overflow-x-auto py-1 px-0.5 no-scrollbar scroll-smooth select-none ${
+              isDragging ? 'cursor-grabbing' : 'cursor-grab'
+            }`}
+            {...dragProps}
           >
             {validImages.map((img, idx) => (
               <button
                 key={idx}
-                onClick={() => setActiveIdx(idx)}
-                className={`relative flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white p-1.5 border transition-all duration-200 cursor-pointer overflow-hidden ${
+                type="button"
+                draggable={false}
+                onClick={() => {
+                  if (hasDraggedRef.current) return;
+                  setActiveIdx(idx);
+                }}
+                className={`relative flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white p-1.5 border transition-all duration-200 overflow-hidden select-none ${
+                  isDragging ? 'cursor-grabbing' : 'cursor-grab'
+                } ${
                   activeIdx === idx
                     ? `${accentRing} shadow-sm scale-102`
                     : 'border-slate-200 opacity-60 hover:opacity-100 hover:border-slate-300'
                 }`}
               >
-                <img
-                  src={img}
-                  alt={`بندانگشتی ${idx + 1}`}
-                  className="w-full h-full object-contain"
-                  loading="lazy"
-                />
+                {imgErrors[idx] ? (
+                  <div className="w-full h-full flex flex-col items-center justify-center text-[10px] font-bold text-slate-400 bg-slate-100/90 rounded-xl">
+                    <ImageIcon className="w-5 h-5 text-slate-300 mb-0.5" />
+                    <span>عکس {idx + 1}</span>
+                  </div>
+                ) : (
+                  <img
+                    src={img}
+                    alt={`بندانگشتی ${idx + 1}`}
+                    onError={() => setImgErrors(prev => ({ ...prev, [idx]: true }))}
+                    draggable={false}
+                    onDragStart={(e) => e.preventDefault()}
+                    decoding="async"
+                    className="w-full h-full object-contain pointer-events-none"
+                  />
+                )}
               </button>
             ))}
           </div>
