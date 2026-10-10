@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { X, Star, ShieldCheck, Truck, ShoppingCart, Check, Award, Flame, ChevronRight, ChevronLeft, Sparkles, Image as ImageIcon } from 'lucide-react';
 import { ShopProduct } from '../../../types/rally';
 import { getRacketVerdict } from '../../../data/racketVerdictData';
+import { getProPlayerForProduct } from '../../../data/proPlayersData';
+import { ProPlayerGalleryBadge } from '../../../pages/rally/shop/ProPlayerGalleryBadge';
 
 interface ProductDetailsModalProps {
   product: ShopProduct | null;
@@ -25,6 +27,7 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
 
   const isRacket = product.category === 'PADEL_RACKET' || (product.sport === 'PADEL' && (product.shape || product.weight));
   const verdict = isRacket ? getRacketVerdict(product) : null;
+  const proPlayer = getProPlayerForProduct(product);
 
   const galleryImages = (product.images && product.images.length > 0)
     ? product.images
@@ -107,21 +110,14 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                 />
               )}
 
+              {/* Pro Player Signature Corner Badge */}
+              <ProPlayerGalleryBadge player={proPlayer} />
+
               {/* Prev / Next buttons */}
               {galleryImages.length > 1 && (
                 <>
-                  <button
-                    onClick={() => setSelectedImgIdx((selectedImgIdx - 1 + galleryImages.length) % galleryImages.length)}
-                    className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white/90 shadow text-gray-700 flex items-center justify-center hover:bg-white"
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => setSelectedImgIdx((selectedImgIdx + 1) % galleryImages.length)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white/90 shadow text-gray-700 flex items-center justify-center hover:bg-white"
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
+                  <button onClick={() => setSelectedImgIdx((selectedImgIdx - 1 + galleryImages.length) % galleryImages.length)} className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white/90 shadow text-gray-700 flex items-center justify-center hover:bg-white"><ChevronLeft className="w-4 h-4" /></button>
+                  <button onClick={() => setSelectedImgIdx((selectedImgIdx + 1) % galleryImages.length)} className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white/90 shadow text-gray-700 flex items-center justify-center hover:bg-white"><ChevronRight className="w-4 h-4" /></button>
                 </>
               )}
 

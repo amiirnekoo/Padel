@@ -158,7 +158,7 @@ export const WORLD_PADEL_RANKINGS: RankingPlayer[] = [
     points: 14920,
     tournamentsCount: 22,
     winRate: '۹۲٪',
-    avatarUrl: null,
+    avatarUrl: '/images/players/arturo_coello_avatar.webp',
     club: 'Premier Padel Tour',
     hand: 'چپ دست',
     category: 'WORLD'
@@ -174,7 +174,7 @@ export const WORLD_PADEL_RANKINGS: RankingPlayer[] = [
     points: 14850,
     tournamentsCount: 22,
     winRate: '۹۱٪',
-    avatarUrl: null,
+    avatarUrl: '/images/players/agustin_tapia_avatar.webp',
     club: 'Premier Padel Tour',
     hand: 'راست دست',
     category: 'WORLD'

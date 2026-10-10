@@ -1,19 +1,23 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Maximize2, X, ChevronRight, ChevronLeft, Image as ImageIcon, ZoomIn } from 'lucide-react';
 import { useDragScroll } from '../../../hooks/useDragScroll';
+import { ProPlayerProfile } from '../../../data/proPlayersData';
+import { ProPlayerGalleryBadge } from './ProPlayerGalleryBadge';
 
 interface ProductImageGalleryProps {
   images: string[];
   productName: string;
   brand: string;
   isPadel?: boolean;
+  proPlayer?: ProPlayerProfile | null;
 }
 
 export const ProductImageGallery: React.FC<ProductImageGalleryProps> = React.memo(({
   images,
   productName,
   brand,
-  isPadel = true
+  isPadel = true,
+  proPlayer
 }) => {
   const [activeIdx, setActiveIdx] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
@@ -101,11 +105,16 @@ export const ProductImageGallery: React.FC<ProductImageGalleryProps> = React.mem
           <Maximize2 className="w-4 h-4" />
         </button>
 
+        {/* Pro Player Signature Corner Badge */}
+        <ProPlayerGalleryBadge player={proPlayer} />
+
         {/* Desktop Click for Fullscreen Hint */}
-        <div className="hidden sm:flex absolute bottom-3 right-3 left-3 items-center justify-center gap-1.5 py-1 px-3 rounded-full text-[11px] font-medium transition-opacity duration-200 pointer-events-none bg-slate-900/75 text-white/90 shadow-sm opacity-0 group-hover:opacity-100">
-          <ZoomIn className="w-3.5 h-3.5 text-sky-400" />
-          <span>برای مشاهده کیفیت بالا و تمام‌صفحه کلیک کنید</span>
-        </div>
+        {!proPlayer && (
+          <div className="hidden sm:flex absolute bottom-3 right-3 left-3 items-center justify-center gap-1.5 py-1 px-3 rounded-full text-[11px] font-medium transition-opacity duration-200 pointer-events-none bg-slate-900/75 text-white/90 shadow-sm opacity-0 group-hover:opacity-100">
+            <ZoomIn className="w-3.5 h-3.5 text-sky-400" />
+            <span>برای مشاهده کیفیت بالا و تمام‌صفحه کلیک کنید</span>
+          </div>
+        )}
 
         {/* Arrow Navigators on Main Stage */}
         {validImages.length > 1 && (
