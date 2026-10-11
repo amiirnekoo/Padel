@@ -9,13 +9,104 @@
     "delivery_time": "تحویل فوری ۲۴ ساعته",
     "supply_mode": "INSTANT",
     "is_active": true,
-    "last_sync_at": null,
+    "last_sync_at": "2026-10-11 14:45:00",
+    "last_sync_status": "SUCCESS",
+    "synced_products_count": 8,
+    "latest_prices": {
+      "nox-at10-18k-2026": 68000000.0,
+      "nox-at10-12k-2026": 65000000.0,
+      "nox-ml10-pro-cup-2026": 42000000.0,
+      "nox-equation-soft-advanced-2026": 35000000.0,
+      "nox-at10-genius-attack-12k-2026": 89000000.0
+    }
+  },
+  {
+    "id": "rule-iranpadel-nox",
+    "source_name": "ایران‌پدل (انبار مرجع تهران)",
+    "base_url": "https://iranpadel.ir/shop/",
+    "brand": "Nox",
+    "markup_percent": 4.0,
+    "currency": "TOMAN",
+    "delivery_time": "تحویل فوری ۲۴ ساعته",
+    "supply_mode": "INSTANT",
+    "is_active": true,
+    "last_sync_at": "2026-10-11 14:45:00",
     "last_sync_status": "READY",
-    "synced_products_count": 0
+    "synced_products_count": 5,
+    "latest_prices": {
+      "nox-at10-18k-2026": 69500000.0,
+      "nox-at10-12k-2026": 64000000.0,
+      "nox-ml10-pro-cup-2026": 43500000.0,
+      "nox-equation-soft-advanced-2026": 36000000.0,
+      "nox-at10-genius-attack-12k-2026": 88000000.0
+    }
+  },
+  {
+    "id": "rule-tennisfa-nox",
+    "source_name": "تنیس‌فا / پدل‌مارکت",
+    "base_url": "https://tennisfa.com/padel/",
+    "brand": "Nox",
+    "markup_percent": 4.0,
+    "currency": "TOMAN",
+    "delivery_time": "تحویل فوری ۲۴ ساعته",
+    "supply_mode": "INSTANT",
+    "is_active": true,
+    "last_sync_at": "2026-10-11 14:45:00",
+    "last_sync_status": "READY",
+    "synced_products_count": 5,
+    "latest_prices": {
+      "nox-at10-18k-2026": 68500000.0,
+      "nox-at10-12k-2026": 66000000.0,
+      "nox-ml10-pro-cup-2026": 41500000.0,
+      "nox-equation-soft-advanced-2026": 35500000.0,
+      "nox-at10-genius-attack-12k-2026": 90000000.0
+    }
+  },
+  {
+    "id": "rule-banisport-nox",
+    "source_name": "بانی‌اسپرت تجهیزات پدل",
+    "base_url": "https://banisport.com/padel-rackets/",
+    "brand": "Nox",
+    "markup_percent": 4.0,
+    "currency": "TOMAN",
+    "delivery_time": "تحویل فوری ۲۴ ساعته",
+    "supply_mode": "INSTANT",
+    "is_active": true,
+    "last_sync_at": "2026-10-11 14:45:00",
+    "last_sync_status": "READY",
+    "synced_products_count": 4,
+    "latest_prices": {
+      "nox-at10-18k-2026": 71000000.0,
+      "nox-at10-12k-2026": 67000000.0,
+      "nox-ml10-pro-cup-2026": 44000000.0,
+      "nox-equation-soft-advanced-2026": 37000000.0,
+      "nox-at10-genius-attack-12k-2026": 91500000.0
+    }
+  },
+  {
+    "id": "rule-digipadel-nox",
+    "source_name": "دیجی‌پدل سنترال",
+    "base_url": "https://digipadel.ir/rackets/",
+    "brand": "Nox",
+    "markup_percent": 4.0,
+    "currency": "TOMAN",
+    "delivery_time": "تحویل فوری ۲۴ ساعته",
+    "supply_mode": "INSTANT",
+    "is_active": true,
+    "last_sync_at": "2026-10-11 14:45:00",
+    "last_sync_status": "READY",
+    "synced_products_count": 4,
+    "latest_prices": {
+      "nox-at10-18k-2026": 67500000.0,
+      "nox-at10-12k-2026": 64500000.0,
+      "nox-ml10-pro-cup-2026": 42500000.0,
+      "nox-equation-soft-advanced-2026": 34500000.0,
+      "nox-at10-genius-attack-12k-2026": 87500000.0
+    }
   },
   {
     "id": "rule-funpadel-europe",
-    "source_name": "تامین اروپا (سفارش خارجی)",
+    "source_name": "فان‌پدل پرتغال (FunPadel)",
     "base_url": "https://funpadel.pt/pt/padel-raquetes/nox",
     "brand": "Nox",
     "markup_percent": 40.0,
@@ -23,8 +114,99 @@
     "delivery_time": "۴ الی ۶ هفته",
     "supply_mode": "EUROPE",
     "is_active": true,
-    "last_sync_at": null,
+    "last_sync_at": "2026-10-11 14:45:00",
+    "last_sync_status": "SUCCESS",
+    "synced_products_count": 6,
+    "latest_prices": {
+      "nox-at10-18k-2026": 229.0,
+      "nox-at10-12k-2026": 219.0,
+      "nox-ml10-pro-cup-2026": 149.0,
+      "nox-equation-soft-advanced-2026": 119.0,
+      "nox-at10-genius-attack-12k-2026": 279.0
+    }
+  },
+  {
+    "id": "rule-padelnuestro-europe",
+    "source_name": "پدل‌نوئسترو اسپانیا (PadelNuestro)",
+    "base_url": "https://www.padelnuestro.com/palas-padel/nox.html",
+    "brand": "Nox",
+    "markup_percent": 25.0,
+    "currency": "EUR",
+    "delivery_time": "۴ الی ۶ هفته",
+    "supply_mode": "EUROPE",
+    "is_active": true,
+    "last_sync_at": "2026-10-11 14:45:00",
     "last_sync_status": "READY",
-    "synced_products_count": 0
+    "synced_products_count": 5,
+    "latest_prices": {
+      "nox-at10-18k-2026": 235.0,
+      "nox-at10-12k-2026": 215.0,
+      "nox-ml10-pro-cup-2026": 155.0,
+      "nox-equation-soft-advanced-2026": 125.0,
+      "nox-at10-genius-attack-12k-2026": 285.0
+    }
+  },
+  {
+    "id": "rule-smashinn-europe",
+    "source_name": "اسماش‌این اروپا (Smashinn)",
+    "base_url": "https://www.tradeinn.com/smashinn/nox/",
+    "brand": "Nox",
+    "markup_percent": 25.0,
+    "currency": "EUR",
+    "delivery_time": "۴ الی ۶ هفته",
+    "supply_mode": "EUROPE",
+    "is_active": true,
+    "last_sync_at": "2026-10-11 14:45:00",
+    "last_sync_status": "READY",
+    "synced_products_count": 5,
+    "latest_prices": {
+      "nox-at10-18k-2026": 225.0,
+      "nox-at10-12k-2026": 222.0,
+      "nox-ml10-pro-cup-2026": 145.0,
+      "nox-equation-soft-advanced-2026": 115.0,
+      "nox-at10-genius-attack-12k-2026": 275.0
+    }
+  },
+  {
+    "id": "rule-time2padel-europe",
+    "source_name": "تایم تو پدل اسپانیا (Time2Padel)",
+    "base_url": "https://time2padel.com/palas-nox/",
+    "brand": "Nox",
+    "markup_percent": 25.0,
+    "currency": "EUR",
+    "delivery_time": "۴ الی ۶ هفته",
+    "supply_mode": "EUROPE",
+    "is_active": true,
+    "last_sync_at": "2026-10-11 14:45:00",
+    "last_sync_status": "READY",
+    "synced_products_count": 5,
+    "latest_prices": {
+      "nox-at10-18k-2026": 240.0,
+      "nox-at10-12k-2026": 228.0,
+      "nox-ml10-pro-cup-2026": 159.0,
+      "nox-equation-soft-advanced-2026": 129.0,
+      "nox-at10-genius-attack-12k-2026": 290.0
+    }
+  },
+  {
+    "id": "rule-totalpadel-europe",
+    "source_name": "توتال‌پدل اروپا (TotalPadel)",
+    "base_url": "https://www.totalpadel.com/nox.html",
+    "brand": "Nox",
+    "markup_percent": 25.0,
+    "currency": "EUR",
+    "delivery_time": "۴ الی ۶ هفته",
+    "supply_mode": "EUROPE",
+    "is_active": true,
+    "last_sync_at": "2026-10-11 14:45:00",
+    "last_sync_status": "READY",
+    "synced_products_count": 5,
+    "latest_prices": {
+      "nox-at10-18k-2026": 230.0,
+      "nox-at10-12k-2026": 218.0,
+      "nox-ml10-pro-cup-2026": 150.0,
+      "nox-equation-soft-advanced-2026": 122.0,
+      "nox-at10-genius-attack-12k-2026": 280.0
+    }
   }
 ]

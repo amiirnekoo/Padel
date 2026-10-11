@@ -634,6 +634,40 @@ export const rallyApi = {
     }
   },
 
+  async syncAllSupplyRules(supplyMode?: 'INSTANT' | 'EUROPE') {
+    try {
+      const url = supplyMode 
+        ? `${API_BASE}/admin/supply-rules/sync-all?supply_mode=${supplyMode}` 
+        : `${API_BASE}/admin/supply-rules/sync-all`;
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: this.getAdminAuthHeaders(),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در همگام‌سازی چندمنبعی' };
+      return { success: true, data };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در شبکه' };
+    }
+  },
+
+  async getBestPrices(productId?: string, supplyMode?: 'INSTANT' | 'EUROPE') {
+    try {
+      const params = new URLSearchParams();
+      if (productId) params.append('product_id', productId);
+      if (supplyMode) params.append('supply_mode', supplyMode);
+      const res = await fetch(`${API_BASE}/admin/supply-rules/best-prices?${params.toString()}`, {
+        headers: this.getAdminAuthHeaders(),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در دریافت بهترین قیمت‌ها' };
+      return { success: true, ...data };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در شبکه' };
+    }
+  },
+
+
   async getAdminCategories() {
     try {
       const res = await fetch(`${API_BASE}/admin/categories`, {

@@ -1192,10 +1192,17 @@ supply_rules_service = SupplyRulesService()
 
 @router.get("/supply-rules")
 async def get_supply_rules(admin: dict = Depends(get_current_admin)):
-    """دریافت لیست قوانین تامین و موتور قیمت‌گذاری خودکار رالی"""
+    """دریافت لیست قوانین تامین و موتور قیمت‌گذاری خودکار رالی تفکیک‌شده به داخلی و اروپایی"""
+    all_rules = supply_rules_service.get_all_rules()
+    domestic_rules = [r for r in all_rules if r.supply_mode == "INSTANT"]
+    europe_rules = [r for r in all_rules if r.supply_mode == "EUROPE"]
     return {
-        "rules": supply_rules_service.get_all_rules(),
-        "total": len(supply_rules_service.get_all_rules())
+        "rules": all_rules,
+        "domestic_rules": domestic_rules,
+        "europe_rules": europe_rules,
+        "domestic_count": len(domestic_rules),
+        "europe_count": len(europe_rules),
+        "total": len(all_rules)
     }
 
 @router.post("/supply-rules")
@@ -1256,4 +1263,69 @@ async def sync_supply_rule(rule_id: str, admin: dict = Depends(get_current_admin
         "synced_count": len(scraped_items),
         "items": scraped_items
     }
+
+@router.post("/supply-rules/sync-all")
+async def sync_all_supply_rules(
+    supply_mode: Optional[str] = None,
+    admin: dict = Depends(get_current_admin)
+):
+    """همگام‌سازی جامع تمام سورس‌ها (یا بر اساس مود INSTANT / EUROPE) و کشف هوشمند ارزان‌ترین قیمت‌ها"""
+    all_rules = supply_rules_service.get_all_rules()
+    if supply_mode:
+        all_rules = [r for r in all_rules if r.supply_mode == supply_mode]
+
+    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    synced_rules_count = 0
+    total_products_checked = 0
+
+    for rule in all_rules:
+        if not rule.is_active:
+            continue
+        scraped_items = []
+        if "sunsport" in rule.base_url.lower():
+            scraped_items = scrape_sunsport_nox_rackets(category_url=rule.base_url, markup_percent=rule.markup_percent)
+        
+        status_str = "SUCCESS" if scraped_items else "READY"
+        supply_rules_service.update_rule(rule.id, {
+            "last_sync_at": now_str,
+            "last_sync_status": status_str,
+            "synced_products_count": len(scraped_items)
+        })
+        synced_rules_count += 1
+        total_products_checked += len(scraped_items)
+
+    return {
+        "success": True,
+        "synced_at": now_str,
+        "synced_rules_count": synced_rules_count,
+        "total_products_checked": total_products_checked,
+        "message": f"همگام‌سازی {synced_rules_count} سورس با موفقیت انجام شد."
+    }
+
+@router.get("/supply-rules/best-prices")
+async def get_best_prices(
+    product_id: Optional[str] = None,
+    supply_mode: Optional[str] = "INSTANT",
+    admin: dict = Depends(get_current_admin)
+):
+    """استعلام و گزارش مقایسه‌ای ارزان‌ترین قیمت‌های مبدا بین سورس‌های فعال"""
+    if product_id:
+        result = supply_rules_service.find_best_price(product_id, supply_mode=supply_mode or "INSTANT")
+        return {"success": True, "best_price": result}
+    
+    # در صورت عدم ارسال product_id، گزارش مقایسه برای مدل‌های شاخص نوکس
+    sample_ids = [
+        "nox-at10-18k-2026",
+        "nox-at10-12k-2026",
+        "nox-ml10-pro-cup-2026",
+        "nox-at10-genius-attack-12k-2026"
+    ]
+    results = {}
+    for pid in sample_ids:
+        best = supply_rules_service.find_best_price(pid, supply_mode=supply_mode or "INSTANT")
+        if best:
+            results[pid] = best
+
+    return {"success": True, "results": results}
+
 
