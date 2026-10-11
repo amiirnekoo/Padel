@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ShoppingCart, Check, Star, ShieldCheck, Truck, RefreshCw, Sparkles, Award, Globe } from 'lucide-react';
 import { ShopProduct } from '../../../types/rally';
 import { useProductRating } from '../../../utils/productRatingUtils';
-import { DualPriceDeliveryInfo } from '../../../components/rally/shop/DualPriceDeliveryInfo';
+import { DualPriceSupplySelector, SupplyOrderMode } from '../../../components/rally/shop/DualPriceSupplySelector';
 
 interface ProductBuyBoxProps {
   product: ShopProduct;
@@ -18,12 +18,16 @@ export const ProductBuyBox: React.FC<ProductBuyBoxProps> = React.memo(({
   const [quantity, setQuantity] = useState(1);
   const [justAdded, setJustAdded] = useState(false);
   const [selectedWeight, setSelectedWeight] = useState(product.weight || 'استاندارد مسابقه‌ای');
+  const [orderMode, setOrderMode] = useState<SupplyOrderMode>(product.stock > 0 ? 'INSTANT' : 'EUROPE');
 
   const isPadel = product.sport === 'PADEL';
   const isAvailable = product.stock > 0;
-  const unitPrice = isAvailable ? product.price : (product.custom_order_price || product.price);
+  const isInstant = orderMode === 'INSTANT';
+  const unitPrice = isInstant
+    ? product.price
+    : (product.custom_order_price || Math.round((product.eur_price || 200) * 298310 * 1.4));
   const ratingSummary = useProductRating(product.id);
-  const savings = isAvailable && product.discount_percent > 0
+  const savings = isInstant && product.discount_percent > 0
     ? (product.original_price - product.price) * quantity
     : 0;
 
@@ -79,9 +83,16 @@ export const ProductBuyBox: React.FC<ProductBuyBoxProps> = React.memo(({
         </p>
       </div>
 
+      {/* Dual Price & Supply Mode Selector */}
+      <DualPriceSupplySelector
+        product={product}
+        selectedMode={orderMode}
+        onSelectMode={setOrderMode}
+      />
+
       {/* Pricing Module */}
       <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100 flex flex-col gap-2">
-        {isAvailable && product.discount_percent > 0 && (
+        {isInstant && product.discount_percent > 0 && (
           <div className="flex items-center justify-between">
             <span className="text-xs text-slate-400 line-through">
               {(product.original_price * quantity).toLocaleString('fa-IR')} تومان
@@ -92,21 +103,21 @@ export const ProductBuyBox: React.FC<ProductBuyBoxProps> = React.memo(({
           </div>
         )}
 
-        {!isAvailable && (
+        {!isInstant && (
           <div className="flex items-center justify-between bg-blue-50/80 px-2.5 py-1 rounded-lg border border-blue-100">
             <span className="text-[11px] font-bold text-blue-800 flex items-center gap-1">
               <Globe className="w-3.5 h-3.5 text-blue-600" />
-              سفارش اختصاصی از اروپا (تحویل {product.custom_order_delivery || '۴ الی ۶ هفته'})
+              سفارش مستقیم از اروپا (تحویل {product.custom_order_delivery || '۴ الی ۶ هفته'})
             </span>
             <span className="text-[10px] font-black bg-blue-600 text-white px-2 py-0.5 rounded-full">
-              تامین مستقیم
+              تامین اختصاصی
             </span>
           </div>
         )}
 
         <div className="flex items-baseline justify-between">
           <span className="text-xs text-slate-500 font-medium">
-            {isAvailable ? 'قیمت تحویل فوری:' : 'قیمت سفارش مستقیم:'}
+            {isInstant ? 'مبلغ نهایی (تحویل فوری):' : 'مبلغ نهایی (سفارش اروپا):'}
           </span>
           <div className="flex items-baseline gap-1.5">
             <span className="text-2xl sm:text-3xl font-black text-slate-900">
@@ -122,9 +133,6 @@ export const ProductBuyBox: React.FC<ProductBuyBoxProps> = React.memo(({
           </div>
         )}
       </div>
-
-      {/* Delivery & Dual Price Info */}
-      <DualPriceDeliveryInfo product={product} />
 
       {/* Options Selector: Weight & Specs */}
       <div className="flex flex-col gap-3">
@@ -166,7 +174,7 @@ export const ProductBuyBox: React.FC<ProductBuyBoxProps> = React.memo(({
             {quantity.toLocaleString('fa-IR')}
           </span>
           <button
-            onClick={() => setQuantity((q) => Math.min(isAvailable ? product.stock : 10, q + 1))}
+            onClick={() => setQuantity((q) => Math.min(isInstant ? product.stock : 10, q + 1))}
             className="w-10 h-10 rounded-xl bg-white text-slate-700 hover:bg-slate-200 font-bold flex items-center justify-center transition-colors cursor-pointer"
           >
             +
@@ -179,7 +187,7 @@ export const ProductBuyBox: React.FC<ProductBuyBoxProps> = React.memo(({
           className={`flex-1 w-full py-4 px-6 rounded-2xl font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 transition-all cursor-pointer shadow-md active:scale-98 ${
             justAdded || isInCart
               ? 'bg-slate-800 text-white hover:bg-slate-900'
-              : !isAvailable
+              : !isInstant
               ? 'bg-blue-700 hover:bg-blue-800 text-white shadow-blue-900/20'
               : isPadel
               ? 'bg-[#0B4278] hover:bg-[#0C4F8D] text-white shadow-sky-900/20'
@@ -189,14 +197,14 @@ export const ProductBuyBox: React.FC<ProductBuyBoxProps> = React.memo(({
           {justAdded ? (
             <>
               <Check className="w-5 h-5 text-emerald-400" />
-              <span>{isAvailable ? 'به سبد خرید اضافه شد' : 'پیش‌سفارش با موفقیت ثبت شد'}</span>
+              <span>{isInstant ? 'به سبد خرید اضافه شد' : 'پیش‌سفارش با موفقیت ثبت شد'}</span>
             </>
           ) : isInCart ? (
             <>
               <Check className="w-5 h-5 text-sky-400" />
               <span>موجود در سبد خرید (تغییر تعداد)</span>
             </>
-          ) : !isAvailable ? (
+          ) : !isInstant ? (
             <>
               <Globe className="w-5 h-5 text-white" />
               <span>ثبت سفارش اختصاصی اروپا (تحویل ۴ تا ۶ هفته)</span>
@@ -204,7 +212,7 @@ export const ProductBuyBox: React.FC<ProductBuyBoxProps> = React.memo(({
           ) : (
             <>
               <ShoppingCart className="w-5 h-5" />
-              <span>افزودن به سبد خرید</span>
+              <span>افزودن به سبد خرید (تحویل فوری)</span>
             </>
           )}
         </button>
@@ -212,7 +220,7 @@ export const ProductBuyBox: React.FC<ProductBuyBoxProps> = React.memo(({
 
       {/* Stock Status */}
       <div className="flex items-center justify-between text-xs pt-1">
-        {isAvailable ? (
+        {isInstant ? (
           <span className="text-emerald-700 font-bold flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
             موجود در انبار مرکزی رالی (آماده تحویل فوری ۲۴ ساعته)
@@ -220,7 +228,7 @@ export const ProductBuyBox: React.FC<ProductBuyBoxProps> = React.memo(({
         ) : (
           <span className="text-blue-700 font-bold flex items-center gap-1.5">
             <Globe className="w-3.5 h-3.5 text-blue-600" />
-            سفارش اختصاصی اروپا - زمان تحویل: {product.custom_order_delivery || '۴ الی ۶ هفته'}
+            تامین مستقیم از اروپا - زمان تحویل: {product.custom_order_delivery || '۴ الی ۶ هفته'}
           </span>
         )}
         <span className="text-slate-500 font-medium text-[11px] bg-slate-100 px-2 py-0.5 rounded-md">

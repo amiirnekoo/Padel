@@ -4,8 +4,10 @@ from typing import List, Dict, Any, Optional
 
 try:
     from sqlalchemy.ext.asyncio import AsyncSession
+    from backend.app.services.wallet_service import WalletService
 except ImportError:
     AsyncSession = Any  # type: ignore
+    WalletService = Any  # type: ignore
 
 CATALOG_PRODUCTS: List[Dict[str, Any]] = [
     {
