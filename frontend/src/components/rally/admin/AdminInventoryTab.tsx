@@ -165,14 +165,21 @@ export const AdminInventoryTab: React.FC<AdminInventoryTabProps> = ({
                           </button>
                         </div>
                       ) : (
-                        <div className="flex items-center gap-1.5">
-                          <span className="font-mono font-bold text-white">{p.price.toLocaleString('fa-IR')}</span>
-                          <button
-                            onClick={() => handleStartEdit(p)}
-                            className="text-slate-500 hover:text-slate-300 p-0.5"
-                          >
-                            <Edit2 className="w-3 h-3" />
-                          </button>
+                        <div className="flex flex-col">
+                          <div className="flex items-center gap-1.5">
+                            <span className="font-mono font-bold text-white">{p.price.toLocaleString('fa-IR')}</span>
+                            <button
+                              onClick={() => handleStartEdit(p)}
+                              className="text-slate-500 hover:text-slate-300 p-0.5"
+                            >
+                              <Edit2 className="w-3 h-3" />
+                            </button>
+                          </div>
+                          {p.domestic_supplier_price && (
+                            <span className="text-[10px] text-slate-500 font-mono">
+                              خرید: {p.domestic_supplier_price.toLocaleString('fa-IR')}
+                            </span>
+                          )}
                         </div>
                       )}
                     </td>
@@ -208,6 +215,11 @@ export const AdminInventoryTab: React.FC<AdminInventoryTabProps> = ({
                           <span className="w-1.5 h-1.5 rounded-full bg-rose-400" />
                           ناموجود
                         </span>
+                      )}
+                      {p.domestic_supplier && (
+                        <div className="text-[9px] text-emerald-400 font-semibold mt-1">
+                          تامین سان اسپرت ({p.domestic_markup_percent || 4}٪)
+                        </div>
                       )}
                     </td>
 

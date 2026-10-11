@@ -61,7 +61,12 @@ export const DualPriceSupplySelector: React.FC<DualPriceSupplySelectorProps> = R
 
             <div className="text-[11px] text-slate-500 flex items-center gap-1 mt-1">
               <Clock className="w-3 h-3 text-slate-400" />
-              <span>ارسال اکسپرس همان‌روز</span>
+              <span>{product.domestic_delivery || 'ارسال اکسپرس همان‌روز (۲۴ ساعته)'}</span>
+            </div>
+
+            <div className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1 mt-1 bg-emerald-100/60 px-2 py-0.5 rounded-md">
+              <ShieldCheck className="w-3 h-3 text-emerald-600" />
+              <span>تامین رسمی: {product.domestic_supplier || 'سان اسپرت ایران (۴٪ سود مصوب)'}</span>
             </div>
           </div>
 

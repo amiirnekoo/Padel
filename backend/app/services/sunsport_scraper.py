@@ -67,7 +67,42 @@ def scrape_sunsport_nox_rackets(
         except Exception:
             pass
 
-    # Resilient Regex-based fallback parser (Standard Library only)
+    # Primary high-res parser for SunSport Iran (Theme: mweb-digiland-pro)
+    detail_areas = re.findall(r'<div class="product-detail-area">(.*?)</div>\s*</div>', html, re.DOTALL)
+    if detail_areas:
+        for area in detail_areas:
+            name_match = re.search(r'<h3 class="product-name"><a href="([^"]+)"[^>]*>(.*?)</a></h3>', area, re.DOTALL)
+            if not name_match:
+                name_match = re.search(r'href="([^"]+)"[^>]*title="([^"]+)"', area, re.DOTALL)
+            if not name_match:
+                continue
+
+            product_url = name_match.group(1)
+            raw_title = re.sub(r'<[^>]+>', '', name_match.group(2)).strip()
+            if "nox" not in raw_title.lower() and "نوکس" not in raw_title and "ناکس" not in raw_title:
+                continue
+
+            price_match = re.search(r'<span class="woocommerce-Price-amount amount"><bdi>([\d,]+)', area)
+            if not price_match:
+                continue
+
+            price_amount = int(price_match.group(1).replace(",", ""))
+            rally_price = calculate_markup_price(price_amount, markup_percent)
+
+            results.append({
+                "supplier": "سان اسپرت ایران (انبار رسمی)",
+                "title": raw_title,
+                "url": product_url,
+                "supplier_price": price_amount,
+                "markup_percent": markup_percent,
+                "rally_retail_price": rally_price,
+                "is_in_stock": True
+            })
+
+    if results:
+        return results
+
+    # Fallback parser for standard WooCommerce lists
     product_blocks = re.findall(r'<li[^>]*class="[^"]*product[^"]*"[^>]*>(.*?)</li>', html, re.DOTALL | re.IGNORECASE)
     for block in product_blocks:
         title_match = re.search(r'<(?:h2|h3|span)[^>]*class="[^"]*(?:woocommerce-loop-product__title|product-title)[^"]*"[^>]*>(.*?)</(?:h2|h3|span)>', block, re.DOTALL | re.IGNORECASE)
@@ -95,7 +130,7 @@ def scrape_sunsport_nox_rackets(
         rally_price = calculate_markup_price(price_amount, markup_percent)
 
         results.append({
-            "supplier": "SunSport Iran",
+            "supplier": "سان اسپرت ایران (انبار رسمی)",
             "title": raw_title,
             "url": product_url,
             "supplier_price": price_amount,
