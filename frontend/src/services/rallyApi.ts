@@ -563,6 +563,77 @@ export const rallyApi = {
     }
   },
 
+  // Dynamic Supply Rules & Auto-Pricing
+  async getSupplyRules() {
+    try {
+      const res = await fetch(`${API_BASE}/admin/supply-rules`, {
+        headers: this.getAdminAuthHeaders(),
+      });
+      if (!res.ok) return { success: false, rules: [] };
+      return await res.json();
+    } catch {
+      return { success: false, rules: [] };
+    }
+  },
+
+  async createSupplyRule(payload: any) {
+    try {
+      const res = await fetch(`${API_BASE}/admin/supply-rules`, {
+        method: 'POST',
+        headers: this.getAdminAuthHeaders(),
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در ثبت قانون تامین' };
+      return { success: true, rule: data.rule };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در شبکه' };
+    }
+  },
+
+  async updateSupplyRule(ruleId: string, payload: any) {
+    try {
+      const res = await fetch(`${API_BASE}/admin/supply-rules/${ruleId}`, {
+        method: 'PUT',
+        headers: this.getAdminAuthHeaders(),
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در ویرایش قانون تامین' };
+      return { success: true, rule: data.rule };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در شبکه' };
+    }
+  },
+
+  async deleteSupplyRule(ruleId: string) {
+    try {
+      const res = await fetch(`${API_BASE}/admin/supply-rules/${ruleId}`, {
+        method: 'DELETE',
+        headers: this.getAdminAuthHeaders(),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در حذف قانون تامین' };
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در شبکه' };
+    }
+  },
+
+  async syncSupplyRule(ruleId: string) {
+    try {
+      const res = await fetch(`${API_BASE}/admin/supply-rules/${ruleId}/sync`, {
+        method: 'POST',
+        headers: this.getAdminAuthHeaders(),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در همگام‌سازی منبع' };
+      return { success: true, data };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در شبکه' };
+    }
+  },
+
   async getAdminCategories() {
     try {
       const res = await fetch(`${API_BASE}/admin/categories`, {

@@ -1,7 +1,8 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Plus, PackageCheck, AlertCircle, Edit2, Check, RefreshCw } from 'lucide-react';
+import { Search, Plus, PackageCheck, AlertCircle, Edit2, Check, RefreshCw, Sliders } from 'lucide-react';
 import { ShopProduct } from '../../../types/rally';
 import { rallyApi } from '../../../services/rallyApi';
+import { SupplyRulesModal } from './supply/SupplyRulesModal';
 
 interface AdminInventoryTabProps {
   products: ShopProduct[];
@@ -18,6 +19,7 @@ export const AdminInventoryTab: React.FC<AdminInventoryTabProps> = ({
   const [selectedBrand, setSelectedBrand] = useState('ALL');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editPrice, setEditPrice] = useState<number>(0);
+  const [isSupplyModalOpen, setIsSupplyModalOpen] = useState(false);
 
   const BRANDS = ['ALL', 'Nox', 'Bullpadel', 'Head', 'Babolat', 'Wilson'];
 
@@ -75,13 +77,22 @@ export const AdminInventoryTab: React.FC<AdminInventoryTabProps> = ({
           </select>
         </div>
 
-        <button
-          onClick={onOpenNewProductModal}
-          className="px-4 py-2 bg-rally-primary hover:bg-rally-primary-dark text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-md transition-all cursor-pointer"
-        >
-          <Plus className="w-4 h-4" />
-          <span>افزودن کالای جدید</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setIsSupplyModalOpen(true)}
+            className="px-3.5 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-md transition-all cursor-pointer"
+          >
+            <Sliders className="w-4 h-4" />
+            <span>موتور تامین و قیمت‌گذاری خودکار</span>
+          </button>
+          <button
+            onClick={onOpenNewProductModal}
+            className="px-4 py-2 bg-rally-primary hover:bg-rally-primary-dark text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-md transition-all cursor-pointer"
+          >
+            <Plus className="w-4 h-4" />
+            <span>افزودن کالای جدید</span>
+          </button>
+        </div>
       </div>
 
       {/* Table */}
@@ -215,6 +226,10 @@ export const AdminInventoryTab: React.FC<AdminInventoryTabProps> = ({
           </table>
         </div>
       </div>
+      <SupplyRulesModal
+        isOpen={isSupplyModalOpen}
+        onClose={() => setIsSupplyModalOpen(false)}
+      />
     </div>
   );
 };

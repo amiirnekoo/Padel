@@ -1164,3 +1164,96 @@ async def reject_role_upgrade_request(
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
 
+
+# ==================== Dynamic Supply Rules & Auto-Pricing Endpoints ====================
+from backend.app.services.supply_rules_service import SupplyRulesService, SupplySourceRule
+from backend.app.services.sunsport_scraper import scrape_sunsport_nox_rackets
+
+class SupplyRulePayload(BaseModel):
+    source_name: str
+    base_url: str
+    brand: str = "Nox"
+    markup_percent: float = 4.0
+    currency: str = "TOMAN"
+    delivery_time: str = "تحویل فوری ۲۴ ساعته"
+    supply_mode: str = "INSTANT"
+
+class SupplyRuleUpdatePayload(BaseModel):
+    source_name: Optional[str] = None
+    base_url: Optional[str] = None
+    brand: Optional[str] = None
+    markup_percent: Optional[float] = None
+    currency: Optional[str] = None
+    delivery_time: Optional[str] = None
+    supply_mode: Optional[str] = None
+    is_active: Optional[bool] = None
+
+supply_rules_service = SupplyRulesService()
+
+@router.get("/supply-rules")
+async def get_supply_rules(admin: dict = Depends(get_current_admin)):
+    """دریافت لیست قوانین تامین و موتور قیمت‌گذاری خودکار رالی"""
+    return {
+        "rules": supply_rules_service.get_all_rules(),
+        "total": len(supply_rules_service.get_all_rules())
+    }
+
+@router.post("/supply-rules")
+async def create_supply_rule(payload: SupplyRulePayload, admin: dict = Depends(get_current_admin)):
+    """ایجاد قانون جدید تامین و قیمت‌گذاری چندسورسی"""
+    rule = supply_rules_service.create_rule(
+        source_name=payload.source_name,
+        base_url=payload.base_url,
+        brand=payload.brand,
+        markup_percent=payload.markup_percent,
+        currency=payload.currency,
+        delivery_time=payload.delivery_time,
+        supply_mode=payload.supply_mode
+    )
+    return {"success": True, "rule": rule}
+
+@router.put("/supply-rules/{rule_id}")
+async def update_supply_rule(rule_id: str, payload: SupplyRuleUpdatePayload, admin: dict = Depends(get_current_admin)):
+    """ویرایش قانون تامین (درصد سود، زمان تحویل، لینک مرجع و غیره)"""
+    updates = {k: v for k, v in payload.dict().items() if v is not None}
+    updated = supply_rules_service.update_rule(rule_id, updates)
+    if not updated:
+        raise HTTPException(status_code=404, detail="قانون تامین مورد نظر یافت نشد.")
+    return {"success": True, "rule": updated}
+
+@router.delete("/supply-rules/{rule_id}")
+async def delete_supply_rule(rule_id: str, admin: dict = Depends(get_current_admin)):
+    """حذف یک قانون تامین"""
+    success = supply_rules_service.delete_rule(rule_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="قانون تامین مورد نظر یافت نشد.")
+    return {"success": True, "message": "قانون تامین با موفقیت حذف شد."}
+
+@router.post("/supply-rules/{rule_id}/sync")
+async def sync_supply_rule(rule_id: str, admin: dict = Depends(get_current_admin)):
+    """همگام‌سازی دستی آنی (Sync Now) برای دریافت قیمت‌های به‌روز تامین‌کننده بدون مصرف توکن"""
+    rule = supply_rules_service.get_rule(rule_id)
+    if not rule:
+        raise HTTPException(status_code=404, detail="قانون تامین مورد نظر یافت نشد.")
+
+    scraped_items = []
+    if "sunsport" in rule.base_url.lower():
+        scraped_items = scrape_sunsport_nox_rackets(category_url=rule.base_url, markup_percent=rule.markup_percent)
+    
+    # Update rule status
+    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    status_str = "SUCCESS" if scraped_items or not rule.is_active else "READY"
+    supply_rules_service.update_rule(rule_id, {
+        "last_sync_at": now_str,
+        "last_sync_status": status_str,
+        "synced_products_count": len(scraped_items)
+    })
+
+    return {
+        "success": True,
+        "rule_id": rule_id,
+        "synced_at": now_str,
+        "synced_count": len(scraped_items),
+        "items": scraped_items
+    }
+
