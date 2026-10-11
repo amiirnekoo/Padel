@@ -1,7 +1,12 @@
 import urllib.request
 import re
 from typing import List, Dict, Any, Optional
-from bs4 import BeautifulSoup
+
+try:
+    from bs4 import BeautifulSoup
+except ImportError:
+    BeautifulSoup = None
+
 from .supply_rules_service import calculate_markup_price, match_product_model
 
 def scrape_sunsport_nox_rackets(
@@ -11,6 +16,7 @@ def scrape_sunsport_nox_rackets(
     """
     Lightweight, zero-token Python scraper for SunSport Iran WooCommerce catalog.
     Extracts Nox padel racket pricing and calculates Rally retail price with markup_percent.
+    Uses resilient standard regex/HTML parsing without forcing external bs4 dependency.
     """
     results: List[Dict[str, Any]] = []
     headers = {
@@ -22,64 +28,80 @@ def scrape_sunsport_nox_rackets(
         req = urllib.request.Request(category_url, headers=headers)
         with urllib.request.urlopen(req, timeout=12) as response:
             html = response.read().decode("utf-8", errors="ignore")
-    except Exception as e:
-        # Graceful fallback or network log
+    except Exception:
+        # Graceful fallback on network timeout
         return results
 
-    soup = BeautifulSoup(html, "html.parser")
-    # WooCommerce standard product selectors
-    product_cards = soup.select(".product, .product-item, .product-card") or soup.find_all("li", class_=re.compile(r"product"))
-
-    for card in product_cards:
+    if BeautifulSoup:
         try:
-            # Extract title
-            title_tag = card.select_one(".woocommerce-loop-product__title, .product-title, h2, h3, a.woocommerce-LoopProduct-link")
-            if not title_tag:
-                continue
-            title = title_tag.get_text(strip=True)
-
-            # Filter for Nox rackets only
-            if "nox" not in title.lower() and "نوکس" not in title and "ناکس" not in title:
-                continue
-
-            # Extract URL
-            link_tag = card.find("a", href=True)
-            product_url = link_tag["href"] if link_tag else ""
-
-            # Extract Price (in Tomans)
-            price_amount = 0
-            price_tag = card.select_one("ins .woocommerce-Price-amount, .price .amount, .woocommerce-Price-amount")
-            if price_tag:
-                price_text = price_tag.get_text(strip=True)
-                # Remove non-digit characters
-                digits = re.sub(r"[^\d]", "", price_text)
-                if digits:
-                    val = int(digits)
-                    # Iranian WooCommerce often displays Tomans or Rials.
-                    # Standard check: if > 10,000,000 and has trailing zero for Rials, normalize to Tomans
-                    price_amount = val
-
-            if price_amount <= 0:
-                continue
-
-            # Calculate Rally retail price with markup (e.g., 4% profit)
-            rally_price = calculate_markup_price(price_amount, markup_percent)
-
-            # In-stock check
-            is_in_stock = True
-            if "out-of-stock" in card.get("class", []) or card.select_one(".out-of-stock"):
-                is_in_stock = False
-
-            results.append({
-                "supplier": "SunSport Iran",
-                "title": title,
-                "url": product_url,
-                "supplier_price": price_amount,
-                "markup_percent": markup_percent,
-                "rally_retail_price": rally_price,
-                "is_in_stock": is_in_stock
-            })
+            soup = BeautifulSoup(html, "html.parser")
+            product_cards = soup.select(".product, .product-item, .product-card") or soup.find_all("li", class_=re.compile(r"product"))
+            for card in product_cards:
+                title_tag = card.select_one(".woocommerce-loop-product__title, .product-title, h2, h3, a.woocommerce-LoopProduct-link")
+                if not title_tag:
+                    continue
+                title = title_tag.get_text(strip=True)
+                if "nox" not in title.lower() and "نوکس" not in title and "ناکس" not in title:
+                    continue
+                link_tag = card.find("a", href=True)
+                product_url = link_tag["href"] if link_tag else ""
+                price_tag = card.select_one("ins .woocommerce-Price-amount, .price .amount, .woocommerce-Price-amount")
+                if not price_tag:
+                    continue
+                digits = re.sub(r"[^\d]", "", price_tag.get_text(strip=True))
+                if not digits:
+                    continue
+                price_amount = int(digits)
+                rally_price = calculate_markup_price(price_amount, markup_percent)
+                results.append({
+                    "supplier": "SunSport Iran",
+                    "title": title,
+                    "url": product_url,
+                    "supplier_price": price_amount,
+                    "markup_percent": markup_percent,
+                    "rally_retail_price": rally_price,
+                    "is_in_stock": True
+                })
+            if results:
+                return results
         except Exception:
+            pass
+
+    # Resilient Regex-based fallback parser (Standard Library only)
+    product_blocks = re.findall(r'<li[^>]*class="[^"]*product[^"]*"[^>]*>(.*?)</li>', html, re.DOTALL | re.IGNORECASE)
+    for block in product_blocks:
+        title_match = re.search(r'<(?:h2|h3|span)[^>]*class="[^"]*(?:woocommerce-loop-product__title|product-title)[^"]*"[^>]*>(.*?)</(?:h2|h3|span)>', block, re.DOTALL | re.IGNORECASE)
+        if not title_match:
+            title_match = re.search(r'<a[^>]*class="[^"]*woocommerce-LoopProduct-link[^"]*"[^>]*>(.*?)</a>', block, re.DOTALL | re.IGNORECASE)
+        if not title_match:
             continue
+
+        raw_title = re.sub(r'<[^>]+>', '', title_match.group(1)).strip()
+        if "nox" not in raw_title.lower() and "نوکس" not in raw_title and "ناکس" not in raw_title:
+            continue
+
+        url_match = re.search(r'href="([^"]+)"', block)
+        product_url = url_match.group(1) if url_match else ""
+
+        price_matches = re.findall(r'(?:woocommerce-Price-amount|amount)[^>]*>(.*?)</span>', block, re.DOTALL | re.IGNORECASE)
+        if not price_matches:
+            continue
+
+        digits = re.sub(r"[^\d]", "", price_matches[-1])
+        if not digits:
+            continue
+
+        price_amount = int(digits)
+        rally_price = calculate_markup_price(price_amount, markup_percent)
+
+        results.append({
+            "supplier": "SunSport Iran",
+            "title": raw_title,
+            "url": product_url,
+            "supplier_price": price_amount,
+            "markup_percent": markup_percent,
+            "rally_retail_price": rally_price,
+            "is_in_stock": "out-of-stock" not in block
+        })
 
     return results

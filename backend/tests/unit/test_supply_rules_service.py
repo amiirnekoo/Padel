@@ -1,4 +1,7 @@
-import pytest
+try:
+    import pytest
+except ImportError:
+    pytest = None
 from backend.app.services.supply_rules_service import (
     SupplyRulesService,
     SupplySourceRule,
