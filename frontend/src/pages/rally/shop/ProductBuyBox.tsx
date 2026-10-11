@@ -25,7 +25,7 @@ export const ProductBuyBox: React.FC<ProductBuyBoxProps> = React.memo(({
   const isInstant = orderMode === 'INSTANT';
   const unitPrice = isInstant
     ? product.price
-    : (product.custom_order_price || Math.round((product.eur_price || 200) * 298310 * 1.4));
+    : (product.custom_order_price || Math.round((product.eur_price || 200) * 298310 * 1.25));
   const ratingSummary = useProductRating(product.id);
   const savings = isInstant && product.discount_percent > 0
     ? (product.original_price - product.price) * quantity
@@ -107,10 +107,10 @@ export const ProductBuyBox: React.FC<ProductBuyBoxProps> = React.memo(({
           <div className="flex items-center justify-between bg-emerald-50/80 px-2.5 py-1 rounded-lg border border-emerald-100">
             <span className="text-[11px] font-bold text-emerald-800 flex items-center gap-1">
               <Truck className="w-3.5 h-3.5 text-emerald-600" />
-              تامین رسمی از {product.domestic_supplier || 'انبار ایران (سان اسپرت)'} با ۴٪ کارمزد مصوب
+              تحویل فوری ۲۴ ساعته از انبار مرکزی تهران (ارسال اکسپرس)
             </span>
             <span className="text-[10px] font-black bg-emerald-600 text-white px-2 py-0.5 rounded-full">
-              تحویل فوری
+              موجود در انبار
             </span>
           </div>
         )}
@@ -119,10 +119,10 @@ export const ProductBuyBox: React.FC<ProductBuyBoxProps> = React.memo(({
           <div className="flex items-center justify-between bg-blue-50/80 px-2.5 py-1 rounded-lg border border-blue-100">
             <span className="text-[11px] font-bold text-blue-800 flex items-center gap-1">
               <Globe className="w-3.5 h-3.5 text-blue-600" />
-              سفارش مستقیم از اروپا (تحویل {product.custom_order_delivery || '۴ الی ۶ هفته'})
+              سفارش اختصاصی از اروپا (تحویل {product.custom_order_delivery || '۴ الی ۶ هفته'})
             </span>
             <span className="text-[10px] font-black bg-blue-600 text-white px-2 py-0.5 rounded-full">
-              تامین اختصاصی
+              سفارش خارجی
             </span>
           </div>
         )}

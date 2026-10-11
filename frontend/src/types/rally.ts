@@ -147,7 +147,7 @@ export interface ShopProduct {
   specs_detail?: Record<string, string>;
   eur_price?: number; // قیمت مرجع به یورو در FunPadel
   eur_original_price?: number; // قیمت خط‌خورده در FunPadel
-  custom_order_price?: number; // قیمت سفارش اختصاصی به تومان (با احتساب ۴۰٪ سود)
+  custom_order_price?: number; // قیمت سفارش اختصاصی به تومان (با احتساب ۲۵٪ سود)
   custom_order_delivery?: string; // بازه تحویل سفارش اروپا: "۴ الی ۶ هفته"
   domestic_supplier?: string; // تامین‌کننده داخلی: "سان اسپرت ایران (انبار رسمی)"
   domestic_supplier_price?: number; // قیمت خرید از تامین‌کننده به تومان

@@ -86,7 +86,7 @@ DEFAULT_RULES: List[Dict[str, Any]] = [
     },
     {
         "id": "rule-funpadel-europe",
-        "source_name": "فان‌پدل پرتغال (سفارش اروپا)",
+        "source_name": "تامین اروپا (سفارش خارجی)",
         "base_url": "https://funpadel.pt/pt/padel-raquetes/nox",
         "brand": "Nox",
         "markup_percent": 40.0,

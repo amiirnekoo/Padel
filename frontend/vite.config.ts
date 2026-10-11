@@ -23,9 +23,9 @@ export default defineConfig({
     chunkSizeWarningLimit: 600,
     rollupOptions: {
       output: {
-        entryFileNames: 'assets/[name]-ss4-[hash].js',
-        chunkFileNames: 'assets/[name]-ss4-[hash].js',
-        assetFileNames: 'assets/[name]-ss4-[hash].[ext]',
+        entryFileNames: 'assets/[name]-m25-[hash].js',
+        chunkFileNames: 'assets/[name]-m25-[hash].js',
+        assetFileNames: 'assets/[name]-m25-[hash].[ext]',
         manualChunks: {
           'vendor-react': ['react', 'react-dom'],
           'vendor-motion': ['framer-motion'],

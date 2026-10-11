@@ -1,0 +1,30 @@
+[
+  {
+    "id": "rule-sunsport-nox",
+    "source_name": "سان اسپرت ایران (موجودی تهران)",
+    "base_url": "https://sunsportiran.com/category/sports-equipment/racket-padel/",
+    "brand": "Nox",
+    "markup_percent": 4.0,
+    "currency": "TOMAN",
+    "delivery_time": "تحویل فوری ۲۴ ساعته",
+    "supply_mode": "INSTANT",
+    "is_active": true,
+    "last_sync_at": null,
+    "last_sync_status": "READY",
+    "synced_products_count": 0
+  },
+  {
+    "id": "rule-funpadel-europe",
+    "source_name": "تامین اروپا (سفارش خارجی)",
+    "base_url": "https://funpadel.pt/pt/padel-raquetes/nox",
+    "brand": "Nox",
+    "markup_percent": 40.0,
+    "currency": "EUR",
+    "delivery_time": "۴ الی ۶ هفته",
+    "supply_mode": "EUROPE",
+    "is_active": true,
+    "last_sync_at": null,
+    "last_sync_status": "READY",
+    "synced_products_count": 0
+  }
+]

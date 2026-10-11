@@ -50,7 +50,7 @@ export const DualPriceDeliveryInfo: React.FC<DualPriceDeliveryInfoProps> = React
           )}
           <div>
             <div className="text-xs font-black text-slate-900">
-              {isAvailableInStock ? 'موجود در انبار مرکزی تهران' : 'سفارش اختصاصی از اروپا (FunPadel)'}
+              {isAvailableInStock ? 'موجود در انبار مرکزی تهران' : 'سفارش اختصاصی از اروپا'}
             </div>
             <div className="text-[11px] font-bold text-slate-500 flex items-center gap-1 mt-0.5">
               <Clock className="w-3 h-3 text-slate-400" />
@@ -74,10 +74,10 @@ export const DualPriceDeliveryInfo: React.FC<DualPriceDeliveryInfoProps> = React
         <div className="text-[11px] text-slate-600 bg-white p-2.5 rounded-xl border border-blue-100 leading-relaxed flex flex-col gap-1">
           <div className="flex items-center gap-1 font-bold text-blue-900">
             <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
-            <span>نحوه محاسبه قیمت تامین مستقیم:</span>
+            <span>ضمانت تحویل سفارش اختصاصی:</span>
           </div>
           <p className="text-[10px] text-slate-500">
-            قیمت بر اساس نرخ خرید روز یورو از FunPadel پرتغال به انضمام ۴۰٪ سود بازرگانی، هزینه‌های ترخیص و حمل بین‌المللی محاسبه شده است.
+            کلیه کالاهای سفارشی مستقیماً با ضمانت پلمپ فابریک کارخانه و بسته‌بندی ایمن بین‌المللی ارسال می‌گردند.
           </p>
           {product.eur_price && (
             <div className="flex items-center justify-between text-[10px] font-mono text-slate-700 pt-1 border-t border-slate-100">

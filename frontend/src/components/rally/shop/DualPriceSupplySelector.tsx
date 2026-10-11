@@ -16,7 +16,7 @@ export const DualPriceSupplySelector: React.FC<DualPriceSupplySelectorProps> = R
   onSelectMode
 }) => {
   const isAvailableInStock = product.stock > 0;
-  const europePrice = product.custom_order_price || Math.round((product.eur_price || 200) * 298310 * 1.4);
+  const europePrice = product.custom_order_price || Math.round((product.eur_price || 200) * 298310 * 1.25);
   const deliveryEurope = product.custom_order_delivery || '۴ الی ۶ هفته';
 
   return (
@@ -66,7 +66,7 @@ export const DualPriceSupplySelector: React.FC<DualPriceSupplySelectorProps> = R
 
             <div className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1 mt-1 bg-emerald-100/60 px-2 py-0.5 rounded-md">
               <ShieldCheck className="w-3 h-3 text-emerald-600" />
-              <span>تامین رسمی: {product.domestic_supplier || 'سان اسپرت ایران (۴٪ سود مصوب)'}</span>
+              <span>ضمانت اصالت و سلامت ۱۰۰٪ فیزیکی رالی</span>
             </div>
           </div>
 
@@ -89,7 +89,7 @@ export const DualPriceSupplySelector: React.FC<DualPriceSupplySelectorProps> = R
           )}
         </div>
 
-        {/* Option 2: Europe Custom Order (FunPadel + 40% margin) */}
+        {/* Option 2: Europe Custom Order (25% margin) */}
         <div
           onClick={() => onSelectMode('EUROPE')}
           className={`relative rounded-2xl p-3.5 border transition-all cursor-pointer flex flex-col justify-between ${
@@ -110,7 +110,7 @@ export const DualPriceSupplySelector: React.FC<DualPriceSupplySelectorProps> = R
             </div>
 
             <div className="text-xs font-black text-slate-900 mt-1">
-              تامین مستقیم از FunPadel پرتغال
+              تامین مستقیم از انبار مرکزی اروپا
             </div>
 
             <div className="text-[11px] text-blue-700 font-bold flex items-center gap-1 mt-1">
@@ -131,15 +131,15 @@ export const DualPriceSupplySelector: React.FC<DualPriceSupplySelectorProps> = R
         </div>
       </div>
 
-      {/* Transparent formula note */}
+      {/* Europe delivery note */}
       {selectedMode === 'EUROPE' && (
         <div className="text-[11px] text-slate-600 bg-blue-50/50 p-2.5 rounded-xl border border-blue-100 flex flex-col gap-1">
           <div className="flex items-center gap-1 font-bold text-blue-900">
             <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
-            <span>محاسبه رسمی قیمت سفارش اختصاصی:</span>
+            <span>ضمانت رسمی تحویل سفارش اختصاصی:</span>
           </div>
           <p className="text-[10px] text-slate-500 leading-relaxed">
-            قیمت بر اساس نرخ خرید روز یورو از FunPadel پرتغال ضربدر نرخ زنده یورو TGJU (۲۹۸,۳۱۰ تومان) به علاوه ۴۰٪ سود بازرگانی، هزینه‌های ترخیص و ارسال بین‌المللی با ضمانت پلمپ فابریک محاسبه شده است.
+            کالای سفارشی شما به صورت کاملاً نو، پلمپ اورجینال کارخانه‌ای با بسته‌بندی ایمن و همراه با بیمه ترخیص و باربری هوایی از اروپا ارسال شده و ظرف {deliveryEurope} تحویل می‌گردد.
           </p>
         </div>
       )}
