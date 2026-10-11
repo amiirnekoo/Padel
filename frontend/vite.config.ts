@@ -23,6 +23,9 @@ export default defineConfig({
     chunkSizeWarningLimit: 600,
     rollupOptions: {
       output: {
+        entryFileNames: 'assets/[name]-dp-[hash].js',
+        chunkFileNames: 'assets/[name]-dp-[hash].js',
+        assetFileNames: 'assets/[name]-dp-[hash].[ext]',
         manualChunks: {
           'vendor-react': ['react', 'react-dom'],
           'vendor-motion': ['framer-motion'],
