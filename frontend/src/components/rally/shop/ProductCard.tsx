@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingCart, Check, Star, Zap } from 'lucide-react';
+import { ShoppingCart, Check, Star, Zap, Globe } from 'lucide-react';
 import { ShopProduct } from '../../../types/rally';
 import { getRacketVerdict } from '../../../data/racketVerdictData';
 import { useProductRating } from '../../../utils/productRatingUtils';
@@ -31,6 +31,12 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
   const isRacket = product.category === 'PADEL_RACKET' || (isPadel && (product.shape || product.weight));
   const verdict = isRacket ? getRacketVerdict(product) : null;
   const ratingSummary = useProductRating(product.id);
+
+  const isAvailable = product.stock > 0;
+  const displayPrice = isAvailable ? product.price : (product.custom_order_price || product.price);
+  const deliveryLabel = isAvailable
+    ? 'ارسال سریع'
+    : (product.custom_order_delivery ? `تحویل ${product.custom_order_delivery}` : 'تحویل ۴ الی ۶ هفته');
 
   return (
     <div
@@ -100,11 +106,16 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
                 </div>
               )}
             </div>
-            {product.stock <= 5 && (
+            {product.stock === 0 ? (
+              <span className="bg-blue-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-xs flex items-center gap-1">
+                <Globe className="w-3 h-3" />
+                سفارش اروپا (۴-۶ هفته)
+              </span>
+            ) : product.stock <= 5 ? (
               <span className="bg-amber-500/90 text-slate-950 text-[10px] font-bold px-2 py-0.5 rounded-full">
                 تنها {product.stock} عدد در انبار
               </span>
-            )}
+            ) : null}
           </div>
         </div>
 
@@ -138,21 +149,33 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
       <div className="p-4 pt-0 border-t border-gray-100 mt-2">
         <div className="flex items-baseline justify-between mb-3 pt-3">
           <div className="flex flex-col">
-            {product.discount_percent > 0 && (
+            {isAvailable && product.discount_percent > 0 && (
               <span className="text-xs text-gray-400 line-through">
                 {product.original_price.toLocaleString('fa-IR')}
               </span>
             )}
+            {!isAvailable && (
+              <span className="text-[10px] font-bold text-blue-700 flex items-center gap-1">
+                <Globe className="w-3 h-3" />
+                سفارش اختصاصی از اروپا
+              </span>
+            )}
             <div className="flex items-baseline gap-1">
               <span className="text-base font-black text-gray-900">
-                {product.price.toLocaleString('fa-IR')}
+                {displayPrice.toLocaleString('fa-IR')}
               </span>
               <span className="text-[11px] text-gray-500 font-medium">تومان</span>
             </div>
           </div>
 
-          <span className="text-[11px] font-medium text-sky-700 bg-sky-50 px-2 py-0.5 rounded">
-            ارسال سریع
+          <span
+            className={`text-[11px] font-bold px-2 py-0.5 rounded ${
+              isAvailable
+                ? 'text-sky-700 bg-sky-50'
+                : 'text-blue-700 bg-blue-50'
+            }`}
+          >
+            {deliveryLabel}
           </span>
         </div>
 
@@ -161,6 +184,8 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
           className={`w-full py-2.5 px-4 rounded-full font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs active:scale-95 ${
             justAdded || isInCart
               ? 'bg-slate-700 text-white hover:bg-slate-800'
+              : !isAvailable
+              ? 'bg-blue-700 text-white hover:bg-blue-800 shadow-blue-900/10'
               : isPadel
               ? 'bg-[#0B4278] text-white hover:bg-[#0C4F8D]'
               : 'bg-[#135d54] text-white hover:bg-[#0e4841]'
@@ -169,12 +194,17 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
           {justAdded ? (
             <>
               <Check className="w-4 h-4" />
-              <span>به سبد اضافه شد</span>
+              <span>{isAvailable ? 'به سبد اضافه شد' : 'پیش‌سفارش ثبت شد'}</span>
             </>
           ) : isInCart ? (
             <>
               <Check className="w-4 h-4" />
               <span>در سبد خرید موجود است</span>
+            </>
+          ) : !isAvailable ? (
+            <>
+              <Globe className="w-4 h-4" />
+              <span>پیش‌سفارش اروپا (تحویل ۴ تا ۶ هفته)</span>
             </>
           ) : (
             <>

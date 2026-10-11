@@ -145,6 +145,10 @@ export interface ShopProduct {
   colors?: string[];
   sizes?: string[];
   specs_detail?: Record<string, string>;
+  eur_price?: number; // قیمت مرجع به یورو در FunPadel
+  eur_original_price?: number; // قیمت خط‌خورده در FunPadel
+  custom_order_price?: number; // قیمت سفارش اختصاصی به تومان (با احتساب ۴۰٪ سود)
+  custom_order_delivery?: string; // بازه تحویل سفارش اروپا: "۴ الی ۶ هفته"
 }
 
 export interface CartItem {

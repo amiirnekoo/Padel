@@ -1,8 +1,11 @@
 import uuid
 from datetime import datetime
 from typing import List, Dict, Any, Optional
-from sqlalchemy.ext.asyncio import AsyncSession
-from backend.app.services.wallet_service import WalletService
+
+try:
+    from sqlalchemy.ext.asyncio import AsyncSession
+except ImportError:
+    AsyncSession = Any  # type: ignore
 
 CATALOG_PRODUCTS: List[Dict[str, Any]] = [
     {
@@ -507,8 +510,34 @@ COUPONS: Dict[str, float] = {
     "FIRSTORDER": 0.15,
     "VIPMEMBER": 0.20
 }
-
 class ShopService:
+    EURO_TGJU_RATE: int = 298310
+    DEFAULT_MARGIN_PERCENT: float = 40.0
+
+    @staticmethod
+    def calculate_custom_order_price(
+        eur_price: float,
+        eur_rate: int = 298310,
+        margin_percent: float = 40.0
+    ) -> int:
+        """
+        محاسبه قیمت سفارش اختصاصی از اروپا با احتساب ۴۰٪ سود برای خودمان، همکار و هزینه‌ها:
+        فرمول: eur_price * eur_rate * (1 + margin_percent / 100)
+        """
+        base_toman = eur_price * eur_rate
+        return round(base_toman * (1.0 + (margin_percent / 100.0)))
+
+    @staticmethod
+    def get_delivery_estimate(stock: int) -> str:
+        """
+        تعیین بازه تحویل کالا:
+        - موجود در فروشگاه/انبار رالی: تحویل فوری (۲۴ ساعته)
+        - ناموجود (سفارش اروپا): ۴ الی ۶ هفته
+        """
+        if stock > 0:
+            return "تحویل فوری (۲۴ ساعته)"
+        return "۴ الی ۶ هفته"
+
     @staticmethod
     def get_products(
         category: Optional[str] = None,
@@ -516,7 +545,18 @@ class ShopService:
         brand: Optional[str] = None,
         search: Optional[str] = None
     ) -> List[Dict[str, Any]]:
-        results = CATALOG_PRODUCTS.copy()
+        results = [dict(p) for p in CATALOG_PRODUCTS]
+        for p in results:
+            stock = p.get("stock", 0)
+            p["custom_order_delivery"] = ShopService.get_delivery_estimate(stock)
+            if p.get("eur_price"):
+                p["custom_order_price"] = ShopService.calculate_custom_order_price(p["eur_price"])
+            elif not p.get("custom_order_price"):
+                # پیش‌فرض معادل تقریبی بر مبنای قیمت پایه
+                approx_eur = round(p.get("original_price", 18000000) / ShopService.EURO_TGJU_RATE, 1)
+                p["eur_price"] = approx_eur
+                p["custom_order_price"] = ShopService.calculate_custom_order_price(approx_eur)
+
         if category:
             results = [p for p in results if p["category"] == category]
         if sport:

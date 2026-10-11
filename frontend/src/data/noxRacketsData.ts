@@ -11,9 +11,16 @@ export const NOX_NEW_RACKETS: ShopProduct[] = [
     level: "INTERMEDIATE",
     year: 2026,
     original_price: 14500000,
+
     discount_percent: 5,
     price: 13775000,
-    stock: 8,
+
+    stock: 0,
+    eur_price: 149.0,
+    eur_original_price: 199.0,
+    custom_order_price: 62227466,
+    custom_order_delivery: "۴ الی ۶ هفته",
+
     weight: "۳۶۰ - ۳۷۵ گرم",
     balance: "متعادل (Even Balance)",
     shape: "گرد (Round)",
@@ -40,9 +47,16 @@ export const NOX_NEW_RACKETS: ShopProduct[] = [
     level: "PRO",
     year: 2026,
     original_price: 24000000,
+
     discount_percent: 7,
     price: 22320000,
+
     stock: 7,
+    eur_price: 184.0,
+    eur_original_price: 389.0,
+    custom_order_price: 76844656,
+    custom_order_delivery: "۴ الی ۶ هفته",
+
     weight: "۳۶۰ - ۳۷۵ گرم",
     balance: "سرسنگین هجومی (Head Heavy)",
     shape: "الماسی هجومی (Diamond)",
@@ -70,9 +84,16 @@ export const NOX_NEW_RACKETS: ShopProduct[] = [
     level: "PRO",
     year: 2026,
     original_price: 22000000,
+
     discount_percent: 6,
     price: 20680000,
+
     stock: 9,
+    eur_price: 199.0,
+    eur_original_price: 339.0,
+    custom_order_price: 83109166,
+    custom_order_delivery: "۴ الی ۶ هفته",
+
     weight: "۳۶۰ - ۳۷۵ گرم",
     balance: "متعادل قطره‌ای (Teardrop Balance)",
     shape: "هیبرید اشکی (Hybrid Teardrop)",
@@ -102,9 +123,16 @@ export const NOX_NEW_RACKETS: ShopProduct[] = [
     is_women: true,
     gender: "WOMEN",
     original_price: 21500000,
+
     discount_percent: 8,
     price: 19780000,
-    stock: 11,
+
+    stock: 6,
+    eur_price: 174.0,
+    eur_original_price: 299.0,
+    custom_order_price: 72668316,
+    custom_order_delivery: "۴ الی ۶ هفته",
+
     weight: "۳۵۵ - ۳۶۵ گرم",
     balance: "پایین و دست‌گیر (Low/Even Balance)",
     shape: "گرد کنترلی (Round Control)",
@@ -134,9 +162,16 @@ export const NOX_NEW_RACKETS: ShopProduct[] = [
     is_women: true,
     gender: "WOMEN",
     original_price: 20500000,
+
     discount_percent: 5,
     price: 19475000,
-    stock: 9,
+
+    stock: 0,
+    eur_price: 164.0,
+    eur_original_price: 299.0,
+    custom_order_price: 68491976,
+    custom_order_delivery: "۴ الی ۶ هفته",
+
     weight: "۳۵۰ - ۳۶۰ گرم",
     balance: "متعادل (Even Balance)",
     shape: "هیبرید اشکی سبک (Teardrop Lite)",
@@ -164,9 +199,16 @@ export const NOX_NEW_RACKETS: ShopProduct[] = [
     year: 2027,
     is_new: true,
     original_price: 27000000,
+
     discount_percent: 5,
     price: 25650000,
-    stock: 15,
+
+    stock: 5,
+    eur_price: 229.0,
+    eur_original_price: 389.0,
+    custom_order_price: 95638186,
+    custom_order_delivery: "۴ الی ۶ هفته",
+
     weight: "۳۶۰ - ۳۷۵ گرم",
     balance: "متعادل دینامیک (Dynamic Even)",
     shape: "اشکی قطره‌ای نوین (New Teardrop)",
@@ -195,9 +237,16 @@ export const NOX_NEW_RACKETS: ShopProduct[] = [
     year: 2027,
     is_new: true,
     original_price: 27500000,
+
     discount_percent: 5,
     price: 26125000,
-    stock: 10,
+
+    stock: 4,
+    eur_price: 214.0,
+    eur_original_price: 359.0,
+    custom_order_price: 89373676,
+    custom_order_delivery: "۴ الی ۶ هفته",
+
     weight: "۳۶۵ - ۳۷۵ گرم",
     balance: "سرسنگین هجومی الماسی (Head Heavy)",
     shape: "الماسی تهاجمی ۲۰۲۷ (Attack Diamond)",
@@ -226,9 +275,16 @@ export const NOX_NEW_RACKETS: ShopProduct[] = [
     year: 2027,
     is_new: true,
     original_price: 25500000,
+
     discount_percent: 6,
     price: 23970000,
-    stock: 12,
+
+    stock: 6,
+    eur_price: 184.0,
+    eur_original_price: 389.0,
+    custom_order_price: 76844656,
+    custom_order_delivery: "۴ الی ۶ هفته",
+
     weight: "۳۶۰ - ۳۷۵ گرم",
     balance: "متعادل (Even Balance)",
     shape: "اشکی قطره‌ای (Teardrop)",
@@ -257,9 +313,16 @@ export const NOX_NEW_RACKETS: ShopProduct[] = [
     year: 2027,
     is_new: true,
     original_price: 26000000,
+
     discount_percent: 5,
     price: 24700000,
-    stock: 10,
+
+    stock: 0,
+    eur_price: 184.0,
+    eur_original_price: 389.0,
+    custom_order_price: 76844656,
+    custom_order_delivery: "۴ الی ۶ هفته",
+
     weight: "۳۶۵ - ۳۷۵ گرم",
     balance: "سرسنگین (Head Heavy)",
     shape: "الماسی هجومی (Diamond Attack)",
@@ -288,9 +351,16 @@ export const NOX_NEW_RACKETS: ShopProduct[] = [
     year: 2027,
     is_new: true,
     original_price: 24500000,
+
     discount_percent: 5,
     price: 23275000,
-    stock: 8,
+
+    stock: 3,
+    eur_price: 214.0,
+    eur_original_price: 339.0,
+    custom_order_price: 89373676,
+    custom_order_delivery: "۴ الی ۶ هفته",
+
     weight: "۳۵۵ - ۳۶۵ گرم",
     balance: "متعادل (Even Balance)",
     shape: "اشکی قطره‌ای (Teardrop)",
@@ -319,9 +389,16 @@ export const NOX_NEW_RACKETS: ShopProduct[] = [
     year: 2027,
     is_new: true,
     original_price: 23800000,
+
     discount_percent: 5,
     price: 22610000,
-    stock: 11,
+
+    stock: 5,
+    eur_price: 214.0,
+    eur_original_price: 339.0,
+    custom_order_price: 89373676,
+    custom_order_delivery: "۴ الی ۶ هفته",
+
     weight: "۳۶۰ - ۳۷۵ گرم",
     balance: "متعادل قطره‌ای (Hybrid Balance)",
     shape: "هیبرید آیرودینامیک (Aerodynamic Hybrid)",
@@ -350,9 +427,16 @@ export const NOX_NEW_RACKETS: ShopProduct[] = [
     year: 2027,
     is_new: true,
     original_price: 23500000,
+
     discount_percent: 6,
     price: 22090000,
-    stock: 9,
+
+    stock: 5,
+    eur_price: 214.0,
+    eur_original_price: 339.0,
+    custom_order_price: 89373676,
+    custom_order_delivery: "۴ الی ۶ هفته",
+
     weight: "۳۶۵ - ۳۷۵ گرم",
     balance: "سرسنگین هجومی (Head Heavy)",
     shape: "الماسی هجومی (Diamond Attack)",
@@ -381,9 +465,16 @@ export const NOX_NEW_RACKETS: ShopProduct[] = [
     year: 2027,
     is_new: true,
     original_price: 22500000,
+
     discount_percent: 7,
     price: 20925000,
-    stock: 14,
+
+    stock: 5,
+    eur_price: 214.0,
+    eur_original_price: 339.0,
+    custom_order_price: 89373676,
+    custom_order_delivery: "۴ الی ۶ هفته",
+
     weight: "۳۶۰ - ۳۷۵ گرم",
     balance: "پایین کنترلی (Low Balance)",
     shape: "گرد تمام‌کنترلی (Round Control)",
@@ -414,9 +505,16 @@ export const NOX_NEW_RACKETS: ShopProduct[] = [
     is_women: true,
     gender: "WOMEN",
     original_price: 23000000,
+
     discount_percent: 5,
     price: 21850000,
-    stock: 12,
+
+    stock: 5,
+    eur_price: 214.0,
+    eur_original_price: 339.0,
+    custom_order_price: 89373676,
+    custom_order_delivery: "۴ الی ۶ هفته",
+
     weight: "۳۵۵ - ۳۶۵ گرم",
     balance: "پایین و دست‌گیر (Low/Even Balance)",
     shape: "گرد کنترلی ۲۰۲۷ (Round 2027)",
@@ -447,9 +545,16 @@ export const NOX_NEW_RACKETS: ShopProduct[] = [
     is_women: true,
     gender: "WOMEN",
     original_price: 22000000,
+
     discount_percent: 5,
     price: 20900000,
-    stock: 10,
+
+    stock: 5,
+    eur_price: 214.0,
+    eur_original_price: 339.0,
+    custom_order_price: 89373676,
+    custom_order_delivery: "۴ الی ۶ هفته",
+
     weight: "۳۵۰ - ۳۶۰ گرم",
     balance: "متعادل قطره‌ای لایت (Teardrop Lite)",
     shape: "هیبرید اشکی سبک (Hybrid Lite)",
