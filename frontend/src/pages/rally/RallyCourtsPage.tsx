@@ -31,6 +31,7 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
   const [timeWindow, setTimeWindow] = useState<TimeWindowFilter>('ALL');
   const [selectedAmenity, setSelectedAmenity] = useState<string>('ALL');
   const [selectedDayOffset, setSelectedDayOffset] = useState<number>(0);
+  const [selectedDateLabel, setSelectedDateLabel] = useState<string>('');
   const [sortOption, setSortOption] = useState<CourtSortOption>('POPULAR');
   const [isMapModalOpen, setIsMapModalOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -215,7 +216,11 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         selectedDayOffset={selectedDayOffset}
-        onSelectDayOffset={setSelectedDayOffset}
+        onSelectDayOffset={(offset, label) => {
+          setSelectedDayOffset(offset);
+          if (label) setSelectedDateLabel(label);
+        }}
+        selectedDateLabel={selectedDateLabel}
         timeWindow={timeWindow}
         onTimeWindowChange={setTimeWindow}
         locationError={locationError}

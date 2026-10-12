@@ -8,7 +8,7 @@ interface CourtSearchCapsuleBarProps {
   searchQuery: string;
   onSearchChange: (q: string) => void;
   selectedDayOffset: number;
-  onSelectDayOffset: (offset: number) => void;
+  onSelectDayOffset: (offset: number, label?: string) => void;
   selectedDateLabel?: string;
   timeWindow: TimeWindowFilter;
   onTimeWindowChange: (w: TimeWindowFilter) => void;
@@ -214,8 +214,8 @@ export const CourtSearchCapsuleBar: React.FC<CourtSearchCapsuleBarProps> = ({
         isOpen={isDatePickerOpen}
         onClose={() => setIsDatePickerOpen(false)}
         selectedOffset={selectedDayOffset}
-        onSelectOffset={(offset) => {
-          onSelectDayOffset(offset);
+        onSelectOffset={(offset, label) => {
+          onSelectDayOffset(offset, label);
         }}
       />
     </div>
