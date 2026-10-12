@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { X, MapPin, Building2, Sun, Shield, Navigation, ArrowLeft } from 'lucide-react';
+import { X, Navigation, ArrowLeft, Bell, Sparkles } from 'lucide-react';
 import { CourtClub } from '../../../types/rally';
 import { formatPersianPrice, toPersianDigits } from '../../../utils/persianUtils';
+import { LeafletCourtsMap } from './LeafletCourtsMap';
+import { MAP_CITIES, MAP_COURTS, MapCityConfig, MapCourtItem } from '../../../data/courtsMapData';
 
 interface CourtsMapModalProps {
   isOpen: boolean;
@@ -16,141 +18,151 @@ export const CourtsMapModal: React.FC<CourtsMapModalProps> = ({
   clubs,
   onSelectClub
 }) => {
-  const [activeClubId, setActiveClubId] = useState<string>(clubs[0]?.id || 'club-enghelab');
+  const [selectedCity, setSelectedCity] = useState<MapCityConfig>(MAP_CITIES[0]);
+  const [selectedCourtId, setSelectedCourtId] = useState<string>(MAP_COURTS[0].id);
 
   if (!isOpen) return null;
 
-  const activeClub = clubs.find((c) => c.id === activeClubId) || clubs[0];
+  const selectedCourt = MAP_COURTS.find((c) => c.id === selectedCourtId) || MAP_COURTS[0];
 
-  // پین‌های نقشه با موقعیت درصدی روی شماتیک نقشه تهران (شمال و شمال‌شرق)
-  const PINS_CONFIG: Record<string, { top: string; left: string; color: string; label: string }> = {
-    'club-enghelab': { top: '56%', left: '38%', color: '#0ea5e9', label: 'انقلاب (FGB)' },
-    'club-lafour': { top: '32%', left: '68%', color: '#f59e0b', label: 'لفور (آجودانیه)' },
-    'club-viva': { top: '42%', left: '82%', color: '#10b981', label: 'ویوا (مینی‌سیتی)' }
+  const handleCitySelect = (city: MapCityConfig) => {
+    setSelectedCity(city);
+    // Select first court in that city if available
+    const firstInCity = MAP_COURTS.find((c) => c.cityId === city.id);
+    if (firstInCity) {
+      setSelectedCourtId(firstInCity.id);
+    }
+  };
+
+  const handleBookClub = () => {
+    const matchedClub = clubs.find((c) => c.id === selectedCourt.id);
+    if (matchedClub) {
+      onSelectClub(matchedClub);
+      onClose();
+    }
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-3 sm:p-5" dir="rtl">
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-4xl w-full overflow-hidden relative shadow-2xl flex flex-col max-h-[92vh]">
+    <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-2 sm:p-4" dir="rtl">
+      <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-5xl w-full overflow-hidden relative shadow-2xl flex flex-col max-h-[92vh]">
         {/* Header */}
-        <div className="px-5 py-4 border-b border-slate-800 flex items-center justify-between shrink-0 bg-slate-950">
+        <div className="px-4 sm:px-6 py-3.5 border-b border-slate-800 flex items-center justify-between shrink-0 bg-slate-950">
           <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-2xl bg-rally-primary/20 text-sky-400 flex items-center justify-center border border-sky-500/30">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-rally-primary/20 text-sky-400 flex items-center justify-center border border-sky-500/30">
               <Navigation className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-black text-white">
-                نقشه پراکندگی کورت‌های پدل تهران
+              <h3 className="text-sm sm:text-base font-black text-white flex items-center gap-2">
+                <span>نقشه تعاملی کورت‌های پدل ایران</span>
+                <span className="text-[10px] bg-sky-500/15 text-sky-400 px-2 py-0.5 rounded-full border border-sky-500/30">
+                  OpenStreetMap / Carto Dark
+                </span>
               </h3>
-              <p className="text-xs text-slate-400 font-medium">
-                ۳ مجموعه مجهز استاندارد بین‌المللی با قفل نرخ مصوب
+              <p className="text-[11px] sm:text-xs text-slate-400 font-medium">
+                موقعیت دقیق کورت‌های پدل تهران، شمال، اصفهان، شیراز، مشهد و تبریز
               </p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center transition-all cursor-pointer"
+            className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center transition-all cursor-pointer"
           >
             <X className="w-4 h-4 stroke-[2.5]" />
           </button>
         </div>
 
-        {/* Interactive Map Visual Stage */}
-        <div className="relative flex-1 min-h-[280px] sm:min-h-[380px] bg-[#0b1329] overflow-hidden select-none">
-          {/* Map Grid Pattern & Roads Stylized */}
-          <div className="absolute inset-0 opacity-20 pointer-events-none"
-               style={{
-                 backgroundImage: 'radial-gradient(#38bdf8 1px, transparent 1px), linear-gradient(to right, #1e293b 1px, transparent 1px)',
-                 backgroundSize: '24px 24px, 120px 120px'
-               }}
-          />
-
-          {/* District Outline Badges */}
-          <div className="absolute top-4 right-5 text-[10px] font-bold text-slate-500 bg-slate-900/90 border border-slate-800 px-2.5 py-1 rounded-full">
-            شمال و شمال‌شرق تهران (منطقه ۱ و ۳)
-          </div>
-
-          {/* Interactive Pins */}
-          {clubs.map((club) => {
-            const pin = PINS_CONFIG[club.id] || { top: '50%', left: '50%', color: '#38bdf8', label: club.name };
-            const isActive = activeClub?.id === club.id;
-
+        {/* City Selector Quick Pills */}
+        <div className="px-4 py-2 bg-slate-950/90 border-b border-slate-800/80 flex items-center gap-1.5 overflow-x-auto no-scrollbar shrink-0">
+          <span className="text-[11px] font-bold text-slate-500 ml-1 shrink-0">انتخاب شهر:</span>
+          {MAP_CITIES.map((city) => {
+            const isSelected = city.id === selectedCity.id;
             return (
-              <div
-                key={club.id}
-                style={{ top: pin.top, left: pin.left }}
-                onClick={() => setActiveClubId(club.id)}
-                className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer group z-20"
+              <button
+                key={city.id}
+                onClick={() => handleCitySelect(city)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 flex items-center gap-1.5 ${
+                  isSelected
+                    ? 'bg-sky-500 text-white shadow-md shadow-sky-500/25 ring-1 ring-sky-400'
+                    : 'bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800'
+                }`}
               >
-                {/* Pulse Ring */}
-                {isActive && (
-                  <span
-                    className="absolute -inset-2.5 rounded-full animate-ping opacity-75"
-                    style={{ backgroundColor: pin.color }}
-                  />
-                )}
-
-                {/* Marker Button */}
-                <div
-                  className={`px-3 py-1.5 rounded-full font-black text-xs flex items-center gap-1.5 shadow-lg transition-transform duration-200 ${
-                    isActive
-                      ? 'scale-110 text-white shadow-xl ring-2 ring-white/80'
-                      : 'text-slate-200 bg-slate-800/95 hover:scale-105 border border-slate-700'
-                  }`}
-                  style={{ backgroundColor: isActive ? pin.color : undefined }}
-                >
-                  <MapPin className="w-3.5 h-3.5 shrink-0" />
-                  <span>{pin.label}</span>
-                </div>
-              </div>
+                <span>{city.name}</span>
+                <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${isSelected ? 'bg-sky-700/60 text-white' : 'bg-slate-800 text-slate-400'}`}>
+                  {city.badge}
+                </span>
+              </button>
             );
           })}
         </div>
 
-        {/* Selected Club Bottom Preview Card */}
-        {activeClub && (
-          <div className="p-4 sm:p-5 bg-slate-950 border-t border-slate-800 shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-3.5">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-slate-800 overflow-hidden shrink-0 border border-slate-700">
+        {/* Real Leaflet Map */}
+        <div className="relative flex-1 min-h-[300px] sm:min-h-[420px] bg-slate-950 overflow-hidden">
+          <LeafletCourtsMap
+            courts={MAP_COURTS}
+            selectedCity={selectedCity}
+            selectedCourtId={selectedCourtId}
+            onSelectCourt={(court) => setSelectedCourtId(court.id)}
+          />
+        </div>
+
+        {/* Selected Court Bottom Preview */}
+        {selectedCourt && (
+          <div className="p-3.5 sm:p-4 bg-slate-950 border-t border-slate-800 shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-slate-800 overflow-hidden shrink-0 border border-slate-700 relative">
                 <img
-                  src={activeClub.images?.[0] || '/images/court_fgb_enghelab.jpg'}
-                  alt={activeClub.name}
+                  src={selectedCourt.image}
+                  alt={selectedCourt.name}
                   className="w-full h-full object-cover"
                 />
+                <span className={`absolute top-1 right-1 text-[9px] font-black px-1 rounded ${
+                  selectedCourt.status === 'ACTIVE' ? 'bg-emerald-500 text-white' : 'bg-amber-500 text-black'
+                }`}>
+                  {selectedCourt.status === 'ACTIVE' ? 'فعال' : 'به‌زودی'}
+                </span>
               </div>
 
               <div>
                 <div className="flex items-center gap-2">
-                  <h4 className="text-sm sm:text-base font-black text-white">
-                    {activeClub.name}
+                  <h4 className="text-xs sm:text-sm font-black text-white">
+                    {selectedCourt.name}
                   </h4>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-500/15 text-sky-400 border border-sky-500/30">
-                    {activeClub.courtType === 'INDOOR' ? 'مسقف' : 'روباز'}
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-800 text-slate-300 border border-slate-700">
+                    {selectedCourt.courtType === 'INDOOR' ? 'مسقف' : 'روباز'}
+                  </span>
+                  <span className="text-[10px] text-sky-400 font-bold bg-sky-500/10 px-1.5 py-0.5 rounded">
+                    {selectedCourt.area}
                   </span>
                 </div>
-                <p className="text-xs text-slate-400 mt-1 line-clamp-1">
-                  {activeClub.address}
+                <p className="text-[11px] text-slate-400 mt-1 line-clamp-1 max-w-xl">
+                  {selectedCourt.address}
                 </p>
-                <div className="flex items-center gap-3 mt-1.5 text-xs text-slate-300 font-bold">
-                  <span>شروع از: {formatPersianPrice(activeClub.startingPrice)} تومان</span>
+                <div className="flex items-center gap-3 mt-1 text-[11px] text-slate-300 font-bold">
+                  {selectedCourt.startingPrice && (
+                    <span>شروع سانس: {formatPersianPrice(selectedCourt.startingPrice)} تومان</span>
+                  )}
                   <span className="text-slate-600">•</span>
-                  <span className="text-emerald-400 font-black">⭐ {toPersianDigits(activeClub.rating)}</span>
+                  <span className="text-emerald-400 font-black">⭐ {toPersianDigits(selectedCourt.rating)}</span>
                 </div>
               </div>
             </div>
 
             <div className="flex items-center gap-2 self-end sm:self-center">
-              <button
-                onClick={() => {
-                  onSelectClub(activeClub);
-                  onClose();
-                }}
-                className="px-5 py-2.5 rounded-xl bg-rally-primary hover:bg-rally-primary/90 text-white font-extrabold text-xs flex items-center gap-1.5 shadow-md shadow-rally-primary/30 cursor-pointer transition-all active:scale-95"
-              >
-                <span>مشاهده سانس‌های این باشگاه</span>
-                <ArrowLeft className="w-3.5 h-3.5" />
-              </button>
+              {selectedCourt.status === 'ACTIVE' ? (
+                <button
+                  onClick={handleBookClub}
+                  className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-rally-primary hover:bg-rally-primary/90 text-white font-black text-xs flex items-center gap-1.5 shadow-md shadow-rally-primary/30 cursor-pointer transition-all active:scale-95"
+                >
+                  <span>مشاهده و رزرو سانس‌ها</span>
+                  <ArrowLeft className="w-3.5 h-3.5" />
+                </button>
+              ) : (
+                <div className="px-3.5 py-2 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 font-black text-xs flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                  <span>در حال تجهیز و اتصال به رالی</span>
+                </div>
+              )}
             </div>
           </div>
         )}
