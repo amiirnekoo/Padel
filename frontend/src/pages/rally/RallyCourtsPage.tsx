@@ -3,7 +3,6 @@ import { RefreshCw, AlertTriangle } from 'lucide-react';
 import { CourtClub, TimeSlotItem, SportType } from '../../types/rally';
 import { MOCK_CLUBS } from '../../data/mockRallyData';
 import { CourtCard } from '../../components/rally/CourtCard';
-import { AppleCategoryShelf, CategoryItem } from '../../components/rally/AppleCategoryShelf';
 import { CourtSearchFiltersBar, TimeWindowFilter, QuickShortcut } from '../../components/rally/CourtSearchFiltersBar';
 import { CourtsDateTabsBar } from '../../components/rally/CourtsDateTabsBar';
 import { CourtsEmptyState } from '../../components/rally/CourtsEmptyState';
@@ -22,7 +21,6 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
   onSelectDirectSlot,
   initialFilters
 }) => {
-  const [selectedCatId, setSelectedCatId] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedCity, setSelectedCity] = useState<string>('تهران');
   const [sportFilter, setSportFilter] = useState<SportType | 'ALL'>(initialFilters?.sport || 'ALL');
@@ -112,16 +110,8 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
     setTimeWindow(sc === 'TONIGHT' ? 'NIGHT' : 'ALL');
   };
 
-  const handleCategorySelect = (cat: CategoryItem) => {
-    setSelectedCatId(cat.id);
-    setSportFilter(cat.sport || 'ALL');
-    setTypeFilter(cat.type || 'ALL');
-    setAreaFilter(cat.city || 'ALL');
-  };
-
   const resetAllFilters = () => {
     setSearchQuery('');
-    setSelectedCatId('ALL');
     setSelectedCity('ALL');
     setSportFilter('ALL');
     setTypeFilter('ALL');
@@ -206,30 +196,14 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
         </button>
       </div>
 
-      {/* 2. Unified Search & Filters Bar */}
+      {/* 2. Unified Search Bar */}
       <CourtSearchFiltersBar
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
-        selectedCity={selectedCity}
-        onCityChange={setSelectedCity}
-        sportFilter={sportFilter}
-        onSportChange={setSportFilter}
-        typeFilter={typeFilter}
-        onTypeChange={setTypeFilter}
-        timeWindow={timeWindow}
-        onTimeWindowChange={setTimeWindow}
-        activeShortcut={activeShortcut}
-        onShortcutSelect={handleShortcutSelect}
-        selectedAmenity={selectedAmenity}
-        onAmenityChange={setSelectedAmenity}
-        isLocating={isLocating}
         locationError={locationError}
       />
 
-      {/* 3. Category Shelf */}
-      <AppleCategoryShelf selectedId={selectedCatId} onSelect={handleCategorySelect} />
-
-      {/* 4. Date Tabs Bar */}
+      {/* 3. Date Tabs Bar */}
       <CourtsDateTabsBar
         tabs={DATE_TABS}
         selectedOffset={selectedDayOffset}
