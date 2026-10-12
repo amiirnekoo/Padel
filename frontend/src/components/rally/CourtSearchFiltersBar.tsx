@@ -74,25 +74,31 @@ export const CourtSearchFiltersBar: React.FC<CourtSearchFiltersBarProps> = ({
 
   return (
     <div className="space-y-4" dir="rtl">
-      {/* 1. Main Clear Search Input */}
-      <div className="relative w-full">
-        <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-gray-400">
-          <Search className="w-5 h-5 text-rally-primary" />
+      {/* 1. Main Premium Search Input */}
+      <div className="relative w-full group">
+        {/* Modern Search Icon Badge */}
+        <div className="absolute inset-y-0 right-3 sm:right-3.5 flex items-center pointer-events-none z-10">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br from-rally-primary to-[#082f55] text-white flex items-center justify-center shadow-md shadow-rally-primary/25 transition-transform duration-300 group-focus-within:scale-105">
+            <Search className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.2]" />
+          </div>
         </div>
+
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
-          placeholder="نام باشگاه یا محله را جستوجو کنید (مثال: انقلاب، آجودانیه، لفور، ویوا)..."
-          className="w-full h-13 pr-12 pl-12 rounded-2xl bg-white border border-black/[0.08] shadow-[0_2px_12px_rgba(0,0,0,0.03)] text-sm font-bold text-rally-charcoal placeholder-gray-400 focus:outline-none focus:border-rally-primary focus:ring-2 focus:ring-rally-primary/20 transition-all"
+          placeholder="نام باشگاه یا محله را جستجو کنید..."
+          className="w-full h-15 sm:h-[68px] pr-15 sm:pr-18 pl-14 sm:pl-16 rounded-2xl sm:rounded-3xl bg-white border-2 border-slate-200/90 text-sm sm:text-base font-extrabold text-slate-800 placeholder-slate-400/90 shadow-[0_4px_20px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_28px_rgba(11,66,120,0.07)] hover:border-rally-primary/40 focus:outline-none focus:border-rally-primary focus:ring-4 focus:ring-rally-primary/10 focus:shadow-[0_12px_36px_rgba(11,66,120,0.12)] transition-all duration-300"
         />
+
         {searchQuery && (
           <button
+            type="button"
             onClick={() => onSearchChange('')}
-            className="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 hover:text-gray-600 cursor-pointer"
+            className="absolute inset-y-0 left-3 sm:left-4 my-auto h-8 w-8 sm:h-9 sm:w-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95"
             title="پاک کردن جستجو"
           >
-            <X className="w-4 h-4" />
+            <X className="w-4 h-4 stroke-[2.5]" />
           </button>
         )}
       </div>
