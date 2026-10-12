@@ -49,10 +49,10 @@ export const ModernRallyHeader: React.FC<ModernRallyHeaderProps> = ({
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-200 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
         isScrolled
           ? 'bg-[#0B2238] border-b border-[#0C3E6E]/60 shadow-lg py-3'
-          : 'bg-[#0B2238]/85 backdrop-none py-4 sm:py-5 border-b border-white/10'
+          : 'bg-[#0B2238] border-b border-[#0C3E6E]/40 py-4 sm:py-5'
       }`}
       dir="rtl"
     >
