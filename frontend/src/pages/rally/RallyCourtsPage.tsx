@@ -3,8 +3,9 @@ import { RefreshCw, AlertTriangle } from 'lucide-react';
 import { CourtClub, TimeSlotItem, SportType } from '../../types/rally';
 import { MOCK_CLUBS } from '../../data/mockRallyData';
 import { CourtCard } from '../../components/rally/CourtCard';
-import { CourtSearchFiltersBar, TimeWindowFilter, QuickShortcut } from '../../components/rally/CourtSearchFiltersBar';
-import { CourtsDateTabsBar } from '../../components/rally/CourtsDateTabsBar';
+import { CourtSearchCapsuleBar, TimeWindowFilter } from '../../components/rally/CourtSearchCapsuleBar';
+import { CourtsToolbar, CourtSortOption } from '../../components/rally/courts/CourtsToolbar';
+import { CourtsMapModal } from '../../components/rally/courts/CourtsMapModal';
 import { CourtsEmptyState } from '../../components/rally/CourtsEmptyState';
 import { matchesPersianSearch, parseTimeToMinutes, isSlotPast } from '../../utils/persianUtils';
 import { useCourtsDistance } from '../../hooks/useCourtsDistance';
@@ -27,9 +28,10 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
   const [areaFilter, setAreaFilter] = useState<string>(initialFilters?.area || 'ALL');
   const [typeFilter, setTypeFilter] = useState<'ALL' | 'INDOOR' | 'OUTDOOR'>('ALL');
   const [timeWindow, setTimeWindow] = useState<TimeWindowFilter>('ALL');
-  const [activeShortcut, setActiveShortcut] = useState<QuickShortcut>('NONE');
   const [selectedAmenity, setSelectedAmenity] = useState<string>('ALL');
   const [selectedDayOffset, setSelectedDayOffset] = useState<number>(0);
+  const [sortOption, setSortOption] = useState<CourtSortOption>('POPULAR');
+  const [isMapModalOpen, setIsMapModalOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
   const [networkError, setNetworkError] = useState<string | null>(null);
   const [clubsData, setClubsData] = useState<CourtClub[]>(MOCK_CLUBS);
@@ -99,15 +101,13 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
     loadLiveCourts();
   }, [loadLiveCourts]);
 
-  const handleShortcutSelect = (sc: QuickShortcut) => {
-    setActiveShortcut(sc);
-    if (sc === 'NEAREST') {
+  const handleSortSelect = (opt: CourtSortOption) => {
+    setSortOption(opt);
+    if (opt === 'NEAREST') {
       requestLocationAndSort();
-      return;
+    } else {
+      clearDistanceSort();
     }
-    clearDistanceSort();
-    setSelectedDayOffset(sc === 'TOMORROW' ? 1 : 0);
-    setTimeWindow(sc === 'TONIGHT' ? 'NIGHT' : 'ALL');
   };
 
   const resetAllFilters = () => {
@@ -118,8 +118,8 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
     setAreaFilter('ALL');
     setTimeWindow('ALL');
     setSelectedAmenity('ALL');
-    setActiveShortcut('NONE');
     setSelectedDayOffset(0);
+    setSortOption('POPULAR');
     clearDistanceSort();
   };
 
@@ -165,17 +165,22 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
     });
   }, [clubsData, selectedCity, sportFilter, typeFilter, searchQuery, areaFilter, selectedAmenity, timeWindow, targetDateStr]);
 
-  const displayClubs = useMemo(() => applyDistanceToClubs(filteredClubs), [applyDistanceToClubs, filteredClubs]);
-
-  const DATE_TABS = [
-    { offset: 0, label: 'امروز', sublabel: 'سه‌شنبه' },
-    { offset: 1, label: 'فردا', sublabel: 'چهارشنبه' },
-    { offset: 2, label: 'پس‌فردا', sublabel: 'پنجشنبه' },
-    { offset: 3, label: 'آخر هفته', sublabel: 'جمعه' }
-  ];
+  const displayClubs = useMemo(() => {
+    let list = applyDistanceToClubs(filteredClubs);
+    if (sortOption === 'CHEAPEST') {
+      return [...list].sort((a, b) => (a.startingPrice || 0) - (b.startingPrice || 0));
+    }
+    if (sortOption === 'POPULAR') {
+      return [...list].sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    }
+    if (sortOption === 'NEWEST') {
+      return [...list].reverse();
+    }
+    return list;
+  }, [applyDistanceToClubs, filteredClubs, sortOption]);
 
   return (
-    <div className="space-y-7 max-w-7xl 2xl:max-w-[1600px] mx-auto pb-16" dir="rtl">
+    <div className="space-y-6 max-w-7xl 2xl:max-w-[1600px] mx-auto pb-16" dir="rtl">
       {/* 1. Header Bar */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pt-2">
         <div>
@@ -196,22 +201,24 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
         </button>
       </div>
 
-      {/* 2. Unified Search Bar */}
-      <CourtSearchFiltersBar
+      {/* 2. Jabama-Style Smart Capsule Search Bar */}
+      <CourtSearchCapsuleBar
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
+        selectedDayOffset={selectedDayOffset}
+        onSelectDayOffset={setSelectedDayOffset}
+        timeWindow={timeWindow}
+        onTimeWindowChange={setTimeWindow}
         locationError={locationError}
       />
 
-      {/* 3. Date Tabs Bar */}
-      <CourtsDateTabsBar
-        tabs={DATE_TABS}
-        selectedOffset={selectedDayOffset}
-        onSelectOffset={(offset) => {
-          setSelectedDayOffset(offset);
-          setActiveShortcut(offset === 0 ? 'TODAY' : offset === 1 ? 'TOMORROW' : 'NONE');
-        }}
+      {/* 3. Toolbar: Sorting & Interactive Map Toggle */}
+      <CourtsToolbar
+        currentSort={sortOption}
+        onSelectSort={handleSortSelect}
+        onOpenMap={() => setIsMapModalOpen(true)}
         clubsCount={displayClubs.length}
+        isLocating={isLocating}
       />
 
       {/* 5. Network Error State (تلفیق‌نشده با Empty State) */}
@@ -246,6 +253,14 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
       ) : (
         <CourtsEmptyState onResetFilters={resetAllFilters} />
       )}
+
+      {/* 7. Interactive Courts Map Modal */}
+      <CourtsMapModal
+        isOpen={isMapModalOpen}
+        onClose={() => setIsMapModalOpen(false)}
+        clubs={displayClubs}
+        onSelectClub={onSelectClub}
+      />
     </div>
   );
 };
