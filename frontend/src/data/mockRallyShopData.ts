@@ -1,3 +1,4 @@
+import { roundPriceToCeilStep } from '../utils/pricingRules';
 import { ShopProduct } from '../types/rally';
 import productImagesManifest from './productImagesManifest.json';
 import { NOX_NEW_RACKETS } from './noxRacketsData';
@@ -1078,6 +1079,10 @@ export const MOCK_SHOP_PRODUCTS: ShopProduct[] = RAW_SHOP_PRODUCTS.map((p) => {
     : p;
   return {
     ...base,
+    price: roundPriceToCeilStep(base.price),
+    original_price: roundPriceToCeilStep(base.original_price),
+    custom_order_price: base.custom_order_price ? roundPriceToCeilStep(base.custom_order_price) : undefined,
+    domestic_supplier_price: base.domestic_supplier_price ? roundPriceToCeilStep(base.domestic_supplier_price) : undefined,
     rating: 0,
     reviews_count: 0
   };

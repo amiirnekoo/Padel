@@ -1219,6 +1219,26 @@ async def create_supply_rule(payload: SupplyRulePayload, admin: dict = Depends(g
     )
     return {"success": True, "rule": rule}
 
+
+class PricingPolicyPayload(BaseModel):
+    rounding_enabled: Optional[bool] = None
+    racket_rounding_step: Optional[int] = None
+    rounding_mode: Optional[str] = None
+    description: Optional[str] = None
+
+@router.get("/supply-rules/pricing-policy")
+async def get_supply_pricing_policy(admin: dict = Depends(get_current_admin)):
+    """دریافت تنظیمات و قانون فعال رندسازی قیمت‌های راکت‌ها در رالی"""
+    policy = supply_rules_service.get_pricing_policy()
+    return {"success": True, "policy": policy}
+
+@router.put("/supply-rules/pricing-policy")
+async def update_supply_pricing_policy(payload: PricingPolicyPayload, admin: dict = Depends(get_current_admin)):
+    """به‌روزرسانی و ذخیره‌سازی قانون رندسازی قیمت‌ها (گام ۵۰۰ هزار تومانی، حالت Ceil و غیره)"""
+    updates = {k: v for k, v in payload.dict().items() if v is not None}
+    policy = supply_rules_service.update_pricing_policy(updates)
+    return {"success": True, "policy": policy}
+
 @router.put("/supply-rules/{rule_id}")
 async def update_supply_rule(rule_id: str, payload: SupplyRuleUpdatePayload, admin: dict = Depends(get_current_admin)):
     """ویرایش قانون تامین (درصد سود، زمان تحویل، لینک مرجع و غیره)"""
@@ -1327,5 +1347,4 @@ async def get_best_prices(
             results[pid] = best
 
     return {"success": True, "results": results}
-
 

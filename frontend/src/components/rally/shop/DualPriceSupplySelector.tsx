@@ -1,6 +1,7 @@
 import React from 'react';
 import { Truck, Globe, Clock, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import { ShopProduct } from '../../../types/rally';
+import { roundPriceToCeilStep } from '../../../utils/pricingRules';
 
 export type SupplyOrderMode = 'INSTANT' | 'EUROPE';
 
@@ -16,7 +17,9 @@ export const DualPriceSupplySelector: React.FC<DualPriceSupplySelectorProps> = R
   onSelectMode
 }) => {
   const isAvailableInStock = product.stock > 0;
-  const europePrice = product.custom_order_price || Math.round((product.eur_price || 200) * 298310 * 1.25);
+  const europePrice = roundPriceToCeilStep(
+    product.custom_order_price || Math.round((product.eur_price || 200) * 298310 * 1.25)
+  );
   const deliveryEurope = product.custom_order_delivery || '۴ الی ۶ هفته';
 
   return (

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ShoppingCart, Check, Star, ShieldCheck, Truck, RefreshCw, Sparkles, Award, Globe } from 'lucide-react';
 import { ShopProduct } from '../../../types/rally';
 import { useProductRating } from '../../../utils/productRatingUtils';
+import { roundPriceToCeilStep } from '../../../utils/pricingRules';
 import { DualPriceSupplySelector, SupplyOrderMode } from '../../../components/rally/shop/DualPriceSupplySelector';
 
 interface ProductBuyBoxProps {
@@ -23,9 +24,11 @@ export const ProductBuyBox: React.FC<ProductBuyBoxProps> = React.memo(({
   const isPadel = product.sport === 'PADEL';
   const isAvailable = product.stock > 0;
   const isInstant = orderMode === 'INSTANT';
-  const unitPrice = isInstant
-    ? product.price
-    : (product.custom_order_price || Math.round((product.eur_price || 200) * 298310 * 1.25));
+  const unitPrice = roundPriceToCeilStep(
+    isInstant
+      ? product.price
+      : (product.custom_order_price || Math.round((product.eur_price || 200) * 298310 * 1.25))
+  );
   const ratingSummary = useProductRating(product.id);
   const savings = isInstant && product.discount_percent > 0
     ? (product.original_price - product.price) * quantity

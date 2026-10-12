@@ -217,6 +217,18 @@ export const SupplyRulesModal: React.FC<SupplyRulesModalProps> = ({
 
         {/* Content Body */}
         <div className="flex-1 overflow-y-auto p-5 space-y-4">
+          {/* Active Rounding Policy Banner */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-3 rounded-2xl bg-slate-900/90 border border-slate-800 text-xs">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
+              <span className="font-bold text-white">قانون مصوب رندسازی قیمت‌ها:</span>
+              <span className="text-slate-400">قیمت راکت‌ها بدون خرده در پله‌های ۵۰۰,۰۰۰ تومانی به بالا (Ceil) رند می‌شوند.</span>
+            </div>
+            <span className="px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono text-[11px] font-bold">
+              گام ۵۰۰,۰۰۰ تومان (Ceil)
+            </span>
+          </div>
+
           {notification && (
             <div className="p-3 rounded-xl bg-sky-950/60 border border-sky-800/80 text-sky-200 text-xs font-bold flex items-center gap-2 animate-fadeIn">
               <CheckCircle2 className="w-4 h-4 text-sky-400 flex-shrink-0" />

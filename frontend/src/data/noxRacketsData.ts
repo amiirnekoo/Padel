@@ -1,6 +1,7 @@
+import { roundPriceToCeilStep } from '../utils/pricingRules';
 import { ShopProduct } from '../types/rally';
 
-export const NOX_NEW_RACKETS: ShopProduct[] = [
+const RAW_NOX_NEW_RACKETS: ShopProduct[] = [
   {
     id: "nox-equation-soft-advanced-2026",
     name_fa: "راکت پدل نوکس مدل Equation Soft Advanced ۲۰۲۶",
@@ -10,15 +11,15 @@ export const NOX_NEW_RACKETS: ShopProduct[] = [
     sport: "PADEL",
     level: "INTERMEDIATE",
     year: 2026,
-    original_price: 36400000,
+    original_price: 36500000,
 
     discount_percent: 5,
-    price: 36400000,
+    price: 36500000,
 
     stock: 0,
     eur_price: 149.0,
     eur_original_price: 199.0,
-    custom_order_price: 55560000,
+    custom_order_price: 56000000,
     custom_order_delivery: "۴ الی ۶ هفته",
     domestic_supplier: "سان اسپرت ایران (انبار رسمی)",
     domestic_supplier_price: 35000000,
@@ -50,15 +51,15 @@ export const NOX_NEW_RACKETS: ShopProduct[] = [
     sport: "PADEL",
     level: "PRO",
     year: 2026,
-    original_price: 92560000,
+    original_price: 93000000,
 
     discount_percent: 7,
-    price: 92560000,
+    price: 93000000,
 
     stock: 7,
     eur_price: 184.0,
     eur_original_price: 389.0,
-    custom_order_price: 68611000,
+    custom_order_price: 69000000,
     custom_order_delivery: "۴ الی ۶ هفته",
     domestic_supplier: "سان اسپرت ایران (انبار رسمی)",
     domestic_supplier_price: 89000000,
@@ -91,15 +92,15 @@ export const NOX_NEW_RACKETS: ShopProduct[] = [
     sport: "PADEL",
     level: "PRO",
     year: 2026,
-    original_price: 88400000,
+    original_price: 88500000,
 
     discount_percent: 6,
-    price: 88400000,
+    price: 88500000,
 
     stock: 9,
     eur_price: 199.0,
     eur_original_price: 339.0,
-    custom_order_price: 74205000,
+    custom_order_price: 74500000,
     custom_order_delivery: "۴ الی ۶ هفته",
     domestic_supplier: "سان اسپرت ایران (انبار رسمی)",
     domestic_supplier_price: 85000000,
@@ -134,15 +135,15 @@ export const NOX_NEW_RACKETS: ShopProduct[] = [
     year: 2026,
     is_women: true,
     gender: "WOMEN",
-    original_price: 81120000,
+    original_price: 81500000,
 
     discount_percent: 8,
-    price: 81120000,
+    price: 81500000,
 
     stock: 6,
     eur_price: 174.0,
     eur_original_price: 299.0,
-    custom_order_price: 64882000,
+    custom_order_price: 65000000,
     custom_order_delivery: "۴ الی ۶ هفته",
     domestic_supplier: "سان اسپرت ایران (انبار رسمی)",
     domestic_supplier_price: 78000000,
@@ -180,12 +181,12 @@ export const NOX_NEW_RACKETS: ShopProduct[] = [
     original_price: 20500000,
 
     discount_percent: 5,
-    price: 19475000,
+    price: 19500000,
 
     stock: 0,
     eur_price: 164.0,
     eur_original_price: 299.0,
-    custom_order_price: 61154000,
+    custom_order_price: 61500000,
     custom_order_delivery: "۴ الی ۶ هفته",
 
     weight: "۳۵۰ - ۳۶۰ گرم",
@@ -214,15 +215,15 @@ export const NOX_NEW_RACKETS: ShopProduct[] = [
     level: "PRO",
     year: 2027,
     is_new: true,
-    original_price: 98800000,
+    original_price: 99000000,
 
     discount_percent: 5,
-    price: 98800000,
+    price: 99000000,
 
     stock: 5,
     eur_price: 229.0,
     eur_original_price: 389.0,
-    custom_order_price: 85391000,
+    custom_order_price: 85500000,
     custom_order_delivery: "۴ الی ۶ هفته",
     domestic_supplier: "سان اسپرت ایران (انبار رسمی)",
     domestic_supplier_price: 95000000,
@@ -256,15 +257,15 @@ export const NOX_NEW_RACKETS: ShopProduct[] = [
     level: "PRO",
     year: 2027,
     is_new: true,
-    original_price: 92560000,
+    original_price: 93000000,
 
     discount_percent: 5,
-    price: 92560000,
+    price: 93000000,
 
     stock: 4,
     eur_price: 214.0,
     eur_original_price: 359.0,
-    custom_order_price: 79798000,
+    custom_order_price: 80000000,
     custom_order_delivery: "۴ الی ۶ هفته",
     domestic_supplier: "سان اسپرت ایران (انبار رسمی)",
     domestic_supplier_price: 89000000,
@@ -298,15 +299,15 @@ export const NOX_NEW_RACKETS: ShopProduct[] = [
     level: "PRO",
     year: 2027,
     is_new: true,
-    original_price: 98800000,
+    original_price: 99000000,
 
     discount_percent: 6,
-    price: 98800000,
+    price: 99000000,
 
     stock: 6,
     eur_price: 184.0,
     eur_original_price: 389.0,
-    custom_order_price: 68611000,
+    custom_order_price: 69000000,
     custom_order_delivery: "۴ الی ۶ هفته",
     domestic_supplier: "سان اسپرت ایران (انبار رسمی)",
     domestic_supplier_price: 95000000,
@@ -340,15 +341,15 @@ export const NOX_NEW_RACKETS: ShopProduct[] = [
     level: "PRO",
     year: 2027,
     is_new: true,
-    original_price: 92560000,
+    original_price: 93000000,
 
     discount_percent: 5,
-    price: 92560000,
+    price: 93000000,
 
     stock: 0,
     eur_price: 184.0,
     eur_original_price: 389.0,
-    custom_order_price: 68611000,
+    custom_order_price: 69000000,
     custom_order_delivery: "۴ الی ۶ هفته",
     domestic_supplier: "سان اسپرت ایران (انبار رسمی)",
     domestic_supplier_price: 89000000,
@@ -385,12 +386,12 @@ export const NOX_NEW_RACKETS: ShopProduct[] = [
     original_price: 24500000,
 
     discount_percent: 5,
-    price: 23275000,
+    price: 23500000,
 
     stock: 3,
     eur_price: 214.0,
     eur_original_price: 339.0,
-    custom_order_price: 79798000,
+    custom_order_price: 80000000,
     custom_order_delivery: "۴ الی ۶ هفته",
 
     weight: "۳۵۵ - ۳۶۵ گرم",
@@ -420,15 +421,15 @@ export const NOX_NEW_RACKETS: ShopProduct[] = [
     level: "PRO",
     year: 2027,
     is_new: true,
-    original_price: 88400000,
+    original_price: 88500000,
 
     discount_percent: 5,
-    price: 88400000,
+    price: 88500000,
 
     stock: 5,
     eur_price: 214.0,
     eur_original_price: 339.0,
-    custom_order_price: 79798000,
+    custom_order_price: 80000000,
     custom_order_delivery: "۴ الی ۶ هفته",
     domestic_supplier: "سان اسپرت ایران (انبار رسمی)",
     domestic_supplier_price: 85000000,
@@ -462,15 +463,15 @@ export const NOX_NEW_RACKETS: ShopProduct[] = [
     level: "PRO",
     year: 2027,
     is_new: true,
-    original_price: 88400000,
+    original_price: 88500000,
 
     discount_percent: 6,
-    price: 88400000,
+    price: 88500000,
 
     stock: 5,
     eur_price: 214.0,
     eur_original_price: 339.0,
-    custom_order_price: 79798000,
+    custom_order_price: 80000000,
     custom_order_delivery: "۴ الی ۶ هفته",
     domestic_supplier: "سان اسپرت ایران (انبار رسمی)",
     domestic_supplier_price: 85000000,
@@ -504,15 +505,15 @@ export const NOX_NEW_RACKETS: ShopProduct[] = [
     level: "PRO",
     year: 2027,
     is_new: true,
-    original_price: 88400000,
+    original_price: 88500000,
 
     discount_percent: 7,
-    price: 88400000,
+    price: 88500000,
 
     stock: 5,
     eur_price: 214.0,
     eur_original_price: 339.0,
-    custom_order_price: 79798000,
+    custom_order_price: 80000000,
     custom_order_delivery: "۴ الی ۶ هفته",
     domestic_supplier: "سان اسپرت ایران (انبار رسمی)",
     domestic_supplier_price: 85000000,
@@ -548,15 +549,15 @@ export const NOX_NEW_RACKETS: ShopProduct[] = [
     is_new: true,
     is_women: true,
     gender: "WOMEN",
-    original_price: 81120000,
+    original_price: 81500000,
 
     discount_percent: 5,
-    price: 81120000,
+    price: 81500000,
 
     stock: 5,
     eur_price: 214.0,
     eur_original_price: 339.0,
-    custom_order_price: 79798000,
+    custom_order_price: 80000000,
     custom_order_delivery: "۴ الی ۶ هفته",
     domestic_supplier: "سان اسپرت ایران (انبار رسمی)",
     domestic_supplier_price: 78000000,
@@ -595,12 +596,12 @@ export const NOX_NEW_RACKETS: ShopProduct[] = [
     original_price: 22000000,
 
     discount_percent: 5,
-    price: 20900000,
+    price: 21000000,
 
     stock: 5,
     eur_price: 214.0,
     eur_original_price: 339.0,
-    custom_order_price: 79798000,
+    custom_order_price: 80000000,
     custom_order_delivery: "۴ الی ۶ هفته",
 
     weight: "۳۵۰ - ۳۶۰ گرم",
@@ -620,3 +621,11 @@ export const NOX_NEW_RACKETS: ShopProduct[] = [
     series: "Ventus Series 2027"
   }
 ];
+
+export const NOX_NEW_RACKETS: ShopProduct[] = RAW_NOX_NEW_RACKETS.map((r) => ({
+  ...r,
+  price: roundPriceToCeilStep(r.price),
+  original_price: roundPriceToCeilStep(r.original_price),
+  custom_order_price: r.custom_order_price ? roundPriceToCeilStep(r.custom_order_price) : undefined,
+  domestic_supplier_price: r.domestic_supplier_price ? roundPriceToCeilStep(r.domestic_supplier_price) : undefined,
+}));

@@ -23,6 +23,12 @@ RULES_STORAGE_PATH = os.path.join(
     "supply_rules.json"
 )
 
+POLICY_STORAGE_PATH = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    "data",
+    "pricing_policy.json"
+)
+
 class SupplySourceRule(BaseModel):
     id: str = Field(default_factory=lambda: f"rule-{uuid.uuid4().hex[:8]}")
     source_name: str
@@ -43,14 +49,52 @@ class SupplySourceRule(BaseModel):
             return self.model_dump()
         return self.dict()
 
-def calculate_markup_price(base_price: float, markup_percent: float) -> int:
+DEFAULT_PRICING_POLICY: Dict[str, Any] = {
+    "rounding_enabled": True,
+    "racket_rounding_step": 500000,
+    "rounding_mode": "CEIL",
+    "description": "قانون رندسازی پله‌ای به بالا: کلیه قیمت‌های راکت‌ها در پله‌های ۵۰۰ هزار تومانی (مانند ۹۲، ۹۲.۵، ۹۳ میلیون) رند به بالا می‌شوند."
+}
+
+def round_price_to_ceil_step(price: float, step: int = 500_000) -> int:
     """
-    Calculate final retail price with given markup percent rounded to nearest thousand Tomans.
-    Example: 20,000,000 + 4% = 20,800,000
+    قانون عالی رندسازی قیمت‌های رالی (Ceil Step Rounding Rule):
+    رند به نزدیک‌ترین پله بالایی (به سمت بالا) جهت حذف کامل خرده‌ها و حفظ حاشیه سود.
+    - برای راکت‌ها و مبالغ بزرگ (۵ میلیون به بالا): گام ۵۰۰,۰۰۰ تومان (نیم میلیون تومان)
+      مثال: 92,560,000 -> 93,000,000
+            36,400,000 -> 36,500,000
+    - برای مبالغ ۱ تا ۵ میلیون تومان (کفش، ساک و پوشاک): گام ۵۰,۰۰۰ تومان
+      مثال: 2,852,000 -> 2,900,000
+    - برای مبالغ زیر ۱ میلیون تومان (توپ، اورگریپ، اکسسوری): گام ۱۰,۰۰۰ تومان
+      مثال: 494,000 -> 500,000
+    """
+    if price <= 0:
+        return 0
+    import math
+    if price >= 5_000_000:
+        actual_step = step if step > 0 else 500_000
+        return int(math.ceil(price / actual_step) * actual_step)
+    elif price >= 1_000_000:
+        return int(math.ceil(price / 50_000) * 50_000)
+    else:
+        return int(math.ceil(price / 10_000) * 10_000)
+
+def calculate_markup_price(
+    base_price: float,
+    markup_percent: float,
+    round_clean_step: bool = False,
+    step: int = 500_000
+) -> int:
+    """
+    Calculate final retail price with given markup percent.
+    By default (round_clean_step=False), rounds to nearest 1,000 Tomans for backward compatibility.
+    When round_clean_step=True, applies Rally's 500k Ceil Rounding Rule.
     """
     if base_price <= 0:
         return 0
     calculated = base_price * (1.0 + (markup_percent / 100.0))
+    if round_clean_step:
+        return round_price_to_ceil_step(calculated, step=step)
     return int(round(calculated / 1000.0) * 1000)
 
 def match_product_model(supplier_title: str, catalog_product_id: str) -> bool:
@@ -233,8 +277,44 @@ DEFAULT_RULES: List[Dict[str, Any]] = [
 class SupplyRulesService:
     def __init__(self, storage_path: str = RULES_STORAGE_PATH):
         self.storage_path = storage_path
+        self.policy_storage_path = (
+            self.storage_path.replace(".json", "_policy.json")
+            if self.storage_path != RULES_STORAGE_PATH
+            else POLICY_STORAGE_PATH
+        )
         self._rules: Dict[str, SupplySourceRule] = {}
+        self._pricing_policy: Dict[str, Any] = DEFAULT_PRICING_POLICY.copy()
         self._load_rules()
+        self._load_policy()
+
+    def _load_policy(self) -> None:
+        if os.path.exists(self.policy_storage_path):
+            try:
+                with open(self.policy_storage_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    if isinstance(data, dict):
+                        self._pricing_policy.update(data)
+                        return
+            except Exception:
+                pass
+        self._save_policy()
+
+    def _save_policy(self) -> None:
+        try:
+            os.makedirs(os.path.dirname(self.policy_storage_path), exist_ok=True)
+            with open(self.policy_storage_path, "w", encoding="utf-8") as f:
+                json.dump(self._pricing_policy, f, ensure_ascii=False, indent=2)
+        except Exception:
+            pass
+
+    def get_pricing_policy(self) -> Dict[str, Any]:
+        return self._pricing_policy.copy()
+
+    def update_pricing_policy(self, updates: Dict[str, Any]) -> Dict[str, Any]:
+        for k, v in updates.items():
+            self._pricing_policy[k] = v
+        self._save_policy()
+        return self._pricing_policy.copy()
 
     def _load_rules(self) -> None:
         os.makedirs(os.path.dirname(self.storage_path), exist_ok=True)
@@ -357,7 +437,8 @@ class SupplyRulesService:
         self,
         product_id: str,
         supply_mode: str = "INSTANT",
-        eur_rate: int = 298310
+        eur_rate: int = 298310,
+        apply_rounding: bool = False
     ) -> Optional[Dict[str, Any]]:
         """
         موتور هوشمند آربیتراژ و انتخاب ارزان‌ترین قیمت (Best Price Selector) بین تمام منابع فعال:
@@ -365,6 +446,7 @@ class SupplyRulesService:
         ۲. قیمت خام هر سورس را در صورت یورویی بودن به تومان تبدیل می‌کند.
         ۳. ارزان‌ترین منبع (کمترین قیمت مبدا) را انتخاب می‌کند.
         ۴. سود مصوب را به ارزان‌ترین قیمت اضافه کرده و گزارش کامل مقایسه‌ای تولید می‌کند.
+        ۵. محاسبه قیمت رند بر اساس قانون ۵۰۰ هزار تومانی به بالا (Ceil Rounding).
         """
         active_rules = [
             r for r in self._rules.values()
@@ -402,9 +484,14 @@ class SupplyRulesService:
         best_rule = best_candidate["rule"]
         final_rally_price = calculate_markup_price(lowest_toman, best_rule.markup_percent)
 
+        racket_step = self._pricing_policy.get("racket_rounding_step", 500_000)
+        final_rally_price_rounded = round_price_to_ceil_step(final_rally_price, racket_step)
+        effective_price = final_rally_price_rounded if apply_rounding else final_rally_price
+
         all_quotes = []
         for c in sorted(candidates, key=lambda x: x["raw_price_toman"]):
             c_rule = c["rule"]
+            q_final = calculate_markup_price(c["raw_price_toman"], c_rule.markup_percent)
             all_quotes.append({
                 "source_id": c_rule.id,
                 "source_name": c_rule.source_name,
@@ -413,7 +500,8 @@ class SupplyRulesService:
                 "currency": c["currency"],
                 "raw_price_toman": c["raw_price_toman"],
                 "markup_percent": c_rule.markup_percent,
-                "final_price_toman": calculate_markup_price(c["raw_price_toman"], c_rule.markup_percent),
+                "final_price_toman": q_final,
+                "final_price_toman_rounded": round_price_to_ceil_step(q_final, racket_step),
                 "delivery_time": c_rule.delivery_time,
                 "is_lowest": (c_rule.id == best_rule.id),
                 "diff_from_lowest_toman": c["raw_price_toman"] - lowest_toman
@@ -429,7 +517,8 @@ class SupplyRulesService:
             "currency": best_candidate["currency"],
             "lowest_base_price_toman": lowest_toman,
             "markup_percent": best_rule.markup_percent,
-            "final_rally_price": final_rally_price,
+            "final_rally_price": effective_price,
+            "final_rally_price_rounded": final_rally_price_rounded,
             "delivery_time": best_rule.delivery_time,
             "all_quotes": all_quotes
         }
