@@ -1072,19 +1072,30 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
   }
 ];
 
-export const MOCK_SHOP_PRODUCTS: ShopProduct[] = RAW_SHOP_PRODUCTS.map((p) => {
-  const customImages = MANIFEST[p.id];
-  const base = (customImages && customImages.length > 0)
-    ? { ...p, image_url: customImages[0], images: customImages }
-    : p;
-  return {
-    ...base,
-    price: roundPriceToCeilStep(base.price),
-    original_price: roundPriceToCeilStep(base.original_price),
-    custom_order_price: base.custom_order_price ? roundPriceToCeilStep(base.custom_order_price) : undefined,
-    domestic_supplier_price: base.domestic_supplier_price ? roundPriceToCeilStep(base.domestic_supplier_price) : undefined,
-    rating: 0,
-    reviews_count: 0
-  };
-});
+export const MOCK_SHOP_PRODUCTS: ShopProduct[] = RAW_SHOP_PRODUCTS
+  .map((p) => {
+    const customImages = MANIFEST[p.id];
+    const base = (customImages && customImages.length > 0)
+      ? { ...p, image_url: customImages[0], images: customImages }
+      : p;
+    return {
+      ...base,
+      price: roundPriceToCeilStep(base.price),
+      original_price: roundPriceToCeilStep(base.original_price),
+      custom_order_price: base.custom_order_price ? roundPriceToCeilStep(base.custom_order_price) : undefined,
+      domestic_supplier_price: base.domestic_supplier_price ? roundPriceToCeilStep(base.domestic_supplier_price) : undefined,
+      rating: 0,
+      reviews_count: 0
+    };
+  })
+  .sort((a, b) => {
+    // اولویت قطعی نمایش برای راکت‌های کلکسیون جدید ۲۰۲۷ است
+    const yearA = a.year || 0;
+    const yearB = b.year || 0;
+    if (yearA !== yearB) {
+      return yearB - yearA;
+    }
+    return (b.is_new ? 1 : 0) - (a.is_new ? 1 : 0);
+  });
+
 

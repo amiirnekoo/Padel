@@ -33,7 +33,7 @@ export const ModernShopShowcase: React.FC<ModernShopShowcaseProps> = ({
               </h2>
             </div>
             <p className="text-sm text-[#66706D] mt-1 font-medium">
-              راکت‌های رسمی مسابقات جهانی ۲۰۲۶، کفش و توپ استاندارد با ضمانت اصالت ۱۰۰٪
+              راکت‌های رسمی مسابقات جهانی ۲۰۲۷ و ۲۰۲۶، کفش و توپ استاندارد با ضمانت اصالت ۱۰۰٪
             </p>
           </div>
 

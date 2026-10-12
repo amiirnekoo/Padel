@@ -11,6 +11,87 @@ except ImportError:
 
 CATALOG_PRODUCTS: List[Dict[str, Any]] = [
     {
+        "id": "nox-genius-18k-alum-2027",
+        "name_fa": "راکت پدل نوکس مدل Genius 18K Alum ۲۰۲۷ آگوستین تاپیا (جدید)",
+        "name_en": "NOX Genius 18K Alum by Agustín Tapia 2027",
+        "brand": "Nox",
+        "category": "PADEL_RACKET",
+        "sport": "PADEL",
+        "level": "PRO",
+        "year": 2027,
+        "is_new": True,
+        "original_price": 99000000,
+        "discount_percent": 5,
+        "price": 99000000,
+        "stock": 5,
+        "eur_price": 229.0,
+        "custom_order_price": 85500000,
+        "weight": "360-375 گرم",
+        "balance": "متعادل دینامیک (Dynamic Even)",
+        "shape": "اشکی قطره‌ای نوین (New Teardrop)",
+        "surface": "کربن ۱۸K آلومینایز نسل نوین Spin+",
+        "core": "فوم هوشمند MLD Black EVA نسل ۳",
+        "warranty": "گارانتی رسمی ۱۲ ماهه طلایی رالی",
+        "image_url": "/images/nox_genius_18k_2027.jpg",
+        "rating": 4.98,
+        "reviews_count": 0,
+        "description": "شاهکار جدید و پرچمدار رسمی سال ۲۰۲۷ آگوستین تاپیا با الیاف ۱۸K Alum و پاسخدهی بی‌نقص."
+    },
+    {
+        "id": "nox-genius-attack-18k-alum-2027",
+        "name_fa": "راکت پدل نوکس مدل Genius Attack 18K Alum ۲۰۲۷ آگوستین تاپیا (جدید)",
+        "name_en": "NOX Genius Attack 18K Alum by Agustín Tapia 2027",
+        "brand": "Nox",
+        "category": "PADEL_RACKET",
+        "sport": "PADEL",
+        "level": "PRO",
+        "year": 2027,
+        "is_new": True,
+        "original_price": 93000000,
+        "discount_percent": 5,
+        "price": 93000000,
+        "stock": 4,
+        "eur_price": 214.0,
+        "custom_order_price": 80000000,
+        "weight": "360-375 گرم",
+        "balance": "سرسنگین هجومی (Head Heavy)",
+        "shape": "الماس هجومی (Diamond)",
+        "surface": "کربن ۱۸K آلومینایز بافت‌دار زبر",
+        "core": "فوم هوشمند MLD Black EVA",
+        "warranty": "گارانتی رسمی ۱۲ ماهه طلایی رالی",
+        "image_url": "/images/nox_genius_attack_18k_2027.jpg",
+        "rating": 4.95,
+        "reviews_count": 0,
+        "description": "نسخه تهاجمی الماسی پرچمدار ۲۰۲۷ تاپیا برای اسمش‌های پرقدرت و سرعتی."
+    },
+    {
+        "id": "nox-genius-12k-alum-xtrem-2027",
+        "name_fa": "راکت پدل نوکس مدل Genius 12K Alum XTREM ۲۰۲۷ آگوستین تاپیا (جدید)",
+        "name_en": "NOX Genius 12K Alum XTREM by Agustín Tapia 2027",
+        "brand": "Nox",
+        "category": "PADEL_RACKET",
+        "sport": "PADEL",
+        "level": "PRO",
+        "year": 2027,
+        "is_new": True,
+        "original_price": 99000000,
+        "discount_percent": 6,
+        "price": 99000000,
+        "stock": 6,
+        "eur_price": 184.0,
+        "custom_order_price": 69000000,
+        "weight": "360-375 گرم",
+        "balance": "متعادل (Even)",
+        "shape": "اشکی قطره‌ای (Teardrop)",
+        "surface": "کربن ۱۲K آلومینایز XTREM",
+        "core": "فوم چندلایه MLD Black EVA",
+        "warranty": "گارانتی رسمی ۱۲ ماهه طلایی رالی",
+        "image_url": "/images/nox_genius_12k_2027.jpg",
+        "rating": 4.92,
+        "reviews_count": 0,
+        "description": "راکت سرعتی و با بازخورد صلب ۲۰۲۷ با کنترل میکرومتری ضربات روی تور."
+    },
+    {
         "id": "racket-padel-1",
         "name_fa": "راکت پدل بول‌پدل مدل Hack 03 2024",
         "name_en": "Bullpadel Hack 03 2024 Padel Racket",
@@ -18,6 +99,7 @@ CATALOG_PRODUCTS: List[Dict[str, Any]] = [
         "category": "PADEL_RACKET",
         "sport": "PADEL",
         "level": "PRO",
+        "year": 2024,
         "original_price": 18500000,
         "discount_percent": 10,
         "price": 16650000,
@@ -571,6 +653,9 @@ class ShopService:
                 p for p in results 
                 if q in p["name_fa"].lower() or q in p["name_en"].lower() or q in p["brand"].lower()
             ]
+
+        # اولویت قطعی نمایش پیش‌فرض همیشه با راکت‌های جدید ۲۰۲۷ است
+        results.sort(key=lambda p: (p.get("year", 0), 1 if p.get("is_new") else 0), reverse=True)
         return results
 
     @staticmethod

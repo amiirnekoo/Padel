@@ -23,7 +23,7 @@ export const RallyShopPage: React.FC<RallyShopPageProps> = ({
   const [selectedSport, setSelectedSport] = useState<'ALL' | SportType>('ALL');
   const [selectedBrand, setSelectedBrand] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState<'POPULAR' | 'PRICE_ASC' | 'PRICE_DESC' | 'DISCOUNT'>('POPULAR');
+  const [sortBy, setSortBy] = useState<'NEWEST' | 'POPULAR' | 'PRICE_ASC' | 'PRICE_DESC' | 'DISCOUNT'>('NEWEST');
   const BRANDS = ['ALL', 'Head', 'Nox'];
 
   const filteredProducts = useMemo(() => {
@@ -52,6 +52,16 @@ export const RallyShopPage: React.FC<RallyShopPageProps> = ({
       if (sortBy === 'PRICE_ASC') return a.price - b.price;
       if (sortBy === 'PRICE_DESC') return b.price - a.price;
       if (sortBy === 'DISCOUNT') return b.discount_percent - a.discount_percent;
+
+      // اولویت اول نمایش پیش‌فرض همیشه با راکت‌های جدید ۲۰۲۷ است
+      const yearA = a.year || 0;
+      const yearB = b.year || 0;
+      if (yearA !== yearB) {
+        return yearB - yearA;
+      }
+      if (b.is_new !== a.is_new) {
+        return (b.is_new ? 1 : 0) - (a.is_new ? 1 : 0);
+      }
       return b.rating - a.rating;
     });
   }, [products, selectedCategory, selectedSport, selectedBrand, searchQuery, sortBy]);
@@ -131,6 +141,7 @@ export const RallyShopPage: React.FC<RallyShopPageProps> = ({
               onChange={(e) => setSortBy(e.target.value as any)}
               className="px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-700 focus:outline-none cursor-pointer"
             >
+              <option value="NEWEST">جدیدترین‌ها (کلکسیون ۲۰۲۷)</option>
               <option value="POPULAR">محبوب‌ترین‌ها</option>
               <option value="PRICE_ASC">ارزان‌ترین</option>
               <option value="PRICE_DESC">گران‌ترین</option>
