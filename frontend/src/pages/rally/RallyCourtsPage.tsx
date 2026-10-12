@@ -197,9 +197,6 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
           <h1 className="text-3xl sm:text-5xl font-black text-[#1d1d1f] tracking-tight">
             کورت‌ها و سانس‌ها
           </h1>
-          <p className="text-xs sm:text-sm text-[#86868b] mt-1.5 font-medium max-w-xl">
-            سریع‌ترین شیوه رزرو زمین‌های پدل و تنیس با برابری ۱۰۰٪ نرخ مصوب باشگاه و قفل اتمیک ۱۰ دقیقه‌ای.
-          </p>
         </div>
 
         <button
@@ -207,7 +204,7 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
           className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-white border border-black/[0.08] text-rally-charcoal hover:border-rally-primary/40 hover:text-rally-primary transition-all shadow-xs text-xs font-bold cursor-pointer shrink-0 self-start md:self-auto"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-rally-primary' : 'text-gray-400'}`} />
-          <span>بروزرسانی زنده موجودی</span>
+          <span>بروزرسانی</span>
         </button>
       </div>
 
