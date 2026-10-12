@@ -3,6 +3,7 @@ import { X, Navigation, ArrowLeft, Sparkles } from 'lucide-react';
 import { CourtClub } from '../../../types/rally';
 import { formatPersianPrice, toPersianDigits } from '../../../utils/persianUtils';
 import { LeafletCourtsMap } from './LeafletCourtsMap';
+import { CourtNavigationActions } from './CourtNavigationActions';
 import { MAP_CITIES, MAP_COURTS, MapCityConfig, MapCourtItem } from '../../../data/courtsMapData';
 import { getDynamicMapCourts } from '../../../utils/clubLocationStorage';
 
@@ -25,7 +26,6 @@ export const CourtsMapModal: React.FC<CourtsMapModalProps> = ({
 
   // Sync dynamic courts from storage and custom events
   useEffect(() => {
-    if (!isOpen) return;
     setMapCourts(getDynamicMapCourts(MAP_COURTS));
 
     const handleLocationUpdate = () => {
@@ -36,9 +36,7 @@ export const CourtsMapModal: React.FC<CourtsMapModalProps> = ({
     return () => {
       window.removeEventListener('rally_club_locations_updated', handleLocationUpdate);
     };
-  }, [isOpen]);
-
-  if (!isOpen) return null;
+  }, []);
 
   const selectedCourt = mapCourts.find((c) => c.id === selectedCourtId) || mapCourts[0];
 
@@ -59,7 +57,14 @@ export const CourtsMapModal: React.FC<CourtsMapModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-2 sm:p-4" dir="rtl">
+    <div
+      className={`fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 transition-all duration-200 ${
+        isOpen
+          ? 'opacity-100 pointer-events-auto bg-black/85'
+          : 'opacity-0 pointer-events-none invisible'
+      }`}
+      dir="rtl"
+    >
       <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-5xl w-full overflow-hidden relative shadow-2xl flex flex-col max-h-[92vh]">
         {/* Header */}
         <div className="px-4 sm:px-6 py-3.5 border-b border-slate-800 flex items-center justify-between shrink-0 bg-slate-950">
@@ -71,11 +76,11 @@ export const CourtsMapModal: React.FC<CourtsMapModalProps> = ({
               <h3 className="text-sm sm:text-base font-black text-white flex items-center gap-2">
                 <span>نقشه تعاملی کورت‌های پدل ایران</span>
                 <span className="text-[10px] bg-emerald-500/15 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/30 font-bold">
-                  نقشه استاندارد شهری (OpenStreetMap)
+                  لود پرسرعت تایل‌ها (Fast CDN)
                 </span>
               </h3>
               <p className="text-[11px] sm:text-xs text-slate-400 font-medium">
-                موقعیت دقیق کورت‌های پدل تهران، شمال، اصفهان، شیراز، مشهد و تبریز
+                موقعیت دقیق کورت‌ها و مسیریابی مستقیم با نشان، بلد، گوگل مپ و ویز
               </p>
             </div>
           </div>
@@ -112,19 +117,20 @@ export const CourtsMapModal: React.FC<CourtsMapModalProps> = ({
           })}
         </div>
 
-        {/* Real Leaflet Map with Guaranteed White Frame */}
+        {/* Real Leaflet Map with Guaranteed Fast CDN */}
         <div className="relative flex-1 min-h-[420px] sm:min-h-[500px] p-2 sm:p-3 bg-slate-900 overflow-hidden">
           <LeafletCourtsMap
             courts={mapCourts}
             selectedCity={selectedCity}
             selectedCourtId={selectedCourtId}
             onSelectCourt={(court) => setSelectedCourtId(court.id)}
+            isVisible={isOpen}
           />
         </div>
 
         {/* Selected Court Bottom Preview */}
         {selectedCourt && (
-          <div className="p-3.5 sm:p-4 bg-slate-950 border-t border-slate-800 shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="p-3.5 sm:p-4 bg-slate-950 border-t border-slate-800 shrink-0 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-slate-800 overflow-hidden shrink-0 border border-slate-700 relative">
                 <img
@@ -164,21 +170,30 @@ export const CourtsMapModal: React.FC<CourtsMapModalProps> = ({
               </div>
             </div>
 
-            <div className="flex items-center gap-2 self-end sm:self-center">
-              {selectedCourt.status === 'ACTIVE' ? (
-                <button
-                  onClick={handleBookClub}
-                  className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-rally-primary hover:bg-rally-primary/90 text-white font-black text-xs flex items-center gap-1.5 shadow-md shadow-rally-primary/30 cursor-pointer transition-all active:scale-95"
-                >
-                  <span>مشاهده و رزرو سانس‌ها</span>
-                  <ArrowLeft className="w-3.5 h-3.5" />
-                </button>
-              ) : (
-                <div className="px-3.5 py-2 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 font-black text-xs flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                  <span>در حال تجهیز و اتصال به رالی</span>
-                </div>
-              )}
+            {/* Navigation and Booking Actions */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 self-stretch lg:self-center justify-between lg:justify-end">
+              <CourtNavigationActions
+                lat={selectedCourt.lat}
+                lng={selectedCourt.lng}
+                courtName={selectedCourt.name}
+              />
+
+              <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                {selectedCourt.status === 'ACTIVE' ? (
+                  <button
+                    onClick={handleBookClub}
+                    className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-rally-primary hover:bg-rally-primary/90 text-white font-black text-xs flex items-center gap-1.5 shadow-md shadow-rally-primary/30 cursor-pointer transition-all active:scale-95"
+                  >
+                    <span>مشاهده و رزرو سانس‌ها</span>
+                    <ArrowLeft className="w-3.5 h-3.5" />
+                  </button>
+                ) : (
+                  <div className="px-3.5 py-2 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 font-black text-xs flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                    <span>در حال تجهیز و اتصال به رالی</span>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}

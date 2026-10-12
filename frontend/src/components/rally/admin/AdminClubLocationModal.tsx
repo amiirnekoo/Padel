@@ -66,11 +66,15 @@ export const AdminClubLocationModal: React.FC<AdminClubLocationModalProps> = ({
       attributionControl: false
     });
 
-    // Universal OpenStreetMap Standard Light Tiles
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    // High-speed Fastly Edge CDN Tiles (CartoDB Voyager)
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      subdomains: 'abcd',
       maxZoom: 19,
-      attribution: '© OpenStreetMap contributors',
-      crossOrigin: true
+      attribution: '© OpenStreetMap contributors, © CARTO',
+      crossOrigin: true,
+      keepBuffer: 8,
+      updateWhenIdle: true,
+      updateWhenZooming: false
     }).addTo(map);
 
     const pinHtml = `
