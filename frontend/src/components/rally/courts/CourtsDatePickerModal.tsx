@@ -1,7 +1,7 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { X, Calendar as CalendarIcon, ChevronRight, ChevronLeft, Sparkles } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { X, Calendar as CalendarIcon, ChevronRight, ChevronLeft, Check, RotateCcw } from 'lucide-react';
 import { toPersianDigits } from '../../../utils/persianUtils';
-import { PERSIAN_MONTH_NAMES, WEEKDAYS, getPersianDate, PersianDateObj } from '../../../utils/persianCalendar';
+import { WEEKDAYS, getPersianDate, getCalendarMonth, CalendarDayItem } from '../../../utils/persianCalendar';
 
 interface CourtsDatePickerModalProps {
   isOpen: boolean;
@@ -16,91 +16,84 @@ export const CourtsDatePickerModal: React.FC<CourtsDatePickerModalProps> = ({
   selectedOffset,
   onSelectOffset
 }) => {
-  const [activeMonthTab, setActiveMonthTab] = useState<0 | 1>(0);
+  const today = useMemo(() => new Date(), []);
+  const todayP = useMemo(() => getPersianDate(today), [today]);
+  const [viewYear, setViewYear] = useState<number>(todayP.year);
+  const [viewMonth, setViewMonth] = useState<number>(todayP.month);
 
-  // Build calendar dataset for 2 full consecutive months
-  const { currentMonthConfig, nextMonthConfig } = useMemo(() => {
-    const today = new Date();
-    const todayP = getPersianDate(today);
+  const monthConfig = useMemo(() => (
+    getCalendarMonth(viewYear, viewMonth, toPersianDigits, today)
+  ), [viewYear, viewMonth, today]);
 
-    const map = new Map<number, { d: Date; p: PersianDateObj; dayOfWeek: number }>();
-    for (let offset = -35; offset <= 65; offset++) {
-      const d = new Date(today.getFullYear(), today.getMonth(), today.getDate() + offset);
-      const p = getPersianDate(d);
-      const dayOfWeek = (d.getDay() + 1) % 7;
-      map.set(offset, { d, p, dayOfWeek });
-    }
-
-    const buildMonth = (year: number, month: number) => {
-      const days = [];
-      for (const [offset, item] of map.entries()) {
-        if (item.p.year === year && item.p.month === month) {
-          days.push({
-            offset,
-            dayNum: item.p.day,
-            weekdayName: WEEKDAYS[item.dayOfWeek].full,
-            dayOfWeek: item.dayOfWeek,
-            isPast: offset < 0,
-            isToday: offset === 0,
-            isFriday: item.dayOfWeek === 6
-          });
-        }
-      }
-      days.sort((a, b) => a.dayNum - b.dayNum);
-      const startPadding = days.length > 0 ? days[0].dayOfWeek : 0;
-      return {
-        year,
-        month,
-        monthName: PERSIAN_MONTH_NAMES[month],
-        days,
-        startPadding
-      };
-    };
-
-    const cMonth = buildMonth(todayP.year, todayP.month);
-    const nMonthNum = todayP.month === 12 ? 1 : todayP.month + 1;
-    const nYear = todayP.month === 12 ? todayP.year + 1 : todayP.year;
-    const nMonth = buildMonth(nYear, nMonthNum);
-
-    return { currentMonthConfig: cMonth, nextMonthConfig: nMonth };
-  }, []);
-
-  // Sync active month tab when modal opens based on selectedOffset
-  useEffect(() => {
-    if (isOpen) {
-      const inNext = nextMonthConfig.days.some((d) => d.offset === selectedOffset);
-      setActiveMonthTab(inNext ? 1 : 0);
-    }
-  }, [isOpen, selectedOffset, nextMonthConfig]);
-
+  // Quick shortcuts
   const quickShortcuts = useMemo(() => {
-    const today = new Date();
     const todayWeekdayIdx = (today.getDay() + 1) % 7;
     const daysUntilFriday = (6 - todayWeekdayIdx + 7) % 7;
     const fridayOffset = daysUntilFriday === 0 ? 0 : daysUntilFriday;
-
     return [
       { offset: 0, label: 'امروز', sublabel: WEEKDAYS[todayWeekdayIdx].full },
       { offset: 1, label: 'فردا', sublabel: WEEKDAYS[(todayWeekdayIdx + 1) % 7].full },
       { offset: 2, label: 'پس‌فردا', sublabel: WEEKDAYS[(todayWeekdayIdx + 2) % 7].full },
       { offset: fridayOffset, label: 'آخر هفته', sublabel: 'جمعه' },
     ];
-  }, []);
+  }, [today]);
+
+  const isCurrentMonth = viewYear === todayP.year && viewMonth === todayP.month;
+  const canGoPrev = viewYear > todayP.year || (viewYear === todayP.year && viewMonth > todayP.month);
+
+  const handleNextMonth = () => {
+    if (viewMonth === 12) {
+      setViewYear((y) => y + 1);
+      setViewMonth(1);
+    } else {
+      setViewMonth((m) => m + 1);
+    }
+  };
+
+  const handlePrevMonth = () => {
+    if (!canGoPrev) return;
+    if (viewMonth === 1) {
+      setViewYear((y) => y - 1);
+      setViewMonth(12);
+    } else {
+      setViewMonth((m) => m - 1);
+    }
+  };
+
+  const handleGoToday = () => {
+    setViewYear(todayP.year);
+    setViewMonth(todayP.month);
+    const todayItem = monthConfig.days.find((d) => d.offset === 0);
+    if (todayItem) {
+      onSelectOffset(0, todayItem.fullDateLabel);
+    }
+  };
+
+  const handleSelectDay = (day: CalendarDayItem) => {
+    if (day.isPast) return;
+    onSelectOffset(day.offset, day.fullDateLabel);
+    // Modal stays open in-place per user requirement
+  };
+
+  const handleSelectShortcut = (offset: number, label: string) => {
+    const targetDate = new Date();
+    targetDate.setDate(targetDate.getDate() + offset);
+    const targetP = getPersianDate(targetDate);
+    setViewYear(targetP.year);
+    setViewMonth(targetP.month);
+    const weekday = WEEKDAYS[(targetDate.getDay() + 1) % 7].full;
+    onSelectOffset(offset, `${label} (${weekday})`);
+  };
 
   if (!isOpen) return null;
 
-  const displayedMonth = activeMonthTab === 0 ? currentMonthConfig : nextMonthConfig;
-
-  const handleSelectDay = (offset: number, label: string) => {
-    onSelectOffset(offset, label);
-    onClose();
-  };
+  const selectedDayItem = monthConfig.days.find((d) => d.offset === selectedOffset);
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-3 sm:p-4" dir="rtl">
-      <div className="bg-white rounded-3xl max-w-lg w-full p-5 sm:p-6 relative shadow-2xl border border-gray-100 flex flex-col max-h-[92vh] overflow-hidden">
+    <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-2 sm:p-4" dir="rtl">
+      <div className="bg-white rounded-3xl max-w-lg w-full p-4 sm:p-6 relative shadow-2xl border border-gray-100 flex flex-col max-h-[94vh] overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between pb-3.5 border-b border-gray-100 shrink-0">
+        <div className="flex items-center justify-between pb-3 border-b border-gray-100 shrink-0">
           <div className="flex items-center gap-2.5">
             <div className="w-10 h-10 rounded-2xl bg-rally-primary/10 text-rally-primary flex items-center justify-center">
               <CalendarIcon className="w-5 h-5 stroke-[2.5]" />
@@ -110,7 +103,7 @@ export const CourtsDatePickerModal: React.FC<CourtsDatePickerModalProps> = ({
                 تقویم رسمی کورت‌های پدل
               </h3>
               <p className="text-xs text-gray-500 font-medium mt-0.5">
-                مشاهده موجودی زنده زمین‌ها و قفل ۱۰ دقیقه‌ای نرخ مصوب
+                انتخاب تاریخ دلخواه و مشاهده نرخ پایه زنده (جاباما)
               </p>
             </div>
           </div>
@@ -123,15 +116,15 @@ export const CourtsDatePickerModal: React.FC<CourtsDatePickerModalProps> = ({
           </button>
         </div>
 
-        {/* Quick Date Shortcuts */}
-        <div className="py-3 border-b border-gray-100 shrink-0">
+        {/* Quick Date Shortcuts (Without Closing Modal) */}
+        <div className="py-2.5 border-b border-gray-100 shrink-0">
           <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
             {quickShortcuts.map((item) => {
               const isSelected = selectedOffset === item.offset;
               return (
                 <button
                   key={item.offset}
-                  onClick={() => handleSelectDay(item.offset, `${item.label} (${item.sublabel})`)}
+                  onClick={() => handleSelectShortcut(item.offset, item.label)}
                   className={`py-1.5 px-2 rounded-2xl text-xs font-bold transition-all border cursor-pointer flex flex-col items-center gap-0.5 ${
                     isSelected
                       ? 'bg-rally-primary text-white border-rally-primary shadow-sm shadow-rally-primary/30'
@@ -148,64 +141,58 @@ export const CourtsDatePickerModal: React.FC<CourtsDatePickerModalProps> = ({
           </div>
         </div>
 
-        {/* Month Selector with Tabs & Navigation Arrows */}
-        <div className="pt-3 pb-2 flex items-center justify-between gap-2 shrink-0">
-          <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-2xl w-full sm:w-auto">
+        {/* Multi-Year Bahesab-Style Navigation Header */}
+        <div className="pt-2.5 pb-2 flex items-center justify-between gap-2 shrink-0">
+          <div className="flex items-center gap-2">
             <button
-              onClick={() => setActiveMonthTab(0)}
-              disabled={activeMonthTab === 0}
-              className={`p-1.5 rounded-xl transition-all ${
-                activeMonthTab === 0 ? 'text-gray-300 cursor-default' : 'text-slate-700 hover:bg-white hover:shadow-xs cursor-pointer'
+              onClick={handlePrevMonth}
+              disabled={!canGoPrev}
+              className={`p-2 rounded-xl border transition-all flex items-center gap-1 text-xs font-extrabold ${
+                canGoPrev
+                  ? 'border-gray-200 text-slate-700 hover:bg-gray-50 cursor-pointer'
+                  : 'border-transparent text-gray-300 cursor-not-allowed opacity-40'
               }`}
-              title="ماه جاری"
+              title="ماه قبل"
             >
               <ChevronRight className="w-4 h-4" />
+              <span className="hidden sm:inline">ماه قبل</span>
             </button>
 
-            <button
-              onClick={() => setActiveMonthTab(0)}
-              className={`flex-1 sm:flex-initial px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                activeMonthTab === 0
-                  ? 'bg-white text-slate-900 shadow-sm'
-                  : 'text-gray-500 hover:text-slate-900'
-              }`}
-            >
-              <span>{currentMonthConfig.monthName} {toPersianDigits(currentMonthConfig.year)}</span>
-              <span className="text-[10px] bg-sky-100 text-sky-800 px-1.5 py-0.5 rounded-full font-bold">این ماه</span>
-            </button>
-
-            <button
-              onClick={() => setActiveMonthTab(1)}
-              className={`flex-1 sm:flex-initial px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                activeMonthTab === 1
-                  ? 'bg-white text-slate-900 shadow-sm'
-                  : 'text-gray-500 hover:text-slate-900'
-              }`}
-            >
-              <span>{nextMonthConfig.monthName} {toPersianDigits(nextMonthConfig.year)}</span>
-              <span className="text-[10px] bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded-full font-bold">ماه بعد</span>
-            </button>
-
-            <button
-              onClick={() => setActiveMonthTab(1)}
-              disabled={activeMonthTab === 1}
-              className={`p-1.5 rounded-xl transition-all ${
-                activeMonthTab === 1 ? 'text-gray-300 cursor-default' : 'text-slate-700 hover:bg-white hover:shadow-xs cursor-pointer'
-              }`}
-              title="ماه آینده"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
+            {!isCurrentMonth && (
+              <button
+                onClick={handleGoToday}
+                className="px-2.5 py-1 rounded-xl bg-sky-50 text-sky-800 hover:bg-sky-100 text-[11px] font-bold transition-all cursor-pointer flex items-center gap-1"
+                title="بازگشت به امروز"
+              >
+                <RotateCcw className="w-3 h-3" />
+                <span>امروز</span>
+              </button>
+            )}
           </div>
 
-          <div className="hidden sm:flex items-center gap-1 text-[11px] font-bold text-gray-400">
-            <Sparkles className="w-3.5 h-3.5 text-rally-primary" />
-            <span>رزرو زنده</span>
+          <div className="flex items-center gap-1.5 text-center">
+            <span className="text-sm sm:text-base font-black text-slate-900">
+              {monthConfig.monthName} {toPersianDigits(monthConfig.year)}
+            </span>
+            {isCurrentMonth && (
+              <span className="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-black">
+                این ماه
+              </span>
+            )}
           </div>
+
+          <button
+            onClick={handleNextMonth}
+            className="p-2 rounded-xl border border-gray-200 text-slate-700 hover:bg-gray-50 transition-all flex items-center gap-1 text-xs font-extrabold cursor-pointer"
+            title="ماه بعد"
+          >
+            <span className="hidden sm:inline">ماه بعد</span>
+            <ChevronLeft className="w-4 h-4" />
+          </button>
         </div>
 
-        {/* Real Calendar Grid Header (Shanbeh to Jomeh) */}
-        <div className="grid grid-cols-7 gap-1 text-center py-2 shrink-0 border-b border-gray-100">
+        {/* Calendar Grid Header (Shanbeh to Jomeh) */}
+        <div className="grid grid-cols-7 gap-1 text-center py-1.5 shrink-0 border-b border-gray-100">
           {WEEKDAYS.map((w, idx) => (
             <div
               key={w.full}
@@ -218,24 +205,23 @@ export const CourtsDatePickerModal: React.FC<CourtsDatePickerModalProps> = ({
           ))}
         </div>
 
-        {/* Real Calendar Grid Body */}
+        {/* Real Calendar Grid Body with Jabama-Style Price Cells */}
         <div className="flex-1 overflow-y-auto py-2">
-          <div className="grid grid-cols-7 gap-1.5">
+          <div className="grid grid-cols-7 gap-1 sm:gap-1.5">
             {/* Empty Padding Cells before day 1 */}
-            {Array.from({ length: displayedMonth.startPadding }).map((_, i) => (
-              <div key={`pad-${i}`} className="h-10 sm:h-12" />
+            {Array.from({ length: monthConfig.startPadding }).map((_, i) => (
+              <div key={`pad-${i}`} className="h-12 sm:h-14" />
             ))}
 
-            {/* Month Day Cells */}
-            {displayedMonth.days.map((day) => {
+            {/* Day Cells */}
+            {monthConfig.days.map((day) => {
               const isSelected = selectedOffset === day.offset;
-              const dateLabel = `${day.weekdayName} ${toPersianDigits(day.dayNum)} ${displayedMonth.monthName}`;
 
               if (day.isPast) {
                 return (
                   <div
                     key={day.dayNum}
-                    className="h-10 sm:h-12 rounded-2xl flex flex-col items-center justify-center text-slate-300 text-xs sm:text-sm font-medium bg-gray-50/50 cursor-not-allowed select-none"
+                    className="h-12 sm:h-14 rounded-2xl flex flex-col items-center justify-center text-slate-300 text-xs sm:text-sm font-medium bg-gray-50/40 cursor-not-allowed select-none"
                   >
                     <span>{toPersianDigits(day.dayNum)}</span>
                   </div>
@@ -245,49 +231,60 @@ export const CourtsDatePickerModal: React.FC<CourtsDatePickerModalProps> = ({
               return (
                 <button
                   key={day.dayNum}
-                  onClick={() => handleSelectDay(day.offset, dateLabel)}
-                  className={`h-10 sm:h-12 rounded-2xl flex flex-col items-center justify-center transition-all cursor-pointer border ${
+                  onClick={() => handleSelectDay(day)}
+                  className={`h-12 sm:h-14 rounded-2xl flex flex-col items-center justify-between p-1 transition-all cursor-pointer border ${
                     isSelected
                       ? 'bg-rally-primary text-white border-rally-primary shadow-md shadow-rally-primary/30 scale-102 font-black'
-                      : day.isFriday
+                      : day.isHoliday
                       ? 'bg-amber-50/70 border-amber-200 text-amber-900 hover:bg-amber-100 font-bold'
-                      : 'bg-white border-gray-200 text-slate-800 hover:border-rally-primary/60 hover:bg-sky-50/60 hover:text-rally-primary font-bold'
+                      : 'bg-white border-gray-200 text-slate-800 hover:border-rally-primary/60 hover:bg-sky-50/50 hover:text-rally-primary font-bold'
                   }`}
                 >
-                  <span className="text-xs sm:text-sm">{toPersianDigits(day.dayNum)}</span>
-                  {day.isToday && (
-                    <span className={`text-[8px] font-black -mt-0.5 ${isSelected ? 'text-white/90' : 'text-emerald-600'}`}>
-                      امروز
-                    </span>
-                  )}
-                  {!day.isToday && day.isFriday && (
-                    <span className={`text-[8px] font-bold -mt-0.5 ${isSelected ? 'text-white/90' : 'text-amber-700'}`}>
-                      تعطیل
-                    </span>
-                  )}
+                  <div className="w-full flex items-center justify-between px-1">
+                    <span className="text-xs sm:text-sm font-black">{toPersianDigits(day.dayNum)}</span>
+                    {day.isToday && (
+                      <span className={`text-[8px] font-black px-1 rounded-sm ${isSelected ? 'bg-white/20 text-white' : 'bg-emerald-100 text-emerald-800'}`}>
+                        امروز
+                      </span>
+                    )}
+                    {!day.isToday && day.isHoliday && (
+                      <span className={`text-[8px] font-black px-1 rounded-sm ${isSelected ? 'bg-white/20 text-white' : 'bg-amber-200/80 text-amber-900'}`}>
+                        تعطیل
+                      </span>
+                    )}
+                  </div>
+
+                  <span
+                    className={`text-[9px] sm:text-[10px] font-extrabold ${
+                      isSelected ? 'text-sky-200' : day.isHoliday ? 'text-amber-800' : 'text-emerald-700'
+                    }`}
+                  >
+                    {day.priceLabel}
+                  </span>
                 </button>
               );
             })}
           </div>
         </div>
 
-        {/* Footer Legend */}
-        <div className="pt-2 border-t border-gray-100 flex items-center justify-between text-[11px] font-bold text-gray-400 shrink-0">
-          <div className="flex items-center gap-3">
-            <span className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-emerald-500" />
-              <span>امروز</span>
+        {/* Footer Summary & Confirm Button (Jabama Style) */}
+        <div className="pt-2.5 border-t border-gray-100 flex items-center justify-between gap-3 shrink-0">
+          <div className="flex flex-col">
+            <span className="text-xs font-black text-slate-800">
+              {selectedDayItem ? selectedDayItem.fullDateLabel : 'تاریخ انتخاب‌شده'}
             </span>
-            <span className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-amber-500" />
-              <span>جمعه</span>
-            </span>
-            <span className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-rally-primary" />
-              <span>انتخاب‌شده</span>
+            <span className="text-[11px] text-emerald-700 font-extrabold">
+              {selectedDayItem && !selectedDayItem.isPast ? `نرخ پایه: ${selectedDayItem.priceLabel}` : ''}
             </span>
           </div>
-          <span>تقویم ۳۰ روزه</span>
+
+          <button
+            onClick={onClose}
+            className="px-4 py-2 rounded-2xl bg-rally-primary hover:bg-[#082f55] text-white text-xs font-black shadow-md shadow-rally-primary/25 transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+          >
+            <Check className="w-4 h-4 stroke-[2.5]" />
+            <span>تایید و مشاهده سانس‌ها</span>
+          </button>
         </div>
       </div>
     </div>
