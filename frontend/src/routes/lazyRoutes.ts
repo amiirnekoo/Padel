@@ -5,6 +5,7 @@ import { MOCK_SHOP_PRODUCTS } from '../data/mockRallyShopData';
 
 // Dynamic lazy imports for heavy subpages and portals
 export const RallyCourtsPage = lazy(() => import('../pages/rally/RallyCourtsPage').then(m => ({ default: m.RallyCourtsPage })));
+export const RallyClubDetailPage = lazy(() => import('../pages/rally/courts/RallyClubDetailPage').then(m => ({ default: m.RallyClubDetailPage })));
 export const RallyMatchmakingPage = lazy(() => import('../pages/rally/RallyMatchmakingPage').then(m => ({ default: m.RallyMatchmakingPage })));
 export const RallyCoachesPage = lazy(() => import('../pages/rally/RallyCoachesPage').then(m => ({ default: m.RallyCoachesPage })));
 export const RallyTournamentsPage = lazy(() => import('../pages/rally/RallyTournamentsPage').then(m => ({ default: m.RallyTournamentsPage })));

@@ -12,24 +12,14 @@ import { CourtClub, Coach, Tournament, TimeSlotItem, SportType, ShopProduct, Car
 import { rallyApi } from './services/rallyApi';
 import { useRallyRouter } from './hooks/useRallyRouter';
 import {
-  RallyCourtsPage,
-  RallyMatchmakingPage,
-  RallyCoachesPage,
-  RallyTournamentsPage,
-  RallyRankingsPage,
-  RallyMagazinePage,
-  RallyShopPage,
-  RallyProductDetailPage,
-  DrillsDirectoryPage,
-  DrillDetailPage,
-  AdminPortalPage,
-  UnifiedPortalPage,
-  RallyTermsPage,
-  RallyAboutPage,
-  RallyContactPage,
-  getInitialUserSession,
-  getInitialShopProducts
+  RallyCourtsPage, RallyClubDetailPage, RallyMatchmakingPage, RallyCoachesPage,
+  RallyTournamentsPage, RallyRankingsPage, RallyMagazinePage, RallyShopPage,
+  RallyProductDetailPage, DrillsDirectoryPage, DrillDetailPage, AdminPortalPage,
+  UnifiedPortalPage, RallyTermsPage, RallyAboutPage, RallyContactPage,
+  getInitialUserSession, getInitialShopProducts
 } from './routes/lazyRoutes';
+import { MOCK_CLUBS } from './data/mockRallyData';
+import { applySavedLocationsToClubs } from './utils/clubLocationStorage';
 
 export const App: React.FC = () => {
   const [selectedCity] = useState('تهران');
@@ -54,14 +44,35 @@ export const App: React.FC = () => {
   const [courtFilterParam, setCourtFilterParam] = useState<{ sport?: SportType; area?: string }>({});
   const [coachFilterParam, setCoachFilterParam] = useState<{ sport?: SportType; level?: string }>({});
   const [productsList, setProductsList] = useState<ShopProduct[]>(getInitialShopProducts);
+  const [clubsList] = useState<CourtClub[]>(() => applySavedLocationsToClubs(MOCK_CLUBS));
 
-  const { route, navigateToTab, navigateToDrill, backToDrills, navigateToProduct, backToShop, navigateToPortal, navigateToAdmin, exitSpecialPage } = useRallyRouter(productsList);
+  const {
+    route,
+    navigateToTab,
+    navigateToDrill,
+    backToDrills,
+    navigateToProduct,
+    backToShop,
+    navigateToClub,
+    backToCourts,
+    navigateToPortal,
+    navigateToAdmin,
+    exitSpecialPage
+  } = useRallyRouter(productsList, clubsList);
 
   const activeTab = route.tab;
   const isAdminOpen = route.isAdmin;
   const isPortalOpen = route.isPortal;
   const selectedProduct = route.productId
     ? productsList.find((p) => p.id === route.productId) || null
+    : null;
+  const selectedClubPage = route.clubId
+    ? clubsList.find(
+        (c) =>
+          c.id === route.clubId ||
+          c.id === `club-${route.clubId}` ||
+          c.id.replace('club-', '') === route.clubId
+      ) || null
     : null;
 
   useEffect(() => {
@@ -83,7 +94,7 @@ export const App: React.FC = () => {
 
   const handleUpdateProduct = (productId: string, updates: Partial<ShopProduct>) => {
     setProductsList((prev) => {
-      const next = prev.map((p) => p.id === productId ? { ...p, ...updates } : p);
+      const next = prev.map((p) => (p.id === productId ? { ...p, ...updates } : p));
       try { localStorage.setItem('rally_shop_products', JSON.stringify(next)); } catch {}
       return next;
     });
@@ -100,15 +111,14 @@ export const App: React.FC = () => {
   const handleAddToCart = (product: ShopProduct, quantity: number = 1) => {
     setCartItems((prev) => {
       const existing = prev.find((item) => item.product.id === product.id);
-      if (existing) {
-        return prev.map((item) => item.product.id === product.id ? { ...item, quantity: item.quantity + quantity } : item);
-      }
-      return [...prev, { product, quantity }];
+      return existing
+        ? prev.map((item) => (item.product.id === product.id ? { ...item, quantity: item.quantity + quantity } : item))
+        : [...prev, { product, quantity }];
     });
   };
 
   const handleUpdateCartQty = (productId: string, qty: number) => {
-    setCartItems((prev) => qty <= 0 ? prev.filter((i) => i.product.id !== productId) : prev.map((i) => i.product.id === productId ? { ...i, quantity: qty } : i));
+    setCartItems((prev) => (qty <= 0 ? prev.filter((i) => i.product.id !== productId) : prev.map((i) => (i.product.id === productId ? { ...i, quantity: qty } : i))));
   };
 
   if (isAdminOpen) {
@@ -149,10 +159,10 @@ export const App: React.FC = () => {
         onOpenCart={() => setIsCartOpen(true)}
       />
 
-      <main className={`flex-1 pb-20 lg:pb-12 ${activeTab !== 'home' || selectedProduct ? 'pt-20 sm:pt-24' : ''}`}>
+      <main className={`flex-1 pb-20 lg:pb-12 ${activeTab !== 'home' || selectedProduct || selectedClubPage ? 'pt-20 sm:pt-24' : ''}`}>
         <AnimatePresence mode="wait">
           <motion.div
-            key={selectedProduct ? `prod-${selectedProduct.id}` : activeTab}
+            key={selectedProduct ? `prod-${selectedProduct.id}` : (selectedClubPage ? `club-${selectedClubPage.id}` : activeTab)}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
@@ -170,12 +180,18 @@ export const App: React.FC = () => {
                   onOpenCart={() => setIsCartOpen(true)}
                   cartProductIds={new Set(cartItems.map((i) => i.product.id))}
                 />
+              ) : selectedClubPage ? (
+                <RallyClubDetailPage
+                  club={selectedClubPage}
+                  onBackToCourts={backToCourts}
+                  onProceedBooking={(club, slot) => setBookingSlot({ club, slot })}
+                />
               ) : (
                 <>
                   {activeTab === 'home' && (
                     <RallyHomePage
                       selectedCity={selectedCity}
-                      onSelectClub={setSelectedClub}
+                      onSelectClub={(club) => navigateToClub(club.id)}
                       onSelectDirectSlot={(club, slot) => setBookingSlot({ club, slot })}
                       onSelectCoach={setSelectedCoach}
                       onSelectTournament={setSelectedTournament}
@@ -200,24 +216,12 @@ export const App: React.FC = () => {
                   )}
                   {activeTab === 'courts' && (
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                      <RallyCourtsPage initialFilters={courtFilterParam} onSelectClub={setSelectedClub} onSelectDirectSlot={(club, slot) => setBookingSlot({ club, slot })} />
+                      <RallyCourtsPage initialFilters={courtFilterParam} onSelectClub={(club) => navigateToClub(club.id)} onSelectDirectSlot={(club, slot) => setBookingSlot({ club, slot })} />
                     </div>
                   )}
-                  {activeTab === 'matchmaking' && (
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                      <RallyMatchmakingPage userId={userSession?.userId || ''} userName={userSession?.fullName || 'کاربر گرامی'} walletBalance={walletBalance} />
-                    </div>
-                  )}
-                  {activeTab === 'coaches' && (
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                      <RallyCoachesPage initialFilters={coachFilterParam} onSelectCoach={setSelectedCoach} />
-                    </div>
-                  )}
-                  {activeTab === 'tournaments' && (
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                      <RallyTournamentsPage onSelectTournament={setSelectedTournament} />
-                    </div>
-                  )}
+                  {activeTab === 'matchmaking' && <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6"><RallyMatchmakingPage userId={userSession?.userId || ''} userName={userSession?.fullName || 'کاربر گرامی'} walletBalance={walletBalance} /></div>}
+                  {activeTab === 'coaches' && <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6"><RallyCoachesPage initialFilters={coachFilterParam} onSelectCoach={setSelectedCoach} /></div>}
+                  {activeTab === 'tournaments' && <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6"><RallyTournamentsPage onSelectTournament={setSelectedTournament} /></div>}
                   {activeTab === 'rankings' && <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6"><RallyRankingsPage /></div>}
                   {activeTab === 'magazine' && <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6"><RallyMagazinePage /></div>}
                   {activeTab === 'terms' && <RallyTermsPage />}

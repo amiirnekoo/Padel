@@ -146,9 +146,10 @@ export const CourtCard: React.FC<CourtCardProps> = ({
 
           <button
             onClick={() => onSelectClub(club)}
-            className="px-5 py-2.5 rounded-full text-white text-xs font-black flex items-center gap-1.5 shadow-sm transition-all cursor-pointer active:scale-95 bg-[#0B4278] hover:bg-[#0C4F8D]"
+            className="px-4 sm:px-5 py-2.5 rounded-full text-white text-xs font-black flex items-center gap-1.5 shadow-sm transition-all cursor-pointer active:scale-95 bg-[#0B4278] hover:bg-[#0C4F8D]"
+            title={`ورود به صفحه اختصاصی ${club.name} و تقویم سانس‌ها`}
           >
-            <span>مشاهده سانس‌ها</span>
+            <span>صفحه باشگاه و رزرو</span>
             <ChevronLeft className="w-3.5 h-3.5" />
           </button>
         </div>
