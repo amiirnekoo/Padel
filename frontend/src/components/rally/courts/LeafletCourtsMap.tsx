@@ -20,7 +20,7 @@ export const LeafletCourtsMap: React.FC<LeafletCourtsMapProps> = ({
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markersLayerRef = useRef<L.LayerGroup | null>(null);
 
-  // Initialize Map
+  // Initialize Map with White Background and Universal OpenStreetMap Tiles
   useEffect(() => {
     if (!mapContainerRef.current) return;
     if (mapInstanceRef.current) return;
@@ -32,10 +32,11 @@ export const LeafletCourtsMap: React.FC<LeafletCourtsMapProps> = ({
       attributionControl: false
     });
 
-    // Dark Matter Luxurious CartoDB Tiles (Zero Token, Fast CDN, Worldwide Coverage)
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-      subdomains: 'abcd',
-      maxZoom: 19
+    // Universal OpenStreetMap Light Standard Tiles (High-contrast, White background, Zero Token)
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap contributors',
+      crossOrigin: true
     }).addTo(map);
 
     // Zoom control on top-left
@@ -45,13 +46,24 @@ export const LeafletCourtsMap: React.FC<LeafletCourtsMapProps> = ({
     markersLayerRef.current = markersGroup;
     mapInstanceRef.current = map;
 
-    // Invalidate size once container rendered
-    const timer = setTimeout(() => {
-      map.invalidateSize();
-    }, 150);
+    // Multi-stage size invalidation to guarantee full tile rendering on mount
+    const timer1 = setTimeout(() => map.invalidateSize(), 60);
+    const timer2 = setTimeout(() => map.invalidateSize(), 200);
+    const timer3 = setTimeout(() => map.invalidateSize(), 500);
+
+    let resizeObserver: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== 'undefined' && mapContainerRef.current) {
+      resizeObserver = new ResizeObserver(() => {
+        map.invalidateSize();
+      });
+      resizeObserver.observe(mapContainerRef.current);
+    }
 
     return () => {
-      clearTimeout(timer);
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      clearTimeout(timer3);
+      if (resizeObserver) resizeObserver.disconnect();
       map.remove();
       mapInstanceRef.current = null;
       markersLayerRef.current = null;
@@ -65,9 +77,13 @@ export const LeafletCourtsMap: React.FC<LeafletCourtsMapProps> = ({
       duration: 1.2,
       easeLinearity: 0.25
     });
+    const timer = setTimeout(() => {
+      mapInstanceRef.current?.invalidateSize();
+    }, 250);
+    return () => clearTimeout(timer);
   }, [selectedCity]);
 
-  // Update Markers
+  // Update Markers with Sharp Contrast for White Background
   useEffect(() => {
     if (!mapInstanceRef.current || !markersLayerRef.current) return;
     const layer = markersLayerRef.current;
@@ -79,19 +95,25 @@ export const LeafletCourtsMap: React.FC<LeafletCourtsMapProps> = ({
 
       const markerHtml = `
         <div class="relative group cursor-pointer" dir="rtl" style="transform: translate(-50%, -100%);">
-          ${isSelected ? `<span class="absolute -inset-2 rounded-full animate-ping opacity-70" style="background-color: ${court.color};"></span>` : ''}
-          <div class="px-2.5 py-1 rounded-full text-[11px] font-black flex items-center gap-1.5 shadow-2xl transition-all ${
+          ${isSelected ? '<span class="absolute -inset-2.5 rounded-full animate-ping opacity-75 bg-sky-500"></span>' : ''}
+          <div class="px-3 py-1.5 rounded-full text-[11px] font-black flex items-center gap-1.5 shadow-xl transition-all border ${
             isSelected
-              ? 'scale-110 text-white ring-2 ring-white shadow-cyan-500/50'
+              ? 'scale-110 text-white bg-sky-600 border-sky-400 ring-2 ring-sky-300 shadow-sky-500/50'
               : isActive
-              ? 'text-slate-100 bg-slate-900/95 border border-slate-700 hover:scale-105'
-              : 'text-amber-300 bg-slate-950/95 border border-amber-500/40 opacity-90'
-          }" style="background-color: ${isSelected ? court.color : undefined}">
-            <span class="w-2 h-2 rounded-full shrink-0 ${isActive ? 'bg-emerald-400' : 'bg-amber-400'}"></span>
-            <span class="whitespace-nowrap">${court.name.split(' (')[0]}</span>
-            ${isActive ? '<span class="text-[9px] bg-black/40 px-1 py-0.2 rounded text-emerald-300">فعال</span>' : '<span class="text-[9px] bg-black/40 px-1 py-0.2 rounded text-amber-300">به‌زودی</span>'}
+              ? 'text-slate-900 bg-white border-emerald-500 shadow-md hover:scale-105'
+              : 'text-slate-800 bg-amber-50 border-amber-400 shadow-md opacity-95'
+          }">
+            <span class="w-2.5 h-2.5 rounded-full shrink-0 ${isActive ? 'bg-emerald-500 ring-2 ring-emerald-200' : 'bg-amber-500'}"></span>
+            <span class="whitespace-nowrap font-black">${court.name.split(' (')[0]}</span>
+            ${
+              isActive
+                ? '<span class="text-[9px] bg-emerald-100 text-emerald-800 font-black px-1.5 py-0.5 rounded-full">فعال</span>'
+                : '<span class="text-[9px] bg-amber-100 text-amber-800 font-bold px-1.5 py-0.5 rounded-full">به‌زودی</span>'
+            }
           </div>
-          <div class="w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[6px] mx-auto" style="border-t-color: ${isSelected ? court.color : '#0f172a'};"></div>
+          <div class="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] mx-auto ${
+            isSelected ? 'border-t-sky-600' : isActive ? 'border-t-emerald-500' : 'border-t-amber-500'
+          }"></div>
         </div>
       `;
 
@@ -111,12 +133,16 @@ export const LeafletCourtsMap: React.FC<LeafletCourtsMapProps> = ({
   }, [courts, selectedCourtId, onSelectCourt]);
 
   return (
-    <div className="relative w-full h-full min-h-[320px] sm:min-h-[420px] bg-slate-950 overflow-hidden">
-      <div ref={mapContainerRef} className="w-full h-full z-10" />
+    <div className="relative w-full h-full min-h-[420px] sm:min-h-[500px] bg-white overflow-hidden rounded-2xl border border-slate-200">
+      <div
+        ref={mapContainerRef}
+        className="w-full h-full min-h-[420px] sm:min-h-[500px] z-10 bg-white"
+        style={{ minHeight: '420px', height: '100%', width: '100%', backgroundColor: '#ffffff' }}
+      />
 
-      {/* CartoDB / OSM Attribution Badge */}
-      <div className="absolute bottom-2 left-2 z-20 px-2 py-0.5 rounded bg-slate-950/80 text-[10px] text-slate-500 font-sans pointer-events-none border border-slate-800">
-        © OpenStreetMap & CartoDB Dark
+      {/* OpenStreetMap Attribution Badge */}
+      <div className="absolute bottom-2 left-2 z-20 px-2.5 py-1 rounded bg-white/95 text-[10px] text-slate-600 font-sans pointer-events-none border border-slate-300 shadow-sm flex items-center gap-1">
+        <span>© OpenStreetMap contributors</span>
       </div>
     </div>
   );

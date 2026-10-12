@@ -10,6 +10,7 @@ import { CourtsEmptyState } from '../../components/rally/CourtsEmptyState';
 import { matchesPersianSearch, parseTimeToMinutes, isSlotPast } from '../../utils/persianUtils';
 import { useCourtsDistance } from '../../hooks/useCourtsDistance';
 import { rallyApi } from '../../services/rallyApi';
+import { applySavedLocationsToClubs } from '../../utils/clubLocationStorage';
 
 interface RallyCourtsPageProps {
   onSelectClub: (club: CourtClub) => void;
@@ -34,7 +35,7 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
   const [isMapModalOpen, setIsMapModalOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
   const [networkError, setNetworkError] = useState<string | null>(null);
-  const [clubsData, setClubsData] = useState<CourtClub[]>(MOCK_CLUBS);
+  const [clubsData, setClubsData] = useState<CourtClub[]>(() => applySavedLocationsToClubs(MOCK_CLUBS));
 
   const {
     isLocating,
@@ -88,10 +89,10 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
           return mockClub;
         })
       );
-      setClubsData(updatedClubs);
+      setClubsData(applySavedLocationsToClubs(updatedClubs));
     } catch {
       setNetworkError('اختلال در برقراری ارتباط با سامانه رزرو زنده. در حال نمایش آخرین اطلاعات ذخیره‌شده.');
-      setClubsData(MOCK_CLUBS);
+      setClubsData(applySavedLocationsToClubs(MOCK_CLUBS));
     } finally {
       setIsLoading(false);
     }
@@ -99,6 +100,14 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
 
   useEffect(() => {
     loadLiveCourts();
+
+    const handleLocationUpdate = () => {
+      setClubsData((prev) => applySavedLocationsToClubs(prev));
+    };
+    window.addEventListener('rally_club_locations_updated', handleLocationUpdate);
+    return () => {
+      window.removeEventListener('rally_club_locations_updated', handleLocationUpdate);
+    };
   }, [loadLiveCourts]);
 
   const handleSortSelect = (opt: CourtSortOption) => {

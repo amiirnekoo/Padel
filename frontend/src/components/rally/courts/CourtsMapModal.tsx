@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { X, Navigation, ArrowLeft, Bell, Sparkles } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Navigation, ArrowLeft, Sparkles } from 'lucide-react';
 import { CourtClub } from '../../../types/rally';
 import { formatPersianPrice, toPersianDigits } from '../../../utils/persianUtils';
 import { LeafletCourtsMap } from './LeafletCourtsMap';
 import { MAP_CITIES, MAP_COURTS, MapCityConfig, MapCourtItem } from '../../../data/courtsMapData';
+import { getDynamicMapCourts } from '../../../utils/clubLocationStorage';
 
 interface CourtsMapModalProps {
   isOpen: boolean;
@@ -18,17 +19,32 @@ export const CourtsMapModal: React.FC<CourtsMapModalProps> = ({
   clubs,
   onSelectClub
 }) => {
+  const [mapCourts, setMapCourts] = useState<MapCourtItem[]>(() => getDynamicMapCourts(MAP_COURTS));
   const [selectedCity, setSelectedCity] = useState<MapCityConfig>(MAP_CITIES[0]);
   const [selectedCourtId, setSelectedCourtId] = useState<string>(MAP_COURTS[0].id);
 
+  // Sync dynamic courts from storage and custom events
+  useEffect(() => {
+    if (!isOpen) return;
+    setMapCourts(getDynamicMapCourts(MAP_COURTS));
+
+    const handleLocationUpdate = () => {
+      setMapCourts(getDynamicMapCourts(MAP_COURTS));
+    };
+
+    window.addEventListener('rally_club_locations_updated', handleLocationUpdate);
+    return () => {
+      window.removeEventListener('rally_club_locations_updated', handleLocationUpdate);
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
-  const selectedCourt = MAP_COURTS.find((c) => c.id === selectedCourtId) || MAP_COURTS[0];
+  const selectedCourt = mapCourts.find((c) => c.id === selectedCourtId) || mapCourts[0];
 
   const handleCitySelect = (city: MapCityConfig) => {
     setSelectedCity(city);
-    // Select first court in that city if available
-    const firstInCity = MAP_COURTS.find((c) => c.cityId === city.id);
+    const firstInCity = mapCourts.find((c) => c.cityId === city.id);
     if (firstInCity) {
       setSelectedCourtId(firstInCity.id);
     }
@@ -54,8 +70,8 @@ export const CourtsMapModal: React.FC<CourtsMapModalProps> = ({
             <div>
               <h3 className="text-sm sm:text-base font-black text-white flex items-center gap-2">
                 <span>نقشه تعاملی کورت‌های پدل ایران</span>
-                <span className="text-[10px] bg-sky-500/15 text-sky-400 px-2 py-0.5 rounded-full border border-sky-500/30">
-                  OpenStreetMap / Carto Dark
+                <span className="text-[10px] bg-emerald-500/15 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/30 font-bold">
+                  نقشه استاندارد شهری (OpenStreetMap)
                 </span>
               </h3>
               <p className="text-[11px] sm:text-xs text-slate-400 font-medium">
@@ -96,10 +112,10 @@ export const CourtsMapModal: React.FC<CourtsMapModalProps> = ({
           })}
         </div>
 
-        {/* Real Leaflet Map */}
-        <div className="relative flex-1 min-h-[300px] sm:min-h-[420px] bg-slate-950 overflow-hidden">
+        {/* Real Leaflet Map with Guaranteed White Frame */}
+        <div className="relative flex-1 min-h-[420px] sm:min-h-[500px] p-2 sm:p-3 bg-slate-900 overflow-hidden">
           <LeafletCourtsMap
-            courts={MAP_COURTS}
+            courts={mapCourts}
             selectedCity={selectedCity}
             selectedCourtId={selectedCourtId}
             onSelectCourt={(court) => setSelectedCourtId(court.id)}

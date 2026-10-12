@@ -23,6 +23,8 @@ class Club(Base):
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     approval_status: Mapped[str] = mapped_column(String(30), nullable=False, default="APPROVED")  # PENDING_APPROVAL, APPROVED, REJECTED
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    latitude: Mapped[float | None] = mapped_column(Numeric(10, 6), nullable=True)
+    longitude: Mapped[float | None] = mapped_column(Numeric(10, 6), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
 
     courts: Mapped[list["Court"]] = relationship("Court", back_populates="club", cascade="all, delete-orphan")

@@ -157,6 +157,11 @@ class SlotUpdateRequest(BaseModel):
     status: str  # AVAILABLE, BLOCKED, TOURNAMENT_HOLD
     price: Optional[int] = None
 
+class ClubLocationUpdateRequest(BaseModel):
+    latitude: float
+    longitude: float
+    address: Optional[str] = None
+
 class AdminUserPayload(BaseModel):
     username: str
     password: str
@@ -754,6 +759,67 @@ async def create_ranking(
     session.add(ranking)
     await session.commit()
     return {"id": ranking.id, "status": "CREATED"}
+
+
+# ==================== Clubs & Location Management ====================
+@router.get("/clubs")
+async def list_admin_clubs(
+    session: AsyncSession = Depends(get_db_session),
+    admin: dict = Depends(get_current_admin)
+):
+    query = select(Club).order_by(Club.name)
+    res = await session.execute(query)
+    clubs = res.scalars().all()
+    return [
+        {
+            "id": c.id,
+            "name": c.name,
+            "city": c.city,
+            "province": c.province,
+            "address": c.address,
+            "phone": c.phone,
+            "latitude": float(c.latitude) if c.latitude is not None else None,
+            "longitude": float(c.longitude) if c.longitude is not None else None,
+            "is_active": c.is_active,
+            "approval_status": c.approval_status
+        }
+        for c in clubs
+    ]
+
+@router.put("/clubs/{club_id}/location")
+async def update_club_location(
+    club_id: str,
+    req: ClubLocationUpdateRequest,
+    session: AsyncSession = Depends(get_db_session),
+    admin: dict = Depends(get_current_admin)
+):
+    club = await session.get(Club, club_id)
+    if not club:
+        raise HTTPException(status_code=404, detail="باشگاه یافت نشد.")
+
+    club.latitude = req.latitude
+    club.longitude = req.longitude
+    if req.address:
+        club.address = req.address
+
+    service = AdminService(session)
+    await service.record_audit_log(
+        admin_name=admin.get("username", "admin"),
+        action="UPDATE_CLUB_LOCATION",
+        target_type="CLUB",
+        target_id=club_id,
+        details={"latitude": req.latitude, "longitude": req.longitude, "address": req.address}
+    )
+
+    await session.commit()
+    return {
+        "id": club.id,
+        "name": club.name,
+        "latitude": float(club.latitude),
+        "longitude": float(club.longitude),
+        "address": club.address,
+        "message": "موقعیت جغرافیایی باشگاه با موفقیت بروزرسانی شد."
+    }
 
 
 # ==================== Courts & TimeSlot Schedule ====================

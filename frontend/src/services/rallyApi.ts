@@ -1403,6 +1403,34 @@ export const rallyApi = {
     } catch (err: any) {
       return { success: false, error: err?.message || 'خطا در برقراری ارتباط' };
     }
+  },
+
+  async getAdminClubs() {
+    try {
+      const res = await fetch(`${API_BASE}/admin/clubs`, {
+        headers: this.getAdminAuthHeaders(),
+      });
+      if (!res.ok) return { success: false, clubs: [] };
+      const clubs = await res.json();
+      return { success: true, clubs };
+    } catch (err: any) {
+      return { success: false, clubs: [], error: err?.message };
+    }
+  },
+
+  async updateClubLocation(clubId: string, payload: { latitude: number; longitude: number; address?: string }) {
+    try {
+      const res = await fetch(`${API_BASE}/admin/clubs/${clubId}/location`, {
+        method: 'PUT',
+        headers: this.getAdminAuthHeaders(),
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در ثبت موقعیت' };
+      return { success: true, data };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در برقراری ارتباط' };
+    }
   }
 };
 
