@@ -48,10 +48,10 @@ export const ProductBuyBox: React.FC<ProductBuyBoxProps> = React.memo(({
           <span className="bg-slate-900 text-white text-xs font-black px-3 py-1 rounded-xl shadow-xs">
             {product.brand}
           </span>
-          {product.year === 2026 && (
+          {product.year && (
             <span className="bg-amber-400 text-slate-950 text-xs font-black px-2.5 py-1 rounded-xl shadow-xs flex items-center gap-1">
               <Sparkles className="w-3.5 h-3.5" />
-              کلکسیون رسمی ۲۰۲۶
+              کلکسیون رسمی {product.year.toLocaleString('fa-IR', { useGrouping: false })}
             </span>
           )}
           <span className={`text-xs font-bold px-2.5 py-1 rounded-xl border ${

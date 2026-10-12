@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { ArrowRight, ChevronLeft, ShoppingBag } from 'lucide-react';
 import { ShopProduct } from '../../../types/rally';
 import { ProductImageGallery } from './ProductImageGallery';
@@ -7,6 +7,7 @@ import { ProductTechnicalAnalysis } from './ProductTechnicalAnalysis';
 import { RacketVerdictSection } from '../../../components/rally/shop/verdict/RacketVerdictSection';
 import { ProductCard } from '../../../components/rally/shop/ProductCard';
 import { getProPlayerForProduct } from '../../../data/proPlayersData';
+import { getLatestCatalogYear } from '../../../utils/catalogYearUtils';
 
 interface RallyProductDetailPageProps {
   product: ShopProduct;
@@ -32,6 +33,7 @@ export const RallyProductDetailPage: React.FC<RallyProductDetailPageProps> = Rea
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [product.id]);
 
+  const latestCatalogYear = useMemo(() => getLatestCatalogYear(allProducts), [allProducts]);
   const isPadel = product.sport === 'PADEL';
   const proPlayer = getProPlayerForProduct(product);
 
@@ -128,6 +130,7 @@ export const RallyProductDetailPage: React.FC<RallyProductDetailPageProps> = Rea
                 onAddToCart={(p) => onAddToCart(p, 1)}
                 onSelectProduct={(p) => onSelectProduct(p)}
                 isInCart={cartProductIds.has(relProd.id)}
+                latestCatalogYear={latestCatalogYear}
               />
             ))}
           </div>

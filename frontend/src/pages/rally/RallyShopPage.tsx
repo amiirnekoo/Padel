@@ -3,6 +3,7 @@ import { Search, ShoppingBag, ShieldCheck, Truck, RotateCcw, Filter, Sparkles } 
 import { ShopProduct, ProductCategory, SportType } from '../../types/rally';
 import { ProductCard } from '../../components/rally/shop/ProductCard';
 import { ShopCategoryPills } from '../../components/rally/shop/ShopCategoryPills';
+import { getLatestCatalogYear } from '../../utils/catalogYearUtils';
 
 interface RallyShopPageProps {
   products: ShopProduct[];
@@ -26,6 +27,8 @@ export const RallyShopPage: React.FC<RallyShopPageProps> = ({
   const [sortBy, setSortBy] = useState<'NEWEST' | 'POPULAR' | 'PRICE_ASC' | 'PRICE_DESC' | 'DISCOUNT'>('NEWEST');
   const BRANDS = ['ALL', 'Head', 'Nox'];
 
+  const latestCatalogYear = useMemo(() => getLatestCatalogYear(products), [products]);
+
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
       if (selectedCategory !== 'ALL' && p.category !== selectedCategory) return false;
@@ -34,9 +37,10 @@ export const RallyShopPage: React.FC<RallyShopPageProps> = ({
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase().trim();
         const tagMatch = p.tags && p.tags.some(t => t.toLowerCase().includes(q));
-        const yearMatch = (p.year && p.year.toString().includes(q)) || (q === '۲۰۲۷' && p.year === 2027) || (q === '۲۰۲۶' && p.year === 2026);
+        const yearMatch = (p.year && p.year.toString().includes(q)) || 
+          (p.year && q === p.year.toLocaleString('fa-IR', { useGrouping: false }));
         const womenMatch = (q === 'بانوان' || q === 'زنانه' || q === 'women') && p.is_women;
-        const newMatch = (q === 'new' || q === 'جدید') && (p.is_new || p.year === 2027);
+        const newMatch = (q === 'new' || q === 'جدید') && (p.is_new || p.year === latestCatalogYear);
         const match =
           p.name_fa.toLowerCase().includes(q) ||
           p.name_en.toLowerCase().includes(q) ||
@@ -53,7 +57,7 @@ export const RallyShopPage: React.FC<RallyShopPageProps> = ({
       if (sortBy === 'PRICE_DESC') return b.price - a.price;
       if (sortBy === 'DISCOUNT') return b.discount_percent - a.discount_percent;
 
-      // اولویت اول نمایش پیش‌فرض همیشه با راکت‌های جدید ۲۰۲۷ است
+      // اولویت اول نمایش پیش‌فرض همیشه با راکت‌های جدیدترین سال کاتالوگ است
       const yearA = a.year || 0;
       const yearB = b.year || 0;
       if (yearA !== yearB) {
@@ -64,7 +68,7 @@ export const RallyShopPage: React.FC<RallyShopPageProps> = ({
       }
       return b.rating - a.rating;
     });
-  }, [products, selectedCategory, selectedSport, selectedBrand, searchQuery, sortBy]);
+  }, [products, selectedCategory, selectedSport, selectedBrand, searchQuery, sortBy, latestCatalogYear]);
 
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
@@ -141,7 +145,7 @@ export const RallyShopPage: React.FC<RallyShopPageProps> = ({
               onChange={(e) => setSortBy(e.target.value as any)}
               className="px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-700 focus:outline-none cursor-pointer"
             >
-              <option value="NEWEST">جدیدترین‌ها (کلکسیون ۲۰۲۷)</option>
+              <option value="NEWEST">جدیدترین‌ها (کلکسیون {latestCatalogYear.toLocaleString('fa-IR', { useGrouping: false })})</option>
               <option value="POPULAR">محبوب‌ترین‌ها</option>
               <option value="PRICE_ASC">ارزان‌ترین</option>
               <option value="PRICE_DESC">گران‌ترین</option>
@@ -177,6 +181,7 @@ export const RallyShopPage: React.FC<RallyShopPageProps> = ({
                 onAddToCart={onAddToCart}
                 onSelectProduct={onSelectProduct}
                 isInCart={cartProductIds.has(product.id)}
+                latestCatalogYear={latestCatalogYear}
               />
             ))}
           </div>

@@ -1,7 +1,8 @@
-import React from 'react';
-import { ShoppingBag, ChevronLeft, ShieldCheck, Check, Sparkles } from 'lucide-react';
+import React, { useMemo } from 'react';
+import { ShoppingBag, ChevronLeft, ShieldCheck, Check, Sparkles, Zap } from 'lucide-react';
 import { ShopProduct } from '../../types/rally';
 import { MOCK_SHOP_PRODUCTS } from '../../data/mockRallyShopData';
+import { getLatestCatalogYear, getFeaturedLatestYearProducts } from '../../utils/catalogYearUtils';
 
 interface ModernShopShowcaseProps {
   onSelectProduct?: (product: ShopProduct) => void;
@@ -16,8 +17,9 @@ export const ModernShopShowcase: React.FC<ModernShopShowcaseProps> = ({
   onViewAllProducts,
   cartProductIds = new Set()
 }) => {
-  // Select top 3 premier rackets
-  const featuredProducts = MOCK_SHOP_PRODUCTS.slice(0, 3);
+  // محاسبه پویای سال جدید و انتخاب رندوم از راکت‌های سال جدید کاتالوگ
+  const latestYear = useMemo(() => getLatestCatalogYear(MOCK_SHOP_PRODUCTS), []);
+  const featuredProducts = useMemo(() => getFeaturedLatestYearProducts(MOCK_SHOP_PRODUCTS, 3), []);
 
   return (
     <section className="w-full py-12 md:py-16 bg-[#F5F4EF] border-t border-[#E8E6DD]" dir="rtl">
@@ -33,7 +35,7 @@ export const ModernShopShowcase: React.FC<ModernShopShowcaseProps> = ({
               </h2>
             </div>
             <p className="text-sm text-[#66706D] mt-1 font-medium">
-              راکت‌های رسمی مسابقات جهانی ۲۰۲۷ و ۲۰۲۶، کفش و توپ استاندارد با ضمانت اصالت ۱۰۰٪
+              راکت‌های رسمی مسابقات جهانی {latestYear.toLocaleString('fa-IR', { useGrouping: false })}، کفش و توپ استاندارد با ضمانت اصالت ۱۰۰٪
             </p>
           </div>
 
@@ -50,6 +52,7 @@ export const ModernShopShowcase: React.FC<ModernShopShowcaseProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
           {featuredProducts.map((product) => {
             const inCart = cartProductIds.has(product.id);
+            const isLatest = product.year === latestYear;
 
             return (
               <div
@@ -66,13 +69,21 @@ export const ModernShopShowcase: React.FC<ModernShopShowcaseProps> = ({
                     loading="lazy"
                   />
                   
-                  {/* Brand Tag (Padel Blue) */}
-                  <span className="absolute top-3 right-3 px-2.5 py-1 rounded-lg bg-[#0B4278] text-white text-[11px] font-black">
-                    {product.brand}
-                  </span>
+                  {/* Brand Tag & Dynamic Latest Year Badge */}
+                  <div className="absolute top-3 right-3 flex flex-col items-end gap-1.5 z-10">
+                    <span className="px-2.5 py-1 rounded-lg bg-[#0B4278] text-white text-[11px] font-black shadow-xs">
+                      {product.brand}
+                    </span>
+                    {isLatest && (
+                      <span className="inline-flex items-center gap-1 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-slate-950 text-[10px] font-black px-2.5 py-0.5 rounded-full shadow-md border border-amber-200">
+                        <Zap className="w-3 h-3 fill-slate-950 text-slate-950 flex-shrink-0" />
+                        <span>NEW {latestYear.toLocaleString('fa-IR', { useGrouping: false })}</span>
+                      </span>
+                    )}
+                  </div>
 
                   {/* Level Tag (Touch of Turf Green) */}
-                  <span className="absolute top-3 left-3 px-2 py-0.5 rounded-lg bg-[#0E3D38] text-[#D7ED68] text-[10px] font-bold border border-[#0E3D38]">
+                  <span className="absolute top-3 left-3 px-2 py-0.5 rounded-lg bg-[#0E3D38] text-[#D7ED68] text-[10px] font-bold border border-[#0E3D38] z-10">
                     {product.level === 'PRO' ? 'حرفه‌ای' : 'نیمه‌حرفه‌ای'}
                   </span>
                 </div>
@@ -93,7 +104,7 @@ export const ModernShopShowcase: React.FC<ModernShopShowcaseProps> = ({
                     <div>
                       <span className="block text-[10px] text-[#66706D] font-bold">قیمت با گارانتی:</span>
                       <span className="text-base font-black text-[#0B4278]">
-                        {(product.price / 10).toLocaleString('fa-IR')} <span className="text-xs font-semibold">تومان</span>
+                        {product.price.toLocaleString('fa-IR')} <span className="text-xs font-semibold">تومان</span>
                       </span>
                     </div>
 

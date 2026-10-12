@@ -9,13 +9,15 @@ interface ProductCardProps {
   onAddToCart: (product: ShopProduct) => void;
   onSelectProduct: (product: ShopProduct) => void;
   isInCart?: boolean;
+  latestCatalogYear?: number;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = React.memo(({
   product,
   onAddToCart,
   onSelectProduct,
-  isInCart = false
+  isInCart = false,
+  latestCatalogYear = 2027
 }) => {
   const [justAdded, setJustAdded] = useState(false);
   const [hasImgError, setHasImgError] = useState(false);
@@ -68,10 +70,10 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
 
           {/* Top Badges */}
           <div className="absolute top-3 right-3 flex flex-col items-end gap-1.5 z-10">
-            {product.year === 2027 && (
+            {product.year && product.year === latestCatalogYear && (
               <span className="inline-flex items-center gap-1 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-slate-950 text-[10px] font-black px-2.5 py-0.5 rounded-full shadow-md border border-amber-200">
                 <Zap className="w-3 h-3 fill-slate-950 text-slate-950 flex-shrink-0" />
-                <span>NEW ۲۰۲۷</span>
+                <span>NEW {latestCatalogYear.toLocaleString('fa-IR', { useGrouping: false })}</span>
               </span>
             )}
             {product.discount_percent > 0 && (

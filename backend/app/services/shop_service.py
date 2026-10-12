@@ -666,6 +666,44 @@ class ShopService:
         return None
 
     @staticmethod
+    def get_latest_catalog_year() -> int:
+        """محاسبه پویای جدیدترین سال کاتالوگ راکت‌ها (بدون وابستگی به مقدار هاردکد)"""
+        years = [p.get("year", 0) for p in CATALOG_PRODUCTS if isinstance(p.get("year"), int) and p.get("year", 0) > 2000]
+        return max(years) if years else 2027
+
+    @staticmethod
+    def get_featured_products(count: int = 3, randomize: bool = True) -> List[Dict[str, Any]]:
+        """
+        استخراج محصولات شاخص ویترین:
+        اولویت قطعی با راکت‌های جدیدترین سال کاتالوگ است.
+        انتخاب از میان راکت‌های جدیدترین سال به صورت رندوم صورت می‌گیرد.
+        """
+        import random
+        all_rackets = [p for p in CATALOG_PRODUCTS if p.get("category") == "PADEL_RACKET"]
+        latest_year = ShopService.get_latest_catalog_year()
+        latest_rackets = [p for p in all_rackets if p.get("year") == latest_year]
+
+        candidates = list(latest_rackets) if latest_rackets else list(all_rackets)
+        if randomize:
+            random.shuffle(candidates)
+
+        selected = candidates[:count]
+        if len(selected) < count:
+            remaining = [p for p in all_rackets if p["id"] not in {s["id"] for s in selected}]
+            if randomize:
+                random.shuffle(remaining)
+            selected.extend(remaining[:count - len(selected)])
+
+        results = [dict(p) for p in selected]
+        for p in results:
+            stock = p.get("stock", 0)
+            p["custom_order_delivery"] = ShopService.get_delivery_estimate(stock)
+            if p.get("eur_price"):
+                p["custom_order_price"] = ShopService.calculate_custom_order_price(p["eur_price"])
+        return results
+
+
+    @staticmethod
     def calculate_cart(items: List[Dict[str, Any]], coupon_code: Optional[str] = None) -> Dict[str, Any]:
         subtotal = 0
         validated_items = []
