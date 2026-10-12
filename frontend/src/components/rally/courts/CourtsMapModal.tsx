@@ -76,11 +76,11 @@ export const CourtsMapModal: React.FC<CourtsMapModalProps> = ({
               <h3 className="text-sm sm:text-base font-black text-white flex items-center gap-2">
                 <span>نقشه تعاملی کورت‌های پدل ایران</span>
                 <span className="text-[10px] bg-emerald-500/15 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/30 font-bold">
-                  لود پرسرعت تایل‌ها (Fast CDN)
+                  بدون نیاز به کلید (Zero Token)
                 </span>
               </h3>
               <p className="text-[11px] sm:text-xs text-slate-400 font-medium">
-                موقعیت دقیق کورت‌ها و مسیریابی مستقیم با نشان، بلد، گوگل مپ و ویز
+                موقعیت دقیق کورت‌ها و مسیریابی با Neshan, Balad, Google Maps و Waze
               </p>
             </div>
           </div>
@@ -93,25 +93,22 @@ export const CourtsMapModal: React.FC<CourtsMapModalProps> = ({
           </button>
         </div>
 
-        {/* City Selector Quick Pills */}
-        <div className="px-4 py-2 bg-slate-950/90 border-b border-slate-800/80 flex items-center gap-1.5 overflow-x-auto no-scrollbar shrink-0">
-          <span className="text-[11px] font-bold text-slate-500 ml-1 shrink-0">انتخاب شهر:</span>
+        {/* City Selector Quick Pills - Only Clean City Names */}
+        <div className="px-4 py-2 bg-slate-950/90 border-b border-slate-800/80 flex items-center gap-2 overflow-x-auto no-scrollbar shrink-0">
+          <span className="text-[11px] font-bold text-slate-500 ml-1 shrink-0">شهر:</span>
           {MAP_CITIES.map((city) => {
             const isSelected = city.id === selectedCity.id;
             return (
               <button
                 key={city.id}
                 onClick={() => handleCitySelect(city)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 flex items-center gap-1.5 ${
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 flex items-center justify-center ${
                   isSelected
                     ? 'bg-sky-500 text-white shadow-md shadow-sky-500/25 ring-1 ring-sky-400'
                     : 'bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800'
                 }`}
               >
                 <span>{city.name}</span>
-                <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${isSelected ? 'bg-sky-700/60 text-white' : 'bg-slate-800 text-slate-400'}`}>
-                  {city.badge}
-                </span>
               </button>
             );
           })}

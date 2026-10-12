@@ -66,11 +66,11 @@ export const AdminClubLocationModal: React.FC<AdminClubLocationModalProps> = ({
       attributionControl: false
     });
 
-    // High-speed Fastly Edge CDN Tiles (CartoDB Voyager)
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-      subdomains: 'abcd',
+    // 100% Free, Zero-Watermark, Fast Multi-Server Tiles (Humanitarian OpenStreetMap CDN)
+    L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+      subdomains: ['a', 'b'],
       maxZoom: 19,
-      attribution: '© OpenStreetMap contributors, © CARTO',
+      attribution: '© OpenStreetMap contributors',
       crossOrigin: true,
       keepBuffer: 8,
       updateWhenIdle: true,

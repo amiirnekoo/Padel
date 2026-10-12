@@ -36,13 +36,13 @@ export const LeafletCourtsMap: React.FC<LeafletCourtsMapProps> = ({
       preferCanvas: true
     });
 
-    // High-speed Fastly Edge CDN Tiles (CartoDB Voyager: 4 parallel subdomains, retina, zero token, instant load)
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-      subdomains: 'abcd',
+    // 100% Free, Zero-Watermark, Fast Multi-Server Tiles (Humanitarian OpenStreetMap CDN)
+    L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+      subdomains: ['a', 'b'],
       maxZoom: 19,
-      attribution: '© OpenStreetMap contributors, © CARTO',
+      attribution: '© OpenStreetMap contributors',
       crossOrigin: true,
-      keepBuffer: 12,
+      keepBuffer: 10,
       updateWhenIdle: true,
       updateWhenZooming: false
     }).addTo(map);
@@ -148,12 +148,12 @@ export const LeafletCourtsMap: React.FC<LeafletCourtsMapProps> = ({
         <div dir="rtl" class="p-1 text-right font-sans" style="min-width: 180px;">
           <div class="font-black text-xs text-slate-900 mb-0.5">${court.name.split(' (')[0]}</div>
           <div class="text-[10px] text-slate-500 mb-2">${court.area} • ${court.courtType === 'INDOOR' ? 'مسقف' : 'روباز'}</div>
-          <div class="text-[10px] font-bold text-slate-700 mb-1">مسیریابی مستقیم:</div>
+          <div class="text-[10px] font-bold text-slate-700 mb-1">مسیریابی با اپلیکیشن:</div>
           <div class="flex items-center gap-1 justify-between">
-            <a href="https://nshn.ir/?lat=${court.lat}&lng=${court.lng}" target="_blank" rel="noopener noreferrer" style="text-decoration:none; display:inline-block; padding:3px 7px; border-radius:6px; background:#2563eb; color:#fff; font-size:10px; font-weight:900;">نشان</a>
-            <a href="https://balad.ir/location?latitude=${court.lat}&longitude=${court.lng}" target="_blank" rel="noopener noreferrer" style="text-decoration:none; display:inline-block; padding:3px 7px; border-radius:6px; background:#059669; color:#fff; font-size:10px; font-weight:900;">بلد</a>
-            <a href="https://www.google.com/maps/dir/?api=1&destination=${court.lat},${court.lng}" target="_blank" rel="noopener noreferrer" style="text-decoration:none; display:inline-block; padding:3px 7px; border-radius:6px; background:#e11d48; color:#fff; font-size:10px; font-weight:900;">گوگل</a>
-            <a href="https://waze.com/ul?ll=${court.lat},${court.lng}&navigate=yes" target="_blank" rel="noopener noreferrer" style="text-decoration:none; display:inline-block; padding:3px 7px; border-radius:6px; background:#0284c7; color:#fff; font-size:10px; font-weight:900;">ویز</a>
+            <a href="https://nshn.ir/?lat=${court.lat}&lng=${court.lng}" target="_blank" rel="noopener noreferrer" style="text-decoration:none; display:inline-block; padding:3px 6px; border-radius:6px; background:#2563eb; color:#fff; font-size:10px; font-weight:900;">Neshan</a>
+            <a href="https://balad.ir/location?latitude=${court.lat}&longitude=${court.lng}" target="_blank" rel="noopener noreferrer" style="text-decoration:none; display:inline-block; padding:3px 6px; border-radius:6px; background:#059669; color:#fff; font-size:10px; font-weight:900;">Balad</a>
+            <a href="https://www.google.com/maps/dir/?api=1&destination=${court.lat},${court.lng}" target="_blank" rel="noopener noreferrer" style="text-decoration:none; display:inline-block; padding:3px 6px; border-radius:6px; background:#e11d48; color:#fff; font-size:10px; font-weight:900;">Google</a>
+            <a href="https://waze.com/ul?ll=${court.lat},${court.lng}&navigate=yes" target="_blank" rel="noopener noreferrer" style="text-decoration:none; display:inline-block; padding:3px 6px; border-radius:6px; background:#0284c7; color:#fff; font-size:10px; font-weight:900;">Waze</a>
           </div>
         </div>
       `;
@@ -185,9 +185,9 @@ export const LeafletCourtsMap: React.FC<LeafletCourtsMapProps> = ({
         style={{ minHeight: '420px', height: '100%', width: '100%', backgroundColor: '#ffffff' }}
       />
 
-      {/* High-speed OpenStreetMap / CARTO Attribution Badge */}
+      {/* Zero-Token OpenStreetMap Attribution Badge */}
       <div className="absolute bottom-2 left-2 z-20 px-2.5 py-1 rounded bg-white/95 text-[10px] text-slate-600 font-sans pointer-events-none border border-slate-300 shadow-sm flex items-center gap-1">
-        <span>© OpenStreetMap • CARTO CDN</span>
+        <span>© OpenStreetMap contributors</span>
       </div>
     </div>
   );

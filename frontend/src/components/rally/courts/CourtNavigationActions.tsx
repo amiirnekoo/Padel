@@ -24,7 +24,7 @@ interface NavAppOption {
 const NAV_APPS: NavAppOption[] = [
   {
     id: 'neshan',
-    name: 'نشان',
+    name: 'Neshan',
     nameEn: 'Neshan',
     getUrl: (lat, lng) => `https://nshn.ir/?lat=${lat}&lng=${lng}`,
     badgeColor: 'bg-blue-600',
@@ -35,7 +35,7 @@ const NAV_APPS: NavAppOption[] = [
   },
   {
     id: 'balad',
-    name: 'بلد',
+    name: 'Balad',
     nameEn: 'Balad',
     getUrl: (lat, lng) => `https://balad.ir/location?latitude=${lat}&longitude=${lng}`,
     badgeColor: 'bg-emerald-600',
@@ -46,7 +46,7 @@ const NAV_APPS: NavAppOption[] = [
   },
   {
     id: 'google',
-    name: 'گوگل مپ',
+    name: 'Google Maps',
     nameEn: 'Google Maps',
     getUrl: (lat, lng) => `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`,
     badgeColor: 'bg-rose-600',
@@ -57,7 +57,7 @@ const NAV_APPS: NavAppOption[] = [
   },
   {
     id: 'waze',
-    name: 'ویز',
+    name: 'Waze',
     nameEn: 'Waze',
     getUrl: (lat, lng) => `https://waze.com/ul?ll=${lat},${lng}&navigate=yes`,
     badgeColor: 'bg-sky-500',
