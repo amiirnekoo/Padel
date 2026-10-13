@@ -54,11 +54,11 @@ export const ClubLocationMap: React.FC<ClubLocationMapProps> = ({
       preferCanvas: true
     });
 
-    // Zero-Watermark Humanitarian OpenStreetMap CDN Tiles
-    L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-      subdomains: ['a', 'b'],
+    // Fast Edge CDN Tiles (CartoDB Voyager)
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      subdomains: 'abcd',
       maxZoom: 19,
-      attribution: '© OpenStreetMap contributors',
+      attribution: '© OpenStreetMap contributors, © CARTO',
       crossOrigin: true
     }).addTo(map);
 

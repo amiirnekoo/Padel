@@ -116,13 +116,15 @@ export const CourtsMapModal: React.FC<CourtsMapModalProps> = ({
 
         {/* Real Leaflet Map with Guaranteed Fast CDN */}
         <div className="relative flex-1 min-h-[420px] sm:min-h-[500px] p-2 sm:p-3 bg-slate-900 overflow-hidden">
-          <LeafletCourtsMap
-            courts={mapCourts}
-            selectedCity={selectedCity}
-            selectedCourtId={selectedCourtId}
-            onSelectCourt={(court) => setSelectedCourtId(court.id)}
-            isVisible={isOpen}
-          />
+          {isOpen && (
+            <LeafletCourtsMap
+              courts={mapCourts}
+              selectedCity={selectedCity}
+              selectedCourtId={selectedCourtId}
+              onSelectCourt={(court) => setSelectedCourtId(court.id)}
+              isVisible={isOpen}
+            />
+          )}
         </div>
 
         {/* Selected Court Bottom Preview */}

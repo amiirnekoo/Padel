@@ -27,7 +27,10 @@ export const LeafletCourtsMap: React.FC<LeafletCourtsMapProps> = ({
   // Initialize Map with White Background and High-speed CDN Tiles
   useEffect(() => {
     if (!isVisible || !mapContainerRef.current) return;
-    if (mapInstanceRef.current) return;
+    if (mapInstanceRef.current) {
+      mapInstanceRef.current.invalidateSize();
+      return;
+    }
 
     const map = L.map(mapContainerRef.current, {
       center: selectedCity.center,
@@ -37,13 +40,13 @@ export const LeafletCourtsMap: React.FC<LeafletCourtsMapProps> = ({
       preferCanvas: true
     });
 
-    // 100% Free, Zero-Watermark, Fast Multi-Server Tiles (Humanitarian OpenStreetMap CDN)
-    L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-      subdomains: ['a', 'b'],
+    // High-speed Fastly Edge CDN Tiles (CartoDB Voyager: 4 parallel subdomains, retina, zero token, instant load)
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      subdomains: 'abcd',
       maxZoom: 19,
-      attribution: '© OpenStreetMap contributors',
+      attribution: '© OpenStreetMap contributors, © CARTO',
       crossOrigin: true,
-      keepBuffer: 10,
+      keepBuffer: 12,
       updateWhenIdle: true,
       updateWhenZooming: false
     }).addTo(map);
@@ -76,7 +79,7 @@ export const LeafletCourtsMap: React.FC<LeafletCourtsMapProps> = ({
       markersLayerRef.current = null;
       markersMapRef.current.clear();
     };
-  }, []);
+  }, [isVisible]);
 
   // Recalculate size instantly when modal visibility becomes active
   useEffect(() => {
@@ -186,9 +189,9 @@ export const LeafletCourtsMap: React.FC<LeafletCourtsMapProps> = ({
         style={{ minHeight: '420px', height: '100%', width: '100%', backgroundColor: '#ffffff' }}
       />
 
-      {/* Zero-Token OpenStreetMap Attribution Badge */}
+      {/* High-speed OpenStreetMap / CARTO Attribution Badge */}
       <div className="absolute bottom-2 left-2 z-20 px-2.5 py-1 rounded bg-white/95 text-[10px] text-slate-600 font-sans pointer-events-none border border-slate-300 shadow-sm flex items-center gap-1">
-        <span>© OpenStreetMap contributors</span>
+        <span>© OpenStreetMap • CARTO CDN</span>
       </div>
     </div>
   );
