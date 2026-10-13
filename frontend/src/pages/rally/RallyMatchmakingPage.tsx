@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Plus, Users, Filter, Sparkles, CheckCircle2, ChevronRight, ChevronLeft, MoveHorizontal } from 'lucide-react';
+import { Plus, Users, Filter, Sparkles, CheckCircle2 } from 'lucide-react';
 import { MatchmakingGameItem } from '../../types/rally';
 import { MatchmakingCard } from '../../components/rally/matchmaking/MatchmakingCard';
 import { JoinMatchModal } from '../../components/rally/matchmaking/JoinMatchModal';
@@ -7,22 +7,13 @@ import { CreateMatchModal } from '../../components/rally/matchmaking/CreateMatch
 import { MatchResultModal } from '../../components/rally/matchmaking/MatchResultModal';
 import { rallyApi } from '../../services/rallyApi';
 import { useDragScroll } from '../../hooks/useDragScroll';
+import { SKILL_FILTER_PILLS, FALLBACK_MATCHMAKING_GAMES } from '../../data/mockMatchmakingData';
 
 interface RallyMatchmakingPageProps {
   userId: string;
   userName: string;
   walletBalance: number;
 }
-
-const SKILL_FILTER_PILLS = [
-  { id: 'ALL', label: 'همه سطوح' }, { id: 'D-', label: 'سطح D- (تازه‌کار)' },
-  { id: 'D', label: 'سطح D (مبتدی)' }, { id: 'D+', label: 'سطح D+ (نیمه‌مبتدی)' },
-  { id: 'C-', label: 'سطح C- (متوسط مقدماتی)' }, { id: 'C', label: 'سطح C (متوسط)' },
-  { id: 'C+', label: 'سطح C+ (نیمه‌پیشرفته)' }, { id: 'B-', label: 'سطح B- (پیشرفته مقدماتی)' },
-  { id: 'B', label: 'سطح B (پیشرفته)' }, { id: 'B+', label: 'سطح B+ (پیشرفته عالی)' },
-  { id: 'A-', label: 'سطح A- (حرفه‌ای مقدماتی)' }, { id: 'A', label: 'سطح A (حرفه‌ای)' },
-  { id: 'A+', label: 'سطح A+ (الیت کشوری)' },
-];
 
 export const RallyMatchmakingPage: React.FC<RallyMatchmakingPageProps> = ({
   userId,
@@ -40,9 +31,27 @@ export const RallyMatchmakingPage: React.FC<RallyMatchmakingPageProps> = ({
   const {
     containerRef: filterTrackRef,
     hasDraggedRef,
-    scrollStep,
     dragProps,
   } = useDragScroll<HTMLDivElement>();
+
+  const [canScrollRight, setCanScrollRight] = useState(false);
+  const [canScrollLeft, setCanScrollLeft] = useState(true);
+
+  const checkScrollEdges = useCallback(() => {
+    const el = filterTrackRef.current;
+    if (!el) return;
+    const { scrollLeft, scrollWidth, clientWidth } = el;
+    const absScroll = Math.abs(scrollLeft);
+    const maxScroll = scrollWidth - clientWidth;
+    setCanScrollRight(absScroll > 8);
+    setCanScrollLeft(absScroll < maxScroll - 8);
+  }, [filterTrackRef]);
+
+  useEffect(() => {
+    checkScrollEdges();
+    window.addEventListener('resize', checkScrollEdges);
+    return () => window.removeEventListener('resize', checkScrollEdges);
+  }, [checkScrollEdges]);
 
   const fetchGames = useCallback(async () => {
     setLoading(true);
@@ -50,75 +59,7 @@ export const RallyMatchmakingPage: React.FC<RallyMatchmakingPageProps> = ({
     if (data && data.length > 0) {
       setGames(data);
     } else {
-      // High-fidelity fallback games for demo
-      setGames([
-        {
-          id: 'mock-mm-1',
-          title: 'بازی پرانرژی عصرگاهی پدل • سطح D+',
-          skill_level: 'D+',
-          gender_category: 'OPEN',
-          total_price: 16000000,
-          price_per_player: 4000000,
-          status: 'OPEN',
-          filled_count: 3,
-          club_name: 'باشگاه پدل انقلاب',
-          club_city: 'تهران',
-          court_name: 'کورت ۱ پانورامیک',
-          slot_date: 'امروز',
-          start_time: '۱۸:۳۰',
-          end_time: '۲۰:۰۰',
-          positions: {
-            team_a_right: { user_id: 'usr-1', user_name: 'امیرحسین (شما)', label: 'تیم ۱ • راست' },
-            team_a_left: { user_id: 'usr-2', user_name: 'کیان رضایی', label: 'تیم ۱ • چپ' },
-            team_b_right: { user_id: 'usr-3', user_name: 'بردیا تهرانی', label: 'تیم ۲ • راست' },
-            team_b_left: { user_id: null, user_name: null, label: 'تیم ۲ • چپ' },
-          },
-        },
-        {
-          id: 'mock-mm-2',
-          title: 'چلنج مچ پدل دابلز • سطح C',
-          skill_level: 'C',
-          gender_category: 'OPEN',
-          total_price: 20000000,
-          price_per_player: 5000000,
-          status: 'OPEN',
-          filled_count: 2,
-          club_name: 'پدل سنتر پالادیوم',
-          club_city: 'تهران',
-          court_name: 'کورت VIP',
-          slot_date: 'امشب',
-          start_time: '۲۰:۳۰',
-          end_time: '۲۲:۰۰',
-          positions: {
-            team_a_right: { user_id: 'usr-4', user_name: 'سهراب محمدی', label: 'تیم ۱ • راست' },
-            team_a_left: { user_id: null, user_name: null, label: 'تیم ۱ • چپ' },
-            team_b_right: { user_id: 'usr-5', user_name: 'ماهان پاشا', label: 'تیم ۲ • راست' },
-            team_b_left: { user_id: null, user_name: null, label: 'تیم ۲ • چپ' },
-          },
-        },
-        {
-          id: 'mock-mm-3',
-          title: 'بازی دوستانه پدل مبتدی • سطح D',
-          skill_level: 'D',
-          gender_category: 'OPEN',
-          total_price: 12000000,
-          price_per_player: 3000000,
-          status: 'OPEN',
-          filled_count: 1,
-          club_name: 'مجموعه پدل شمیران',
-          club_city: 'تهران',
-          court_name: 'کورت ۲ شیشه‌ای',
-          slot_date: 'فردا',
-          start_time: '۱۷:۰۰',
-          end_time: '۱۸:۳۰',
-          positions: {
-            team_a_right: { user_id: 'usr-6', user_name: 'نیما افشار', label: 'تیم ۱ • راست' },
-            team_a_left: { user_id: null, user_name: null, label: 'تیم ۱ • چپ' },
-            team_b_right: { user_id: null, user_name: null, label: 'تیم ۲ • راست' },
-            team_b_left: { user_id: null, user_name: null, label: 'تیم ۲ • چپ' },
-          },
-        },
-      ]);
+      setGames(FALLBACK_MATCHMAKING_GAMES);
     }
     setLoading(false);
   }, [selectedLevel]);
@@ -177,44 +118,39 @@ export const RallyMatchmakingPage: React.FC<RallyMatchmakingPageProps> = ({
 
       {/* Level Filters with Ultra-smooth Mouse Drag to Scroll */}
       <div className="relative mb-6">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-xl bg-rally-accent/20 border border-rally-accent/40 flex items-center justify-center text-rally-accent shadow-xs">
+        <div className="flex items-center justify-between mb-3.5">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-rally-accent shadow-sm">
               <Filter size={15} className="text-rally-accent stroke-[2.5]" />
             </div>
-            <span className="text-sm font-black text-white tracking-wide">فیلتر سطح مهارتی مسابقه:</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#0E2038] border border-slate-700/80 text-[11px] font-extrabold text-white shadow-xs select-none">
-              <MoveHorizontal size={14} className="text-rally-accent" />
-              <span>با ماوس بکشید</span>
+            <span className="text-sm sm:text-base font-black text-slate-900 tracking-wide">
+              فیلتر سطح مهارتی مسابقه:
             </span>
-            <div className="flex items-center gap-1.5">
-              <button
-                type="button"
-                onClick={() => scrollStep('right', 300)}
-                className="w-7 h-7 rounded-xl bg-[#0E2038] hover:bg-[#163258] border border-slate-700 text-white flex items-center justify-center transition active:scale-90 cursor-pointer shadow-xs"
-                title="مشاهده سطوح راست"
-              >
-                <ChevronRight size={15} />
-              </button>
-              <button
-                type="button"
-                onClick={() => scrollStep('left', 300)}
-                className="w-7 h-7 rounded-xl bg-[#0E2038] hover:bg-[#163258] border border-slate-700 text-white flex items-center justify-center transition active:scale-90 cursor-pointer shadow-xs"
-                title="مشاهده سطوح چپ"
-              >
-                <ChevronLeft size={15} />
-              </button>
-            </div>
           </div>
         </div>
 
-        <div
-          ref={filterTrackRef}
-          className="flex items-center gap-2.5 overflow-x-auto pb-3 no-scrollbar select-none cursor-grab active:cursor-grabbing"
-          {...dragProps}
-        >
+        {/* Carousel Container with Interactive Edge Fade Masks and Sleek Scrollbar */}
+        <div className="relative">
+          {/* Subtle Overflow Fade Mask - Left Edge (RTL overflow) */}
+          <div
+            className={`pointer-events-none absolute left-0 top-0 bottom-2.5 w-14 sm:w-20 bg-gradient-to-r from-[#F5F4EF] via-[#F5F4EF]/90 to-transparent z-10 transition-opacity duration-300 ${
+              canScrollLeft ? 'opacity-100' : 'opacity-0'
+            }`}
+          />
+
+          {/* Subtle Overflow Fade Mask - Right Edge */}
+          <div
+            className={`pointer-events-none absolute right-0 top-0 bottom-2.5 w-10 sm:w-16 bg-gradient-to-l from-[#F5F4EF] via-[#F5F4EF]/90 to-transparent z-10 transition-opacity duration-300 ${
+              canScrollRight ? 'opacity-100' : 'opacity-0'
+            }`}
+          />
+
+          <div
+            ref={filterTrackRef}
+            onScroll={checkScrollEdges}
+            className="flex items-center gap-2.5 overflow-x-auto pb-2.5 scrollbar-subtle select-none cursor-grab active:cursor-grabbing px-0.5"
+            {...dragProps}
+          >
           {SKILL_FILTER_PILLS.map((pill) => (
             <button
               key={pill.id}
@@ -233,6 +169,7 @@ export const RallyMatchmakingPage: React.FC<RallyMatchmakingPageProps> = ({
               {pill.label}
             </button>
           ))}
+          </div>
         </div>
       </div>
 

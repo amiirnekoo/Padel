@@ -130,6 +130,26 @@ button, input, select, textarea, table, thead, tbody, tfoot, tr, th, td, caption
   scrollbar-width: none;
 }
 
+/* Sleek minimal horizontal scrollbar for interactive tracks */
+.scrollbar-subtle::-webkit-scrollbar {
+  height: 4px;
+}
+.scrollbar-subtle::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.06);
+  border-radius: 9999px;
+}
+.scrollbar-subtle::-webkit-scrollbar-thumb {
+  background: rgba(15, 23, 42, 0.25);
+  border-radius: 9999px;
+}
+.scrollbar-subtle::-webkit-scrollbar-thumb:hover {
+  background: rgba(15, 23, 42, 0.45);
+}
+.scrollbar-subtle {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(15, 23, 42, 0.25) rgba(15, 23, 42, 0.06);
+}
+
 /* High-Performance Card Container (Zero Backdrop Blur) */
 .glass-panel {
   background: #0f172a;
