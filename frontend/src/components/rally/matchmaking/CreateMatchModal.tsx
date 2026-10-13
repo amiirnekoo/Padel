@@ -12,12 +12,18 @@ interface CreateMatchModalProps {
 }
 
 const SKILL_LEVELS = [
-  { id: 'D', label: 'سطح D (مبتدی)', desc: 'آشنایی اولیه با قوانین و بازی تفریحی' },
+  { id: 'D-', label: 'سطح D- (تازه‌کار)', desc: 'آغاز فعالیت در پدل، یادگیری قوانین و ضربات اولیه' },
+  { id: 'D', label: 'سطح D (مبتدی)', desc: 'آشنایی با بازی و رالی‌های تفریحی ساده' },
   { id: 'D+', label: 'سطح D+ (نیمه‌مبتدی)', desc: 'مسلط به سرویس، رالی ساده و شیشه اول' },
+  { id: 'C-', label: 'سطح C- (متوسط مقدماتی)', desc: 'رالی پایدار و شروع استفاده از دیوارهای کناری' },
   { id: 'C', label: 'سطح C (متوسط)', desc: 'کنترل ضربات والِی، بانجیا و دفاع شیشه' },
   { id: 'C+', label: 'سطح C+ (نیمه‌پیشرفته)', desc: 'بازی سرعتی، اسمش موثر و جاگیری تیمی' },
+  { id: 'B-', label: 'سطح B- (پیشرفته مقدماتی)', desc: 'ضربات هجومی با چرخش بالا، لوپ و ویبورا' },
   { id: 'B', label: 'سطح B (پیشرفته)', desc: 'تسلط تاکتیکی و حضور در مسابقات باشگاهی' },
+  { id: 'B+', label: 'سطح B+ (پیشرفته عالی)', desc: 'بازی کم‌اشتباه، ریتم بسیار سریع و هدایت تیم' },
+  { id: 'A-', label: 'سطح A- (حرفه‌ای مقدماتی)', desc: 'ورودی رقابت‌های رسمی و رنکینگ استانی' },
   { id: 'A', label: 'سطح A (حرفه‌ای)', desc: 'رنکینگ استانی و کشوری فدراسیون' },
+  { id: 'A+', label: 'سطح A+ (الیت کشوری)', desc: 'سطح اول ملی و تورهای بین‌المللی FIP' },
 ];
 
 export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
@@ -98,7 +104,7 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
 
           <div>
             <label className="block text-xs font-bold text-slate-300 mb-1">سطح مهارت مجاز (Skill Level):</label>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2 max-h-52 overflow-y-auto pr-1">
               {SKILL_LEVELS.map((lvl) => (
                 <button
                   type="button"

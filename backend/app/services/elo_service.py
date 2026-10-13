@@ -11,12 +11,18 @@ class EloRatingService:
     
     # بازه‌های ریتینگ بر اساس سیستم جهانی مچ‌میکینگ پدل رالی
     SKILL_TIERS = [
-        (1800, "A"),
-        (1600, "B"),
-        (1400, "C+"),
+        (2200, "A+"),
+        (2050, "A"),
+        (1900, "A-"),
+        (1800, "B+"),
+        (1680, "B"),
+        (1580, "B-"),
+        (1380, "C+"),
         (1200, "C"),
+        (1100, "C-"),
         (1000, "D+"),
-        (0, "D")
+        (850, "D"),
+        (0, "D-")
     ]
 
     @classmethod
@@ -25,7 +31,7 @@ class EloRatingService:
         for threshold, tier in cls.SKILL_TIERS:
             if rating >= threshold:
                 return tier
-        return "D"
+        return "D-"
 
     @classmethod
     def calculate_doubles_elo(

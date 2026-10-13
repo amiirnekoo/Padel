@@ -15,12 +15,18 @@ interface RallyMatchmakingPageProps {
 
 const SKILL_FILTER_PILLS = [
   { id: 'ALL', label: 'همه سطوح' },
+  { id: 'D-', label: 'سطح D- (تازه‌کار)' },
   { id: 'D', label: 'سطح D (مبتدی)' },
   { id: 'D+', label: 'سطح D+ (نیمه‌مبتدی)' },
+  { id: 'C-', label: 'سطح C- (متوسط مقدماتی)' },
   { id: 'C', label: 'سطح C (متوسط)' },
   { id: 'C+', label: 'سطح C+ (نیمه‌پیشرفته)' },
+  { id: 'B-', label: 'سطح B- (پیشرفته مقدماتی)' },
   { id: 'B', label: 'سطح B (پیشرفته)' },
+  { id: 'B+', label: 'سطح B+ (پیشرفته عالی)' },
+  { id: 'A-', label: 'سطح A- (حرفه‌ای مقدماتی)' },
   { id: 'A', label: 'سطح A (حرفه‌ای)' },
+  { id: 'A+', label: 'سطح A+ (الیت کشوری)' },
 ];
 
 export const RallyMatchmakingPage: React.FC<RallyMatchmakingPageProps> = ({

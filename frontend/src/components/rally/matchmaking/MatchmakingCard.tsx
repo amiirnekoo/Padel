@@ -11,12 +11,18 @@ interface MatchmakingCardProps {
 }
 
 const LEVEL_COLORS: Record<string, { bg: string; text: string; label: string }> = {
+  'D-': { bg: 'bg-teal-950/80 border-teal-500/40', text: 'text-teal-300', label: 'تازه‌کار (D-)' },
   'D': { bg: 'bg-emerald-950/80 border-emerald-500/40', text: 'text-emerald-300', label: 'مبتدی (D)' },
   'D+': { bg: 'bg-blue-950/80 border-blue-500/40', text: 'text-blue-300', label: 'نیمه‌مبتدی (D+)' },
+  'C-': { bg: 'bg-cyan-950/80 border-cyan-500/40', text: 'text-cyan-300', label: 'متوسط مقدماتی (C-)' },
   'C': { bg: 'bg-indigo-950/80 border-indigo-500/40', text: 'text-indigo-300', label: 'متوسط (C)' },
   'C+': { bg: 'bg-purple-950/80 border-purple-500/40', text: 'text-purple-300', label: 'نیمه‌پیشرفته (C+)' },
+  'B-': { bg: 'bg-yellow-950/80 border-yellow-500/40', text: 'text-yellow-300', label: 'پیشرفته مقدماتی (B-)' },
   'B': { bg: 'bg-amber-950/80 border-amber-500/40', text: 'text-amber-300', label: 'پیشرفته (B)' },
+  'B+': { bg: 'bg-orange-950/80 border-orange-500/40', text: 'text-orange-300', label: 'پیشرفته عالی (B+)' },
+  'A-': { bg: 'bg-pink-950/80 border-pink-500/40', text: 'text-pink-300', label: 'حرفه‌ای مقدماتی (A-)' },
   'A': { bg: 'bg-rose-950/80 border-rose-500/40', text: 'text-rose-300', label: 'حرفه‌ای (A)' },
+  'A+': { bg: 'bg-fuchsia-950/80 border-fuchsia-500/40', text: 'text-fuchsia-300', label: 'الیت کشوری (A+)' },
 };
 
 export const MatchmakingCard: React.FC<MatchmakingCardProps> = ({

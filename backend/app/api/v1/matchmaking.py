@@ -13,7 +13,7 @@ class MatchmakingCreateRequest(BaseModel):
     club_id: str = Field(..., description="شناسه باشگاه")
     court_id: str = Field(..., description="شناسه کورت")
     timeslot_id: str = Field(..., description="شناسه سانس انتخابی")
-    skill_level: str = Field("D+", description="سطح مهارت مجاز: D, D+, C, C+, B, A")
+    skill_level: str = Field("D+", description="سطح مهارت مجاز: D-, D, D+, C-, C, C+, B-, B, B+, A-, A, A+")
     creator_id: Optional[str] = Field(None, description="شناسه کاربر سازنده (در صورت عدم ارسال از توکن استخراج می‌شود)")
     creator_position: str = Field("TEAM_A_RIGHT", description="پوزیشن سازنده: TEAM_A_RIGHT, TEAM_A_LEFT, TEAM_B_RIGHT, TEAM_B_LEFT")
     title: str = Field("بازی آزاد پدل ۴ نفره", description="عنوان مچ")

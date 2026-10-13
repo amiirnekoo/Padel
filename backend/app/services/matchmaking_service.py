@@ -13,12 +13,19 @@ from backend.app.services.notification_service import NotificationService
 
 class MatchmakingService:
     DEFAULT_SKILL_RANGES = {
-        "D": (500, 1050),
-        "D+": (950, 1250),
+        "D-": (400, 850),
+        "D": (750, 1050),
+        "D+": (950, 1200),
+        "C-": (1050, 1300),
         "C": (1150, 1450),
         "C+": (1350, 1650),
-        "B": (1550, 1850),
-        "A": (1750, 2500),
+        "B-": (1500, 1750),
+        "B": (1600, 1850),
+        "B+": (1700, 1950),
+        "A-": (1800, 2050),
+        "A": (1900, 2250),
+        "A+": (2100, 3000),
+        "ALL": (0, 4000),
     }
 
     @staticmethod
