@@ -1431,6 +1431,33 @@ export const rallyApi = {
     } catch (err: any) {
       return { success: false, error: err?.message || 'خطا در برقراری ارتباط' };
     }
+  },
+
+  /**
+   * پیشنهاد هوشمند راکت‌های پدل بر اساس بیومکانیک و سبک بازی
+   */
+  async recommendRackets(payload: {
+    player_level: string;
+    playstyle: string;
+    physical_priority?: string;
+    budget_tier?: string;
+    supply_preference?: string;
+  }) {
+    try {
+      const res = await fetch(`${API_BASE}/shop/racket-finder/recommend`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        return { success: false, error: errorData.detail || 'خطا در محاسبه تطابق راکت' };
+      }
+      const data = await res.json();
+      return { success: true, data };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در برقراری ارتباط با سرور' };
+    }
   }
 };
 

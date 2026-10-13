@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field
 from typing import List, Optional
 from backend.app.core.database import get_db
 from backend.app.services.shop_service import ShopService
+from backend.app.services.racket_finder_service import RacketFinderService, RacketQuizInput
 from backend.app.api.deps import get_current_user_id
 
 router = APIRouter(prefix="/shop", tags=["Shop"])
@@ -47,6 +48,11 @@ async def get_product_details(product_id: str):
     if not product:
         raise HTTPException(status_code=404, detail="محصول مورد نظر یافت نشد.")
     return product
+
+@router.post("/racket-finder/recommend")
+async def recommend_rackets(payload: RacketQuizInput):
+    """پیشنهاد هوشمند راکت‌های پدل بر اساس سبک بازی، سطح مهارت و بیومکانیک بازیکن"""
+    return RacketFinderService.recommend_rackets(payload)
 
 @router.post("/cart/calculate")
 async def calculate_cart(payload: CalculateCartRequest):

@@ -4,6 +4,7 @@ import { ShopProduct, ProductCategory, SportType } from '../../types/rally';
 import { ProductCard } from '../../components/rally/shop/ProductCard';
 import { ShopCategoryPills } from '../../components/rally/shop/ShopCategoryPills';
 import { getLatestCatalogYear } from '../../utils/catalogYearUtils';
+import { RacketFinderModal } from '../../components/rally/shop/racketFinder/RacketFinderModal';
 
 interface RallyShopPageProps {
   products: ShopProduct[];
@@ -25,6 +26,7 @@ export const RallyShopPage: React.FC<RallyShopPageProps> = ({
   const [selectedBrand, setSelectedBrand] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'NEWEST' | 'POPULAR' | 'PRICE_ASC' | 'PRICE_DESC' | 'DISCOUNT'>('NEWEST');
+  const [isRacketFinderOpen, setIsRacketFinderOpen] = useState(false);
   const BRANDS = ['ALL', 'Head', 'Nox'];
 
   const latestCatalogYear = useMemo(() => getLatestCatalogYear(products), [products]);
@@ -113,6 +115,18 @@ export const RallyShopPage: React.FC<RallyShopPageProps> = ({
                 <span className="text-gray-200 font-medium">۷ روز ضمانت بازگشت</span>
               </div>
             </div>
+
+            {/* Racket Finder CTA in Hero */}
+            <div className="mt-6">
+              <button
+                type="button"
+                onClick={() => setIsRacketFinderOpen(true)}
+                className="inline-flex items-center gap-2.5 px-5 py-3 rounded-2xl bg-rally-primary hover:bg-lime-400 text-black font-black text-xs sm:text-sm shadow-xl hover:shadow-lime-500/20 transition-all cursor-pointer group"
+              >
+                <Sparkles className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+                <span>راکت‌سنج هوشمند رالی: کدام راکت مناسب شماست؟</span>
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -120,6 +134,33 @@ export const RallyShopPage: React.FC<RallyShopPageProps> = ({
       {/* Main Catalog & Filters */}
       <div className="max-w-7xl 2xl:max-w-[1600px] 3xl:max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-8">
         
+        {/* Banner: Racket Finder Interactive Teaser */}
+        <div className="mb-6 p-4 sm:p-5 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+          <div className="flex items-center gap-3.5 text-right w-full sm:w-auto">
+            <div className="w-11 h-11 rounded-2xl bg-rally-primary/10 border border-rally-primary/20 flex items-center justify-center text-rally-primary shrink-0">
+              <Sparkles className="w-5 h-5 text-rally-primary" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm sm:text-base font-black text-white">در انتخاب راکت پدل مردد هستید؟</h3>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rally-primary/20 text-rally-primary">
+                  ارزیابی بیومکانیک
+                </span>
+              </div>
+              <p className="text-xs text-slate-400 mt-0.5">
+                با پاسخ به ۴ سوال کوتاه، راکت ایده‌آل دست خود را منطبق بر داده‌های آزمایشگاهی Testea Padel بیابید.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setIsRacketFinderOpen(true)}
+            className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-rally-primary hover:bg-lime-400 text-black font-black text-xs whitespace-nowrap transition-all shadow-md cursor-pointer shrink-0"
+          >
+            شروع تست راکت‌سنج
+          </button>
+        </div>
+
         {/* Search & Top Controls */}
         <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-sm mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
           
@@ -188,6 +229,20 @@ export const RallyShopPage: React.FC<RallyShopPageProps> = ({
         )}
 
       </div>
+
+      {/* Racket Finder Interactive Modal */}
+      <RacketFinderModal
+        isOpen={isRacketFinderOpen}
+        onClose={() => setIsRacketFinderOpen(false)}
+        onSelectProduct={(productId) => {
+          const product = products.find((p) => p.id === productId);
+          if (product) onSelectProduct(product);
+        }}
+        onAddToCart={(prod) => {
+          const product = products.find((p) => p.id === prod.id) || prod;
+          onAddToCart(product);
+        }}
+      />
     </div>
   );
 };
