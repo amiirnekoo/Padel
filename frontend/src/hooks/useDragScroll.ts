@@ -14,7 +14,9 @@ export function useDragScroll<T extends HTMLElement = HTMLDivElement>() {
   const isDownRef = useRef(false);
   const startXRef = useRef(0);
   const scrollLeftRef = useRef(0);
-  const isRtlRef = useRef(false);
+  const momentumRafRef = useRef<number | null>(null);
+  const lastXRef = useRef(0);
+  const velocityRef = useRef(0);
   const hasDraggedRef = useRef(false);
 
   const onMouseDown = useCallback((e: React.MouseEvent) => {
@@ -24,15 +26,19 @@ export function useDragScroll<T extends HTMLElement = HTMLDivElement>() {
     // Only respond to main left click
     if (e.button !== 0) return;
 
+    if (momentumRafRef.current) {
+      cancelAnimationFrame(momentumRafRef.current);
+      momentumRafRef.current = null;
+    }
+
     isDownRef.current = true;
     hasDraggedRef.current = false;
     startXRef.current = e.clientX;
+    lastXRef.current = e.clientX;
     scrollLeftRef.current = el.scrollLeft;
+    velocityRef.current = 0;
 
-    // Detect RTL context accurately
-    isRtlRef.current = window.getComputedStyle(el).direction === 'rtl';
-
-    // Immediate 1:1 responsiveness with zero CSS transition lag
+    // Immediate responsiveness with zero CSS transition lag during active drag
     el.style.scrollBehavior = 'auto';
     el.style.cursor = 'grabbing';
     document.body.style.userSelect = 'none';
@@ -47,13 +53,13 @@ export function useDragScroll<T extends HTMLElement = HTMLDivElement>() {
         hasDraggedRef.current = true;
       }
 
-      // 1:1 direct instant tracking: In RTL modern browsers (Chromium/Firefox/Safari),
-      // scrollLeft is negative or inverse; adding deltaX tracks mouse direction perfectly.
-      if (isRtlRef.current) {
-        currentEl.scrollLeft = scrollLeftRef.current + deltaX;
-      } else {
-        currentEl.scrollLeft = scrollLeftRef.current - deltaX;
-      }
+      const instantDelta = moveEvent.clientX - lastXRef.current;
+      velocityRef.current = instantDelta;
+      lastXRef.current = moveEvent.clientX;
+
+      // Natural drag direction: pulling left moves track smoothly, with 1.45x velocity multiplier for crisp responsiveness
+      const SPEED_MULTIPLIER = 1.45;
+      currentEl.scrollLeft = scrollLeftRef.current - (deltaX * SPEED_MULTIPLIER);
     };
 
     const handleMouseUp = () => {
@@ -64,6 +70,21 @@ export function useDragScroll<T extends HTMLElement = HTMLDivElement>() {
       const currentEl = containerRef.current;
       if (currentEl) {
         currentEl.style.cursor = 'grab';
+
+        // Gentle momentum inertia when released with speed
+        let vel = velocityRef.current * 1.45;
+        if (Math.abs(vel) > 3) {
+          const glide = () => {
+            if (!currentEl) return;
+            vel *= 0.88;
+            currentEl.scrollLeft -= vel;
+            if (Math.abs(vel) > 0.5) {
+              momentumRafRef.current = requestAnimationFrame(glide);
+            }
+          };
+          momentumRafRef.current = requestAnimationFrame(glide);
+        }
+
         // Restore smooth scrolling after drag finishes for programmatic navigation
         setTimeout(() => {
           if (currentEl) {
@@ -89,12 +110,12 @@ export function useDragScroll<T extends HTMLElement = HTMLDivElement>() {
     // Convert vertical wheel to horizontal track scroll
     if (Math.abs(e.deltaY) > 5) {
       const isRtl = window.getComputedStyle(el).direction === 'rtl';
-      const scrollAmount = e.deltaY;
+      const scrollAmount = e.deltaY * 1.2;
       el.scrollLeft += isRtl ? -scrollAmount : scrollAmount;
     }
   }, []);
 
-  const scrollStep = useCallback((direction: 'left' | 'right', stepPx = 250) => {
+  const scrollStep = useCallback((direction: 'left' | 'right', stepPx = 300) => {
     const el = containerRef.current;
     if (!el) return;
     const isRtl = window.getComputedStyle(el).direction === 'rtl';
@@ -105,6 +126,9 @@ export function useDragScroll<T extends HTMLElement = HTMLDivElement>() {
   // Cleanup on unmount
   useEffect(() => {
     return () => {
+      if (momentumRafRef.current) {
+        cancelAnimationFrame(momentumRafRef.current);
+      }
       document.body.style.removeProperty('user-select');
     };
   }, []);

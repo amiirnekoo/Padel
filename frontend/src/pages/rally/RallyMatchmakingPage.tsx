@@ -177,32 +177,34 @@ export const RallyMatchmakingPage: React.FC<RallyMatchmakingPageProps> = ({
 
       {/* Level Filters with Ultra-smooth Mouse Drag to Scroll */}
       <div className="relative mb-6">
-        <div className="flex items-center justify-between mb-2.5">
-          <div className="flex items-center gap-2 text-xs font-bold text-slate-300">
-            <Filter size={14} className="text-rally-accent" />
-            <span>فیلتر سطح مهارتی مسابقه:</span>
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-xl bg-rally-accent/20 border border-rally-accent/40 flex items-center justify-center text-rally-accent shadow-xs">
+              <Filter size={15} className="text-rally-accent stroke-[2.5]" />
+            </div>
+            <span className="text-sm font-black text-white tracking-wide">فیلتر سطح مهارتی مسابقه:</span>
           </div>
-          <div className="hidden sm:flex items-center gap-2 text-[11px] font-semibold text-slate-400">
-            <span className="flex items-center gap-1 text-slate-500 select-none">
-              <MoveHorizontal size={13} />
+          <div className="flex items-center gap-2">
+            <span className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#0E2038] border border-slate-700/80 text-[11px] font-extrabold text-white shadow-xs select-none">
+              <MoveHorizontal size={14} className="text-rally-accent" />
               <span>با ماوس بکشید</span>
             </span>
-            <div className="flex items-center gap-1 mr-1">
+            <div className="flex items-center gap-1.5">
               <button
                 type="button"
-                onClick={() => scrollStep('right', 260)}
-                className="w-7 h-7 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 flex items-center justify-center transition active:scale-95 cursor-pointer shadow-xs"
+                onClick={() => scrollStep('right', 300)}
+                className="w-7 h-7 rounded-xl bg-[#0E2038] hover:bg-[#163258] border border-slate-700 text-white flex items-center justify-center transition active:scale-90 cursor-pointer shadow-xs"
                 title="مشاهده سطوح راست"
               >
-                <ChevronRight size={14} />
+                <ChevronRight size={15} />
               </button>
               <button
                 type="button"
-                onClick={() => scrollStep('left', 260)}
-                className="w-7 h-7 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 flex items-center justify-center transition active:scale-95 cursor-pointer shadow-xs"
+                onClick={() => scrollStep('left', 300)}
+                className="w-7 h-7 rounded-xl bg-[#0E2038] hover:bg-[#163258] border border-slate-700 text-white flex items-center justify-center transition active:scale-90 cursor-pointer shadow-xs"
                 title="مشاهده سطوح چپ"
               >
-                <ChevronLeft size={14} />
+                <ChevronLeft size={15} />
               </button>
             </div>
           </div>
@@ -210,7 +212,7 @@ export const RallyMatchmakingPage: React.FC<RallyMatchmakingPageProps> = ({
 
         <div
           ref={filterTrackRef}
-          className="flex items-center gap-2 overflow-x-auto pb-3 no-scrollbar select-none cursor-grab active:cursor-grabbing"
+          className="flex items-center gap-2.5 overflow-x-auto pb-3 no-scrollbar select-none cursor-grab active:cursor-grabbing"
           {...dragProps}
         >
           {SKILL_FILTER_PILLS.map((pill) => (
@@ -222,10 +224,10 @@ export const RallyMatchmakingPage: React.FC<RallyMatchmakingPageProps> = ({
                 if (hasDraggedRef.current) return;
                 setSelectedLevel(pill.id);
               }}
-              className={`px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all select-none flex-shrink-0 cursor-pointer ${
+              className={`px-4 py-2.5 rounded-xl text-xs whitespace-nowrap transition-all select-none flex-shrink-0 cursor-pointer ${
                 selectedLevel === pill.id
-                  ? 'bg-rally-accent text-slate-950 shadow-md font-black scale-102'
-                  : 'bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 hover:border-slate-700'
+                  ? 'bg-rally-accent text-slate-950 shadow-md font-black ring-2 ring-rally-accent/60 scale-102'
+                  : 'bg-[#0E223D] hover:bg-[#15345C] text-white hover:text-white font-extrabold border border-slate-600/90 hover:border-slate-400 shadow-xs'
               }`}
             >
               {pill.label}
