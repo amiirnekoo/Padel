@@ -66,16 +66,29 @@ export const AdminClubLocationModal: React.FC<AdminClubLocationModalProps> = ({
       attributionControl: false
     });
 
-    // Fast CDN Tiles (CartoDB Voyager)
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-      subdomains: 'abcd',
+    // 100% Free, Zero-Watermark Official OpenStreetMap CDN Tiles
+    const primaryTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      subdomains: ['a', 'b', 'c'],
       maxZoom: 19,
-      attribution: '© OpenStreetMap contributors, © CARTO',
+      attribution: '© OpenStreetMap contributors',
       crossOrigin: true,
       keepBuffer: 8,
       updateWhenIdle: true,
       updateWhenZooming: false
-    }).addTo(map);
+    });
+
+    primaryTileLayer.on('tileerror', (errorEvent: any) => {
+      const tile = errorEvent.tile;
+      if (tile && !tile.dataset.fallbackTried) {
+        tile.dataset.fallbackTried = 'true';
+        const coords = errorEvent.coords;
+        if (coords) {
+          tile.src = `https://tile.openstreetmap.de/${coords.z}/${coords.x}/${coords.y}.png`;
+        }
+      }
+    });
+
+    primaryTileLayer.addTo(map);
 
     const pinHtml = `
       <div class="relative cursor-move" style="transform: translate(-50%, -100%);">

@@ -40,16 +40,30 @@ export const LeafletCourtsMap: React.FC<LeafletCourtsMapProps> = ({
       preferCanvas: true
     });
 
-    // High-speed Fastly Edge CDN Tiles (CartoDB Voyager: 4 parallel subdomains, retina, zero token, instant load)
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-      subdomains: 'abcd',
+    // 100% Free, Zero-Watermark Official OpenStreetMap CDN Tiles with Fallback
+    const primaryTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      subdomains: ['a', 'b', 'c'],
       maxZoom: 19,
-      attribution: '© OpenStreetMap contributors, © CARTO',
+      attribution: '© OpenStreetMap contributors',
       crossOrigin: true,
-      keepBuffer: 12,
+      keepBuffer: 10,
       updateWhenIdle: true,
       updateWhenZooming: false
-    }).addTo(map);
+    });
+
+    // Fallback automatically to high-speed mirror if a tile fails
+    primaryTileLayer.on('tileerror', (errorEvent: any) => {
+      const tile = errorEvent.tile;
+      if (tile && !tile.dataset.fallbackTried) {
+        tile.dataset.fallbackTried = 'true';
+        const coords = errorEvent.coords;
+        if (coords) {
+          tile.src = `https://tile.openstreetmap.de/${coords.z}/${coords.x}/${coords.y}.png`;
+        }
+      }
+    });
+
+    primaryTileLayer.addTo(map);
 
     // Zoom control on top-left
     L.control.zoom({ position: 'topleft' }).addTo(map);
@@ -189,9 +203,9 @@ export const LeafletCourtsMap: React.FC<LeafletCourtsMapProps> = ({
         style={{ minHeight: '420px', height: '100%', width: '100%', backgroundColor: '#ffffff' }}
       />
 
-      {/* High-speed OpenStreetMap / CARTO Attribution Badge */}
+      {/* Zero-Token Clean OpenStreetMap Attribution Badge */}
       <div className="absolute bottom-2 left-2 z-20 px-2.5 py-1 rounded bg-white/95 text-[10px] text-slate-600 font-sans pointer-events-none border border-slate-300 shadow-sm flex items-center gap-1">
-        <span>© OpenStreetMap • CARTO CDN</span>
+        <span>© OpenStreetMap contributors</span>
       </div>
     </div>
   );

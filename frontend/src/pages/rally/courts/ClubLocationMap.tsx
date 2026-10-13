@@ -54,13 +54,26 @@ export const ClubLocationMap: React.FC<ClubLocationMapProps> = ({
       preferCanvas: true
     });
 
-    // Fast Edge CDN Tiles (CartoDB Voyager)
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-      subdomains: 'abcd',
+    // 100% Free, Zero-Watermark Official OpenStreetMap CDN Tiles
+    const primaryTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      subdomains: ['a', 'b', 'c'],
       maxZoom: 19,
-      attribution: '© OpenStreetMap contributors, © CARTO',
+      attribution: '© OpenStreetMap contributors',
       crossOrigin: true
-    }).addTo(map);
+    });
+
+    primaryTileLayer.on('tileerror', (errorEvent: any) => {
+      const tile = errorEvent.tile;
+      if (tile && !tile.dataset.fallbackTried) {
+        tile.dataset.fallbackTried = 'true';
+        const coords = errorEvent.coords;
+        if (coords) {
+          tile.src = `https://tile.openstreetmap.de/${coords.z}/${coords.x}/${coords.y}.png`;
+        }
+      }
+    });
+
+    primaryTileLayer.addTo(map);
 
     L.control.zoom({ position: 'topleft' }).addTo(map);
 
