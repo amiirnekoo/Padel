@@ -269,7 +269,7 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
       <CourtsMapModal
         isOpen={isMapModalOpen}
         onClose={() => setIsMapModalOpen(false)}
-        clubs={displayClubs}
+        clubs={clubsData}
         onSelectClub={onSelectClub}
       />
     </div>

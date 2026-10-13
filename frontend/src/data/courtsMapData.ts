@@ -25,11 +25,11 @@ export interface MapCourtItem {
 
 export const MAP_CITIES: MapCityConfig[] = [
   { id: 'tehran', name: 'تهران', badge: '۳ باشگاه فعال', center: [35.795, 51.455], zoom: 12 },
-  { id: 'north', name: 'شمال (مازندران/گیلان)', badge: 'ساحلی', center: [36.685, 51.340], zoom: 11 },
+  { id: 'mashhad', name: 'مشهد', badge: 'سجاد', center: [36.325, 59.520], zoom: 12 },
   { id: 'isfahan', name: 'اصفهان', badge: 'زاینده‌رود', center: [32.645, 51.685], zoom: 12 },
   { id: 'shiraz', name: 'شیراز', badge: 'چمران', center: [29.635, 52.510], zoom: 12 },
-  { id: 'mashhad', name: 'مشهد', badge: 'سجاد', center: [36.325, 59.520], zoom: 12 },
   { id: 'tabriz', name: 'تبریز', badge: 'ائل‌گلی', center: [38.050, 46.350], zoom: 12 },
+  { id: 'mazandaran', name: 'مازندران', badge: 'ساحلی', center: [36.685, 51.340], zoom: 11 },
 ];
 
 export const MAP_COURTS: MapCourtItem[] = [
@@ -83,12 +83,12 @@ export const MAP_COURTS: MapCourtItem[] = [
     color: '#10b981'
   },
 
-  // --- شمال (مازندران و گیلان) ---
+  // --- مازندران ---
   {
     id: 'court-namakabrood',
     name: 'کلوپ پدل ساحلی نمک‌آبرود',
-    cityId: 'north',
-    cityName: 'شمال',
+    cityId: 'mazandaran',
+    cityName: 'مازندران',
     area: 'چالوس / نمک‌آبرود',
     address: 'مازندران، چالوس، شهرک توریستی نمک‌آبرود، کورت‌های اختصاصی ساحلی',
     lat: 36.6710,
@@ -103,8 +103,8 @@ export const MAP_COURTS: MapCourtItem[] = [
   {
     id: 'court-babolsar',
     name: 'آکادمی پدل دریاکنار بابلسر',
-    cityId: 'north',
-    cityName: 'شمال',
+    cityId: 'mazandaran',
+    cityName: 'مازندران',
     area: 'بابلسر / دریاکنار',
     address: 'مازندران، بابلسر، شهرک دریاکنار، مجموعه ورزشی ساحل پدل',
     lat: 36.7080,

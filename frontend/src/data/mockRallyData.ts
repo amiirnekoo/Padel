@@ -281,6 +281,169 @@ export const MOCK_CLUBS: CourtClub[] = [
         "status": "AVAILABLE"
       }
     ]
+  },
+  {
+    "id": "court-namakabrood",
+    "name": "کلوپ پدل ساحلی نمک‌آبرود",
+    "sport": "PADEL",
+    "city": "مازندران",
+    "area": "چالوس / نمک‌آبرود",
+    "address": "مازندران، چالوس، شهرک توریستی نمک‌آبرود، کورت‌های اختصاصی ساحلی",
+    "courtType": "OUTDOOR",
+    "surface": "کورت سوپر پانورامیک روباز ساحلی با چمن تخصصی مقاوم به رطوبت و نمک",
+    "rating": 4.90,
+    "startingPrice": 3000000,
+    "latitude": 36.6710,
+    "longitude": 51.3020,
+    "nearestAvailableSlot": "امروز ۱۷:۰۰ تا ۱۸:۳۰",
+    "images": ["/images/court_lafour.jpg"],
+    "amenities": [
+      { "id": "parking", "label": "پارکینگ اختصاصی شهرک", "iconName": "Car" },
+      { "id": "cafe", "label": "کافه ساحلی نمک‌آبرود", "iconName": "Coffee" },
+      { "id": "shower", "label": "رختکن و دوش آبگرم", "iconName": "Bath" },
+      { "id": "lighting", "label": "پروژکتورهای هوایی دید در شب", "iconName": "Sun" }
+    ],
+    "rules": [
+      "کورت در محوطه خوش آب‌وهوای ساحلی نمک‌آبرود واقع شده است.",
+      "ورود با کفش استاندارد پدل الزامی است."
+    ],
+    "cancellationPolicy": "لغو تا ۱۲ ساعت قبل با استرداد ۱۰۰٪ وجه امکان‌پذیر است.",
+    "slots": [
+      { "slotId": "namak-1", "startTime": "۱۷:۰۰", "endTime": "۱۸:۳۰", "durationMinutes": 90, "price": 3000000, "status": "AVAILABLE" },
+      { "slotId": "namak-2", "startTime": "۱۸:۳۰", "endTime": "۲۰:۰۰", "durationMinutes": 90, "price": 3000000, "status": "AVAILABLE" }
+    ]
+  },
+  {
+    "id": "court-babolsar",
+    "name": "آکادمی پدل دریاکنار بابلسر",
+    "sport": "PADEL",
+    "city": "مازندران",
+    "area": "بابلسر / دریاکنار",
+    "address": "مازندران، بابلسر، شهرک دریاکنار، مجموعه ورزشی ساحل پدل",
+    "courtType": "OUTDOOR",
+    "surface": "کورت استاندارد روباز دریاکنار با چشم‌انداز ساحل دریای کاسپین",
+    "rating": 4.88,
+    "startingPrice": 2800000,
+    "latitude": 36.7080,
+    "longitude": 52.6120,
+    "nearestAvailableSlot": "امروز ۱۸:۰۰ تا ۱۹:۳۰",
+    "images": ["/images/court_viva.jpg"],
+    "amenities": [
+      { "id": "parking", "label": "پارکینگ اختصاصی شهرک دریاکنار", "iconName": "Car" },
+      { "id": "cafe", "label": "لانژ استراحت و نوشیدنی", "iconName": "Coffee" },
+      { "id": "shower", "label": "رختکن و دوش اختصاصی", "iconName": "Bath" },
+      { "id": "lighting", "label": "نورپردازی استاندارد", "iconName": "Sun" }
+    ],
+    "rules": ["ورود به شهرک با هماهنگی رزرو رالی انجام می‌پذیرد."],
+    "cancellationPolicy": "لغو تا ۱۲ ساعت قبل با استرداد کامل وجه امکان‌پذیر است.",
+    "slots": [
+      { "slotId": "bbl-1", "startTime": "۱۸:۰۰", "endTime": "۱۹:۳۰", "durationMinutes": 90, "price": 2800000, "status": "AVAILABLE" }
+    ]
+  },
+  {
+    "id": "court-mashhad-sajjad",
+    "name": "مجموعه پدل سجاد مشهد",
+    "sport": "PADEL",
+    "city": "مشهد",
+    "area": "بلوار سجاد",
+    "address": "مشهد، بلوار سجاد، خیابان بهار، مجموعه ورزشی اختصاصی پدل سجاد",
+    "courtType": "INDOOR",
+    "surface": "کورت مسقف مدرن با سازه استاندارد و چمن آبی رنگ مسابقاتی",
+    "rating": 4.89,
+    "startingPrice": 2600000,
+    "latitude": 36.3210,
+    "longitude": 59.5480,
+    "nearestAvailableSlot": "امروز ۱۷:۳۰ تا ۱۹:۰۰",
+    "images": ["/images/court_viva.jpg"],
+    "amenities": [
+      { "id": "parking", "label": "پارکینگ اختصاصی", "iconName": "Car" },
+      { "id": "canopy", "label": "سازه تمام مسقف ۴ فصل", "iconName": "Shield" },
+      { "id": "cafe", "label": "کافه رستوران ورزشی", "iconName": "Coffee" },
+      { "id": "shower", "label": "رختکن مدرن و دوش آبگرم", "iconName": "Bath" }
+    ],
+    "rules": ["ورود با کفش تمیز سالنی پدل الزامی است."],
+    "cancellationPolicy": "لغو تا ۱۲ ساعت قبل شامل بازگشت کامل هزینه به کیف پول است.",
+    "slots": [
+      { "slotId": "msh-1", "startTime": "۱۷:۳۰", "endTime": "۱۹:۰۰", "durationMinutes": 90, "price": 2600000, "status": "AVAILABLE" }
+    ]
+  },
+  {
+    "id": "court-isfahan-parvaz",
+    "name": "کلوپ پدل پرواز اصفهان",
+    "sport": "PADEL",
+    "city": "اصفهان",
+    "area": "بلوار مشتاق",
+    "address": "اصفهان، بلوار مشتاق دوم، مجموعه ورزشی پرواز، کورت‌های اختصاصی پدل",
+    "courtType": "OUTDOOR",
+    "surface": "کورت پانورامیک در امتداد زاینده‌رود با نورپردازی مسابقاتی",
+    "rating": 4.91,
+    "startingPrice": 2700000,
+    "latitude": 32.6320,
+    "longitude": 51.7210,
+    "nearestAvailableSlot": "امروز ۱۸:۰۰ تا ۱۹:۳۰",
+    "images": ["/images/court_fgb_enghelab.jpg"],
+    "amenities": [
+      { "id": "parking", "label": "پارکینگ اختصاصی پرواز", "iconName": "Car" },
+      { "id": "cafe", "label": "کافه و فضای استراحت", "iconName": "Coffee" },
+      { "id": "lighting", "label": "پروژکتورهای دید در شب", "iconName": "Sun" }
+    ],
+    "rules": ["رعایت اصول ایمنی کورت الزامی است."],
+    "cancellationPolicy": "استرداد ۱۰۰٪ وجه تا ۱۲ ساعت قبل از سانس.",
+    "slots": [
+      { "slotId": "esf-1", "startTime": "۱۸:۰۰", "endTime": "۱۹:۳۰", "durationMinutes": 90, "price": 2700000, "status": "AVAILABLE" }
+    ]
+  },
+  {
+    "id": "court-shiraz-chamran",
+    "name": "آکادمی پدل چمران شیراز",
+    "sport": "PADEL",
+    "city": "شیراز",
+    "area": "بلوار چمران",
+    "address": "شیراز، بلوار شهید چمران، تپه ورزشی چمران، مجتمع پدل آکادمیک",
+    "courtType": "OUTDOOR",
+    "surface": "کورت‌های تخصصی روباز در ارتفاع تپه ورزشی چمران شیراز",
+    "rating": 4.93,
+    "startingPrice": 2900000,
+    "latitude": 29.6450,
+    "longitude": 52.5020,
+    "nearestAvailableSlot": "امروز ۱۹:۰۰ تا ۲۰:۳۰",
+    "images": ["/images/court_lafour.jpg"],
+    "amenities": [
+      { "id": "parking", "label": "پارکینگ مجموعه ورزشی چمران", "iconName": "Car" },
+      { "id": "cafe", "label": "کافه بار VIP", "iconName": "Coffee" },
+      { "id": "shower", "label": "رختکن مجهز", "iconName": "Bath" }
+    ],
+    "rules": ["استفاده از راکت و توپ استاندارد در زمین الزامی است."],
+    "cancellationPolicy": "استرداد ۱۰۰٪ وجه تا ۱۲ ساعت قبل از سانس.",
+    "slots": [
+      { "slotId": "shz-1", "startTime": "۱۹:۰۰", "endTime": "۲۰:۳۰", "durationMinutes": 90, "price": 2900000, "status": "AVAILABLE" }
+    ]
+  },
+  {
+    "id": "court-tabriz-elgoli",
+    "name": "کورت پدل ائل‌گلی تبریز",
+    "sport": "PADEL",
+    "city": "تبریز",
+    "area": "ائل‌گلی",
+    "address": "تبریز، بلوار ائل‌گلی، مجموعه تفریحی و ورزشی کورت‌های پدل تبریز",
+    "courtType": "OUTDOOR",
+    "surface": "کورت پانورامیک در محوطه دیدنی ائل‌گلی با چمن استاندارد فدراسیونی",
+    "rating": 4.87,
+    "startingPrice": 2500000,
+    "latitude": 38.0250,
+    "longitude": 46.3680,
+    "nearestAvailableSlot": "امروز ۱۶:۰۰ تا ۱۷:۳۰",
+    "images": ["/images/court_fgb_enghelab.jpg"],
+    "amenities": [
+      { "id": "parking", "label": "پارکینگ مجموعه ائل‌گلی", "iconName": "Car" },
+      { "id": "cafe", "label": "کافه و فضای پذیرایی", "iconName": "Coffee" },
+      { "id": "lighting", "label": "نورافکن‌های با کیفیت", "iconName": "Sun" }
+    ],
+    "rules": ["رعایت کفش ورزشی پدل الزامی است."],
+    "cancellationPolicy": "استرداد ۱۰۰٪ وجه تا ۱۲ ساعت قبل از سانس.",
+    "slots": [
+      { "slotId": "tbz-1", "startTime": "۱۶:۰۰", "endTime": "۱۷:۳۰", "durationMinutes": 90, "price": 2500000, "status": "AVAILABLE" }
+    ]
   }
 ];
 

@@ -9,6 +9,7 @@ interface LeafletCourtsMapProps {
   selectedCity: MapCityConfig;
   selectedCourtId: string | null;
   onSelectCourt: (court: MapCourtItem) => void;
+  onOpenClubDetail?: (courtId: string) => void;
   isVisible?: boolean;
 }
 
@@ -17,12 +18,23 @@ export const LeafletCourtsMap: React.FC<LeafletCourtsMapProps> = ({
   selectedCity,
   selectedCourtId,
   onSelectCourt,
+  onOpenClubDetail,
   isVisible = true
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markersLayerRef = useRef<L.LayerGroup | null>(null);
   const markersMapRef = useRef<Map<string, L.Marker>>(new Map());
+
+  // Expose global click dispatcher for Leaflet popups
+  useEffect(() => {
+    (window as any).__rallyOpenClub = (courtId: string) => {
+      onOpenClubDetail?.(courtId);
+    };
+    return () => {
+      delete (window as any).__rallyOpenClub;
+    };
+  }, [onOpenClubDetail]);
 
   // Initialize Map with White Background and High-speed CDN Tiles
   useEffect(() => {
@@ -163,16 +175,29 @@ export const LeafletCourtsMap: React.FC<LeafletCourtsMapProps> = ({
       const marker = L.marker([court.lat, court.lng], { icon: customIcon });
 
       const popupHtml = `
-        <div dir="rtl" class="p-1 text-right font-sans" style="min-width: 190px;">
-          <div class="font-black text-xs text-slate-900 mb-0.5">${court.name.split(' (')[0]}</div>
-          <div class="text-[10px] text-slate-500 mb-2">${court.area} • ${court.courtType === 'INDOOR' ? 'مسقف' : 'روباز'}</div>
-          <div class="text-[10px] font-bold text-slate-700 mb-1.5">مسیریابی با اپلیکیشن:</div>
-          <div class="flex items-center gap-1 justify-between">
+        <div dir="rtl" class="p-1.5 text-right font-sans" style="min-width: 205px;">
+          <div onclick="window.__rallyOpenClub && window.__rallyOpenClub('${court.id}')" style="cursor:pointer;" class="group mb-1">
+            <div class="font-black text-xs text-sky-950 hover:text-sky-600 transition-colors flex items-center justify-between">
+              <span>${court.name.split(' (')[0]}</span>
+              <span class="text-[10px] text-sky-600 font-black">صفحه زمین ➔</span>
+            </div>
+            <div class="text-[10px] text-slate-500">${court.area} • ${court.courtType === 'INDOOR' ? 'مسقف' : 'روباز'}</div>
+          </div>
+
+          <div class="text-[10px] font-bold text-slate-700 mb-1.5 flex items-center justify-between">
+            <span>مسیریابی با اپلیکیشن:</span>
+          </div>
+          <div class="flex items-center gap-1 justify-between mb-2">
             <a href="https://nshn.ir/?lat=${court.lat}&lng=${court.lng}" target="_blank" rel="noopener noreferrer" style="text-decoration:none; display:inline-flex; align-items:center; gap:2px; padding:3px 5px; border-radius:6px; background:#1e3a8a; color:#fff; font-size:10px; font-weight:900;">${NAV_SVG_STRINGS.neshan}<span>نشان</span></a>
             <a href="https://balad.ir/location?latitude=${court.lat}&longitude=${court.lng}" target="_blank" rel="noopener noreferrer" style="text-decoration:none; display:inline-flex; align-items:center; gap:2px; padding:3px 5px; border-radius:6px; background:#064e3b; color:#fff; font-size:10px; font-weight:900;">${NAV_SVG_STRINGS.balad}<span>بلد</span></a>
             <a href="https://www.google.com/maps/dir/?api=1&destination=${court.lat},${court.lng}" target="_blank" rel="noopener noreferrer" style="text-decoration:none; display:inline-flex; align-items:center; gap:2px; padding:3px 5px; border-radius:6px; background:#0f172a; color:#fff; font-size:10px; font-weight:900;">${NAV_SVG_STRINGS.google}<span>Google</span></a>
             <a href="https://waze.com/ul?ll=${court.lat},${court.lng}&navigate=yes" target="_blank" rel="noopener noreferrer" style="text-decoration:none; display:inline-flex; align-items:center; gap:2px; padding:3px 5px; border-radius:6px; background:#075985; color:#fff; font-size:10px; font-weight:900;">${NAV_SVG_STRINGS.waze}<span>Waze</span></a>
           </div>
+
+          <button onclick="window.__rallyOpenClub && window.__rallyOpenClub('${court.id}')" style="width:100%; padding:5px 8px; border-radius:8px; background:#0284c7; color:#fff; font-size:11px; font-weight:900; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:4px; box-shadow:0 2px 4px rgba(2,132,199,0.25);">
+            <span>مشاهده صفحه زمین و سانس‌ها</span>
+            <span>←</span>
+          </button>
         </div>
       `;
 
