@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Plus, Users, Filter, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Plus, Users, Filter, Sparkles, CheckCircle2, ChevronRight, ChevronLeft, MoveHorizontal } from 'lucide-react';
 import { MatchmakingGameItem } from '../../types/rally';
 import { MatchmakingCard } from '../../components/rally/matchmaking/MatchmakingCard';
 import { JoinMatchModal } from '../../components/rally/matchmaking/JoinMatchModal';
 import { CreateMatchModal } from '../../components/rally/matchmaking/CreateMatchModal';
 import { MatchResultModal } from '../../components/rally/matchmaking/MatchResultModal';
 import { rallyApi } from '../../services/rallyApi';
+import { useDragScroll } from '../../hooks/useDragScroll';
 
 interface RallyMatchmakingPageProps {
   userId: string;
@@ -14,18 +15,12 @@ interface RallyMatchmakingPageProps {
 }
 
 const SKILL_FILTER_PILLS = [
-  { id: 'ALL', label: 'همه سطوح' },
-  { id: 'D-', label: 'سطح D- (تازه‌کار)' },
-  { id: 'D', label: 'سطح D (مبتدی)' },
-  { id: 'D+', label: 'سطح D+ (نیمه‌مبتدی)' },
-  { id: 'C-', label: 'سطح C- (متوسط مقدماتی)' },
-  { id: 'C', label: 'سطح C (متوسط)' },
-  { id: 'C+', label: 'سطح C+ (نیمه‌پیشرفته)' },
-  { id: 'B-', label: 'سطح B- (پیشرفته مقدماتی)' },
-  { id: 'B', label: 'سطح B (پیشرفته)' },
-  { id: 'B+', label: 'سطح B+ (پیشرفته عالی)' },
-  { id: 'A-', label: 'سطح A- (حرفه‌ای مقدماتی)' },
-  { id: 'A', label: 'سطح A (حرفه‌ای)' },
+  { id: 'ALL', label: 'همه سطوح' }, { id: 'D-', label: 'سطح D- (تازه‌کار)' },
+  { id: 'D', label: 'سطح D (مبتدی)' }, { id: 'D+', label: 'سطح D+ (نیمه‌مبتدی)' },
+  { id: 'C-', label: 'سطح C- (متوسط مقدماتی)' }, { id: 'C', label: 'سطح C (متوسط)' },
+  { id: 'C+', label: 'سطح C+ (نیمه‌پیشرفته)' }, { id: 'B-', label: 'سطح B- (پیشرفته مقدماتی)' },
+  { id: 'B', label: 'سطح B (پیشرفته)' }, { id: 'B+', label: 'سطح B+ (پیشرفته عالی)' },
+  { id: 'A-', label: 'سطح A- (حرفه‌ای مقدماتی)' }, { id: 'A', label: 'سطح A (حرفه‌ای)' },
   { id: 'A+', label: 'سطح A+ (الیت کشوری)' },
 ];
 
@@ -41,6 +36,13 @@ export const RallyMatchmakingPage: React.FC<RallyMatchmakingPageProps> = ({
   const [activeRecordResultGame, setActiveRecordResultGame] = useState<MatchmakingGameItem | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
+
+  const {
+    containerRef: filterTrackRef,
+    hasDraggedRef,
+    scrollStep,
+    dragProps,
+  } = useDragScroll<HTMLDivElement>();
 
   const fetchGames = useCallback(async () => {
     setLoading(true);
@@ -173,21 +175,63 @@ export const RallyMatchmakingPage: React.FC<RallyMatchmakingPageProps> = ({
         </div>
       </div>
 
-      {/* Level Filters */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-6 no-scrollbar">
-        {SKILL_FILTER_PILLS.map((pill) => (
-          <button
-            key={pill.id}
-            onClick={() => setSelectedLevel(pill.id)}
-            className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition ${
-              selectedLevel === pill.id
-                ? 'bg-rally-accent text-slate-950 shadow-md font-black'
-                : 'bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800'
-            }`}
-          >
-            {pill.label}
-          </button>
-        ))}
+      {/* Level Filters with Ultra-smooth Mouse Drag to Scroll */}
+      <div className="relative mb-6">
+        <div className="flex items-center justify-between mb-2.5">
+          <div className="flex items-center gap-2 text-xs font-bold text-slate-300">
+            <Filter size={14} className="text-rally-accent" />
+            <span>فیلتر سطح مهارتی مسابقه:</span>
+          </div>
+          <div className="hidden sm:flex items-center gap-2 text-[11px] font-semibold text-slate-400">
+            <span className="flex items-center gap-1 text-slate-500 select-none">
+              <MoveHorizontal size={13} />
+              <span>با ماوس بکشید</span>
+            </span>
+            <div className="flex items-center gap-1 mr-1">
+              <button
+                type="button"
+                onClick={() => scrollStep('right', 260)}
+                className="w-7 h-7 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 flex items-center justify-center transition active:scale-95 cursor-pointer shadow-xs"
+                title="مشاهده سطوح راست"
+              >
+                <ChevronRight size={14} />
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollStep('left', 260)}
+                className="w-7 h-7 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 flex items-center justify-center transition active:scale-95 cursor-pointer shadow-xs"
+                title="مشاهده سطوح چپ"
+              >
+                <ChevronLeft size={14} />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div
+          ref={filterTrackRef}
+          className="flex items-center gap-2 overflow-x-auto pb-3 no-scrollbar select-none cursor-grab active:cursor-grabbing"
+          {...dragProps}
+        >
+          {SKILL_FILTER_PILLS.map((pill) => (
+            <button
+              key={pill.id}
+              type="button"
+              draggable={false}
+              onClick={() => {
+                if (hasDraggedRef.current) return;
+                setSelectedLevel(pill.id);
+              }}
+              className={`px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all select-none flex-shrink-0 cursor-pointer ${
+                selectedLevel === pill.id
+                  ? 'bg-rally-accent text-slate-950 shadow-md font-black scale-102'
+                  : 'bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 hover:border-slate-700'
+              }`}
+            >
+              {pill.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Games Grid */}

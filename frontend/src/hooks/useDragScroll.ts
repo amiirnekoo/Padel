@@ -14,6 +14,7 @@ export function useDragScroll<T extends HTMLElement = HTMLDivElement>() {
   const isDownRef = useRef(false);
   const startXRef = useRef(0);
   const scrollLeftRef = useRef(0);
+  const isRtlRef = useRef(false);
   const hasDraggedRef = useRef(false);
 
   const onMouseDown = useCallback((e: React.MouseEvent) => {
@@ -27,6 +28,9 @@ export function useDragScroll<T extends HTMLElement = HTMLDivElement>() {
     hasDraggedRef.current = false;
     startXRef.current = e.clientX;
     scrollLeftRef.current = el.scrollLeft;
+
+    // Detect RTL context accurately
+    isRtlRef.current = window.getComputedStyle(el).direction === 'rtl';
 
     // Immediate 1:1 responsiveness with zero CSS transition lag
     el.style.scrollBehavior = 'auto';
@@ -43,8 +47,13 @@ export function useDragScroll<T extends HTMLElement = HTMLDivElement>() {
         hasDraggedRef.current = true;
       }
 
-      // 1:1 direct instant tracking
-      currentEl.scrollLeft = scrollLeftRef.current - deltaX;
+      // 1:1 direct instant tracking: In RTL modern browsers (Chromium/Firefox/Safari),
+      // scrollLeft is negative or inverse; adding deltaX tracks mouse direction perfectly.
+      if (isRtlRef.current) {
+        currentEl.scrollLeft = scrollLeftRef.current + deltaX;
+      } else {
+        currentEl.scrollLeft = scrollLeftRef.current - deltaX;
+      }
     };
 
     const handleMouseUp = () => {
@@ -69,6 +78,30 @@ export function useDragScroll<T extends HTMLElement = HTMLDivElement>() {
     window.addEventListener('mouseup', handleMouseUp);
   }, []);
 
+  // Optional horizontal wheel scrolling when hovered over horizontal tracks
+  const onWheel = useCallback((e: React.WheelEvent) => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    // If already scrolling horizontally via trackpad or shift-scroll, let browser handle naturally
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+
+    // Convert vertical wheel to horizontal track scroll
+    if (Math.abs(e.deltaY) > 5) {
+      const isRtl = window.getComputedStyle(el).direction === 'rtl';
+      const scrollAmount = e.deltaY;
+      el.scrollLeft += isRtl ? -scrollAmount : scrollAmount;
+    }
+  }, []);
+
+  const scrollStep = useCallback((direction: 'left' | 'right', stepPx = 250) => {
+    const el = containerRef.current;
+    if (!el) return;
+    const isRtl = window.getComputedStyle(el).direction === 'rtl';
+    const delta = direction === 'left' ? -stepPx : stepPx;
+    el.scrollBy({ left: isRtl ? -delta : delta, behavior: 'smooth' });
+  }, []);
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
@@ -79,8 +112,10 @@ export function useDragScroll<T extends HTMLElement = HTMLDivElement>() {
   return {
     containerRef,
     hasDraggedRef,
+    scrollStep,
     dragProps: {
       onMouseDown,
+      onWheel,
     },
   };
 }
