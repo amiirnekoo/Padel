@@ -17,14 +17,17 @@ export const ModernRallyHero: React.FC<ModernRallyHeroProps> = ({
     <section className="relative w-full min-h-[580px] lg:min-h-[640px] pt-28 pb-16 md:pt-36 md:pb-20 overflow-hidden flex flex-col justify-center items-center text-center" dir="rtl">
       {/* Background Realistic Court Photo with Balanced Cinematic Overlay */}
       <div className="absolute inset-0 z-0">
-        <img
-          src="/images/real_padel_hero.jpg"
-          alt="زمین مسابقه پدل رالی"
-          className="w-full h-full object-cover object-center"
-          loading="eager"
-          decoding="async"
-          fetchPriority="high"
-        />
+        <picture>
+          <source srcSet="/images/real_padel_hero.webp" type="image/webp" />
+          <img
+            src="/images/real_padel_hero.jpg"
+            alt="زمین مسابقه پدل رالی"
+            className="w-full h-full object-cover object-center"
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+          />
+        </picture>
         {/* Subtle cinematic gradient so text is crystal clear while the real court shines through */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#0B2238]/85 via-[#0B2238]/50 to-[#0B2238]/90" />
         <div className="absolute inset-0 bg-black/25" />
