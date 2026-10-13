@@ -65,6 +65,7 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
               onError={() => setHasImgError(true)}
               className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-200"
               loading="lazy"
+              decoding="async"
             />
           )}
 

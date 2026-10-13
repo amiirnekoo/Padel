@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { MapCourtItem, MapCityConfig } from '../../../data/courtsMapData';
+import { NAV_SVG_STRINGS } from './NavAppIcons';
 
 interface LeafletCourtsMapProps {
   courts: MapCourtItem[];
@@ -25,7 +26,7 @@ export const LeafletCourtsMap: React.FC<LeafletCourtsMapProps> = ({
 
   // Initialize Map with White Background and High-speed CDN Tiles
   useEffect(() => {
-    if (!mapContainerRef.current) return;
+    if (!isVisible || !mapContainerRef.current) return;
     if (mapInstanceRef.current) return;
 
     const map = L.map(mapContainerRef.current, {
@@ -145,15 +146,15 @@ export const LeafletCourtsMap: React.FC<LeafletCourtsMapProps> = ({
       const marker = L.marker([court.lat, court.lng], { icon: customIcon });
 
       const popupHtml = `
-        <div dir="rtl" class="p-1 text-right font-sans" style="min-width: 180px;">
+        <div dir="rtl" class="p-1 text-right font-sans" style="min-width: 190px;">
           <div class="font-black text-xs text-slate-900 mb-0.5">${court.name.split(' (')[0]}</div>
           <div class="text-[10px] text-slate-500 mb-2">${court.area} • ${court.courtType === 'INDOOR' ? 'مسقف' : 'روباز'}</div>
-          <div class="text-[10px] font-bold text-slate-700 mb-1">مسیریابی با اپلیکیشن:</div>
+          <div class="text-[10px] font-bold text-slate-700 mb-1.5">مسیریابی با اپلیکیشن:</div>
           <div class="flex items-center gap-1 justify-between">
-            <a href="https://nshn.ir/?lat=${court.lat}&lng=${court.lng}" target="_blank" rel="noopener noreferrer" style="text-decoration:none; display:inline-block; padding:3px 6px; border-radius:6px; background:#2563eb; color:#fff; font-size:10px; font-weight:900;">Neshan</a>
-            <a href="https://balad.ir/location?latitude=${court.lat}&longitude=${court.lng}" target="_blank" rel="noopener noreferrer" style="text-decoration:none; display:inline-block; padding:3px 6px; border-radius:6px; background:#059669; color:#fff; font-size:10px; font-weight:900;">Balad</a>
-            <a href="https://www.google.com/maps/dir/?api=1&destination=${court.lat},${court.lng}" target="_blank" rel="noopener noreferrer" style="text-decoration:none; display:inline-block; padding:3px 6px; border-radius:6px; background:#e11d48; color:#fff; font-size:10px; font-weight:900;">Google</a>
-            <a href="https://waze.com/ul?ll=${court.lat},${court.lng}&navigate=yes" target="_blank" rel="noopener noreferrer" style="text-decoration:none; display:inline-block; padding:3px 6px; border-radius:6px; background:#0284c7; color:#fff; font-size:10px; font-weight:900;">Waze</a>
+            <a href="https://nshn.ir/?lat=${court.lat}&lng=${court.lng}" target="_blank" rel="noopener noreferrer" style="text-decoration:none; display:inline-flex; align-items:center; gap:2px; padding:3px 5px; border-radius:6px; background:#1e3a8a; color:#fff; font-size:10px; font-weight:900;">${NAV_SVG_STRINGS.neshan}<span>نشان</span></a>
+            <a href="https://balad.ir/location?latitude=${court.lat}&longitude=${court.lng}" target="_blank" rel="noopener noreferrer" style="text-decoration:none; display:inline-flex; align-items:center; gap:2px; padding:3px 5px; border-radius:6px; background:#064e3b; color:#fff; font-size:10px; font-weight:900;">${NAV_SVG_STRINGS.balad}<span>بلد</span></a>
+            <a href="https://www.google.com/maps/dir/?api=1&destination=${court.lat},${court.lng}" target="_blank" rel="noopener noreferrer" style="text-decoration:none; display:inline-flex; align-items:center; gap:2px; padding:3px 5px; border-radius:6px; background:#0f172a; color:#fff; font-size:10px; font-weight:900;">${NAV_SVG_STRINGS.google}<span>Google</span></a>
+            <a href="https://waze.com/ul?ll=${court.lat},${court.lng}&navigate=yes" target="_blank" rel="noopener noreferrer" style="text-decoration:none; display:inline-flex; align-items:center; gap:2px; padding:3px 5px; border-radius:6px; background:#075985; color:#fff; font-size:10px; font-weight:900;">${NAV_SVG_STRINGS.waze}<span>Waze</span></a>
           </div>
         </div>
       `;

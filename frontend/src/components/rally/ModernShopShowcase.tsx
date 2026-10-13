@@ -67,6 +67,13 @@ export const ModernShopShowcase: React.FC<ModernShopShowcaseProps> = ({
                     alt={product.name_fa}
                     className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105"
                     loading="lazy"
+                    decoding="async"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      if (!target.src.includes('real_padel_hero.jpg')) {
+                        target.src = '/images/real_padel_hero.jpg';
+                      }
+                    }}
                   />
                   
                   {/* Brand Tag & Dynamic Latest Year Badge */}

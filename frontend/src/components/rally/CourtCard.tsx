@@ -69,6 +69,16 @@ export const CourtCard: React.FC<CourtCardProps> = ({
           src={club.images[0] || '/images/real_padel_hero.jpg'}
           alt={club.name}
           className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-106"
+          loading="lazy"
+          decoding="async"
+          onError={(e) => {
+            const target = e.currentTarget;
+            if (target.src.endsWith('.webp')) {
+              target.src = target.src.replace('.webp', '.jpg');
+            } else if (!target.src.includes('real_padel_hero.jpg')) {
+              target.src = '/images/real_padel_hero.jpg';
+            }
+          }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
         

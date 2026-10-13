@@ -5,6 +5,7 @@ import { MapPin, Navigation, Phone, Car, Compass } from 'lucide-react';
 import { CourtClub } from '../../../types/rally';
 import { ClubRichProfile } from '../../../data/clubsRichData';
 import { CourtNavigationActions } from '../../../components/rally/courts/CourtNavigationActions';
+import { NAV_SVG_STRINGS } from '../../../components/rally/courts/NavAppIcons';
 
 interface ClubLocationMapProps {
   club: CourtClub;
@@ -17,12 +18,29 @@ export const ClubLocationMap: React.FC<ClubLocationMapProps> = ({
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
+  const [isMapVisible, setIsMapVisible] = React.useState(false);
 
   const lat = club.latitude || 35.7981;
   const lng = club.longitude || 51.5032;
 
+  // Lazy initialize map only when container scrolls into or near viewport
   useEffect(() => {
     if (!mapContainerRef.current) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          setIsMapVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '300px' }
+    );
+    observer.observe(mapContainerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!isMapVisible || !mapContainerRef.current) return;
     if (mapInstanceRef.current) {
       mapInstanceRef.current.setView([lat, lng], 15);
       return;
@@ -58,9 +76,22 @@ export const ClubLocationMap: React.FC<ClubLocationMapProps> = ({
       iconAnchor: [20, 20]
     });
 
+    const popupContent = `
+      <div dir="rtl" style="font-family: inherit; font-size: 11px; line-height: 1.4; min-width: 190px;">
+        <strong style="color: #0f172a; font-size: 12px; display: block; margin-bottom: 2px;">${club.name}</strong>
+        <div style="color: #64748b; font-size: 10px; margin-bottom: 6px;">${club.address}</div>
+        <div style="display: flex; gap: 4px; align-items: center; justify-content: space-between;">
+          <a href="https://nshn.ir/?lat=${lat}&lng=${lng}" target="_blank" rel="noopener noreferrer" style="text-decoration:none; display:inline-flex; align-items:center; gap:2px; padding:3px 5px; border-radius:6px; background:#1e3a8a; color:#fff; font-size:10px; font-weight:900;">${NAV_SVG_STRINGS.neshan}<span>نشان</span></a>
+          <a href="https://balad.ir/location?latitude=${lat}&longitude=${lng}" target="_blank" rel="noopener noreferrer" style="text-decoration:none; display:inline-flex; align-items:center; gap:2px; padding:3px 5px; border-radius:6px; background:#064e3b; color:#fff; font-size:10px; font-weight:900;">${NAV_SVG_STRINGS.balad}<span>بلد</span></a>
+          <a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}" target="_blank" rel="noopener noreferrer" style="text-decoration:none; display:inline-flex; align-items:center; gap:2px; padding:3px 5px; border-radius:6px; background:#0f172a; color:#fff; font-size:10px; font-weight:900;">${NAV_SVG_STRINGS.google}<span>Google</span></a>
+          <a href="https://waze.com/ul?ll=${lat},${lng}&navigate=yes" target="_blank" rel="noopener noreferrer" style="text-decoration:none; display:inline-flex; align-items:center; gap:2px; padding:3px 5px; border-radius:6px; background:#075985; color:#fff; font-size:10px; font-weight:900;">${NAV_SVG_STRINGS.waze}<span>Waze</span></a>
+        </div>
+      </div>
+    `;
+
     L.marker([lat, lng], { icon: customIcon })
       .addTo(map)
-      .bindPopup(`<strong>${club.name}</strong><br/>${club.address}`, { offset: [0, -15] })
+      .bindPopup(popupContent, { offset: [0, -15] })
       .openPopup();
 
     mapInstanceRef.current = map;
@@ -71,7 +102,7 @@ export const ClubLocationMap: React.FC<ClubLocationMapProps> = ({
       map.remove();
       mapInstanceRef.current = null;
     };
-  }, [lat, lng, club.name, club.address]);
+  }, [isMapVisible, lat, lng, club.name, club.address]);
 
   return (
     <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/80 shadow-xs space-y-6">
@@ -96,8 +127,13 @@ export const ClubLocationMap: React.FC<ClubLocationMapProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
         {/* Map Container (lg: 8 cols) */}
-        <div className="lg:col-span-8 h-72 sm:h-96 rounded-2xl overflow-hidden border border-slate-200 relative shadow-inner">
+        <div className="lg:col-span-8 h-72 sm:h-96 rounded-2xl overflow-hidden border border-slate-200 relative shadow-inner bg-slate-100">
           <div ref={mapContainerRef} className="w-full h-full z-0" />
+          {!isMapVisible && (
+            <div className="absolute inset-0 flex items-center justify-center text-slate-400 text-xs font-bold pointer-events-none">
+              آماده‌سازی نقشه کورت...
+            </div>
+          )}
         </div>
 
         {/* Info Column (lg: 4 cols) */}

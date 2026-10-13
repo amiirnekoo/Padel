@@ -39,6 +39,7 @@ export const ModernFeaturedBanners: React.FC<ModernFeaturedBannersProps> = ({
                 alt="مسابقات پدل جام پاییز"
                 className="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105 opacity-40"
                 loading="lazy"
+                decoding="async"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0A1B2F] via-[#0B2B4E]/85 to-[#0C4F8D]/50" />
             </div>
@@ -93,6 +94,7 @@ export const ModernFeaturedBanners: React.FC<ModernFeaturedBannersProps> = ({
                 alt="همکاری با رالی پدل"
                 className="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105 opacity-30"
                 loading="lazy"
+                decoding="async"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#082522] via-[#0E3D38]/85 to-[#14574F]/50" />
             </div>

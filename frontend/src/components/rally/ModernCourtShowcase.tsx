@@ -37,7 +37,7 @@ export const ModernCourtShowcase: React.FC<ModernCourtShowcaseProps> = ({
       name: 'مجموعه پدل FGB انقلاب (FGB Club)',
       area: 'باشگاه انقلاب',
       city: 'تهران',
-      imageUrl: '/images/court_fgb_enghelab.jpg',
+      imageUrl: '/images/court_fgb_enghelab.webp',
       startingPrice: 2800000,
       courtType: 'INDOOR',
       slots: [
@@ -51,7 +51,7 @@ export const ModernCourtShowcase: React.FC<ModernCourtShowcaseProps> = ({
       name: 'باشگاه پدل لفور (Lafour Club)',
       area: 'آجودانیه',
       city: 'تهران',
-      imageUrl: '/images/court_lafour.jpg',
+      imageUrl: '/images/court_lafour.webp',
       startingPrice: 3000000,
       courtType: 'OUTDOOR',
       slots: [
@@ -65,7 +65,7 @@ export const ModernCourtShowcase: React.FC<ModernCourtShowcaseProps> = ({
       name: 'باشگاه پدل ویوا (VIVA Club)',
       area: 'مینی‌سیتی',
       city: 'تهران',
-      imageUrl: '/images/court_viva.jpg',
+      imageUrl: '/images/court_viva.webp',
       startingPrice: 3500000,
       courtType: 'INDOOR',
       slots: [
@@ -164,6 +164,13 @@ export const ModernCourtShowcase: React.FC<ModernCourtShowcaseProps> = ({
                     alt={court.name}
                     className="w-full h-full object-cover object-center transition-transform duration-300 ease-out group-hover:scale-105"
                     loading="lazy"
+                    decoding="async"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      if (target.src.endsWith('.webp')) {
+                        target.src = court.imageUrl.replace('.webp', '.jpg');
+                      }
+                    }}
                   />
                   {/* Subtle Darkening Overlay on Hover */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent transition-opacity duration-200 group-hover:opacity-90" />

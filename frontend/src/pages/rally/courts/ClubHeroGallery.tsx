@@ -95,6 +95,14 @@ export const ClubHeroGallery: React.FC<ClubHeroGalleryProps> = ({
                 src={images[activeImgIndex] || images[0] || '/images/real_padel_hero.jpg'}
                 alt={club.name}
                 className="w-full h-full object-cover transition-all duration-300"
+                decoding="async"
+                fetchPriority="high"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (!target.src.includes('real_padel_hero.jpg')) {
+                    target.src = '/images/real_padel_hero.jpg';
+                  }
+                }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0B2238]/90 via-transparent to-black/20" />
 
@@ -134,7 +142,7 @@ export const ClubHeroGallery: React.FC<ClubHeroGalleryProps> = ({
                         : 'border-white/20 opacity-70 hover:opacity-100'
                     }`}
                   >
-                    <img src={imgUrl} alt={`تصویر ${idx + 1}`} className="w-full h-full object-cover" />
+                    <img src={imgUrl} alt={`تصویر ${idx + 1}`} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                   </button>
                 ))}
               </div>

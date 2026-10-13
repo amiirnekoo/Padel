@@ -35,9 +35,9 @@ export const CLUBS_RICH_PROFILES: Record<string, ClubRichProfile> = {
     descriptionFa:
       'باشگاه پدل ویوا (VIVA Padel Club) یکی از مدرن‌ترین و مجهزترین کلوپ‌های ورزشی پدل در شمال‌شرق تهران (منطقه مینی‌سیتی و بلوار ارتش) است. این مجموعه با تکیه بر معماری سازه‌ای مسقف با تهویه آزاد کوهپایه‌ای، کورت‌های سوپر پانورامیک بدون ستون مزاحم، چمن مشکی مسابقاتی WPT و شیشه‌های سکوریت ضخیم ۱۲ میل، محیطی فوق‌حرفه‌ای و در عین حال مفرح برای بازیکنان مبتدی تا ملی‌پوشان فراهم آورده است.',
     galleryImages: [
+      '/images/court_viva.webp',
       '/images/court_viva.jpg',
-      '/images/real_padel_hero.jpg',
-      '/images/rackets/hero_racket_bullpadel.png'
+      '/images/real_padel_hero.jpg'
     ],
     specs: {
       structureType: 'سازه مسقف قوسی استاندارد با پوشش عایق UV و فعال در تمام ۴ فصل',

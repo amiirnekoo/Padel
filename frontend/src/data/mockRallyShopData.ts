@@ -1072,12 +1072,30 @@ const RAW_SHOP_PRODUCTS: ShopProduct[] = [
   }
 ];
 
+function getProductSafeImage(product: ShopProduct): string {
+  if (product.category === 'SHOES') return '/images/asics_shoes.jpg';
+  if (product.category === 'BAGS') return '/images/bullpadel_bag.jpg';
+  if (product.category === 'BALLS') return '/images/head_padel_balls.jpg';
+  if (product.category === 'ACCESSORIES') return '/images/wilson_grip.jpg';
+  if (product.brand === 'Head') return '/images/head_speed_padel.jpg';
+  if (product.brand === 'Bullpadel') return '/images/bullpadel_hack.jpg';
+  if (product.brand === 'Babolat') return '/images/babolat_viper.jpg';
+  if (product.brand === 'Wilson') return '/images/wilson_prostaff.jpg';
+  if (product.brand === 'Yonex') return '/images/yonex_ezone.jpg';
+  return '/images/real_padel_hero.jpg';
+}
+
 export const MOCK_SHOP_PRODUCTS: ShopProduct[] = RAW_SHOP_PRODUCTS
   .map((p) => {
     const customImages = MANIFEST[p.id];
-    const base = (customImages && customImages.length > 0)
-      ? { ...p, image_url: customImages[0], images: customImages }
-      : p;
+    let resolvedImage = (customImages && customImages.length > 0) ? customImages[0] : p.image_url;
+    let resolvedImages = (customImages && customImages.length > 0) ? customImages : (p.images || []);
+    if (!resolvedImage || resolvedImage.endsWith('/1.jpg')) {
+      const fallback = getProductSafeImage(p);
+      resolvedImage = fallback;
+      resolvedImages = [fallback];
+    }
+    const base = { ...p, image_url: resolvedImage, images: resolvedImages };
     return {
       ...base,
       price: roundPriceToCeilStep(base.price),

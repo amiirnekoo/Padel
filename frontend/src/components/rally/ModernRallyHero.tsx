@@ -22,6 +22,8 @@ export const ModernRallyHero: React.FC<ModernRallyHeroProps> = ({
           alt="زمین مسابقه پدل رالی"
           className="w-full h-full object-cover object-center"
           loading="eager"
+          decoding="async"
+          fetchPriority="high"
         />
         {/* Subtle cinematic gradient so text is crystal clear while the real court shines through */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#0B2238]/85 via-[#0B2238]/50 to-[#0B2238]/90" />
