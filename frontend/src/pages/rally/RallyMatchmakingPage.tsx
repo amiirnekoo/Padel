@@ -146,9 +146,9 @@ export const RallyMatchmakingPage: React.FC<RallyMatchmakingPageProps> = ({
       <div className="relative rounded-3xl overflow-hidden mb-8 border border-slate-800 shadow-2xl bg-[#0f172a]">
         <div className="absolute inset-0 z-0">
           <img
-            src="/images/courts/matchmaking_hero.jpg"
-            alt="Padel Matchmaking"
-            className="w-full h-full object-cover opacity-25"
+            src="/images/courts/matchmaking_hero.jpg?v=20261013_men"
+            alt="مسابقه دابلز پدل آقایان رالی"
+            className="w-full h-full object-cover opacity-30"
           />
           <div className="absolute inset-0 bg-gradient-to-l from-[#0f172a] via-[#0f172a]/85 to-transparent" />
         </div>
