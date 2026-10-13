@@ -196,6 +196,7 @@ export const App: React.FC = () => {
                       onSelectCoach={setSelectedCoach}
                       onSelectTournament={setSelectedTournament}
                       onNavigateToCourts={(f) => { if (f) setCourtFilterParam(f); navigateToTab('courts'); }}
+                      onNavigateToMatchmaking={() => navigateToTab('matchmaking')}
                       onNavigateToCoaches={(f) => { if (f) setCoachFilterParam(f); navigateToTab('coaches'); }}
                       onNavigateToTournaments={() => navigateToTab('tournaments')}
                       onNavigateToSponsors={() => {}}

@@ -3,7 +3,7 @@ import { Menu, X, ArrowLeft, Shield, ShoppingBag } from 'lucide-react';
 import { RallyLogo } from './RallyLogo';
 import { UserSession } from '../AuthModal';
 
-export type ModernNavTab = 'drills' | 'courts' | 'coaches' | 'tournaments' | 'rankings' | 'magazine' | 'shop' | 'home';
+export type ModernNavTab = 'drills' | 'courts' | 'matchmaking' | 'coaches' | 'tournaments' | 'rankings' | 'magazine' | 'shop' | 'home';
 
 interface ModernRallyHeaderProps {
   activeTab: ModernNavTab;
@@ -38,6 +38,7 @@ export const ModernRallyHeader: React.FC<ModernRallyHeaderProps> = ({
 
   const navItems = [
     { id: 'courts' as ModernNavTab, label: 'زمین‌ها' },
+    { id: 'matchmaking' as ModernNavTab, label: 'بازی‌های باز' },
     { id: 'coaches' as ModernNavTab, label: 'مربیان' },
     { id: 'tournaments' as ModernNavTab, label: 'مسابقات' },
     { id: 'drills' as ModernNavTab, label: 'تمرینات تخصصی', isSpecial: true },

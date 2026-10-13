@@ -70,6 +70,14 @@ export const ModernRallyFooter: React.FC<ModernRallyFooterProps> = ({
               </li>
               <li>
                 <button
+                  onClick={() => onNavigateTab?.('matchmaking')}
+                  className="hover:text-[#D7ED68] transition-colors cursor-pointer text-right"
+                >
+                  بازی‌های باز و حریف‌یابی
+                </button>
+              </li>
+              <li>
+                <button
                   onClick={() => onNavigateTab?.('rankings')}
                   className="hover:text-[#D7ED68] transition-colors cursor-pointer text-right"
                 >

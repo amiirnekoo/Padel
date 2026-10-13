@@ -1,6 +1,7 @@
 import React from 'react';
 import { ModernRallyHero } from '../../components/rally/ModernRallyHero';
 import { ModernCourtShowcase } from '../../components/rally/ModernCourtShowcase';
+import { ModernMatchmakingShowcase } from '../../components/rally/ModernMatchmakingShowcase';
 import { ModernShopShowcase } from '../../components/rally/ModernShopShowcase';
 import { ModernFeaturedBanners } from '../../components/rally/ModernFeaturedBanners';
 import { CourtClub, Coach, Tournament, TimeSlotItem, SportType, ShopProduct } from '../../types/rally';
@@ -13,6 +14,7 @@ interface RallyHomePageProps {
   onSelectCoach: (coach: Coach) => void;
   onSelectTournament: (tournament: Tournament) => void;
   onNavigateToCourts: (filter?: { sport?: SportType; area?: string }) => void;
+  onNavigateToMatchmaking?: () => void;
   onNavigateToCoaches: (filter?: { sport?: SportType; level?: string }) => void;
   onNavigateToTournaments: (filter?: { sport?: SportType; level?: string }) => void;
   onNavigateToSponsors: () => void;
@@ -29,6 +31,7 @@ export const RallyHomePage: React.FC<RallyHomePageProps> = ({
   onSelectCoach,
   onSelectTournament,
   onNavigateToCourts,
+  onNavigateToMatchmaking,
   onNavigateToCoaches,
   onNavigateToTournaments,
   onNavigateToSponsors,
@@ -58,6 +61,11 @@ export const RallyHomePage: React.FC<RallyHomePageProps> = ({
         onSelectSlot={onSelectDirectSlot}
         onViewAllCourts={() => onNavigateToCourts()}
         fallbackClubs={MOCK_CLUBS}
+      />
+
+      {/* 3. Open Matches & Elo Rating Showcase (Playtomic style) */}
+      <ModernMatchmakingShowcase
+        onViewAllMatches={() => onNavigateToMatchmaking?.()}
       />
 
       {/* 3. Specialized Equipment Shop Showcase (Premier Rackets & Balls) */}
