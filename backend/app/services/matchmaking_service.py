@@ -12,6 +12,15 @@ from backend.app.services.wallet_service import WalletService
 from backend.app.services.notification_service import NotificationService
 
 class MatchmakingService:
+    DEFAULT_SKILL_RANGES = {
+        "D": (500, 1050),
+        "D+": (950, 1250),
+        "C": (1150, 1450),
+        "C+": (1350, 1650),
+        "B": (1550, 1850),
+        "A": (1750, 2500),
+    }
+
     @staticmethod
     async def create_game(
         db: AsyncSession,
@@ -22,12 +31,16 @@ class MatchmakingService:
         creator_id: str | None = None,
         creator_position: str = "TEAM_A_RIGHT",
         title: str = "بازی آزاد پدل ۴ نفره",
-        gender_category: str = "OPEN"
+        gender_category: str = "OPEN",
+        level_lock: bool = False,
+        min_elo: int | None = None,
+        max_elo: int | None = None
     ) -> MatchmakingGame:
         """
         Creates an open 4-player matchmaking match on a given court slot.
         Splits total slot price equally across 4 players (Split Payment).
         Deducts creator's share from wallet if creator joins.
+        Enforces smart Playtomic-style level lock if enabled.
         """
         slot_stmt = select(TimeSlot).where(TimeSlot.id == timeslot_id)
         slot_res = await db.execute(slot_stmt)
@@ -51,6 +64,16 @@ class MatchmakingService:
             except Exception:
                 pass  # Allow offline or test creation if wallet top-up omitted
 
+        # Resolve Elo lock range if level_lock enabled
+        resolved_min = min_elo
+        resolved_max = max_elo
+        if level_lock:
+            default_range = MatchmakingService.DEFAULT_SKILL_RANGES.get(skill_level, (1000, 1500))
+            if resolved_min is None:
+                resolved_min = default_range[0]
+            if resolved_max is None:
+                resolved_max = default_range[1]
+
         # Map position
         team_a_right = creator_id if creator_position == "TEAM_A_RIGHT" else None
         team_a_left = creator_id if creator_position == "TEAM_A_LEFT" else None
@@ -69,6 +92,9 @@ class MatchmakingService:
             price_per_player=price_per_player,
             status="OPEN",
             created_by_user_id=creator_id,
+            level_lock=level_lock,
+            min_elo=resolved_min,
+            max_elo=resolved_max,
             team_a_right_user_id=team_a_right,
             team_a_left_user_id=team_a_left,
             team_b_right_user_id=team_b_right,
@@ -89,6 +115,7 @@ class MatchmakingService:
     ) -> MatchmakingGame:
         """
         Adds a player to a specific position (TEAM_A_RIGHT, TEAM_A_LEFT, TEAM_B_RIGHT, TEAM_B_LEFT).
+        Enforces Level Lock if enabled on the game.
         Deducts player's 1/4 share.
         When all 4 positions are filled, transitions status to CONFIRMED and confirms slot reservation.
         """
@@ -100,6 +127,18 @@ class MatchmakingService:
 
         if game.status != "OPEN":
             raise ValueError("ظرفیت این بازی تکمیل شده یا لغو شده است")
+
+        # Check level lock
+        if game.level_lock:
+            user_stmt = select(User).where(User.id == user_id)
+            user_res = await db.execute(user_stmt)
+            user_obj = user_res.scalar_one_or_none()
+            user_elo = user_obj.elo_rating if (user_obj and user_obj.elo_rating is not None) else 1200
+            
+            if game.min_elo is not None and user_elo < game.min_elo:
+                raise ValueError(f"سطح ریتینگ شما ({user_elo}) با محدوده مجاز این بازی ({game.min_elo} تا {game.max_elo}) همخوانی ندارد.")
+            if game.max_elo is not None and user_elo > game.max_elo:
+                raise ValueError(f"سطح ریتینگ شما ({user_elo}) با محدوده مجاز این بازی ({game.min_elo} تا {game.max_elo}) همخوانی ندارد.")
 
         # Check if user already joined
         current_players = [
@@ -241,6 +280,9 @@ class MatchmakingService:
             "price_per_player": game.price_per_player,
             "status": game.status,
             "filled_count": game.filled_slots_count,
+            "level_lock": game.level_lock,
+            "min_elo": game.min_elo,
+            "max_elo": game.max_elo,
             "club_name": club.name if club else "باشگاه پدل",
             "club_city": club.city if club else "تهران",
             "court_name": court.name if court else "کورت ۱",

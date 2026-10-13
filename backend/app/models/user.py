@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from sqlalchemy import String, Boolean, DateTime, Text
+from sqlalchemy import String, Boolean, DateTime, Text, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from backend.app.models.base import Base
 from backend.app.core.datetime_utils import utc_now
@@ -18,6 +18,9 @@ class User(Base):
     preferred_sport: Mapped[str | None] = mapped_column(String(20), nullable=True, default="PADEL")  # PADEL, TENNIS, BOTH
     dominant_hand: Mapped[str | None] = mapped_column(String(20), nullable=True, default="RIGHT")  # RIGHT, LEFT
     skill_level: Mapped[str | None] = mapped_column(String(20), nullable=True, default="BEGINNER")  # BEGINNER, INTERMEDIATE, ADVANCED, PRO
+    elo_rating: Mapped[int] = mapped_column(Integer, nullable=False, default=1200)  # Padel Doubles Elo rating
+    matches_played: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    matches_won: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     emergency_phone: Mapped[str | None] = mapped_column(String(15), nullable=True)
     city: Mapped[str | None] = mapped_column(String(50), nullable=True, default="تهران")
     province: Mapped[str | None] = mapped_column(String(50), nullable=True, default="تهران")

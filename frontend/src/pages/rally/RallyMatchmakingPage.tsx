@@ -4,6 +4,7 @@ import { MatchmakingGameItem } from '../../types/rally';
 import { MatchmakingCard } from '../../components/rally/matchmaking/MatchmakingCard';
 import { JoinMatchModal } from '../../components/rally/matchmaking/JoinMatchModal';
 import { CreateMatchModal } from '../../components/rally/matchmaking/CreateMatchModal';
+import { MatchResultModal } from '../../components/rally/matchmaking/MatchResultModal';
 import { rallyApi } from '../../services/rallyApi';
 
 interface RallyMatchmakingPageProps {
@@ -31,6 +32,7 @@ export const RallyMatchmakingPage: React.FC<RallyMatchmakingPageProps> = ({
   const [games, setGames] = useState<MatchmakingGameItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [activeJoinGame, setActiveJoinGame] = useState<MatchmakingGameItem | null>(null);
+  const [activeRecordResultGame, setActiveRecordResultGame] = useState<MatchmakingGameItem | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
@@ -190,6 +192,7 @@ export const RallyMatchmakingPage: React.FC<RallyMatchmakingPageProps> = ({
             game={game}
             currentUserId={userId}
             onJoinClick={(g) => setActiveJoinGame(g)}
+            onRecordResult={(g) => setActiveRecordResultGame(g)}
           />
         ))}
       </div>
@@ -207,6 +210,18 @@ export const RallyMatchmakingPage: React.FC<RallyMatchmakingPageProps> = ({
           userId={userId}
           userName={userName}
           walletBalance={walletBalance}
+        />
+      )}
+
+      {activeRecordResultGame && (
+        <MatchResultModal
+          game={activeRecordResultGame}
+          isOpen={!!activeRecordResultGame}
+          onClose={() => setActiveRecordResultGame(null)}
+          onSuccess={() => {
+            showToast('نتیجه مسابقه با موفقیت ثبت شد و ریتینگ Elo بازیکنان بروزرسانی گردید.');
+            fetchGames();
+          }}
         />
       )}
 

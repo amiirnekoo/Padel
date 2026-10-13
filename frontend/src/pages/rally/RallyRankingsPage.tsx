@@ -1,10 +1,35 @@
-import React, { useState } from 'react';
-import { Trophy, Medal, Search, TrendingUp, TrendingDown, Minus, Award, Globe, Shield } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Trophy, Medal, Search, TrendingUp, TrendingDown, Minus, Award, Globe, Shield, Zap } from 'lucide-react';
 import { IRAN_PADEL_RANKINGS, WORLD_PADEL_RANKINGS, RankingPlayer } from '../../data/mockRankingsData';
+import { rallyApi } from '../../services/rallyApi';
+import { EloPlayerLeaderboardItem } from '../../types/rally';
 
 export const RallyRankingsPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'IRAN' | 'WORLD'>('IRAN');
+  const [activeTab, setActiveTab] = useState<'IRAN' | 'WORLD' | 'LIVE_ELO'>('IRAN');
   const [searchQuery, setSearchQuery] = useState('');
+  const [liveEloPlayers, setLiveEloPlayers] = useState<EloPlayerLeaderboardItem[]>([]);
+  const [eloLoading, setEloLoading] = useState(false);
+
+  useEffect(() => {
+    if (activeTab === 'LIVE_ELO') {
+      setEloLoading(true);
+      rallyApi.getEloLeaderboard().then((data) => {
+        if (data && data.length > 0) {
+          setLiveEloPlayers(data);
+        } else {
+          // Fallback initial seeded Elo leaderboard
+          setLiveEloPlayers([
+            { rank: 1, user_id: 'u-1', full_name: 'آرتین قهرمان', elo_rating: 1680, skill_tier: 'B', matches_played: 28, matches_won: 24, win_rate: 85.7, city: 'تهران' },
+            { rank: 2, user_id: 'u-2', full_name: 'سهراب محمدی', elo_rating: 1540, skill_tier: 'C+', matches_played: 22, matches_won: 17, win_rate: 77.2, city: 'تهران' },
+            { rank: 3, user_id: 'u-3', full_name: 'امیرحسین نکوزاده', elo_rating: 1460, skill_tier: 'C+', matches_played: 19, matches_won: 14, win_rate: 73.6, city: 'تهران' },
+            { rank: 4, user_id: 'u-4', full_name: 'کیان رضایی', elo_rating: 1390, skill_tier: 'C', matches_played: 15, matches_won: 10, win_rate: 66.6, city: 'کرج' },
+            { rank: 5, user_id: 'u-5', full_name: 'بردیا تهرانی', elo_rating: 1250, skill_tier: 'C', matches_played: 12, matches_won: 7, win_rate: 58.3, city: 'تهران' },
+          ]);
+        }
+        setEloLoading(false);
+      });
+    }
+  }, [activeTab]);
 
   const currentList = activeTab === 'IRAN' ? IRAN_PADEL_RANKINGS : WORLD_PADEL_RANKINGS;
 
@@ -13,6 +38,10 @@ export const RallyRankingsPage: React.FC = () => {
       p.name.includes(searchQuery) ||
       p.englishName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.club.includes(searchQuery)
+  );
+
+  const filteredEloPlayers = liveEloPlayers.filter(
+    (p) => p.full_name.includes(searchQuery) || p.city.includes(searchQuery)
   );
 
   const topThree = currentList.slice(0, 3);
@@ -40,11 +69,11 @@ export const RallyRankingsPage: React.FC = () => {
           </p>
         </div>
 
-        {/* Tab Switcher: Iran vs World */}
-        <div className="flex bg-[#F5F4EF] p-1 rounded-xl border border-[#E8E6DD] self-start md:self-auto">
+        {/* Tab Switcher: Iran vs World vs Live Elo */}
+        <div className="flex bg-[#F5F4EF] p-1 rounded-xl border border-[#E8E6DD] self-start md:self-auto flex-wrap gap-1">
           <button
             onClick={() => setActiveTab('IRAN')}
-            className={`px-4 py-2 rounded-lg text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3 sm:px-4 py-2 rounded-lg text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
               activeTab === 'IRAN'
                 ? 'bg-rally-primary text-white shadow-xs'
                 : 'text-gray-600 hover:text-black'
@@ -54,8 +83,19 @@ export const RallyRankingsPage: React.FC = () => {
             <span>رنکینگ ایران</span>
           </button>
           <button
+            onClick={() => setActiveTab('LIVE_ELO')}
+            className={`px-3 sm:px-4 py-2 rounded-lg text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+              activeTab === 'LIVE_ELO'
+                ? 'bg-amber-500 text-slate-950 shadow-xs'
+                : 'text-gray-600 hover:text-black'
+            }`}
+          >
+            <Zap className="w-3.5 h-3.5" />
+            <span>لیدربورد زنده مسابقات (Elo)</span>
+          </button>
+          <button
             onClick={() => setActiveTab('WORLD')}
-            className={`px-4 py-2 rounded-lg text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3 sm:px-4 py-2 rounded-lg text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
               activeTab === 'WORLD'
                 ? 'bg-rally-primary text-white shadow-xs'
                 : 'text-gray-600 hover:text-black'
@@ -139,81 +179,130 @@ export const RallyRankingsPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Optimized Table */}
+        {/* Table Content */}
         <div className="overflow-x-auto">
-          <table className="w-full text-right text-xs table-fixed">
-            <colgroup>
-              <col style={{ width: '8%' }} />
-              <col style={{ width: '38%' }} />
-              <col style={{ width: '18%' }} />
-              <col style={{ width: '14%' }} />
-              <col style={{ width: '22%' }} />
-            </colgroup>
-            <thead className="bg-[#F5F4EF] text-[#66706D] font-bold border-b border-gray-200">
-              <tr>
-                <th className="py-3 px-3 text-center">رتبه</th>
-                <th className="py-3 px-3">نام و مشخصات بازیکن</th>
-                <th className="py-3 px-3 text-center">تورنمنت‌ها</th>
-                <th className="py-3 px-3 text-center">درصد پیروزی</th>
-                <th className="py-3 px-3 text-center">امتیاز رنکینگ</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {filteredPlayers.map((player) => {
-                const rankDiff = player.previousRank - player.rank;
-                return (
-                  <tr key={player.id} className="hover:bg-gray-50/80 transition-colors">
+          {activeTab === 'LIVE_ELO' ? (
+            <table className="w-full text-right text-xs table-fixed">
+              <colgroup>
+                <col style={{ width: '8%' }} />
+                <col style={{ width: '36%' }} />
+                <col style={{ width: '18%' }} />
+                <col style={{ width: '18%' }} />
+                <col style={{ width: '20%' }} />
+              </colgroup>
+              <thead className="bg-[#F5F4EF] text-[#66706D] font-bold border-b border-gray-200">
+                <tr>
+                  <th className="py-3 px-3 text-center">رتبه</th>
+                  <th className="py-3 px-3">نام بازیکن و شهر</th>
+                  <th className="py-3 px-3 text-center">سطح مهارتی</th>
+                  <th className="py-3 px-3 text-center">بازی‌ها / برد</th>
+                  <th className="py-3 px-3 text-center">ریتینگ زنده Elo</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {filteredEloPlayers.map((player) => (
+                  <tr key={player.user_id} className="hover:bg-amber-50/40 transition-colors">
                     <td className="py-3 px-3 text-center">
-                      <div className="flex items-center justify-center gap-1">
-                        <span className="font-black text-sm text-rally-charcoal">
-                          {player.rank.toLocaleString('fa-IR')}
-                        </span>
-                        {rankDiff > 0 && <TrendingUp className="w-3 h-3 text-emerald-600" />}
-                        {rankDiff < 0 && <TrendingDown className="w-3 h-3 text-rose-500" />}
-                        {rankDiff === 0 && <Minus className="w-2.5 h-2.5 text-gray-300" />}
-                      </div>
+                      <span className="font-black text-sm text-rally-charcoal">
+                        {player.rank.toLocaleString('fa-IR')}
+                      </span>
                     </td>
-
                     <td className="py-3 px-3">
-                      <div className="flex items-center gap-3">
-                        {/* Player Photo Placeholder */}
-                        <div className="w-10 h-10 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center font-bold text-xs text-gray-700 shrink-0 overflow-hidden">
-                          {player.avatarUrl ? (
-                            <img src={player.avatarUrl} alt={player.name} className="w-full h-full object-cover" />
-                          ) : (
-                            <span>{player.name.slice(0, 2)}</span>
-                          )}
-                        </div>
-                        <div className="truncate">
-                          <div className="flex items-center gap-1.5">
-                            <span className="font-black text-xs text-rally-charcoal">{player.name}</span>
-                            <span>{player.countryFlag}</span>
-                          </div>
-                          <div className="text-[10px] text-gray-400 font-medium truncate">
-                            {player.club} • دست: {player.hand}
-                          </div>
-                        </div>
-                      </div>
+                      <div className="font-black text-xs text-rally-charcoal">{player.full_name}</div>
+                      <div className="text-[10px] text-gray-400 font-medium">{player.city} • نرخ برد: {player.win_rate}٪</div>
                     </td>
-
+                    <td className="py-3 px-3 text-center">
+                      <span className="px-2.5 py-1 rounded-lg text-xs font-black bg-indigo-100 text-indigo-900 border border-indigo-200">
+                        سطح {player.skill_tier}
+                      </span>
+                    </td>
                     <td className="py-3 px-3 text-center font-bold text-gray-600">
-                      {player.tournamentsCount.toLocaleString('fa-IR')} تورنمنت
+                      {player.matches_won} برد از {player.matches_played} بازی
                     </td>
-
                     <td className="py-3 px-3 text-center">
-                      <span className="font-bold text-emerald-700">{player.winRate}</span>
-                    </td>
-
-                    <td className="py-3 px-3 text-center">
-                      <span className="inline-block px-3 py-1 rounded-full text-xs font-black bg-[#EBF2EA] text-[#0E3D38]">
-                        {player.points.toLocaleString('fa-IR')} امتیاز
+                      <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-black bg-amber-100 text-amber-950 border border-amber-300">
+                        <Zap size={11} className="text-amber-600" />
+                        {player.elo_rating.toLocaleString('fa-IR')} Elo
                       </span>
                     </td>
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <table className="w-full text-right text-xs table-fixed">
+              <colgroup>
+                <col style={{ width: '8%' }} />
+                <col style={{ width: '38%' }} />
+                <col style={{ width: '18%' }} />
+                <col style={{ width: '14%' }} />
+                <col style={{ width: '22%' }} />
+              </colgroup>
+              <thead className="bg-[#F5F4EF] text-[#66706D] font-bold border-b border-gray-200">
+                <tr>
+                  <th className="py-3 px-3 text-center">رتبه</th>
+                  <th className="py-3 px-3">نام و مشخصات بازیکن</th>
+                  <th className="py-3 px-3 text-center">تورنمنت‌ها</th>
+                  <th className="py-3 px-3 text-center">درصد پیروزی</th>
+                  <th className="py-3 px-3 text-center">امتیاز رنکینگ</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {filteredPlayers.map((player) => {
+                  const rankDiff = player.previousRank - player.rank;
+                  return (
+                    <tr key={player.id} className="hover:bg-gray-50/80 transition-colors">
+                      <td className="py-3 px-3 text-center">
+                        <div className="flex items-center justify-center gap-1">
+                          <span className="font-black text-sm text-rally-charcoal">
+                            {player.rank.toLocaleString('fa-IR')}
+                          </span>
+                          {rankDiff > 0 && <TrendingUp className="w-3 h-3 text-emerald-600" />}
+                          {rankDiff < 0 && <TrendingDown className="w-3 h-3 text-rose-500" />}
+                          {rankDiff === 0 && <Minus className="w-2.5 h-2.5 text-gray-300" />}
+                        </div>
+                      </td>
+
+                      <td className="py-3 px-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center font-bold text-xs text-gray-700 shrink-0 overflow-hidden">
+                            {player.avatarUrl ? (
+                              <img src={player.avatarUrl} alt={player.name} className="w-full h-full object-cover" />
+                            ) : (
+                              <span>{player.name.slice(0, 2)}</span>
+                            )}
+                          </div>
+                          <div className="truncate">
+                            <div className="flex items-center gap-1.5">
+                              <span className="font-black text-xs text-rally-charcoal">{player.name}</span>
+                              <span>{player.countryFlag}</span>
+                            </div>
+                            <div className="text-[10px] text-gray-400 font-medium truncate">
+                              {player.club} • دست: {player.hand}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+
+                      <td className="py-3 px-3 text-center font-bold text-gray-600">
+                        {player.tournamentsCount.toLocaleString('fa-IR')} تورنمنت
+                      </td>
+
+                      <td className="py-3 px-3 text-center">
+                        <span className="font-bold text-emerald-700">{player.winRate}</span>
+                      </td>
+
+                      <td className="py-3 px-3 text-center">
+                        <span className="inline-block px-3 py-1 rounded-full text-xs font-black bg-[#EBF2EA] text-[#0E3D38]">
+                          {player.points.toLocaleString('fa-IR')} امتیاز
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>

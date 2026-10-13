@@ -5,6 +5,8 @@ import { ProductCard } from '../../components/rally/shop/ProductCard';
 import { ShopCategoryPills } from '../../components/rally/shop/ShopCategoryPills';
 import { getLatestCatalogYear } from '../../utils/catalogYearUtils';
 import { RacketFinderModal } from '../../components/rally/shop/racketFinder/RacketFinderModal';
+import { RacketCompareBar } from '../../components/rally/shop/comparison/RacketCompareBar';
+import { RacketCompareModal } from '../../components/rally/shop/comparison/RacketCompareModal';
 
 interface RallyShopPageProps {
   products: ShopProduct[];
@@ -27,7 +29,21 @@ export const RallyShopPage: React.FC<RallyShopPageProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'NEWEST' | 'POPULAR' | 'PRICE_ASC' | 'PRICE_DESC' | 'DISCOUNT'>('NEWEST');
   const [isRacketFinderOpen, setIsRacketFinderOpen] = useState(false);
+  const [comparingProducts, setComparingProducts] = useState<ShopProduct[]>([]);
+  const [isCompareModalOpen, setIsCompareModalOpen] = useState(false);
   const BRANDS = ['ALL', 'Head', 'Nox'];
+
+  const handleToggleCompare = (product: ShopProduct) => {
+    setComparingProducts((prev) => {
+      if (prev.some((p) => p.id === product.id)) {
+        return prev.filter((p) => p.id !== product.id);
+      }
+      if (prev.length >= 2) {
+        return [prev[0], product];
+      }
+      return [...prev, product];
+    });
+  };
 
   const latestCatalogYear = useMemo(() => getLatestCatalogYear(products), [products]);
 
@@ -223,6 +239,8 @@ export const RallyShopPage: React.FC<RallyShopPageProps> = ({
                 onSelectProduct={onSelectProduct}
                 isInCart={cartProductIds.has(product.id)}
                 latestCatalogYear={latestCatalogYear}
+                onToggleCompare={handleToggleCompare}
+                isComparing={comparingProducts.some((p) => p.id === product.id)}
               />
             ))}
           </div>
@@ -243,6 +261,23 @@ export const RallyShopPage: React.FC<RallyShopPageProps> = ({
           onAddToCart(product);
         }}
       />
+
+      {/* Racket Comparison Sticky Bar & Modal */}
+      <RacketCompareBar
+        comparingProducts={comparingProducts}
+        onRemove={(id) => setComparingProducts((prev) => prev.filter((p) => p.id !== id))}
+        onClear={() => setComparingProducts([])}
+        onOpenModal={() => setIsCompareModalOpen(true)}
+      />
+
+      {isCompareModalOpen && (
+        <RacketCompareModal
+          products={comparingProducts}
+          isOpen={isCompareModalOpen}
+          onClose={() => setIsCompareModalOpen(false)}
+          onAddToCart={onAddToCart}
+        />
+      )}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingCart, Check, Star, Zap, Globe } from 'lucide-react';
+import { ShoppingCart, Check, Star, Zap, Globe, Scale } from 'lucide-react';
 import { ShopProduct } from '../../../types/rally';
 import { getRacketVerdict } from '../../../data/racketVerdictData';
 import { useProductRating } from '../../../utils/productRatingUtils';
@@ -10,6 +10,8 @@ interface ProductCardProps {
   onSelectProduct: (product: ShopProduct) => void;
   isInCart?: boolean;
   latestCatalogYear?: number;
+  onToggleCompare?: (product: ShopProduct) => void;
+  isComparing?: boolean;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = React.memo(({
@@ -17,7 +19,9 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
   onAddToCart,
   onSelectProduct,
   isInCart = false,
-  latestCatalogYear = 2027
+  latestCatalogYear = 2027,
+  onToggleCompare,
+  isComparing = false
 }) => {
   const [justAdded, setJustAdded] = useState(false);
   const [hasImgError, setHasImgError] = useState(false);
@@ -84,10 +88,27 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(({
             )}
           </div>
 
-          <div className="absolute top-3 left-3 z-10">
+          <div className="absolute top-3 left-3 z-10 flex items-center gap-1.5">
             <span className="bg-white/95 text-slate-800 text-[11px] font-extrabold px-2 py-0.5 rounded-md shadow-sm">
               {product.brand}
             </span>
+            {onToggleCompare && isRacket && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onToggleCompare(product);
+                }}
+                className={`w-7 h-7 rounded-full flex items-center justify-center transition shadow-md cursor-pointer ${
+                  isComparing
+                    ? 'bg-rally-accent text-slate-950 ring-2 ring-rally-accent/40'
+                    : 'bg-white/95 text-slate-600 hover:text-black hover:bg-white'
+                }`}
+                title={isComparing ? 'حذف از مقایسه' : 'افزودن به مقایسه'}
+              >
+                <Scale className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
 
           {/* Bottom Overlay with Stock and Verdict Score */}

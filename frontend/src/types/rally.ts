@@ -210,8 +210,11 @@ export interface MatchmakingGameItem {
   gender_category: 'OPEN' | 'MALE' | 'FEMALE';
   total_price: number;
   price_per_player: number;
-  status: 'OPEN' | 'CONFIRMED' | 'CANCELLED';
+  status: 'OPEN' | 'CONFIRMED' | 'COMPLETED' | 'CANCELLED';
   filled_count: number;
+  level_lock?: boolean;
+  min_elo?: number;
+  max_elo?: number;
   club_name: string;
   club_city: string;
   court_name: string;
@@ -225,4 +228,17 @@ export interface MatchmakingGameItem {
     team_b_left: MatchmakingPlayerSlot;
   };
 }
+
+export interface EloPlayerLeaderboardItem {
+  rank: number;
+  user_id: string;
+  full_name: string;
+  elo_rating: number;
+  skill_tier: string;
+  matches_played: number;
+  matches_won: number;
+  win_rate: number;
+  city: string;
+}
+
 

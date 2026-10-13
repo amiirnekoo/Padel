@@ -1,11 +1,12 @@
 import React from 'react';
-import { Calendar, Clock, MapPin, Users, Zap, ShieldCheck } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, Zap, ShieldCheck, Lock, Trophy } from 'lucide-react';
 import { MatchmakingGameItem, CourtPositionType } from '../../../types/rally';
 import { CourtPositionsGrid } from './CourtPositionsGrid';
 
 interface MatchmakingCardProps {
   game: MatchmakingGameItem;
   onJoinClick: (game: MatchmakingGameItem) => void;
+  onRecordResult?: (game: MatchmakingGameItem) => void;
   currentUserId?: string;
 }
 
@@ -21,10 +22,12 @@ const LEVEL_COLORS: Record<string, { bg: string; text: string; label: string }> 
 export const MatchmakingCard: React.FC<MatchmakingCardProps> = ({
   game,
   onJoinClick,
+  onRecordResult,
   currentUserId,
 }) => {
   const isFull = game.filled_count >= 4;
   const isConfirmed = game.status === 'CONFIRMED' || isFull;
+  const isCompleted = game.status === 'COMPLETED';
   const levelMeta = LEVEL_COLORS[game.skill_level] || LEVEL_COLORS['D+'];
 
   const isUserJoined = [
@@ -39,17 +42,28 @@ export const MatchmakingCard: React.FC<MatchmakingCardProps> = ({
       <div>
         {/* Header Tags & Level */}
         <div className="flex items-center justify-between gap-2 mb-3 flex-wrap">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${levelMeta.bg} ${levelMeta.text}`}>
               سطح {game.skill_level} • {levelMeta.label}
             </span>
             <span className="text-[11px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700 font-mono">
               ۴ نفره (۲×۲)
             </span>
+            {game.level_lock && (
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-950/80 text-amber-300 border border-amber-500/40 font-bold flex items-center gap-1">
+                <Lock size={10} />
+                قفل مهارتی ({game.min_elo || 1000}-{game.max_elo || 1500})
+              </span>
+            )}
           </div>
 
           <div className="flex items-center gap-1.5 text-xs">
-            {isConfirmed ? (
+            {isCompleted ? (
+              <span className="flex items-center gap-1 text-purple-400 font-medium bg-purple-950/60 px-2.5 py-0.5 rounded-full border border-purple-800/60 text-[11px]">
+                <Trophy size={12} />
+                نتیجه ثبت شد
+              </span>
+            ) : isConfirmed ? (
               <span className="flex items-center gap-1 text-emerald-400 font-medium bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-800/60 text-[11px]">
                 <ShieldCheck size={12} />
                 تکمیل و نهایی
@@ -95,22 +109,27 @@ export const MatchmakingCard: React.FC<MatchmakingCardProps> = ({
           </div>
         </div>
 
-        <div>
-          {isUserJoined ? (
+        <div className="flex items-center gap-2">
+          {isConfirmed && !isCompleted && onRecordResult && (
+            <button
+              onClick={() => onRecordResult(game)}
+              className="px-3.5 py-2 text-xs font-black rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 transition-all shadow-md active:scale-95 flex items-center gap-1"
+            >
+              <Trophy size={13} />
+              ثبت نتیجه مسابقه
+            </button>
+          )}
+
+          {isUserJoined && !isConfirmed && (
             <button
               disabled
               className="px-4 py-2 text-xs font-bold rounded-xl bg-blue-900/60 text-blue-300 border border-blue-700/60 cursor-default"
             >
               شما عضو هستید
             </button>
-          ) : isConfirmed ? (
-            <button
-              disabled
-              className="px-4 py-2 text-xs font-bold rounded-xl bg-slate-800 text-slate-400 border border-slate-700 cursor-not-allowed"
-            >
-              ظرفیت پر شد
-            </button>
-          ) : (
+          )}
+
+          {!isUserJoined && !isConfirmed && !isCompleted && (
             <button
               onClick={() => onJoinClick(game)}
               className="px-5 py-2.5 text-xs font-bold rounded-xl bg-rally-accent hover:bg-rally-accent-hover text-slate-950 transition-all shadow-md active:scale-95 flex items-center gap-1.5"

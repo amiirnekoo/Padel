@@ -392,6 +392,38 @@ export const rallyApi = {
   },
 
   /**
+   * ثبت رسمی نتیجه مسابقه و محاسبه زنده ریتینگ Elo
+   */
+  async submitMatchResult(gameId: string, setScores: number[][]) {
+    try {
+      const headers = this.getUserAuthHeaders();
+      const res = await fetch(`${API_BASE}/matchmaking/${gameId}/result`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ set_scores: setScores }),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در ثبت نتیجه مسابقه' };
+      return { success: true, data: data.data };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در ارتباط با سرور' };
+    }
+  },
+
+  /**
+   * دریافت جدول رده‌بندی ریتینگ زنده مسابقات پدل رالی (Elo Leaderboard)
+   */
+  async getEloLeaderboard(limit: number = 50): Promise<any[]> {
+    try {
+      const res = await fetch(`${API_BASE}/matchmaking/elo-leaderboard?limit=${limit}`);
+      if (!res.ok) return [];
+      return await res.json();
+    } catch {
+      return [];
+    }
+  },
+
+  /**
    * دریافت آمار کلان داشبورد ادمین
    */
   async getAdminStats() {
