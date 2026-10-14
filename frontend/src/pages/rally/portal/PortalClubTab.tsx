@@ -112,6 +112,31 @@ export const PortalClubTab: React.FC = () => {
     }).catch(() => {});
   };
 
+  const handleQuickPhoneHold = (slotId: string) => {
+    const target = currentSlots.find((s) => s.id === slotId);
+    if (!target) return;
+    const updated = currentSlots.map((s) => (s.id === slotId ? {
+      ...s,
+      status: 'BOOKED' as const,
+      bookedBy: 'رزرو تلفنی فوری (باجه)',
+      phone: 'مکالمه تلفنی',
+      paymentMethod: 'تسویه در محل',
+      isRecurringVip: false,
+    } : s));
+    setSlotsState((prev) => ({ ...prev, [slotKey]: updated }));
+    rallyApi.createDeskBooking({
+      slot_id: target.id,
+      customer_name: 'رزرو تلفنی سریع',
+      customer_phone: 'تلفنی',
+      payment_method: 'CASH',
+      slot_time: target.time,
+      club_name: currentClub.name,
+      court_name: currentCourt,
+      send_sms: false,
+      is_recurring_vip: false,
+    }).catch(() => {});
+  };
+
   const handleAddNewCourt = (payload: NewCourtPayload) => {
     const updatedCourts = [...currentClub.courts, payload.name];
     const newClubs = [...clubs];
@@ -218,6 +243,7 @@ export const PortalClubTab: React.FC = () => {
               setSendSms(true);
             }}
             onToggleSlotLock={toggleSlotLock}
+            onQuickPhoneHold={handleQuickPhoneHold}
             onOpenNewCourtModal={() => setIsNewCourtModalOpen(true)}
           />
         </>

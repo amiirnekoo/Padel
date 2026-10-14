@@ -1,5 +1,5 @@
 import React from 'react';
-import { PhoneCall, Lock, Unlock, Plus } from 'lucide-react';
+import { PhoneCall, Lock, Unlock, Plus, Zap } from 'lucide-react';
 import { CourtSlotItem } from './ManualBookingModal';
 import { formatSlotTimeString, formatPersianPrice } from '../../../utils/persianUtils';
 
@@ -9,6 +9,7 @@ interface ClubSlotsManagerProps {
   currentSlots: CourtSlotItem[];
   onOpenManualBooking: (slot: CourtSlotItem) => void;
   onToggleSlotLock: (slotId: string) => void;
+  onQuickPhoneHold?: (slotId: string) => void;
   onOpenNewCourtModal: () => void;
 }
 
@@ -18,6 +19,7 @@ export const ClubSlotsManager: React.FC<ClubSlotsManagerProps> = ({
   currentSlots,
   onOpenManualBooking,
   onToggleSlotLock,
+  onQuickPhoneHold,
   onOpenNewCourtModal,
 }) => {
   return (
@@ -136,6 +138,16 @@ export const ClubSlotsManager: React.FC<ClubSlotsManagerProps> = ({
                       <div className="flex items-center justify-center gap-1.5">
                         {s.status === 'OPEN' && (
                           <>
+                            {onQuickPhoneHold && (
+                              <button
+                                onClick={() => onQuickPhoneHold(s.id)}
+                                className="px-2 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 rounded-xl text-[11px] font-extrabold border border-amber-500/40 flex items-center gap-1 cursor-pointer transition-colors"
+                                title="قفل فوری سانس با ۱ کلیک در هنگام تماس تلفنی"
+                              >
+                                <Zap className="w-3.5 h-3.5 text-amber-400" />
+                                <span>قفل تلفنی</span>
+                              </button>
+                            )}
                             <button
                               onClick={() => onOpenManualBooking(s)}
                               className="px-2.5 py-1.5 bg-rally-primary/20 hover:bg-rally-primary/30 text-white rounded-xl text-xs font-bold border border-rally-primary/40 flex items-center gap-1 cursor-pointer transition-colors"

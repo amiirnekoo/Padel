@@ -23,6 +23,7 @@ export const CoachDetailsModal: React.FC<CoachDetailsModalProps> = ({
   onClose,
   onRequestSubmitted
 }) => {
+  const [selectedClub, setSelectedClub] = useState(coach.clubs?.[0] || 'باشگاه پدل انقلاب');
   const [selectedDate, setSelectedDate] = useState('فردا عصر');
   const [userLevel, setUserLevel] = useState('BEGINNER');
   const [trainingGoal, setTrainingGoal] = useState('یادگیری اصول اولیه و بازی با دیواره‌ها');
@@ -32,7 +33,7 @@ export const CoachDetailsModal: React.FC<CoachDetailsModalProps> = ({
     e.preventDefault();
     setIsSuccess(true);
     setTimeout(() => {
-      onRequestSubmitted(coach, selectedDate, userLevel, trainingGoal);
+      onRequestSubmitted(coach, `${selectedDate} (${selectedClub})`, userLevel, trainingGoal);
     }, 1200);
   };
 
@@ -102,9 +103,39 @@ export const CoachDetailsModal: React.FC<CoachDetailsModalProps> = ({
             </span>
           </div>
 
+          {/* Coach Clubs Badge */}
+          {coach.clubs && coach.clubs.length > 0 && (
+            <div className="flex items-center gap-2 p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs">
+              <MapPin className="w-4 h-4 text-rally-primary shrink-0" />
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="font-bold text-gray-700">باشگاه‌های محل تدریس:</span>
+                {coach.clubs.map((c, i) => (
+                  <span key={i} className="px-2 py-0.5 bg-white border border-slate-200 rounded-md font-bold text-slate-800 text-[11px]">
+                    {c}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Form */}
           {!isSuccess ? (
             <form onSubmit={handleSubmit} className="space-y-4">
+              {coach.clubs && coach.clubs.length > 0 && (
+                <div>
+                  <label className="block text-[11px] font-bold text-gray-500 mb-1">انتخاب باشگاه محل تمرین</label>
+                  <select
+                    value={selectedClub}
+                    onChange={(e) => setSelectedClub(e.target.value)}
+                    className="w-full h-10 px-3 rounded-xl border border-gray-200 text-xs font-bold text-rally-charcoal cursor-pointer"
+                  >
+                    {coach.clubs.map((c, idx) => (
+                      <option key={idx} value={c}>باشگاه {c}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
               <div>
                 <label className="block text-[11px] font-bold text-gray-500 mb-1">سطح فعلی شما</label>
                 <select

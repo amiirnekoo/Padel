@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { X, ShieldCheck, CreditCard, Wallet, AlertTriangle, RefreshCw } from 'lucide-react';
+import { X, ShieldCheck, CreditCard, Wallet, RefreshCw } from 'lucide-react';
 import { CourtClub, TimeSlotItem, BookingReceipt } from '../../types/rally';
 import { rallyApi } from '../../services/rallyApi';
 import { BookingReceiptView } from './BookingReceiptView';
+import { BookingSplitAndPolicy } from './booking/BookingSplitAndPolicy';
+import { BookingErrorView } from './booking/BookingErrorView';
 
 interface BookingFlowModalProps {
   club: CourtClub;
@@ -28,11 +30,12 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
   const [receipt, setReceipt] = useState<BookingReceipt | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSplitActive, setIsSplitActive] = useState(false);
 
   const [fullName, setFullName] = useState(() => userSession?.fullName || '');
   const [phoneNumber, setPhoneNumber] = useState(() => userSession?.phoneNumber || '');
 
-  const finalAmountToman = slot.price;
+  const finalAmountToman = isSplitActive ? Math.round(slot.price / 4) : slot.price;
   const userBalanceToman = walletBalance;
 
   const handleStartPayment = async () => {
@@ -231,19 +234,24 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
                 </div>
               </div>
 
-              {/* Transparent Price & Cancellation Terms */}
+              {/* Transparent Price & Split Payment */}
               <div className="pt-2 border-t border-gray-100 flex items-center justify-between text-xs">
-                <span className="text-gray-500 font-medium">مبلغ نهایی قابل پرداخت (بدون کارمزد مخفی):</span>
+                <span className="text-gray-500 font-medium">
+                  {isSplitActive ? 'مبلغ سهم شما (۱ نفر از ۴ نفر):' : 'مبلغ نهایی قابل پرداخت (بدون کارمزد مخفی):'}
+                </span>
                 <div className="flex items-baseline gap-1 font-black text-rally-charcoal text-base">
                   <span>{finalAmountToman.toLocaleString('fa-IR')}</span>
                   <span className="text-xs font-medium text-gray-500">تومان</span>
                 </div>
               </div>
 
-              <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-[11px] text-amber-800 space-y-1">
-                <p className="font-bold">قوانین لغو سانس:</p>
-                <p className="text-amber-700 leading-relaxed">{club.cancellationPolicy}</p>
-              </div>
+              {/* Split Payment and Cancellation Policy */}
+              <BookingSplitAndPolicy
+                totalAmount={slot.price}
+                cancellationPolicy={club.cancellationPolicy}
+                isSplitActive={isSplitActive}
+                onToggleSplit={setIsSplitActive}
+              />
 
               <button
                 disabled={isSubmitting}
@@ -269,26 +277,11 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
           )}
 
           {step === 'ERROR' && (
-            <div className="space-y-4 text-center">
-              <AlertTriangle className="w-10 h-10 text-amber-500 mx-auto" />
-              <h4 className="text-base font-bold text-gray-900">نیاز به بررسی وضعیت</h4>
-              <p className="text-xs text-gray-600 leading-relaxed max-w-md mx-auto">{errorMessage}</p>
-
-              <div className="pt-3 flex gap-2">
-                <button
-                  onClick={() => setStep('REVIEW')}
-                  className="flex-1 py-2.5 rounded-xl border border-gray-200 text-xs font-bold text-gray-700 hover:bg-gray-50"
-                >
-                  تلاش مجدد / تغییر سانس
-                </button>
-                <button
-                  onClick={onClose}
-                  className="flex-1 py-2.5 rounded-xl bg-rally-primary text-white text-xs font-bold"
-                >
-                  پیگیری با پشتیبانی رالی
-                </button>
-              </div>
-            </div>
+            <BookingErrorView
+              errorMessage={errorMessage}
+              onRetry={() => setStep('REVIEW')}
+              onClose={onClose}
+            />
           )}
         </div>
       </div>

@@ -4,6 +4,7 @@ import { ModernCourtShowcase } from '../../components/rally/ModernCourtShowcase'
 import { ModernMatchmakingShowcase } from '../../components/rally/ModernMatchmakingShowcase';
 import { ModernShopShowcase } from '../../components/rally/ModernShopShowcase';
 import { ModernFeaturedBanners } from '../../components/rally/ModernFeaturedBanners';
+import { BeginnerPadelGuide } from '../../components/rally/home/BeginnerPadelGuide';
 import { CourtClub, Coach, Tournament, TimeSlotItem, SportType, ShopProduct } from '../../types/rally';
 import { MOCK_CLUBS, MOCK_TOURNAMENTS } from '../../data/mockRallyData';
 
@@ -63,7 +64,13 @@ export const RallyHomePage: React.FC<RallyHomePageProps> = ({
         fallbackClubs={MOCK_CLUBS}
       />
 
-      {/* 3. Open Matches & Elo Rating Showcase (Playtomic style) */}
+      {/* 3. Beginner Guide & Golden Confidence Banner (Zero Fear, Easy Start) */}
+      <BeginnerPadelGuide
+        onExploreCourts={() => onNavigateToCourts()}
+        onExploreMatches={() => onNavigateToMatchmaking?.()}
+      />
+
+      {/* 4. Open Matches & Elo Rating Showcase (Playtomic style) */}
       <ModernMatchmakingShowcase
         onViewAllMatches={() => onNavigateToMatchmaking?.()}
       />

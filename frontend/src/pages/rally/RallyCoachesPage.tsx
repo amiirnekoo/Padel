@@ -83,6 +83,13 @@ export const RallyCoachesPage: React.FC<RallyCoachesPageProps> = ({
                 <p className="text-xs text-gray-500 font-medium">{coach.title}</p>
                 <p className="text-[11px] text-gray-400 font-medium">{coach.certificate}</p>
 
+                {coach.clubs && coach.clubs.length > 0 && (
+                  <div className="flex items-center gap-1.5 text-[11px] text-slate-700 font-bold bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-200/80 w-fit">
+                    <MapPin className="w-3.5 h-3.5 text-rally-primary shrink-0" />
+                    <span>کلوپ‌های همکار: {coach.clubs.join('، ')}</span>
+                  </div>
+                )}
+
                 <div className="flex flex-wrap gap-1 pt-1">
                   {coach.specialties.map((s, idx) => (
                     <span

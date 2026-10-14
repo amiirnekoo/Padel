@@ -230,6 +230,8 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
         onOpenMap={() => setIsMapModalOpen(true)}
         clubsCount={displayClubs.length}
         isLocating={isLocating}
+        typeFilter={typeFilter}
+        onSelectTypeFilter={setTypeFilter}
       />
 
       {/* 5. Network Error State (تلفیق‌نشده با Empty State) */}
