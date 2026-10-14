@@ -154,6 +154,8 @@ export const App: React.FC = () => {
           userSession={userSession} walletBalance={walletBalance}
           onOpenWallet={() => setIsWalletOpen(true)} onExitPortal={exitSpecialPage}
           onLogout={() => { localStorage.removeItem('padel_auth'); setUserSession(null); setWalletBalance(0); exitSpecialPage(); }}
+          onOpenNotifications={() => setIsNotificationsOpen(true)}
+          unreadNotificationsCount={unreadCount}
         />
       </Suspense>
     );

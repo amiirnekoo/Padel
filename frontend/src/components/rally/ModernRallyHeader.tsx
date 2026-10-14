@@ -123,8 +123,8 @@ export const ModernRallyHeader: React.FC<ModernRallyHeaderProps> = ({
 
         {/* Left: Actions (Notifications, Cart, Portal / Login) */}
         <div className="flex items-center gap-2.5 sm:gap-3">
-          {/* Notification Center Bell */}
-          {onOpenNotifications && (
+          {/* Notification Center Bell (تنها در صورت لاگین بودن کاربر) */}
+          {userSession && onOpenNotifications && (
             <button
               onClick={onOpenNotifications}
               className="relative p-2 sm:px-2.5 sm:py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white flex items-center justify-center transition-all cursor-pointer border border-white/10"

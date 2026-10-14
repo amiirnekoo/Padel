@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, LogOut, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, LogOut, ShieldCheck, Bell } from 'lucide-react';
 import { UserSession } from '../../../components/AuthModal';
 import { PortalSidebarNav, PortalActiveTab, PortalViewRole } from '../../../components/rally/portal/PortalSidebarNav';
 import { PortalOverviewTab } from '../../../components/rally/portal/PortalOverviewTab';
@@ -20,6 +20,8 @@ interface UnifiedPortalPageProps {
   onLogout: () => void;
   onNavigateToShop?: () => void;
   onNavigateToDrills?: () => void;
+  onOpenNotifications?: () => void;
+  unreadNotificationsCount?: number;
 }
 
 export const UnifiedPortalPage: React.FC<UnifiedPortalPageProps> = ({
@@ -29,7 +31,9 @@ export const UnifiedPortalPage: React.FC<UnifiedPortalPageProps> = ({
   onExitPortal,
   onLogout,
   onNavigateToShop,
-  onNavigateToDrills
+  onNavigateToDrills,
+  onOpenNotifications,
+  unreadNotificationsCount
 }) => {
   const isAdmin = ['ADMIN', 'SUPER_ADMIN'].includes(userSession.role);
   const isClubOwnerRole = ['CLUB_OPERATOR', 'CLUB_MANAGER', 'CLUB_OWNER', 'CLUB_ADMIN'].includes(userSession.role);
@@ -139,6 +143,22 @@ export const UnifiedPortalPage: React.FC<UnifiedPortalPageProps> = ({
         </div>
 
         <div className="flex items-center gap-2.5">
+          {onOpenNotifications && (
+            <button
+              onClick={onOpenNotifications}
+              className="relative p-2 rounded-xl bg-white/10 hover:bg-white/15 text-white flex items-center justify-center transition-all cursor-pointer border border-white/10"
+              title="مرکز اعلان‌های هوشمند"
+              aria-label="اعلان‌ها"
+            >
+              <Bell className="w-4 h-4 text-[#D7ED68]" />
+              {unreadNotificationsCount && unreadNotificationsCount > 0 ? (
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center shadow-xs">
+                  {unreadNotificationsCount}
+                </span>
+              ) : null}
+            </button>
+          )}
+
           <button
             onClick={onLogout}
             className="px-3 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer border border-rose-500/30"
