@@ -8,7 +8,10 @@ import { CartDrawer } from './shop/CartDrawer';
 import { ShopReceiptModal } from './shop/ShopReceiptModal';
 import { WalletModal } from '../WalletModal';
 import { AuthModal, UserSession } from '../AuthModal';
+import { PwaInstallBanner } from './pwa/PwaInstallBanner';
+import { NotificationCenterModal } from './notifications/NotificationCenterModal';
 import { CourtClub, Coach, Tournament, TimeSlotItem, ShopProduct, CartItem, ShopOrderReceipt, BookingReceipt } from '../../types/rally';
+import { RallyNotificationItem } from '../../types/notification';
 
 interface AppModalsContainerProps {
   selectedClub: CourtClub | null;
@@ -45,6 +48,15 @@ interface AppModalsContainerProps {
   onLoginSuccess: (session: UserSession) => void;
   onLogout: () => void;
   onNavigateToPortal?: (view?: 'PLAYER' | 'COACH' | 'CLUB_MANAGER' | 'ADMIN') => void;
+  isNotificationsOpen?: boolean;
+  onCloseNotifications?: () => void;
+  notifications?: RallyNotificationItem[];
+  unreadNotificationsCount?: number;
+  onMarkNotificationAsRead?: (id: string) => void;
+  onMarkAllNotificationsAsRead?: () => void;
+  notificationPermission?: NotificationPermission;
+  onRequestNotificationPermission?: () => void;
+  onNotificationNavigate?: (url: string) => void;
 }
 
 export const AppModalsContainer: React.FC<AppModalsContainerProps> = ({
@@ -81,7 +93,16 @@ export const AppModalsContainer: React.FC<AppModalsContainerProps> = ({
   onCloseAuth,
   onLoginSuccess,
   onLogout,
-  onNavigateToPortal
+  onNavigateToPortal,
+  isNotificationsOpen,
+  onCloseNotifications,
+  notifications = [],
+  unreadNotificationsCount = 0,
+  onMarkNotificationAsRead,
+  onMarkAllNotificationsAsRead,
+  notificationPermission = 'default',
+  onRequestNotificationPermission,
+  onNotificationNavigate
 }) => {
   return (
     <>
@@ -152,6 +173,18 @@ export const AppModalsContainer: React.FC<AppModalsContainerProps> = ({
         onLogout={onLogout}
         onNavigateToPortal={onNavigateToPortal}
       />
+      <NotificationCenterModal
+        isOpen={!!isNotificationsOpen}
+        onClose={onCloseNotifications || (() => {})}
+        notifications={notifications}
+        unreadCount={unreadNotificationsCount}
+        onMarkAsRead={onMarkNotificationAsRead || (() => {})}
+        onMarkAllAsRead={onMarkAllNotificationsAsRead || (() => {})}
+        permission={notificationPermission}
+        onRequestPermission={onRequestNotificationPermission || (() => {})}
+        onNavigate={onNotificationNavigate}
+      />
+      <PwaInstallBanner />
     </>
   );
 };

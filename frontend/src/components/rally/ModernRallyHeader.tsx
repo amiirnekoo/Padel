@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, ArrowLeft, Shield, ShoppingBag } from 'lucide-react';
+import { Menu, X, ArrowLeft, Shield, ShoppingBag, Bell } from 'lucide-react';
 import { RallyLogo } from './RallyLogo';
 import { UserSession } from '../AuthModal';
 
@@ -14,6 +14,8 @@ interface ModernRallyHeaderProps {
   onOpenAdmin?: () => void;
   cartItemsCount?: number;
   onOpenCart?: () => void;
+  unreadNotificationsCount?: number;
+  onOpenNotifications?: () => void;
 }
 
 export const ModernRallyHeader: React.FC<ModernRallyHeaderProps> = ({
@@ -23,7 +25,9 @@ export const ModernRallyHeader: React.FC<ModernRallyHeaderProps> = ({
   onOpenAuth,
   onOpenPortal,
   cartItemsCount = 0,
-  onOpenCart
+  onOpenCart,
+  unreadNotificationsCount = 0,
+  onOpenNotifications
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -117,8 +121,25 @@ export const ModernRallyHeader: React.FC<ModernRallyHeaderProps> = ({
           })}
         </nav>
 
-        {/* Left: Actions (Cart, Portal / Login) */}
+        {/* Left: Actions (Notifications, Cart, Portal / Login) */}
         <div className="flex items-center gap-2.5 sm:gap-3">
+          {/* Notification Center Bell */}
+          {onOpenNotifications && (
+            <button
+              onClick={onOpenNotifications}
+              className="relative p-2 sm:px-2.5 sm:py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white flex items-center justify-center transition-all cursor-pointer border border-white/10"
+              title="مرکز اعلان‌های هوشمند رالی"
+              aria-label="اعلان‌ها"
+            >
+              <Bell className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-[#D7ED68]" />
+              {unreadNotificationsCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center shadow-xs">
+                  {unreadNotificationsCount}
+                </span>
+              )}
+            </button>
+          )}
+
           {/* Cart Button with Counter */}
           {onOpenCart && (
             <button

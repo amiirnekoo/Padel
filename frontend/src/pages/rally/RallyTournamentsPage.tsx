@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Trophy, Calendar, MapPin, Users2, ChevronLeft, ShieldAlert } from 'lucide-react';
+import { Trophy, Calendar, MapPin, Users2, ChevronLeft, ShieldAlert, Sparkles, Play } from 'lucide-react';
 import { Tournament, SportType } from '../../types/rally';
 import { MOCK_TOURNAMENTS } from '../../data/mockRallyData';
+import { AmericanoGeneratorModal } from '../../components/rally/tournaments/americano/AmericanoGeneratorModal';
 
 interface RallyTournamentsPageProps {
   onSelectTournament: (tournament: Tournament) => void;
@@ -13,9 +14,10 @@ export const RallyTournamentsPage: React.FC<RallyTournamentsPageProps> = ({
   initialFilters
 }) => {
   const [filterSport, setFilterSport] = useState<SportType | 'ALL'>('ALL');
+  const [isAmericanoOpen, setIsAmericanoOpen] = useState(false);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" dir="rtl">
       
       {/* Header Banner */}
       <div className="bg-white rounded-2xl p-5 border border-gray-200 shadow-xs space-y-2">
@@ -28,6 +30,31 @@ export const RallyTournamentsPage: React.FC<RallyTournamentsPageProps> = ({
         <p className="text-xs text-gray-500">
           جدول مسابقات تک‌حذفی و امتیازی، استانداردهای بین‌المللی و جوایز نقدی معتبر
         </p>
+      </div>
+
+      {/* Americano Generator Hero Banner */}
+      <div className="bg-gradient-to-r from-slate-950 via-[#0f172a] to-slate-900 border border-amber-500/30 rounded-3xl p-5 sm:p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="space-y-1.5 max-w-xl">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[11px] font-bold">
+            <Sparkles size={12} />
+            <span>فرمت اختصاصی و پرطرفدار پدل در جهان</span>
+          </div>
+          <h2 className="text-lg sm:text-xl font-black text-white">
+            ژنراتور تورنمنت‌های آمریکانو (Americano Tournament Engine)
+          </h2>
+          <p className="text-xs text-slate-300 leading-relaxed">
+            برگزاری مسابقات تفریحی ۸ یا ۴ نفره با قرعه‌کشی خودکار راندها، چرخش پارتنرها، ثبت امتیازات زنده و لیدربورد لحظه‌ای. مناسب کلوپ‌ها و دورهمی‌های دوستانه.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setIsAmericanoOpen(true)}
+          className="px-5 py-3 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs sm:text-sm shadow-lg hover:shadow-amber-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95 shrink-0"
+        >
+          <Play size={16} className="fill-current" />
+          <span>راه‌اندازی مسابقه آمریکانو ➔</span>
+        </button>
       </div>
 
       {/* Tournaments Grid */}
@@ -105,6 +132,11 @@ export const RallyTournamentsPage: React.FC<RallyTournamentsPageProps> = ({
           </div>
         ))}
       </div>
+
+      <AmericanoGeneratorModal
+        isOpen={isAmericanoOpen}
+        onClose={() => setIsAmericanoOpen(false)}
+      />
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import { ShopProduct, CartItem, ShopOrderReceipt, PlayerProfileData } from '../types/rally';
+import { AmericanoTournamentState } from '../types/americano';
 
 const API_BASE = '/api/v1';
 
@@ -1594,6 +1595,65 @@ export const rallyApi = {
       return { success: true, data: data.data };
     } catch (err: any) {
       return { success: false, error: err?.message || 'خطا در شبکه' };
+    }
+  },
+
+  /**
+   * ایجاد و قرعه‌کشی خودکار تورنمنت آمریکانو
+   */
+  async generateAmericanoTournament(payload: {
+    title: string;
+    players: string[];
+    points_per_match?: number;
+    club_name?: string;
+  }): Promise<AmericanoTournamentState | null> {
+    try {
+      const res = await fetch(`${API_BASE}/americano/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) return null;
+      return await res.json();
+    } catch {
+      return null;
+    }
+  },
+
+  /**
+   * دریافت وضعیت زنده تورنمنت آمریکانو و لیدربورد
+   */
+  async getAmericanoTournament(tournamentId: string): Promise<AmericanoTournamentState | null> {
+    try {
+      const res = await fetch(`${API_BASE}/americano/${tournamentId}`);
+      if (!res.ok) return null;
+      return await res.json();
+    } catch {
+      return null;
+    }
+  },
+
+  /**
+   * ثبت امتیازات راند و به‌روزرسانی لیدربورد آمریکانو
+   */
+  async recordAmericanoRoundScore(
+    tournamentId: string,
+    roundIndex: number,
+    scores: Array<{ court_number: number; score_a: number; score_b: number }>
+  ): Promise<AmericanoTournamentState | null> {
+    try {
+      const res = await fetch(`${API_BASE}/americano/${tournamentId}/round-score`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          round_index: roundIndex,
+          scores,
+        }),
+      });
+      if (!res.ok) return null;
+      return await res.json();
+    } catch {
+      return null;
     }
   }
 };

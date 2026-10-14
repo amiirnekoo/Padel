@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from backend.app.core.config import settings
 from backend.app.models.base import engine, Base
-from backend.app.api.v1 import auth, calendar, booking, payments, operator, venues, crm, wallet, settlements, notifications, shop, matchmaking, admin, content, drills, accounting, players
+from backend.app.api.v1 import auth, calendar, booking, payments, operator, venues, crm, wallet, settlements, notifications, shop, matchmaking, admin, content, drills, accounting, players, americano
 from backend.app.services.cleanup_worker import run_periodic_cleanup
 
 @asynccontextmanager
@@ -70,6 +70,7 @@ app.include_router(drills.router, prefix=settings.API_V1_STR)
 app.include_router(drills.admin_router, prefix=settings.API_V1_STR)
 app.include_router(accounting.router, prefix=settings.API_V1_STR)
 app.include_router(players.router, prefix=settings.API_V1_STR)
+app.include_router(americano.router, prefix=settings.API_V1_STR)
 
 # Ensure upload directory exists and mount static file server
 os.makedirs(settings.UPLOAD_DIR, exist_ok=True)

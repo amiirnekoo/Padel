@@ -11,6 +11,7 @@ import { UserSession } from './components/AuthModal';
 import { CourtClub, Coach, Tournament, TimeSlotItem, SportType, ShopProduct, CartItem, ShopOrderReceipt } from './types/rally';
 import { rallyApi } from './services/rallyApi';
 import { useRallyRouter } from './hooks/useRallyRouter';
+import { useRallyNotifications } from './hooks/useRallyNotifications';
 import {
   RallyCourtsPage, RallyClubDetailPage, RallyMatchmakingPage, RallyCoachesPage,
   RallyTournamentsPage, RallyRankingsPage, RallyMagazinePage, RallyShopPage,
@@ -33,6 +34,7 @@ export const App: React.FC = () => {
   const [selectedCoach, setSelectedCoach] = useState<Coach | null>(null);
   const [selectedTournament, setSelectedTournament] = useState<Tournament | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [shopReceipt, setShopReceipt] = useState<ShopOrderReceipt | null>(null);
   const [cartItems, setCartItems] = useState<CartItem[]>(() => {
     try {
@@ -45,6 +47,15 @@ export const App: React.FC = () => {
   const [coachFilterParam, setCoachFilterParam] = useState<{ sport?: SportType; level?: string }>({});
   const [productsList, setProductsList] = useState<ShopProduct[]>(getInitialShopProducts);
   const [clubsList] = useState<CourtClub[]>(() => applySavedLocationsToClubs(MOCK_CLUBS));
+
+  const {
+    notifications,
+    unreadCount,
+    permission: notificationPermission,
+    markAsRead,
+    markAllAsRead,
+    requestBrowserPermission: handleRequestPermission,
+  } = useRallyNotifications();
 
   const {
     route,
@@ -158,6 +169,8 @@ export const App: React.FC = () => {
         onOpenPortal={navigateToPortal}
         cartItemsCount={cartItems.reduce((acc, i) => acc + i.quantity, 0)}
         onOpenCart={() => setIsCartOpen(true)}
+        unreadNotificationsCount={unreadCount}
+        onOpenNotifications={() => setIsNotificationsOpen(true)}
       />
 
       <main className={`flex-1 pb-20 lg:pb-12 ${activeTab !== 'home' || selectedProduct || selectedClubPage ? 'pt-20 sm:pt-24' : ''}`}>
@@ -172,21 +185,9 @@ export const App: React.FC = () => {
           >
             <Suspense fallback={<RallyPageSuspenseFallback />}>
               {selectedProduct ? (
-                <RallyProductDetailPage
-                  product={selectedProduct}
-                  allProducts={productsList}
-                  onBackToShop={backToShop}
-                  onAddToCart={(p, qty) => handleAddToCart(p, qty || 1)}
-                  onSelectProduct={(p) => navigateToProduct(p.id)}
-                  onOpenCart={() => setIsCartOpen(true)}
-                  cartProductIds={new Set(cartItems.map((i) => i.product.id))}
-                />
+                <RallyProductDetailPage product={selectedProduct} allProducts={productsList} onBackToShop={backToShop} onAddToCart={(p, qty) => handleAddToCart(p, qty || 1)} onSelectProduct={(p) => navigateToProduct(p.id)} onOpenCart={() => setIsCartOpen(true)} cartProductIds={new Set(cartItems.map((i) => i.product.id))} />
               ) : selectedClubPage ? (
-                <RallyClubDetailPage
-                  club={selectedClubPage}
-                  onBackToCourts={backToCourts}
-                  onProceedBooking={(club, slot) => setBookingSlot({ club, slot })}
-                />
+                <RallyClubDetailPage club={selectedClubPage} onBackToCourts={backToCourts} onProceedBooking={(club, slot) => setBookingSlot({ club, slot })} />
               ) : (
                 <>
                   {activeTab === 'home' && (
@@ -224,27 +225,12 @@ export const App: React.FC = () => {
                   {activeTab === 'matchmaking' && <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6"><RallyMatchmakingPage userId={userSession?.userId || ''} userName={userSession?.fullName || 'کاربر گرامی'} walletBalance={walletBalance} /></div>}
                   {activeTab === 'coaches' && <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6"><RallyCoachesPage initialFilters={coachFilterParam} onSelectCoach={setSelectedCoach} /></div>}
                   {activeTab === 'tournaments' && <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6"><RallyTournamentsPage onSelectTournament={setSelectedTournament} /></div>}
-                  {activeTab === 'rankings' && (
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                      <RallyRankingsPage
-                        initialPlayerId={route.playerId}
-                        onClosePlayerModal={closePlayerModal}
-                      />
-                    </div>
-                  )}
+                  {activeTab === 'rankings' && <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6"><RallyRankingsPage initialPlayerId={route.playerId} onClosePlayerModal={closePlayerModal} /></div>}
                   {activeTab === 'magazine' && <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6"><RallyMagazinePage /></div>}
                   {activeTab === 'terms' && <RallyTermsPage />}
                   {activeTab === 'about' && <RallyAboutPage />}
                   {activeTab === 'contact' && <RallyContactPage />}
-                  {activeTab === 'shop' && (
-                    <RallyShopPage
-                      products={productsList}
-                      onAddToCart={handleAddToCart}
-                      onSelectProduct={(p) => navigateToProduct(p.id)}
-                      cartProductIds={new Set(cartItems.map((i) => i.product.id))}
-                      onOpenCart={() => setIsCartOpen(true)}
-                    />
-                  )}
+                  {activeTab === 'shop' && <RallyShopPage products={productsList} onAddToCart={handleAddToCart} onSelectProduct={(p) => navigateToProduct(p.id)} cartProductIds={new Set(cartItems.map((i) => i.product.id))} onOpenCart={() => setIsCartOpen(true)} />}
                 </>
               )}
             </Suspense>
@@ -281,13 +267,21 @@ export const App: React.FC = () => {
         onCloseAuth={() => setIsAuthOpen(false)} onLoginSuccess={setUserSession}
         onLogout={() => { localStorage.removeItem('padel_auth'); setUserSession(null); }}
         onNavigateToPortal={() => { setIsAuthOpen(false); navigateToPortal(); }}
+        isNotificationsOpen={isNotificationsOpen}
+        onCloseNotifications={() => setIsNotificationsOpen(false)}
+        notifications={notifications}
+        unreadNotificationsCount={unreadCount}
+        onMarkNotificationAsRead={markAsRead}
+        onMarkAllNotificationsAsRead={markAllAsRead}
+        notificationPermission={notificationPermission}
+        onRequestNotificationPermission={handleRequestPermission}
+        onNotificationNavigate={(url) => {
+          setIsNotificationsOpen(false);
+          const tab = url.replace('/', '') as RallyPageTab;
+          if (tab) navigateToTab(tab);
+        }}
       />
-      <MobileBottomNav
-        currentTab={activeTab}
-        onSelectTab={(tab) => navigateToTab(tab)}
-        onOpenAuth={() => setIsAuthOpen(true)}
-        isLoggedIn={!!userSession}
-      />
+      <MobileBottomNav currentTab={activeTab} onSelectTab={(tab) => navigateToTab(tab)} onOpenAuth={() => setIsAuthOpen(true)} isLoggedIn={!!userSession} />
       <ModernRallyFooter onNavigateTab={(t) => navigateToTab(t as RallyPageTab)} />
     </div>
   );
