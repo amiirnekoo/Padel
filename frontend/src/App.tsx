@@ -171,8 +171,6 @@ export const App: React.FC = () => {
         onOpenPortal={navigateToPortal}
         cartItemsCount={cartItems.reduce((acc, i) => acc + i.quantity, 0)}
         onOpenCart={() => setIsCartOpen(true)}
-        unreadNotificationsCount={unreadCount}
-        onOpenNotifications={() => setIsNotificationsOpen(true)}
       />
 
       <main className={`flex-1 pb-20 lg:pb-12 ${activeTab !== 'home' || selectedProduct || selectedClubPage ? 'pt-20 sm:pt-24' : ''}`}>
