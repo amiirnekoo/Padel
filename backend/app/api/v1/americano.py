@@ -2,7 +2,10 @@ from typing import List, Dict, Any, Optional
 from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel, Field
 
-from app.services.americano_service import AmericanoService, AmericanoTournamentState
+try:
+    from backend.app.services.americano_service import AmericanoService, AmericanoTournamentState
+except ImportError:
+    from app.services.americano_service import AmericanoService, AmericanoTournamentState
 
 router = APIRouter(prefix="/americano", tags=["americano"])
 
