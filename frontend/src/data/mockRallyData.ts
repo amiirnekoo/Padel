@@ -59,41 +59,49 @@ export const MOCK_CLUBS: CourtClub[] = [
     "slots": [
       {
         "slotId": "viva-1",
-        "startTime": "۱۵:۳۰",
+        "startTime": "۱۶:۰۰",
         "endTime": "۱۷:۰۰",
-        "durationMinutes": 90,
+        "durationMinutes": 60,
         "price": 3500000,
         "status": "AVAILABLE"
       },
       {
         "slotId": "viva-2",
         "startTime": "۱۷:۰۰",
-        "endTime": "۱۸:۳۰",
-        "durationMinutes": 90,
+        "endTime": "۱۸:۰۰",
+        "durationMinutes": 60,
         "price": 3500000,
         "status": "AVAILABLE"
       },
       {
         "slotId": "viva-3",
-        "startTime": "۱۸:۳۰",
-        "endTime": "۲۰:۰۰",
-        "durationMinutes": 90,
+        "startTime": "۱۸:۰۰",
+        "endTime": "۱۹:۰۰",
+        "durationMinutes": 60,
         "price": 3500000,
         "status": "AVAILABLE"
       },
       {
         "slotId": "viva-4",
-        "startTime": "۲۰:۰۰",
-        "endTime": "۲۱:۳۰",
-        "durationMinutes": 90,
+        "startTime": "۱۹:۰۰",
+        "endTime": "۲۰:۰۰",
+        "durationMinutes": 60,
         "price": 3500000,
         "status": "AVAILABLE"
       },
       {
         "slotId": "viva-5",
-        "startTime": "۲۱:۳۰",
-        "endTime": "۲۳:۰۰",
-        "durationMinutes": 90,
+        "startTime": "۲۰:۰۰",
+        "endTime": "۲۱:۰۰",
+        "durationMinutes": 60,
+        "price": 3500000,
+        "status": "AVAILABLE"
+      },
+      {
+        "slotId": "viva-6",
+        "startTime": "۲۱:۰۰",
+        "endTime": "۲۲:۰۰",
+        "durationMinutes": 60,
         "price": 3500000,
         "status": "AVAILABLE"
       }
@@ -152,33 +160,41 @@ export const MOCK_CLUBS: CourtClub[] = [
     "slots": [
       {
         "slotId": "laf-1",
-        "startTime": "۱۶:۳۰",
+        "startTime": "۱۷:۰۰",
         "endTime": "۱۸:۰۰",
-        "durationMinutes": 90,
+        "durationMinutes": 60,
         "price": 3000000,
         "status": "AVAILABLE"
       },
       {
         "slotId": "laf-2",
         "startTime": "۱۸:۰۰",
-        "endTime": "۱۹:۳۰",
-        "durationMinutes": 90,
+        "endTime": "۱۹:۰۰",
+        "durationMinutes": 60,
         "price": 3000000,
         "status": "AVAILABLE"
       },
       {
         "slotId": "laf-3",
-        "startTime": "۱۹:۳۰",
-        "endTime": "۲۱:۰۰",
-        "durationMinutes": 90,
+        "startTime": "۱۹:۰۰",
+        "endTime": "۲۰:۰۰",
+        "durationMinutes": 60,
         "price": 3000000,
         "status": "AVAILABLE"
       },
       {
         "slotId": "laf-4",
+        "startTime": "۲۰:۰۰",
+        "endTime": "۲۱:۰۰",
+        "durationMinutes": 60,
+        "price": 3000000,
+        "status": "AVAILABLE"
+      },
+      {
+        "slotId": "laf-5",
         "startTime": "۲۱:۰۰",
-        "endTime": "۲۲:۳۰",
-        "durationMinutes": 90,
+        "endTime": "۲۲:۰۰",
+        "durationMinutes": 60,
         "price": 3000000,
         "status": "AVAILABLE"
       }
@@ -242,41 +258,49 @@ export const MOCK_CLUBS: CourtClub[] = [
     "slots": [
       {
         "slotId": "eng-1",
-        "startTime": "۱۵:۰۰",
-        "endTime": "۱۶:۳۰",
-        "durationMinutes": 90,
+        "startTime": "۱۶:۰۰",
+        "endTime": "۱۷:۰۰",
+        "durationMinutes": 60,
         "price": 2800000,
         "status": "AVAILABLE"
       },
       {
         "slotId": "eng-2",
-        "startTime": "۱۶:۳۰",
+        "startTime": "۱۷:۰۰",
         "endTime": "۱۸:۰۰",
-        "durationMinutes": 90,
+        "durationMinutes": 60,
         "price": 2800000,
         "status": "AVAILABLE"
       },
       {
         "slotId": "eng-3",
         "startTime": "۱۸:۰۰",
-        "endTime": "۱۹:۳۰",
-        "durationMinutes": 90,
+        "endTime": "۱۹:۰۰",
+        "durationMinutes": 60,
         "price": 3000000,
         "status": "AVAILABLE"
       },
       {
         "slotId": "eng-4",
-        "startTime": "۱۹:۳۰",
-        "endTime": "۲۱:۰۰",
-        "durationMinutes": 90,
+        "startTime": "۱۹:۰۰",
+        "endTime": "۲۰:۰۰",
+        "durationMinutes": 60,
         "price": 3000000,
         "status": "AVAILABLE"
       },
       {
         "slotId": "eng-5",
+        "startTime": "۲۰:۰۰",
+        "endTime": "۲۱:۰۰",
+        "durationMinutes": 60,
+        "price": 3000000,
+        "status": "AVAILABLE"
+      },
+      {
+        "slotId": "eng-6",
         "startTime": "۲۱:۰۰",
-        "endTime": "۲۲:۳۰",
-        "durationMinutes": 90,
+        "endTime": "۲۲:۰۰",
+        "durationMinutes": 60,
         "price": 3000000,
         "status": "AVAILABLE"
       }
@@ -295,7 +319,7 @@ export const MOCK_CLUBS: CourtClub[] = [
     "startingPrice": 3000000,
     "latitude": 36.6710,
     "longitude": 51.3020,
-    "nearestAvailableSlot": "امروز ۱۷:۰۰ تا ۱۸:۳۰",
+    "nearestAvailableSlot": "امروز ۱۷:۰۰ تا ۱۸:۰۰",
     "images": ["/images/court_lafour.jpg"],
     "amenities": [
       { "id": "parking", "label": "پارکینگ اختصاصی شهرک", "iconName": "Car" },
@@ -309,8 +333,8 @@ export const MOCK_CLUBS: CourtClub[] = [
     ],
     "cancellationPolicy": "لغو تا ۱۲ ساعت قبل با استرداد ۱۰۰٪ وجه امکان‌پذیر است.",
     "slots": [
-      { "slotId": "namak-1", "startTime": "۱۷:۰۰", "endTime": "۱۸:۳۰", "durationMinutes": 90, "price": 3000000, "status": "AVAILABLE" },
-      { "slotId": "namak-2", "startTime": "۱۸:۳۰", "endTime": "۲۰:۰۰", "durationMinutes": 90, "price": 3000000, "status": "AVAILABLE" }
+      { "slotId": "namak-1", "startTime": "۱۷:۰۰", "endTime": "۱۸:۰۰", "durationMinutes": 60, "price": 3000000, "status": "AVAILABLE" },
+      { "slotId": "namak-2", "startTime": "۱۸:۰۰", "endTime": "۱۹:۰۰", "durationMinutes": 60, "price": 3000000, "status": "AVAILABLE" }
     ]
   },
   {
@@ -326,7 +350,7 @@ export const MOCK_CLUBS: CourtClub[] = [
     "startingPrice": 2800000,
     "latitude": 36.7080,
     "longitude": 52.6120,
-    "nearestAvailableSlot": "امروز ۱۸:۰۰ تا ۱۹:۳۰",
+    "nearestAvailableSlot": "امروز ۱۸:۰۰ تا ۱۹:۰۰",
     "images": ["/images/court_viva.jpg"],
     "amenities": [
       { "id": "parking", "label": "پارکینگ اختصاصی شهرک دریاکنار", "iconName": "Car" },
@@ -337,7 +361,7 @@ export const MOCK_CLUBS: CourtClub[] = [
     "rules": ["ورود به شهرک با هماهنگی رزرو رالی انجام می‌پذیرد."],
     "cancellationPolicy": "لغو تا ۱۲ ساعت قبل با استرداد کامل وجه امکان‌پذیر است.",
     "slots": [
-      { "slotId": "bbl-1", "startTime": "۱۸:۰۰", "endTime": "۱۹:۳۰", "durationMinutes": 90, "price": 2800000, "status": "AVAILABLE" }
+      { "slotId": "bbl-1", "startTime": "۱۸:۰۰", "endTime": "۱۹:۰۰", "durationMinutes": 60, "price": 2800000, "status": "AVAILABLE" }
     ]
   },
   {
@@ -353,7 +377,7 @@ export const MOCK_CLUBS: CourtClub[] = [
     "startingPrice": 2600000,
     "latitude": 36.3210,
     "longitude": 59.5480,
-    "nearestAvailableSlot": "امروز ۱۷:۳۰ تا ۱۹:۰۰",
+    "nearestAvailableSlot": "امروز ۱۸:۰۰ تا ۱۹:۰۰",
     "images": ["/images/court_viva.jpg"],
     "amenities": [
       { "id": "parking", "label": "پارکینگ اختصاصی", "iconName": "Car" },
@@ -364,7 +388,7 @@ export const MOCK_CLUBS: CourtClub[] = [
     "rules": ["ورود با کفش تمیز سالنی پدل الزامی است."],
     "cancellationPolicy": "لغو تا ۱۲ ساعت قبل شامل بازگشت کامل هزینه به کیف پول است.",
     "slots": [
-      { "slotId": "msh-1", "startTime": "۱۷:۳۰", "endTime": "۱۹:۰۰", "durationMinutes": 90, "price": 2600000, "status": "AVAILABLE" }
+      { "slotId": "msh-1", "startTime": "۱۸:۰۰", "endTime": "۱۹:۰۰", "durationMinutes": 60, "price": 2600000, "status": "AVAILABLE" }
     ]
   },
   {
@@ -380,7 +404,7 @@ export const MOCK_CLUBS: CourtClub[] = [
     "startingPrice": 2700000,
     "latitude": 32.6320,
     "longitude": 51.7210,
-    "nearestAvailableSlot": "امروز ۱۸:۰۰ تا ۱۹:۳۰",
+    "nearestAvailableSlot": "امروز ۱۸:۰۰ تا ۱۹:۰۰",
     "images": ["/images/court_fgb_enghelab.jpg"],
     "amenities": [
       { "id": "parking", "label": "پارکینگ اختصاصی پرواز", "iconName": "Car" },
@@ -390,7 +414,7 @@ export const MOCK_CLUBS: CourtClub[] = [
     "rules": ["رعایت اصول ایمنی کورت الزامی است."],
     "cancellationPolicy": "استرداد ۱۰۰٪ وجه تا ۱۲ ساعت قبل از سانس.",
     "slots": [
-      { "slotId": "esf-1", "startTime": "۱۸:۰۰", "endTime": "۱۹:۳۰", "durationMinutes": 90, "price": 2700000, "status": "AVAILABLE" }
+      { "slotId": "esf-1", "startTime": "۱۸:۰۰", "endTime": "۱۹:۰۰", "durationMinutes": 60, "price": 2700000, "status": "AVAILABLE" }
     ]
   },
   {
@@ -406,7 +430,7 @@ export const MOCK_CLUBS: CourtClub[] = [
     "startingPrice": 2900000,
     "latitude": 29.6450,
     "longitude": 52.5020,
-    "nearestAvailableSlot": "امروز ۱۹:۰۰ تا ۲۰:۳۰",
+    "nearestAvailableSlot": "امروز ۱۹:۰۰ تا ۲۰:۰۰",
     "images": ["/images/court_lafour.jpg"],
     "amenities": [
       { "id": "parking", "label": "پارکینگ مجموعه ورزشی چمران", "iconName": "Car" },
@@ -416,7 +440,7 @@ export const MOCK_CLUBS: CourtClub[] = [
     "rules": ["استفاده از راکت و توپ استاندارد در زمین الزامی است."],
     "cancellationPolicy": "استرداد ۱۰۰٪ وجه تا ۱۲ ساعت قبل از سانس.",
     "slots": [
-      { "slotId": "shz-1", "startTime": "۱۹:۰۰", "endTime": "۲۰:۳۰", "durationMinutes": 90, "price": 2900000, "status": "AVAILABLE" }
+      { "slotId": "shz-1", "startTime": "۱۹:۰۰", "endTime": "۲۰:۰۰", "durationMinutes": 60, "price": 2900000, "status": "AVAILABLE" }
     ]
   },
   {
@@ -432,7 +456,7 @@ export const MOCK_CLUBS: CourtClub[] = [
     "startingPrice": 2500000,
     "latitude": 38.0250,
     "longitude": 46.3680,
-    "nearestAvailableSlot": "امروز ۱۶:۰۰ تا ۱۷:۳۰",
+    "nearestAvailableSlot": "امروز ۱۶:۰۰ تا ۱۷:۰۰",
     "images": ["/images/court_fgb_enghelab.jpg"],
     "amenities": [
       { "id": "parking", "label": "پارکینگ مجموعه ائل‌گلی", "iconName": "Car" },
@@ -442,7 +466,7 @@ export const MOCK_CLUBS: CourtClub[] = [
     "rules": ["رعایت کفش ورزشی پدل الزامی است."],
     "cancellationPolicy": "استرداد ۱۰۰٪ وجه تا ۱۲ ساعت قبل از سانس.",
     "slots": [
-      { "slotId": "tbz-1", "startTime": "۱۶:۰۰", "endTime": "۱۷:۳۰", "durationMinutes": 90, "price": 2500000, "status": "AVAILABLE" }
+      { "slotId": "tbz-1", "startTime": "۱۶:۰۰", "endTime": "۱۷:۰۰", "durationMinutes": 60, "price": 2500000, "status": "AVAILABLE" }
     ]
   }
 ];

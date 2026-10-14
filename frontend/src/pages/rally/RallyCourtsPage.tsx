@@ -69,7 +69,7 @@ export const RallyCourtsPage: React.FC<RallyCourtsPageProps> = ({
                   slotId: slot.slot_id,
                   startTime: slot.start_time,
                   endTime: slot.end_time,
-                  durationMinutes: 90,
+                  durationMinutes: 60,
                   price: slot.price,
                   status: slot.status
                 });

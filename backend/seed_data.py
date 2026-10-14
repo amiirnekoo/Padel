@@ -166,12 +166,15 @@ async def seed():
         today = date.today()
         tomorrow = today + timedelta(days=1)
         slot_hours = [
-            (time(8, 0), time(9, 30), 25000000),
-            (time(9, 30), time(11, 0), 25000000),
-            (time(16, 30), time(18, 0), 30000000),
-            (time(18, 0), time(19, 30), 30000000),
-            (time(19, 30), time(21, 0), 35000000),
-            (time(21, 0), time(22, 30), 30000000),
+            (time(8, 0), time(9, 0), 20000000),
+            (time(9, 0), time(10, 0), 20000000),
+            (time(10, 0), time(11, 0), 20000000),
+            (time(16, 0), time(17, 0), 25000000),
+            (time(17, 0), time(18, 0), 25000000),
+            (time(18, 0), time(19, 0), 30000000),
+            (time(19, 0), time(20, 0), 30000000),
+            (time(20, 0), time(21, 0), 30000000),
+            (time(21, 0), time(22, 0), 25000000),
         ]
 
         slot_count = 0

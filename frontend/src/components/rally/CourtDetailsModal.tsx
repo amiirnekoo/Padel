@@ -12,9 +12,12 @@ import {
   ShoppingBag,
   CheckCircle2,
   Phone,
-  CloudSun
+  CloudSun,
+  Star
 } from 'lucide-react';
 import { CourtClub, TimeSlotItem } from '../../types/rally';
+import { OutdoorWeatherWidget } from './courts/OutdoorWeatherWidget';
+import { ClubReviewsModal } from './courts/ClubReviewsModal';
 
 interface CourtDetailsModalProps {
   club: CourtClub;
@@ -32,6 +35,7 @@ export const CourtDetailsModal: React.FC<CourtDetailsModalProps> = ({
   const [selectedSlot, setSelectedSlot] = useState<TimeSlotItem | null>(
     initialSelectedSlot || club.slots.find((s) => s.status === 'AVAILABLE') || null
   );
+  const [isReviewsOpen, setIsReviewsOpen] = useState(false);
 
   const getAmenityIcon = (name: string) => {
     switch (name) {
@@ -77,9 +81,19 @@ export const CourtDetailsModal: React.FC<CourtDetailsModalProps> = ({
               </span>
             </div>
             <h2 className="text-lg sm:text-2xl font-black text-white">{club.name}</h2>
-            <div className="flex items-center gap-1.5 text-xs text-gray-200 mt-1">
-              <MapPin className="w-3.5 h-3.5 text-[#D7ED68]" />
-              <span>{club.address}</span>
+            <div className="flex items-center justify-between gap-2 mt-1">
+              <div className="flex items-center gap-1.5 text-xs text-gray-200">
+                <MapPin className="w-3.5 h-3.5 text-[#D7ED68]" />
+                <span>{club.address}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsReviewsOpen(true)}
+                className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-bold transition-colors cursor-pointer"
+              >
+                <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                <span>نظرات فنی ({club.rating || '۴.۸'})</span>
+              </button>
             </div>
           </div>
         </div>
@@ -87,6 +101,9 @@ export const CourtDetailsModal: React.FC<CourtDetailsModalProps> = ({
         {/* Scrollable Body Content */}
         <div className="p-4 sm:p-6 overflow-y-auto space-y-6 text-rally-charcoal">
           
+          {/* Live Weather & Wind Widget */}
+          <OutdoorWeatherWidget club={club} />
+
           {/* Section: Amenities & Club Contact */}
           <div>
             <div className="flex items-center justify-between mb-2.5">
@@ -114,7 +131,7 @@ export const CourtDetailsModal: React.FC<CourtDetailsModalProps> = ({
             <div className="flex items-center justify-between mb-3">
               <div>
                 <h4 className="text-sm font-extrabold text-rally-charcoal">
-                  انتخاب سانس بازی (مدت استاندارد: ۹۰ دقیقه)
+                  انتخاب سانس بازی (مدت استاندارد: ۶۰ دقیقه / ۱ ساعت)
                 </h4>
                 <p className="text-[11px] text-gray-400 mt-0.5">
                   کورت سنترال رسمی با کفپوش WPT و قفل موقت اتمیک ۱۰ دقیقه‌ای
@@ -133,7 +150,7 @@ export const CourtDetailsModal: React.FC<CourtDetailsModalProps> = ({
                 <thead className="bg-gray-50 border-b border-gray-200 text-gray-500 font-bold">
                   <tr>
                     <th className="py-2.5 px-3">ساعت سانس</th>
-                    <th className="py-2.5 px-3">تعرفه ۹۰ دقیقه</th>
+                    <th className="py-2.5 px-3">تعرفه ۶۰ دقیقه (۱ ساعت)</th>
                     <th className="py-2.5 px-3 text-center">وضعیت</th>
                   </tr>
                 </thead>
@@ -228,7 +245,7 @@ export const CourtDetailsModal: React.FC<CourtDetailsModalProps> = ({
           <div>
             <span className="text-[10px] text-gray-400 block font-medium">
               {selectedSlot
-                ? `سانس انتخابی: ${selectedSlot.startTime} تا ${selectedSlot.endTime} (${selectedSlot.durationMinutes || 90} دقیقه)`
+                ? `سانس انتخابی: ${selectedSlot.startTime} تا ${selectedSlot.endTime} (${selectedSlot.durationMinutes || 60} دقیقه / ۱ ساعت)`
                 : 'لطفاً یک سانس آزاد را انتخاب کنید'}
             </span>
             <div className="flex items-baseline gap-1">
@@ -256,6 +273,13 @@ export const CourtDetailsModal: React.FC<CourtDetailsModalProps> = ({
             </button>
           </div>
         </div>
+
+        {/* Club Reviews Modal */}
+        <ClubReviewsModal
+          club={club}
+          isOpen={isReviewsOpen}
+          onClose={() => setIsReviewsOpen(false)}
+        />
       </div>
     </div>
   );

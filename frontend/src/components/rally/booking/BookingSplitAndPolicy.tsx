@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { Users, ShieldCheck, CheckCircle2, Copy, Check } from 'lucide-react';
+import { Users, ShieldCheck, CheckCircle2, Copy, Check, Plus, Minus, Package, Sparkles } from 'lucide-react';
 
 interface BookingSplitAndPolicyProps {
   totalAmount: number;
   cancellationPolicy: string;
   isSplitActive: boolean;
   onToggleSplit: (active: boolean) => void;
+  racketsCount: number;
+  ballsCanCount: number;
+  onAddonsChange: (rackets: number, balls: number) => void;
 }
 
 export const BookingSplitAndPolicy: React.FC<BookingSplitAndPolicyProps> = ({
@@ -13,6 +16,9 @@ export const BookingSplitAndPolicy: React.FC<BookingSplitAndPolicyProps> = ({
   cancellationPolicy,
   isSplitActive,
   onToggleSplit,
+  racketsCount,
+  ballsCanCount,
+  onAddonsChange,
 }) => {
   const [copied, setCopied] = useState(false);
   const perPersonAmount = Math.round(totalAmount / 4);
@@ -25,7 +31,74 @@ export const BookingSplitAndPolicy: React.FC<BookingSplitAndPolicyProps> = ({
 
   return (
     <div className="space-y-3.5 text-xs">
-      {/* 1. Split Payment (تسهیم دُنگ ۴ نفره) */}
+      {/* 1. Optional Add-ons (اجاره راکت و توپ نو) */}
+      <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1.5 font-bold text-slate-800">
+            <Package className="w-4 h-4 text-rally-primary shrink-0" />
+            <span>خدمات و ملزومات کلوپ (اختیاری)</span>
+          </div>
+          <span className="text-[10px] text-gray-400 font-medium">تحویل در گیشه باشگاه</span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          {/* Rackets rental */}
+          <div className="p-2.5 bg-white rounded-xl border border-slate-200 flex items-center justify-between">
+            <div>
+              <span className="font-bold text-slate-800 block text-xs">اجاره راکت پدل</span>
+              <span className="text-[10px] text-slate-400">۵۰,۰۰۰ تومان / عدد</span>
+            </div>
+            <div className="flex items-center gap-2 bg-slate-100 px-2 py-1 rounded-lg">
+              <button
+                type="button"
+                disabled={racketsCount <= 0}
+                onClick={() => onAddonsChange(Math.max(0, racketsCount - 1), ballsCanCount)}
+                className="w-5 h-5 rounded flex items-center justify-center bg-white text-slate-700 disabled:opacity-30 cursor-pointer shadow-xs"
+              >
+                <Minus className="w-3 h-3" />
+              </button>
+              <span className="font-extrabold text-xs w-3 text-center">{racketsCount}</span>
+              <button
+                type="button"
+                disabled={racketsCount >= 4}
+                onClick={() => onAddonsChange(Math.min(4, racketsCount + 1), ballsCanCount)}
+                className="w-5 h-5 rounded flex items-center justify-center bg-white text-slate-700 disabled:opacity-30 cursor-pointer shadow-xs"
+              >
+                <Plus className="w-3 h-3" />
+              </button>
+            </div>
+          </div>
+
+          {/* New balls can */}
+          <div className="p-2.5 bg-white rounded-xl border border-slate-200 flex items-center justify-between">
+            <div>
+              <span className="font-bold text-slate-800 block text-xs">قوطی توپ نو (۳ تایی)</span>
+              <span className="text-[10px] text-slate-400">۱۵۰,۰۰۰ تومان / پلمپ</span>
+            </div>
+            <div className="flex items-center gap-2 bg-slate-100 px-2 py-1 rounded-lg">
+              <button
+                type="button"
+                disabled={ballsCanCount <= 0}
+                onClick={() => onAddonsChange(racketsCount, Math.max(0, ballsCanCount - 1))}
+                className="w-5 h-5 rounded flex items-center justify-center bg-white text-slate-700 disabled:opacity-30 cursor-pointer shadow-xs"
+              >
+                <Minus className="w-3 h-3" />
+              </button>
+              <span className="font-extrabold text-xs w-3 text-center">{ballsCanCount}</span>
+              <button
+                type="button"
+                disabled={ballsCanCount >= 2}
+                onClick={() => onAddonsChange(racketsCount, Math.min(2, ballsCanCount + 1))}
+                className="w-5 h-5 rounded flex items-center justify-center bg-white text-slate-700 disabled:opacity-30 cursor-pointer shadow-xs"
+              >
+                <Plus className="w-3 h-3" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 2. Split Payment (تسهیم دُنگ ۴ نفره) */}
       <div className={`p-3.5 rounded-2xl border transition-all ${
         isSplitActive 
           ? 'bg-emerald-500/5 border-emerald-500/40 text-emerald-950' 
@@ -82,7 +155,7 @@ export const BookingSplitAndPolicy: React.FC<BookingSplitAndPolicyProps> = ({
         )}
       </div>
 
-      {/* 2. Cancellation Guarantee & Instant Refund to Wallet */}
+      {/* 3. Cancellation Guarantee & Instant Refund to Wallet */}
       <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-950 space-y-2">
         <div className="flex items-center gap-2">
           <ShieldCheck className="w-4 h-4 text-amber-600 shrink-0" />

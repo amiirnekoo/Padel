@@ -4,6 +4,7 @@ import { ShopProduct } from '../../../types/rally';
 import { useProductRating } from '../../../utils/productRatingUtils';
 import { roundPriceToCeilStep } from '../../../utils/pricingRules';
 import { DualPriceSupplySelector, SupplyOrderMode } from '../../../components/rally/shop/DualPriceSupplySelector';
+import { RacketDemoModal } from '../../../components/rally/shop/RacketDemoModal';
 
 interface ProductBuyBoxProps {
   product: ShopProduct;
@@ -20,6 +21,7 @@ export const ProductBuyBox: React.FC<ProductBuyBoxProps> = React.memo(({
   const [justAdded, setJustAdded] = useState(false);
   const [selectedWeight, setSelectedWeight] = useState(product.weight || 'استاندارد مسابقه‌ای');
   const [orderMode, setOrderMode] = useState<SupplyOrderMode>(product.stock > 0 ? 'INSTANT' : 'EUROPE');
+  const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
 
   const isPadel = product.sport === 'PADEL';
   const isAvailable = product.stock > 0;
@@ -231,6 +233,18 @@ export const ProductBuyBox: React.FC<ProductBuyBoxProps> = React.memo(({
             </>
           )}
         </button>
+
+        {/* Court Demo Program CTA */}
+        {isPadel && (
+          <button
+            type="button"
+            onClick={() => setIsDemoModalOpen(true)}
+            className="w-full py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 border border-sky-300 bg-sky-50 text-sky-900 hover:bg-sky-100 transition-colors cursor-pointer"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-sky-600" />
+            <span>تست دمو این راکت در کورت پدل پیش از خرید (برنامه رسمی رالی)</span>
+          </button>
+        )}
       </div>
 
       {/* Stock Status */}
@@ -266,6 +280,12 @@ export const ProductBuyBox: React.FC<ProductBuyBoxProps> = React.memo(({
           <span className="text-[11px] font-bold text-slate-700">۷ روز ضمانت بازگشت</span>
         </div>
       </div>
+
+      <RacketDemoModal
+        product={product}
+        isOpen={isDemoModalOpen}
+        onClose={() => setIsDemoModalOpen(false)}
+      />
     </div>
   );
 });

@@ -6,6 +6,8 @@ import { JoinMatchModal } from '../../components/rally/matchmaking/JoinMatchModa
 import { CreateMatchModal } from '../../components/rally/matchmaking/CreateMatchModal';
 import { MatchResultModal } from '../../components/rally/matchmaking/MatchResultModal';
 import { PlayerProfileModal } from '../../components/rally/player/PlayerProfileModal';
+import { MatchChatModal } from '../../components/rally/matchmaking/MatchChatModal';
+import { LastMinutePlayerModal } from '../../components/rally/matchmaking/LastMinutePlayerModal';
 import { rallyApi } from '../../services/rallyApi';
 import { useDragScroll } from '../../hooks/useDragScroll';
 import { SKILL_FILTER_PILLS, FALLBACK_MATCHMAKING_GAMES } from '../../data/mockMatchmakingData';
@@ -26,6 +28,8 @@ export const RallyMatchmakingPage: React.FC<RallyMatchmakingPageProps> = ({
   const [loading, setLoading] = useState(false);
   const [activeJoinGame, setActiveJoinGame] = useState<MatchmakingGameItem | null>(null);
   const [activeRecordResultGame, setActiveRecordResultGame] = useState<MatchmakingGameItem | null>(null);
+  const [activeChatGame, setActiveChatGame] = useState<MatchmakingGameItem | null>(null);
+  const [activeLastMinuteGame, setActiveLastMinuteGame] = useState<MatchmakingGameItem | null>(null);
   const [selectedPlayerId, setSelectedPlayerId] = useState<string | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
@@ -185,6 +189,8 @@ export const RallyMatchmakingPage: React.FC<RallyMatchmakingPageProps> = ({
             onJoinClick={(g) => setActiveJoinGame(g)}
             onRecordResult={(g) => setActiveRecordResultGame(g)}
             onSelectPlayer={(pId) => setSelectedPlayerId(pId)}
+            onOpenChat={(g) => setActiveChatGame(g)}
+            onOpenLastMinute={(g) => setActiveLastMinuteGame(g)}
           />
         ))}
       </div>
@@ -227,6 +233,26 @@ export const RallyMatchmakingPage: React.FC<RallyMatchmakingPageProps> = ({
           }}
           userId={userId}
           userName={userName}
+        />
+      )}
+
+      {/* Match 4-Player Chat Modal */}
+      {activeChatGame && (
+        <MatchChatModal
+          game={activeChatGame}
+          isOpen={!!activeChatGame}
+          onClose={() => setActiveChatGame(null)}
+          currentUserId={userId}
+          currentUserName={userName}
+        />
+      )}
+
+      {/* Last Minute Player Emergency Modal */}
+      {activeLastMinuteGame && (
+        <LastMinutePlayerModal
+          game={activeLastMinuteGame}
+          isOpen={!!activeLastMinuteGame}
+          onClose={() => setActiveLastMinuteGame(null)}
         />
       )}
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, Clock, MapPin, Users, Zap, ShieldCheck, Lock, Trophy } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, Zap, ShieldCheck, Lock, Trophy, MessageSquare, AlertCircle } from 'lucide-react';
 import { MatchmakingGameItem, CourtPositionType } from '../../../types/rally';
 import { CourtPositionsGrid } from './CourtPositionsGrid';
 
@@ -9,6 +9,8 @@ interface MatchmakingCardProps {
   onRecordResult?: (game: MatchmakingGameItem) => void;
   currentUserId?: string;
   onSelectPlayer?: (playerId: string) => void;
+  onOpenChat?: (game: MatchmakingGameItem) => void;
+  onOpenLastMinute?: (game: MatchmakingGameItem) => void;
 }
 
 const LEVEL_COLORS: Record<string, { bg: string; text: string; label: string }> = {
@@ -32,6 +34,8 @@ export const MatchmakingCard: React.FC<MatchmakingCardProps> = ({
   onRecordResult,
   currentUserId,
   onSelectPlayer,
+  onOpenChat,
+  onOpenLastMinute,
 }) => {
   const isFull = game.filled_count >= 4;
   const isConfirmed = game.status === 'CONFIRMED' || isFull;
@@ -118,13 +122,36 @@ export const MatchmakingCard: React.FC<MatchmakingCardProps> = ({
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Quick Chat Button */}
+          {onOpenChat && (
+            <button
+              onClick={() => onOpenChat(game)}
+              title="اتاق چت و هماهنگی بازیکنان مسابقه"
+              className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-colors cursor-pointer"
+            >
+              <MessageSquare size={14} />
+            </button>
+          )}
+
+          {/* Last-Minute Call Button */}
+          {!isFull && onOpenLastMinute && (
+            <button
+              onClick={() => onOpenLastMinute(game)}
+              title="فراخوان فوری بازیکن دقیقه ۹۰"
+              className="px-2.5 py-2 rounded-xl bg-red-950/50 hover:bg-red-900/60 text-red-300 border border-red-800/50 text-[11px] font-bold flex items-center gap-1 transition-colors cursor-pointer"
+            >
+              <AlertCircle size={12} className="text-red-400" />
+              <span>فراخوان فوری</span>
+            </button>
+          )}
+
           {isConfirmed && !isCompleted && onRecordResult && (
             <button
               onClick={() => onRecordResult(game)}
-              className="px-3.5 py-2 text-xs font-black rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 transition-all shadow-md active:scale-95 flex items-center gap-1"
+              className="px-3.5 py-2 text-xs font-black rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 transition-all shadow-md active:scale-95 flex items-center gap-1 cursor-pointer"
             >
               <Trophy size={13} />
-              ثبت نتیجه مسابقه
+              ثبت نتیجه
             </button>
           )}
 
@@ -140,10 +167,10 @@ export const MatchmakingCard: React.FC<MatchmakingCardProps> = ({
           {!isUserJoined && !isConfirmed && !isCompleted && (
             <button
               onClick={() => onJoinClick(game)}
-              className="px-5 py-2.5 text-xs font-bold rounded-xl bg-rally-accent hover:bg-rally-accent-hover text-slate-950 transition-all shadow-md active:scale-95 flex items-center gap-1.5"
+              className="px-4 py-2.5 text-xs font-bold rounded-xl bg-rally-accent hover:bg-rally-accent-hover text-slate-950 transition-all shadow-md active:scale-95 flex items-center gap-1.5 cursor-pointer"
             >
               <Zap size={13} />
-              انتخاب صندلی و ورود
+              ورود به بازی
             </button>
           )}
         </div>

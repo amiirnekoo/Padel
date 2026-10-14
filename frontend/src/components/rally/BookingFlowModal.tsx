@@ -31,11 +31,15 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSplitActive, setIsSplitActive] = useState(false);
+  const [racketsCount, setRacketsCount] = useState(0);
+  const [ballsCanCount, setBallsCanCount] = useState(0);
 
   const [fullName, setFullName] = useState(() => userSession?.fullName || '');
   const [phoneNumber, setPhoneNumber] = useState(() => userSession?.phoneNumber || '');
 
-  const finalAmountToman = isSplitActive ? Math.round(slot.price / 4) : slot.price;
+  const addonsTotal = (racketsCount * 50000) + (ballsCanCount * 150000);
+  const totalInvoiceAmount = slot.price + addonsTotal;
+  const finalAmountToman = isSplitActive ? Math.round(totalInvoiceAmount / 4) : totalInvoiceAmount;
   const userBalanceToman = walletBalance;
 
   const handleStartPayment = async () => {
@@ -179,7 +183,7 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
                   </div>
                   <div>
                     <span className="text-gray-400 block text-[10px]">ساعت و مدت:</span>
-                    <span className="font-bold text-gray-800">{slot.startTime} تا {slot.endTime} ({slot.durationMinutes || 90} دقیقه)</span>
+                    <span className="font-bold text-gray-800">{slot.startTime} تا {slot.endTime} ({slot.durationMinutes || 60} دقیقه / ۱ ساعت)</span>
                   </div>
                 </div>
               </div>
@@ -245,12 +249,15 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
                 </div>
               </div>
 
-              {/* Split Payment and Cancellation Policy */}
+              {/* Split Payment, Add-ons and Cancellation Policy */}
               <BookingSplitAndPolicy
-                totalAmount={slot.price}
+                totalAmount={totalInvoiceAmount}
                 cancellationPolicy={club.cancellationPolicy}
                 isSplitActive={isSplitActive}
                 onToggleSplit={setIsSplitActive}
+                racketsCount={racketsCount}
+                ballsCanCount={ballsCanCount}
+                onAddonsChange={(r, b) => { setRacketsCount(r); setBallsCanCount(b); }}
               />
 
               <button
