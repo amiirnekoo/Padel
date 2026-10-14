@@ -5,6 +5,7 @@ import { MatchmakingCard } from '../../components/rally/matchmaking/MatchmakingC
 import { JoinMatchModal } from '../../components/rally/matchmaking/JoinMatchModal';
 import { CreateMatchModal } from '../../components/rally/matchmaking/CreateMatchModal';
 import { MatchResultModal } from '../../components/rally/matchmaking/MatchResultModal';
+import { PlayerProfileModal } from '../../components/rally/player/PlayerProfileModal';
 import { rallyApi } from '../../services/rallyApi';
 import { useDragScroll } from '../../hooks/useDragScroll';
 import { SKILL_FILTER_PILLS, FALLBACK_MATCHMAKING_GAMES } from '../../data/mockMatchmakingData';
@@ -25,6 +26,7 @@ export const RallyMatchmakingPage: React.FC<RallyMatchmakingPageProps> = ({
   const [loading, setLoading] = useState(false);
   const [activeJoinGame, setActiveJoinGame] = useState<MatchmakingGameItem | null>(null);
   const [activeRecordResultGame, setActiveRecordResultGame] = useState<MatchmakingGameItem | null>(null);
+  const [selectedPlayerId, setSelectedPlayerId] = useState<string | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
@@ -182,6 +184,7 @@ export const RallyMatchmakingPage: React.FC<RallyMatchmakingPageProps> = ({
             currentUserId={userId}
             onJoinClick={(g) => setActiveJoinGame(g)}
             onRecordResult={(g) => setActiveRecordResultGame(g)}
+            onSelectPlayer={(pId) => setSelectedPlayerId(pId)}
           />
         ))}
       </div>
@@ -226,6 +229,12 @@ export const RallyMatchmakingPage: React.FC<RallyMatchmakingPageProps> = ({
           userName={userName}
         />
       )}
+
+      <PlayerProfileModal
+        userId={selectedPlayerId}
+        isOpen={!!selectedPlayerId}
+        onClose={() => setSelectedPlayerId(null)}
+      />
     </div>
   );
 };

@@ -12,6 +12,7 @@ interface CourtPositionsGridProps {
   onSelectPosition?: (pos: CourtPositionType) => void;
   selectedPos?: CourtPositionType | null;
   readOnly?: boolean;
+  onSelectPlayer?: (playerId: string) => void;
 }
 
 export const CourtPositionsGrid: React.FC<CourtPositionsGridProps> = ({
@@ -19,6 +20,7 @@ export const CourtPositionsGrid: React.FC<CourtPositionsGridProps> = ({
   onSelectPosition,
   selectedPos,
   readOnly = false,
+  onSelectPlayer,
 }) => {
   const renderSlot = (
     posKey: CourtPositionType,
@@ -28,14 +30,25 @@ export const CourtPositionsGrid: React.FC<CourtPositionsGridProps> = ({
     const isOccupied = !!slotData.user_id;
     const isSelected = selectedPos === posKey;
 
+    const handleClick = () => {
+      if (isOccupied) {
+        if (onSelectPlayer && slotData.user_id) {
+          onSelectPlayer(slotData.user_id);
+        }
+      } else if (!readOnly && onSelectPosition) {
+        onSelectPosition(posKey);
+      }
+    };
+
     return (
       <button
         type="button"
-        disabled={readOnly || isOccupied}
-        onClick={() => onSelectPosition && onSelectPosition(posKey)}
-        className={`relative flex flex-col items-center justify-center p-2.5 rounded-xl border text-xs transition-all duration-150 min-h-[72px] w-full ${
+        disabled={isOccupied ? !onSelectPlayer : readOnly}
+        onClick={handleClick}
+        title={isOccupied && onSelectPlayer ? `مشاهده شناسنامه و کارنامه ${slotData.user_name || 'بازیکن'}` : undefined}
+        className={`relative flex flex-col items-center justify-center p-2 rounded-xl border text-xs transition-all duration-150 min-h-[72px] w-full ${
           isOccupied
-            ? 'bg-rally-charcoal/90 border-slate-700/80 text-white cursor-default'
+            ? `bg-rally-charcoal/90 border-slate-700/80 text-white ${onSelectPlayer ? 'hover:border-rally-accent/80 hover:bg-slate-800 cursor-pointer group' : 'cursor-default'}`
             : isSelected
             ? 'bg-rally-accent/20 border-rally-accent text-rally-accent ring-2 ring-rally-accent/40 font-bold'
             : readOnly
@@ -45,9 +58,14 @@ export const CourtPositionsGrid: React.FC<CourtPositionsGridProps> = ({
       >
         <span className="text-[10px] text-slate-400 mb-1">{sideLabel}</span>
         {isOccupied ? (
-          <div className="flex items-center gap-1 font-semibold text-rally-light-bg truncate max-w-full">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
-            <span className="truncate">{slotData.user_name || 'بازیکن'}</span>
+          <div className="flex flex-col items-center gap-0.5 font-semibold text-rally-light-bg truncate max-w-full">
+            <div className="flex items-center gap-1 truncate max-w-full">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
+              <span className="truncate group-hover:text-rally-accent transition-colors">{slotData.user_name || 'بازیکن'}</span>
+            </div>
+            {onSelectPlayer && (
+              <span className="text-[9px] text-rally-accent/90 font-normal group-hover:underline">شناسنامه ↗</span>
+            )}
           </div>
         ) : (
           <div className="flex items-center gap-1 font-medium text-slate-400">

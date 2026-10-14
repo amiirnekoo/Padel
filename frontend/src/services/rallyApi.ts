@@ -1,4 +1,4 @@
-import { ShopProduct, CartItem, ShopOrderReceipt } from '../types/rally';
+import { ShopProduct, CartItem, ShopOrderReceipt, PlayerProfileData } from '../types/rally';
 
 const API_BASE = '/api/v1';
 
@@ -1489,6 +1489,111 @@ export const rallyApi = {
       return { success: true, data };
     } catch (err: any) {
       return { success: false, error: err?.message || 'خطا در برقراری ارتباط با سرور' };
+    }
+  },
+
+  /**
+   * دریافت شناسنامه ورزشی و مشخصات کامل بازیکن
+   */
+  async getPlayerProfile(userId: string): Promise<PlayerProfileData | null> {
+    try {
+      const res = await fetch(`${API_BASE}/players/${userId}/profile`);
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && json.data) return json.data;
+      }
+    } catch {
+      // Fallback in demo or network down
+    }
+
+    // بازگشت پروفایل پیش‌فرض و غنی بر اساس شناسه کاربر در حالت دمو یا آفلاین
+    return {
+      id: userId,
+      full_name: userId === 'u-3' ? 'امیرحسین نکوزاده' : userId === 'u-1' ? 'آرتین قهرمان' : userId === 'u-2' ? 'سهراب محمدی' : 'ورزشکار رسمی رالی',
+      city: 'تهران',
+      province: 'تهران',
+      preferred_sport: 'PADEL',
+      dominant_hand: 'RIGHT',
+      preferred_side: 'RIGHT',
+      racket_name: 'NOX AT10 Genius 18K 2026',
+      elo_rating: userId === 'u-1' ? 1680 : userId === 'u-2' ? 1540 : userId === 'u-3' ? 1460 : 1350,
+      skill_tier: userId === 'u-1' ? 'B' : userId === 'u-2' ? 'C+' : userId === 'u-3' ? 'C+' : 'C',
+      rank: userId === 'u-1' ? 1 : userId === 'u-2' ? 2 : userId === 'u-3' ? 3 : 14,
+      matches_played: 24,
+      matches_won: 18,
+      matches_lost: 6,
+      win_rate: 75.0,
+      kyc_status: 'VERIFIED',
+      badges: [
+        { id: 'club_1000', title: 'باشگاه ۴ رقمی‌ها', desc: 'عبور از مرز ریتینگ ۱۰۰۰ Elo پدل', icon: 'Zap' },
+        { id: 'veteran', title: 'وفادار به کورت', desc: 'حضور در بیش از ۱۰ مسابقه رسمی', icon: 'Shield' },
+        { id: 'high_win_rate', title: 'ماشین پیروزی', desc: 'نرخ برد درخشان بالای ۷۰ درصد', icon: 'Trophy' },
+        { id: 'master_tier', title: 'کلاس مسترز', desc: 'رسیدن به سطح پیشرفته پدل', icon: 'Star' }
+      ],
+      recent_matches: [
+        {
+          game_id: 'm-1',
+          title: 'بازی دابلز جام آدینه',
+          club_name: 'باشگاه پدل FGB انقلاب',
+          court_name: 'کورت سنترال ۱',
+          date: '۱۴۰۵/۰۷/۲۱',
+          won: true,
+          rating_change: 18,
+          partner_name: 'سهراب محمدی',
+          opponents: ['کیان رضایی', 'بردیا تهرانی'],
+          score_summary: '6-4, 6-3',
+          skill_level: 'B-'
+        },
+        {
+          game_id: 'm-2',
+          title: 'چلنج مچ عصرگاهی',
+          club_name: 'باشگاه پدل لافور',
+          court_name: 'کورت مونت‌کارلو',
+          date: '۱۴۰۵/۰۷/۱۸',
+          won: true,
+          rating_change: 14,
+          partner_name: 'آرتین قهرمان',
+          opponents: ['امید مرادی', 'نوید کاظمی'],
+          score_summary: '7-6, 4-6, 6-2',
+          skill_level: 'C+'
+        },
+        {
+          game_id: 'm-3',
+          title: 'رقابت ۴ نفره آزاد',
+          club_name: 'باشگاه پدل ویوا',
+          court_name: 'کورت WPT مشکی',
+          date: '۱۴۰۵/۰۷/۱۴',
+          won: false,
+          rating_change: -12,
+          partner_name: 'کیان رضایی',
+          opponents: ['سهراب محمدی', 'آرتین قهرمان'],
+          score_summary: '3-6, 4-6',
+          skill_level: 'B'
+        }
+      ]
+    };
+  },
+
+  /**
+   * به‌روزرسانی مشخصات ورزشی و فنی بازیکن
+   */
+  async updateSportsProfile(payload: {
+    dominant_hand?: 'RIGHT' | 'LEFT';
+    preferred_side?: 'RIGHT' | 'LEFT' | 'BOTH';
+    racket_name?: string;
+    city?: string;
+  }) {
+    try {
+      const res = await fetch(`${API_BASE}/players/me/sports-profile`, {
+        method: 'PUT',
+        headers: this.getUserAuthHeaders(),
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در به‌روزرسانی مشخصات' };
+      return { success: true, data: data.data };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در شبکه' };
     }
   }
 };

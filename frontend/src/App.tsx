@@ -57,7 +57,8 @@ export const App: React.FC = () => {
     backToCourts,
     navigateToPortal,
     navigateToAdmin,
-    exitSpecialPage
+    exitSpecialPage,
+    closePlayerModal
   } = useRallyRouter(productsList, clubsList);
 
   const activeTab = route.tab;
@@ -223,7 +224,14 @@ export const App: React.FC = () => {
                   {activeTab === 'matchmaking' && <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6"><RallyMatchmakingPage userId={userSession?.userId || ''} userName={userSession?.fullName || 'کاربر گرامی'} walletBalance={walletBalance} /></div>}
                   {activeTab === 'coaches' && <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6"><RallyCoachesPage initialFilters={coachFilterParam} onSelectCoach={setSelectedCoach} /></div>}
                   {activeTab === 'tournaments' && <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6"><RallyTournamentsPage onSelectTournament={setSelectedTournament} /></div>}
-                  {activeTab === 'rankings' && <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6"><RallyRankingsPage /></div>}
+                  {activeTab === 'rankings' && (
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                      <RallyRankingsPage
+                        initialPlayerId={route.playerId}
+                        onClosePlayerModal={closePlayerModal}
+                      />
+                    </div>
+                  )}
                   {activeTab === 'magazine' && <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6"><RallyMagazinePage /></div>}
                   {activeTab === 'terms' && <RallyTermsPage />}
                   {activeTab === 'about' && <RallyAboutPage />}

@@ -7,6 +7,7 @@ export interface RouteState {
   productId: string | null;
   drillSlug: string | null;
   clubId: string | null;
+  playerId: string | null;
   isAdmin: boolean;
   isPortal: boolean;
 }
@@ -34,65 +35,72 @@ export function parsePath(pathname: string): RouteState {
   const isPortalQuery = searchParams?.get('portal') === 'club' || searchParams?.get('demo') === 'club';
 
   if (cleanPath.startsWith('/admin')) {
-    return { tab: 'home', productId: null, drillSlug: null, clubId: null, isAdmin: true, isPortal: false };
+    return { tab: 'home', productId: null, drillSlug: null, clubId: null, playerId: null, isAdmin: true, isPortal: false };
   }
   if (cleanPath.startsWith('/portal') || isPortalQuery) {
-    return { tab: 'home', productId: null, drillSlug: null, clubId: null, isAdmin: false, isPortal: true };
+    return { tab: 'home', productId: null, drillSlug: null, clubId: null, playerId: null, isAdmin: false, isPortal: true };
+  }
+
+  // Check player profile: /player/:id
+  const playerMatch = cleanPath.match(/^\/player\/(.+)$/);
+  if (playerMatch) {
+    const rawPlayerId = decodeURIComponent(playerMatch[1]);
+    return { tab: 'rankings', productId: null, drillSlug: null, clubId: null, playerId: rawPlayerId, isAdmin: false, isPortal: false };
   }
 
   // Check drill detail page: /drills/:slug
   const drillMatch = cleanPath.match(/^\/drills\/(.+)$/);
   if (drillMatch) {
     const rawSlug = decodeURIComponent(drillMatch[1]);
-    return { tab: 'drills', productId: null, drillSlug: rawSlug, clubId: null, isAdmin: false, isPortal: false };
+    return { tab: 'drills', productId: null, drillSlug: rawSlug, clubId: null, playerId: null, isAdmin: false, isPortal: false };
   }
 
   // Check product page: /shop/:id or /product/:id
   const shopMatch = cleanPath.match(/^\/shop\/(.+)$/);
   if (shopMatch) {
     const rawId = decodeURIComponent(shopMatch[1]);
-    return { tab: 'shop', productId: rawId, drillSlug: null, clubId: null, isAdmin: false, isPortal: false };
+    return { tab: 'shop', productId: rawId, drillSlug: null, clubId: null, playerId: null, isAdmin: false, isPortal: false };
   }
   const prodMatch = cleanPath.match(/^\/product\/(.+)$/);
   if (prodMatch) {
     const rawId = decodeURIComponent(prodMatch[1]);
-    return { tab: 'shop', productId: rawId, drillSlug: null, clubId: null, isAdmin: false, isPortal: false };
+    return { tab: 'shop', productId: rawId, drillSlug: null, clubId: null, playerId: null, isAdmin: false, isPortal: false };
   }
 
   // Check club detail page: /courts/:id or /club/:id
   const clubMatch = cleanPath.match(/^\/(?:courts|club)\/([^/]+)$/);
   if (clubMatch) {
     const rawClubId = decodeURIComponent(clubMatch[1]);
-    return { tab: 'courts', productId: null, drillSlug: null, clubId: rawClubId, isAdmin: false, isPortal: false };
+    return { tab: 'courts', productId: null, drillSlug: null, clubId: rawClubId, playerId: null, isAdmin: false, isPortal: false };
   }
 
   switch (cleanPath) {
     case '/drills':
-      return { tab: 'drills', productId: null, drillSlug: null, clubId: null, isAdmin: false, isPortal: false };
+      return { tab: 'drills', productId: null, drillSlug: null, clubId: null, playerId: null, isAdmin: false, isPortal: false };
     case '/courts':
-      return { tab: 'courts', productId: null, drillSlug: null, clubId: null, isAdmin: false, isPortal: false };
+      return { tab: 'courts', productId: null, drillSlug: null, clubId: null, playerId: null, isAdmin: false, isPortal: false };
     case '/coaches':
-      return { tab: 'coaches', productId: null, drillSlug: null, clubId: null, isAdmin: false, isPortal: false };
+      return { tab: 'coaches', productId: null, drillSlug: null, clubId: null, playerId: null, isAdmin: false, isPortal: false };
     case '/matchmaking':
-      return { tab: 'matchmaking', productId: null, drillSlug: null, clubId: null, isAdmin: false, isPortal: false };
+      return { tab: 'matchmaking', productId: null, drillSlug: null, clubId: null, playerId: null, isAdmin: false, isPortal: false };
     case '/tournaments':
-      return { tab: 'tournaments', productId: null, drillSlug: null, clubId: null, isAdmin: false, isPortal: false };
+      return { tab: 'tournaments', productId: null, drillSlug: null, clubId: null, playerId: null, isAdmin: false, isPortal: false };
     case '/rankings':
-      return { tab: 'rankings', productId: null, drillSlug: null, clubId: null, isAdmin: false, isPortal: false };
+      return { tab: 'rankings', productId: null, drillSlug: null, clubId: null, playerId: null, isAdmin: false, isPortal: false };
     case '/magazine':
-      return { tab: 'magazine', productId: null, drillSlug: null, clubId: null, isAdmin: false, isPortal: false };
+      return { tab: 'magazine', productId: null, drillSlug: null, clubId: null, playerId: null, isAdmin: false, isPortal: false };
     case '/shop':
-      return { tab: 'shop', productId: null, drillSlug: null, clubId: null, isAdmin: false, isPortal: false };
+      return { tab: 'shop', productId: null, drillSlug: null, clubId: null, playerId: null, isAdmin: false, isPortal: false };
     case '/terms':
     case '/rules':
     case '/privacy':
-      return { tab: 'terms', productId: null, drillSlug: null, clubId: null, isAdmin: false, isPortal: false };
+      return { tab: 'terms', productId: null, drillSlug: null, clubId: null, playerId: null, isAdmin: false, isPortal: false };
     case '/about':
-      return { tab: 'about', productId: null, drillSlug: null, clubId: null, isAdmin: false, isPortal: false };
+      return { tab: 'about', productId: null, drillSlug: null, clubId: null, playerId: null, isAdmin: false, isPortal: false };
     case '/contact':
-      return { tab: 'contact', productId: null, drillSlug: null, clubId: null, isAdmin: false, isPortal: false };
+      return { tab: 'contact', productId: null, drillSlug: null, clubId: null, playerId: null, isAdmin: false, isPortal: false };
     default:
-      return { tab: 'home', productId: null, drillSlug: null, clubId: null, isAdmin: false, isPortal: false };
+      return { tab: 'home', productId: null, drillSlug: null, clubId: null, playerId: null, isAdmin: false, isPortal: false };
   }
 }
 
@@ -141,6 +149,10 @@ export function useRallyRouter(allProducts: ShopProduct[], allClubs: CourtClub[]
       document.title = 'جزئیات تمرین تخصصی | رالی';
       return;
     }
+    if (route.playerId) {
+      document.title = 'شناسنامه و کارنامه بازیکن | رالی پدل';
+      return;
+    }
     document.title = TAB_TITLES[route.tab] || 'رالی پدل | مرجع ورزش‌های راکتی ایران';
   }, [route, allProducts, allClubs]);
 
@@ -149,7 +161,7 @@ export function useRallyRouter(allProducts: ShopProduct[], allClubs: CourtClub[]
     if (window.location.pathname !== targetUrl) {
       window.history.pushState({}, '', targetUrl);
     }
-    setRoute({ tab, productId: null, drillSlug: null, clubId: null, isAdmin: false, isPortal: false });
+    setRoute({ tab, productId: null, drillSlug: null, clubId: null, playerId: null, isAdmin: false, isPortal: false });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
@@ -158,7 +170,7 @@ export function useRallyRouter(allProducts: ShopProduct[], allClubs: CourtClub[]
     if (window.location.pathname !== targetUrl) {
       window.history.pushState({}, '', targetUrl);
     }
-    setRoute({ tab: 'drills', productId: null, drillSlug, clubId: null, isAdmin: false, isPortal: false });
+    setRoute({ tab: 'drills', productId: null, drillSlug, clubId: null, playerId: null, isAdmin: false, isPortal: false });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
@@ -166,7 +178,7 @@ export function useRallyRouter(allProducts: ShopProduct[], allClubs: CourtClub[]
     if (window.location.pathname !== '/drills') {
       window.history.pushState({}, '', '/drills');
     }
-    setRoute({ tab: 'drills', productId: null, drillSlug: null, clubId: null, isAdmin: false, isPortal: false });
+    setRoute({ tab: 'drills', productId: null, drillSlug: null, clubId: null, playerId: null, isAdmin: false, isPortal: false });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
@@ -175,7 +187,7 @@ export function useRallyRouter(allProducts: ShopProduct[], allClubs: CourtClub[]
     if (window.location.pathname !== targetUrl) {
       window.history.pushState({}, '', targetUrl);
     }
-    setRoute({ tab: 'shop', productId, drillSlug: null, clubId: null, isAdmin: false, isPortal: false });
+    setRoute({ tab: 'shop', productId, drillSlug: null, clubId: null, playerId: null, isAdmin: false, isPortal: false });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
@@ -183,7 +195,7 @@ export function useRallyRouter(allProducts: ShopProduct[], allClubs: CourtClub[]
     if (window.location.pathname !== '/shop') {
       window.history.pushState({}, '', '/shop');
     }
-    setRoute({ tab: 'shop', productId: null, drillSlug: null, clubId: null, isAdmin: false, isPortal: false });
+    setRoute({ tab: 'shop', productId: null, drillSlug: null, clubId: null, playerId: null, isAdmin: false, isPortal: false });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
@@ -192,7 +204,7 @@ export function useRallyRouter(allProducts: ShopProduct[], allClubs: CourtClub[]
     if (window.location.pathname !== targetUrl) {
       window.history.pushState({}, '', targetUrl);
     }
-    setRoute({ tab: 'courts', productId: null, drillSlug: null, clubId, isAdmin: false, isPortal: false });
+    setRoute({ tab: 'courts', productId: null, drillSlug: null, clubId, playerId: null, isAdmin: false, isPortal: false });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
@@ -200,15 +212,31 @@ export function useRallyRouter(allProducts: ShopProduct[], allClubs: CourtClub[]
     if (window.location.pathname !== '/courts') {
       window.history.pushState({}, '', '/courts');
     }
-    setRoute({ tab: 'courts', productId: null, drillSlug: null, clubId: null, isAdmin: false, isPortal: false });
+    setRoute({ tab: 'courts', productId: null, drillSlug: null, clubId: null, playerId: null, isAdmin: false, isPortal: false });
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  const navigateToPlayer = useCallback((playerId: string) => {
+    const targetUrl = `/player/${encodeURIComponent(playerId)}`;
+    if (window.location.pathname !== targetUrl) {
+      window.history.pushState({}, '', targetUrl);
+    }
+    setRoute({ tab: 'rankings', productId: null, drillSlug: null, clubId: null, playerId, isAdmin: false, isPortal: false });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  const closePlayerModal = useCallback(() => {
+    if (window.location.pathname.startsWith('/player/')) {
+      window.history.pushState({}, '', '/rankings');
+    }
+    setRoute((prev) => ({ ...prev, playerId: null }));
   }, []);
 
   const navigateToPortal = useCallback(() => {
     if (window.location.pathname !== '/portal') {
       window.history.pushState({}, '', '/portal');
     }
-    setRoute({ tab: 'home', productId: null, drillSlug: null, clubId: null, isAdmin: false, isPortal: true });
+    setRoute({ tab: 'home', productId: null, drillSlug: null, clubId: null, playerId: null, isAdmin: false, isPortal: true });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
@@ -216,7 +244,7 @@ export function useRallyRouter(allProducts: ShopProduct[], allClubs: CourtClub[]
     if (window.location.pathname !== '/admin') {
       window.history.pushState({}, '', '/admin');
     }
-    setRoute({ tab: 'home', productId: null, drillSlug: null, clubId: null, isAdmin: true, isPortal: false });
+    setRoute({ tab: 'home', productId: null, drillSlug: null, clubId: null, playerId: null, isAdmin: true, isPortal: false });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
@@ -224,7 +252,7 @@ export function useRallyRouter(allProducts: ShopProduct[], allClubs: CourtClub[]
     if (window.location.pathname !== '/') {
       window.history.pushState({}, '', '/');
     }
-    setRoute({ tab: 'home', productId: null, drillSlug: null, clubId: null, isAdmin: false, isPortal: false });
+    setRoute({ tab: 'home', productId: null, drillSlug: null, clubId: null, playerId: null, isAdmin: false, isPortal: false });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
@@ -237,6 +265,8 @@ export function useRallyRouter(allProducts: ShopProduct[], allClubs: CourtClub[]
     backToShop,
     navigateToClub,
     backToCourts,
+    navigateToPlayer,
+    closePlayerModal,
     navigateToPortal,
     navigateToAdmin,
     exitSpecialPage,

@@ -18,6 +18,8 @@ class User(Base):
     preferred_sport: Mapped[str | None] = mapped_column(String(20), nullable=True, default="PADEL")  # PADEL, TENNIS, BOTH
     dominant_hand: Mapped[str | None] = mapped_column(String(20), nullable=True, default="RIGHT")  # RIGHT, LEFT
     skill_level: Mapped[str | None] = mapped_column(String(20), nullable=True, default="BEGINNER")  # BEGINNER, INTERMEDIATE, ADVANCED, PRO
+    preferred_side: Mapped[str | None] = mapped_column(String(20), nullable=True, default="BOTH")  # RIGHT, LEFT, BOTH
+    racket_name: Mapped[str | None] = mapped_column(String(100), nullable=True, default="NOX AT10 Genius 18K")
     elo_rating: Mapped[int] = mapped_column(Integer, nullable=False, default=1200)  # Padel Doubles Elo rating
     matches_played: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     matches_won: Mapped[int] = mapped_column(Integer, nullable=False, default=0)

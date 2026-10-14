@@ -4,6 +4,7 @@ import { EloPlayerLeaderboardItem } from '../../../types/rally';
 
 interface EloLeaderboardTableProps {
   players: EloPlayerLeaderboardItem[];
+  onSelectPlayer?: (player: EloPlayerLeaderboardItem) => void;
 }
 
 const getTierBadgeStyle = (tier: string) => {
@@ -13,7 +14,7 @@ const getTierBadgeStyle = (tier: string) => {
   return 'bg-emerald-950/80 text-emerald-300 border-emerald-500/40';
 };
 
-export const EloLeaderboardTable: React.FC<EloLeaderboardTableProps> = ({ players }) => {
+export const EloLeaderboardTable: React.FC<EloLeaderboardTableProps> = ({ players, onSelectPlayer }) => {
   return (
     <table className="w-full text-right text-xs table-fixed">
       <colgroup>
@@ -34,7 +35,12 @@ export const EloLeaderboardTable: React.FC<EloLeaderboardTableProps> = ({ player
       </thead>
       <tbody className="divide-y divide-gray-100">
         {players.map((player) => (
-          <tr key={player.user_id} className="hover:bg-amber-50/40 transition-colors">
+          <tr
+            key={player.user_id}
+            onClick={() => onSelectPlayer?.(player)}
+            className="hover:bg-amber-50/70 transition-colors cursor-pointer group"
+            title="کلیک برای مشاهده شناسنامه رسمی و لاگ مسابقات"
+          >
             <td className="py-3 px-3 text-center">
               <span className="font-black text-sm text-rally-charcoal">
                 {player.rank.toLocaleString('fa-IR')}

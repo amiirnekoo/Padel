@@ -8,6 +8,7 @@ interface MatchmakingCardProps {
   onJoinClick: (game: MatchmakingGameItem) => void;
   onRecordResult?: (game: MatchmakingGameItem) => void;
   currentUserId?: string;
+  onSelectPlayer?: (playerId: string) => void;
 }
 
 const LEVEL_COLORS: Record<string, { bg: string; text: string; label: string }> = {
@@ -30,6 +31,7 @@ export const MatchmakingCard: React.FC<MatchmakingCardProps> = ({
   onJoinClick,
   onRecordResult,
   currentUserId,
+  onSelectPlayer,
 }) => {
   const isFull = game.filled_count >= 4;
   const isConfirmed = game.status === 'CONFIRMED' || isFull;
@@ -102,7 +104,7 @@ export const MatchmakingCard: React.FC<MatchmakingCardProps> = ({
 
         {/* Visual 4-Player Court */}
         <div className="mb-4">
-          <CourtPositionsGrid positions={game.positions} readOnly={true} />
+          <CourtPositionsGrid positions={game.positions} readOnly={true} onSelectPlayer={onSelectPlayer} />
         </div>
       </div>
 

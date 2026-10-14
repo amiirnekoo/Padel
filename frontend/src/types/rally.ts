@@ -241,4 +241,48 @@ export interface EloPlayerLeaderboardItem {
   city: string;
 }
 
+export interface PlayerBadge {
+  id: string;
+  title: string;
+  desc: string;
+  icon: string;
+}
+
+export interface PlayerRecentMatch {
+  game_id: string;
+  title: string;
+  club_name: string;
+  court_name: string;
+  date: string;
+  won: boolean;
+  rating_change: number;
+  partner_name: string;
+  opponents: string[];
+  score_summary: string;
+  skill_level: string;
+}
+
+export interface PlayerProfileData {
+  id: string;
+  full_name: string;
+  phone_masked?: string;
+  city: string;
+  province?: string;
+  preferred_sport: string;
+  dominant_hand: 'RIGHT' | 'LEFT';
+  preferred_side: 'RIGHT' | 'LEFT' | 'BOTH';
+  racket_name: string;
+  elo_rating: number;
+  skill_tier: string;
+  rank: number;
+  matches_played: number;
+  matches_won: number;
+  matches_lost: number;
+  win_rate: number;
+  kyc_status?: string;
+  created_at?: string;
+  badges: PlayerBadge[];
+  recent_matches: PlayerRecentMatch[];
+}
+
 

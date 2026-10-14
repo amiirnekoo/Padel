@@ -4,12 +4,29 @@ import { IRAN_PADEL_RANKINGS, WORLD_PADEL_RANKINGS, RankingPlayer } from '../../
 import { rallyApi } from '../../services/rallyApi';
 import { EloPlayerLeaderboardItem } from '../../types/rally';
 import { EloLeaderboardTable } from '../../components/rally/rankings/EloLeaderboardTable';
+import { PlayerProfileModal } from '../../components/rally/player/PlayerProfileModal';
 
-export const RallyRankingsPage: React.FC = () => {
+interface RallyRankingsPageProps {
+  initialPlayerId?: string | null;
+  onClosePlayerModal?: () => void;
+}
+
+export const RallyRankingsPage: React.FC<RallyRankingsPageProps> = ({
+  initialPlayerId,
+  onClosePlayerModal,
+}) => {
   const [activeTab, setActiveTab] = useState<'IRAN' | 'WORLD' | 'LIVE_ELO'>('IRAN');
   const [searchQuery, setSearchQuery] = useState('');
   const [liveEloPlayers, setLiveEloPlayers] = useState<EloPlayerLeaderboardItem[]>([]);
   const [eloLoading, setEloLoading] = useState(false);
+  const [selectedPlayerId, setSelectedPlayerId] = useState<string | null>(initialPlayerId || null);
+
+  useEffect(() => {
+    if (initialPlayerId) {
+      setSelectedPlayerId(initialPlayerId);
+      setActiveTab('LIVE_ELO');
+    }
+  }, [initialPlayerId]);
 
   useEffect(() => {
     if (activeTab === 'LIVE_ELO') {
@@ -183,7 +200,10 @@ export const RallyRankingsPage: React.FC = () => {
         {/* Table Content */}
         <div className="overflow-x-auto">
           {activeTab === 'LIVE_ELO' ? (
-            <EloLeaderboardTable players={filteredEloPlayers} />
+            <EloLeaderboardTable
+              players={filteredEloPlayers}
+              onSelectPlayer={(p) => setSelectedPlayerId(p.user_id)}
+            />
           ) : (
             <table className="w-full text-right text-xs table-fixed">
               <colgroup>
@@ -260,6 +280,15 @@ export const RallyRankingsPage: React.FC = () => {
           )}
         </div>
       </div>
+
+      <PlayerProfileModal
+        userId={selectedPlayerId}
+        isOpen={!!selectedPlayerId}
+        onClose={() => {
+          setSelectedPlayerId(null);
+          onClosePlayerModal?.();
+        }}
+      />
     </div>
   );
 };
