@@ -141,8 +141,23 @@ def deploy(target_commit=DEFAULT_TARGET_COMMIT):
 
         # ۸. بررسی سلامت چندمرحله‌ای پس از استقرار
         print("\n🩺 اجرای ارزیابی سلامت پس از استقرار...")
-        time.sleep(8)
-        run_remote_command(client, "استعلام سلامت داخلی بک‌اند (Port 8000)", "docker exec rally_gateway curl -sSf http://backend:8000/health || (echo 'Backend Health FAILED' && exit 1)")
+        backend_healthy = False
+        for attempt in range(1, 6):
+            time.sleep(3)
+            out = run_remote_command(
+                client,
+                f"استعلام سلامت داخلی بک‌اند (تلاش {attempt})",
+                "docker exec rally_gateway curl -sSf http://backend:8000/health",
+                check_exit_code=False
+            )
+            if "status" in out.lower() and "ok" in out.lower():
+                backend_healthy = True
+                print("✅ سلامت بک‌اند با موفقیت تأیید گردید.")
+                break
+
+        if not backend_healthy:
+            raise RuntimeError("Backend Health FAILED after 5 retries")
+
         run_remote_command(client, "استعلام سلامت لبه Nginx (GET /health)", "docker exec rally_gateway curl -sSf -i http://127.0.0.1/health || (echo 'Edge Health FAILED' && exit 1)")
 
         total_elapsed = time.perf_counter() - start_deploy_time
