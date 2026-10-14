@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime, date
 from typing import Optional
-from sqlalchemy import String, Integer, BigInteger, Boolean, DateTime, Date, Text, Float
+from sqlalchemy import String, Integer, BigInteger, Boolean, DateTime, Date, Text, Float, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 from backend.app.models.base import Base
 from backend.app.core.datetime_utils import utc_now
@@ -51,3 +51,17 @@ class PlayerRanking(Base):
     matches_lost: Mapped[int] = mapped_column(Integer, default=0)
     win_rate: Mapped[float] = mapped_column(Float, default=0.0)
     last_updated: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
+
+
+class TournamentRegistration(Base):
+    __tablename__ = "tournament_registrations"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    tournament_id: Mapped[str] = mapped_column(String(50), ForeignKey("tournaments.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id: Mapped[Optional[str]] = mapped_column(String(36), nullable=True, index=True)
+    team_name: Mapped[str] = mapped_column(String(150), nullable=False)
+    partner_name: Mapped[str] = mapped_column(String(150), nullable=False)
+    partner_phone: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+    contact_phone: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+    status: Mapped[str] = mapped_column(String(30), default="CONFIRMED")
+    registered_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)

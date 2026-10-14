@@ -8,9 +8,13 @@ import {
   Clock,
   MapPin,
   HelpCircle,
-  Send
+  Send,
+  User,
+  Phone,
+  AlertCircle
 } from 'lucide-react';
 import { Coach } from '../../types/rally';
+import { rallyApi } from '../../services/rallyApi';
 
 interface CoachDetailsModalProps {
   coach: Coach;
@@ -23,18 +27,54 @@ export const CoachDetailsModal: React.FC<CoachDetailsModalProps> = ({
   onClose,
   onRequestSubmitted
 }) => {
+  const getInitialUser = () => {
+    try {
+      const saved = localStorage.getItem('padel_auth');
+      return saved ? JSON.parse(saved) : null;
+    } catch { return null; }
+  };
+  const activeUser = getInitialUser();
+
+  const [studentName, setStudentName] = useState(activeUser?.fullName || '');
+  const [studentPhone, setStudentPhone] = useState(activeUser?.phoneNumber || '');
   const [selectedClub, setSelectedClub] = useState(coach.clubs?.[0] || 'باشگاه پدل انقلاب');
   const [selectedDate, setSelectedDate] = useState('فردا عصر');
   const [userLevel, setUserLevel] = useState('BEGINNER');
   const [trainingGoal, setTrainingGoal] = useState('یادگیری اصول اولیه و بازی با دیواره‌ها');
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [trackingId, setTrackingId] = useState<string>('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSuccess(true);
-    setTimeout(() => {
+    if (!studentName.trim() || !studentPhone.trim()) {
+      setServerError('لطفاً نام و شماره تماس خود را وارد نمایید.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setServerError(null);
+
+    const res = await rallyApi.createCoachRequest(coach.id, {
+      student_name: studentName.trim(),
+      student_phone: studentPhone.trim(),
+      requested_date: `${selectedDate} (${selectedClub})`,
+      skill_level: userLevel,
+      training_goal: trainingGoal.trim(),
+      club_name: selectedClub,
+      user_id: activeUser?.userId
+    });
+
+    setIsSubmitting(false);
+
+    if (res.success) {
+      setTrackingId(res.request?.id || `REQ-${Date.now().toString().slice(-6)}`);
+      setIsSuccess(true);
       onRequestSubmitted(coach, `${selectedDate} (${selectedClub})`, userLevel, trainingGoal);
-    }, 1200);
+    } else {
+      setServerError(res.error || 'خطا در ثبت درخواست. لطفاً مجدداً تلاش نمایید.');
+    }
   };
 
   return (
@@ -121,6 +161,46 @@ export const CoachDetailsModal: React.FC<CoachDetailsModalProps> = ({
           {/* Form */}
           {!isSuccess ? (
             <form onSubmit={handleSubmit} className="space-y-4">
+              {serverError && (
+                <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
+                  <span>{serverError}</span>
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[11px] font-bold text-gray-500 mb-1">نام و نام خانوادگی متقاضی *</label>
+                  <div className="relative">
+                    <User className="w-4 h-4 text-gray-400 absolute right-3 top-3" />
+                    <input
+                      type="text"
+                      required
+                      value={studentName}
+                      onChange={(e) => setStudentName(e.target.value)}
+                      placeholder="مثال: کیانوش اسدی"
+                      className="w-full h-10 pr-9 pl-3 rounded-xl border border-gray-200 text-xs font-bold text-rally-charcoal"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold text-gray-500 mb-1">شماره تماس جهت هماهنگی *</label>
+                  <div className="relative">
+                    <Phone className="w-4 h-4 text-gray-400 absolute right-3 top-3" />
+                    <input
+                      type="tel"
+                      required
+                      dir="ltr"
+                      value={studentPhone}
+                      onChange={(e) => setStudentPhone(e.target.value)}
+                      placeholder="09121234567"
+                      className="w-full h-10 pr-9 pl-3 rounded-xl border border-gray-200 text-xs font-bold text-rally-charcoal font-mono"
+                    />
+                  </div>
+                </div>
+              </div>
+
               {coach.clubs && coach.clubs.length > 0 && (
                 <div>
                   <label className="block text-[11px] font-bold text-gray-500 mb-1">انتخاب باشگاه محل تمرین</label>
@@ -185,20 +265,33 @@ export const CoachDetailsModal: React.FC<CoachDetailsModalProps> = ({
 
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-xl bg-rally-primary hover:bg-rally-primary-light text-white text-xs font-extrabold flex items-center gap-1.5 shadow-md cursor-pointer min-h-[44px]"
+                  disabled={isSubmitting}
+                  className="px-6 py-2.5 rounded-xl bg-rally-primary hover:bg-rally-primary-light disabled:opacity-50 text-white text-xs font-extrabold flex items-center gap-1.5 shadow-md cursor-pointer min-h-[44px]"
                 >
                   <Send className="w-3.5 h-3.5 text-rally-accent" />
-                  <span>ثبت درخواست جلسه تمرینی</span>
+                  <span>{isSubmitting ? 'در حال ثبت...' : 'ثبت درخواست جلسه تمرینی'}</span>
                 </button>
               </div>
             </form>
           ) : (
             <div className="py-8 text-center space-y-3">
-              <CheckCircle2 className="w-12 h-12 text-emerald-600 mx-auto animate-bounce" />
-              <h4 className="text-base font-black text-rally-charcoal">درخواست شما با موفقیت برای مربی ارسال شد</h4>
-              <p className="text-xs text-gray-500 max-w-sm mx-auto">
-                مربی کاوه آریا درخواست شما را بررسی کرده و پیامک تأیید همراه با ساعت نهایی ارسال خواهد شد.
+              <CheckCircle2 className="w-12 h-12 text-emerald-600 mx-auto" />
+              <h4 className="text-base font-black text-rally-charcoal">درخواست شما با موفقیت در دیتابیس رالی ثبت شد</h4>
+              <p className="text-xs text-gray-500 max-w-sm mx-auto leading-relaxed">
+                درخواست شما در کارتابل اختصاصی مربی قرار گرفت و پیامک اطلاع‌رسانی ارسال گردید.
               </p>
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs font-mono text-slate-700 inline-block font-bold">
+                شناسه پیگیری: <span className="text-rally-primary">{trackingId}</span>
+              </div>
+              <div>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="px-6 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold cursor-pointer hover:bg-slate-800"
+                >
+                  بستن پنجره
+                </button>
+              </div>
             </div>
           )}
         </div>

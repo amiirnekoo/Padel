@@ -1655,6 +1655,144 @@ export const rallyApi = {
     } catch {
       return null;
     }
+  },
+
+  /**
+   * ثبت رسمی درخواست هماهنگی جلسه با مربی در بک‌اند
+   */
+  async createCoachRequest(coachId: string, payload: {
+    student_name: string;
+    student_phone: string;
+    requested_date: string;
+    skill_level?: string;
+    training_goal?: string;
+    club_name?: string;
+    user_id?: string;
+  }): Promise<{ success: boolean; request?: any; error?: string }> {
+    try {
+      const headers = this.getUserAuthHeaders();
+      const res = await fetch(`${API_BASE}/coaches/${coachId}/requests`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در ثبت درخواست مربی' };
+      return { success: true, request: data.request };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در اتصال به سرور مربیان' };
+    }
+  },
+
+  /**
+   * دریافت درخواست‌های جلسه برای یک مربی
+   */
+  async getCoachRequests(coachId: string, status?: string): Promise<any[]> {
+    try {
+      const q = status ? `?status=${status}` : '';
+      const res = await fetch(`${API_BASE}/coaches/${coachId}/requests${q}`);
+      if (!res.ok) return [];
+      return await res.json();
+    } catch {
+      return [];
+    }
+  },
+
+  /**
+   * تغییر وضعیت درخواست جلسه توسط مربی (پذیرش / رد)
+   */
+  async updateCoachRequestStatus(requestId: string, status: string): Promise<{ success: boolean; error?: string }> {
+    try {
+      const res = await fetch(`${API_BASE}/coaches/requests/${requestId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در بروزرسانی وضعیت' };
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در اتصال به سرور' };
+    }
+  },
+
+  /**
+   * ثبت‌نام رسمی تیم دونفره در تورنمنت
+   */
+  async registerTournament(tournamentId: string, payload: {
+    team_name: string;
+    partner_name: string;
+    partner_phone?: string;
+    contact_phone?: string;
+    user_id?: string;
+  }): Promise<{ success: boolean; registration?: any; registered_teams_count?: number; error?: string }> {
+    try {
+      const headers = this.getUserAuthHeaders();
+      const res = await fetch(`${API_BASE}/tournaments/${tournamentId}/register`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در ثبت‌نام تورنمنت' };
+      return { success: true, registration: data.registration, registered_teams_count: data.registered_teams_count };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در اتصال به سرور تورنمنت' };
+    }
+  },
+
+  /**
+   * دریافت لیست دیدگاه‌ها و امتیازات فنی ثبت‌شده برای یک کلوپ
+   */
+  async getClubReviews(clubId: string): Promise<any[]> {
+    try {
+      const res = await fetch(`${API_BASE}/venues/${clubId}/reviews`);
+      if (!res.ok) return [];
+      return await res.json();
+    } catch {
+      return [];
+    }
+  },
+
+  /**
+   * ثبت دیدگاه و امتیاز جدید برای باشگاه در بک‌اند
+   */
+  async submitClubReview(clubId: string, payload: {
+    user_name: string;
+    rating: number;
+    turf_score?: number;
+    light_score?: number;
+    amenities_score?: number;
+    comment: string;
+    user_id?: string;
+  }): Promise<{ success: boolean; review?: any; error?: string }> {
+    try {
+      const headers = this.getUserAuthHeaders();
+      const res = await fetch(`${API_BASE}/venues/${clubId}/reviews`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در ثبت نظر' };
+      return { success: true, review: data.review };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در اتصال به سرور' };
+    }
+  },
+
+  /**
+   * لایک کردن دیدگاه
+   */
+  async likeClubReview(reviewId: string): Promise<number | null> {
+    try {
+      const res = await fetch(`${API_BASE}/venues/reviews/${reviewId}/like`, { method: 'POST' });
+      if (!res.ok) return null;
+      const data = await res.json();
+      return data.likes_count ?? null;
+    } catch {
+      return null;
+    }
   }
 };
 

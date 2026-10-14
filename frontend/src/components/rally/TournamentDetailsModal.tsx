@@ -7,9 +7,11 @@ import {
   Users2,
   ShieldCheck,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Loader2
 } from 'lucide-react';
 import { Tournament } from '../../types/rally';
+import { rallyApi } from '../../services/rallyApi';
 
 interface TournamentDetailsModalProps {
   tournament: Tournament;
@@ -24,16 +26,40 @@ export const TournamentDetailsModal: React.FC<TournamentDetailsModalProps> = ({
 }) => {
   const [teamName, setTeamName] = useState('شاهین پدل');
   const [partnerName, setPartnerName] = useState('سروش پارسا');
+  const [contactPhone, setContactPhone] = useState('09121112233');
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [trackingCode, setTrackingCode] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!acceptedTerms) return;
-    setIsSuccess(true);
-    setTimeout(() => {
-      onRegisterConfirmed(tournament, teamName, partnerName);
-    }, 1200);
+    if (!acceptedTerms || isLoading) return;
+    setIsLoading(true);
+    setErrorMessage(null);
+
+    try {
+      const res = await rallyApi.registerTournament(tournament.id, {
+        team_name: teamName,
+        partner_name: partnerName,
+        contact_phone: contactPhone
+      });
+
+      if (res && res.success) {
+        setTrackingCode(res.registration?.id || `TRN-${Date.now().toString().slice(-6)}`);
+        setIsSuccess(true);
+        setTimeout(() => {
+          onRegisterConfirmed(tournament, teamName, partnerName);
+        }, 2000);
+      } else {
+        setErrorMessage(res?.error || 'خطا در ثبت‌نام تیم. لطفاً مجدداً تلاش فرمایید.');
+      }
+    } catch (err: any) {
+      setErrorMessage(err?.response?.data?.detail || 'ارتباط با سرور برقرار نشد. لطفاً اینترنت خود را بررسی کنید.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -96,9 +122,16 @@ export const TournamentDetailsModal: React.FC<TournamentDetailsModalProps> = ({
           </div>
 
           {/* Registration Form */}
+          {errorMessage && (
+            <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl flex items-center gap-2 text-rose-700 text-xs">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{errorMessage}</span>
+            </div>
+          )}
+
           {!isSuccess ? (
             <form onSubmit={handleSubmit} className="space-y-4 pt-2 border-t border-gray-100">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-[11px] font-bold text-gray-500 mb-1">نام تیم</label>
                   <input
@@ -119,6 +152,19 @@ export const TournamentDetailsModal: React.FC<TournamentDetailsModalProps> = ({
                     className="w-full h-10 px-3 rounded-xl border border-gray-200 text-xs font-bold text-rally-charcoal"
                   />
                 </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-gray-500 mb-1">شماره تماس کاپیتان (جهت هماهنگی قرعه‌کشی)</label>
+                <input
+                  type="tel"
+                  required
+                  value={contactPhone}
+                  onChange={(e) => setContactPhone(e.target.value)}
+                  dir="ltr"
+                  placeholder="09123456789"
+                  className="w-full h-10 px-3 rounded-xl border border-gray-200 text-xs font-bold text-rally-charcoal text-left"
+                />
               </div>
 
               <label className="flex items-center gap-2 cursor-pointer pt-1">
@@ -146,11 +192,15 @@ export const TournamentDetailsModal: React.FC<TournamentDetailsModalProps> = ({
 
                 <button
                   type="submit"
-                  disabled={!acceptedTerms}
+                  disabled={!acceptedTerms || isLoading}
                   className="px-6 py-2.5 rounded-xl bg-rally-primary hover:bg-rally-primary-light disabled:opacity-50 text-white text-xs font-extrabold flex items-center gap-1.5 shadow-md cursor-pointer min-h-[44px]"
                 >
-                  <Trophy className="w-4 h-4 text-rally-accent" />
-                  <span>تأیید و ثبت‌نام در جدول</span>
+                  {isLoading ? (
+                    <Loader2 className="w-4 h-4 animate-spin text-rally-accent" />
+                  ) : (
+                    <Trophy className="w-4 h-4 text-rally-accent" />
+                  )}
+                  <span>{isLoading ? 'در حال ثبت‌نام...' : 'تأیید و ثبت‌نام در جدول'}</span>
                 </button>
               </div>
             </form>
@@ -158,6 +208,11 @@ export const TournamentDetailsModal: React.FC<TournamentDetailsModalProps> = ({
             <div className="py-8 text-center space-y-3">
               <CheckCircle2 className="w-12 h-12 text-emerald-600 mx-auto animate-bounce" />
               <h4 className="text-base font-black text-rally-charcoal">تیم شما با موفقیت در جدول ثبت شد!</h4>
+              {trackingCode && (
+                <div className="inline-block px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-lg border border-emerald-200">
+                  شناسه ثبت‌نام: {trackingCode}
+                </div>
+              )}
               <p className="text-xs text-gray-500 max-w-sm mx-auto">
                 جدول زمان‌بندی بازی‌ها و قرعه‌کشی ۴۸ ساعت پیش از شروع ارسال خواهد شد.
               </p>

@@ -1,8 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, desc
 from pydantic import BaseModel, Field
 from backend.app.core.database import get_db
 from backend.app.services.venue_service import VenueService
+from backend.app.models.club import ClubReview
 
 router = APIRouter(prefix="/venues", tags=["Venues"])
 
@@ -133,4 +135,95 @@ async def add_court(club_id: str, payload: CourtCreatePayload, db: AsyncSession 
         }
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+class CreateClubReviewRequest(BaseModel):
+    user_name: str = Field(..., description="نام بازیکن نظردهنده")
+    rating: float = Field(5.0, ge=1.0, le=5.0, description="امتیاز کلی")
+    turf_score: float = Field(5.0, ge=1.0, le=5.0, description="امتیاز کیفیت چمن")
+    light_score: float = Field(5.0, ge=1.0, le=5.0, description="امتیاز نور و پروژکتور")
+    amenities_score: float = Field(5.0, ge=1.0, le=5.0, description="امتیاز رختکن و امکانات رفاهی")
+    comment: str = Field(..., description="متن دیدگاه")
+    user_id: str | None = Field(None, description="شناسه کاربر")
+
+
+@router.get("/{club_id}/reviews")
+async def get_club_reviews(club_id: str, db: AsyncSession = Depends(get_db)):
+    """دریافت دیدگاه‌ها و امتیازات فنی ثبت‌شده بازیکنان برای یک کلوپ"""
+    stmt = select(ClubReview).where(
+        ClubReview.club_id == club_id,
+        ClubReview.is_approved == True
+    ).order_by(desc(ClubReview.created_at))
+    res = await db.execute(stmt)
+    records = res.scalars().all()
+    return [
+        {
+            "id": r.id,
+            "club_id": r.club_id,
+            "user_name": r.user_name,
+            "rating": float(r.rating),
+            "turf_score": float(r.turf_score),
+            "light_score": float(r.light_score),
+            "amenities_score": float(r.amenities_score),
+            "comment": r.comment,
+            "likes_count": r.likes_count,
+            "created_at": r.created_at.isoformat() if r.created_at else None
+        }
+        for r in records
+    ]
+
+
+@router.post("/{club_id}/reviews")
+async def submit_club_review(
+    club_id: str,
+    payload: CreateClubReviewRequest,
+    db: AsyncSession = Depends(get_db)
+):
+    """ثبت دیدگاه و امتیاز جدید برای باشگاه"""
+    review = ClubReview(
+        club_id=club_id,
+        user_id=payload.user_id,
+        user_name=payload.user_name,
+        rating=payload.rating,
+        turf_score=payload.turf_score,
+        light_score=payload.light_score,
+        amenities_score=payload.amenities_score,
+        comment=payload.comment,
+        likes_count=0,
+        is_approved=True
+    )
+    db.add(review)
+    await db.commit()
+    await db.refresh(review)
+    return {
+        "success": True,
+        "message": "دیدگاه شما با موفقیت ثبت شد.",
+        "review": {
+            "id": review.id,
+            "club_id": review.club_id,
+            "user_name": review.user_name,
+            "rating": float(review.rating),
+            "turf_score": float(review.turf_score),
+            "light_score": float(review.light_score),
+            "amenities_score": float(review.amenities_score),
+            "comment": review.comment,
+            "likes_count": review.likes_count,
+            "created_at": review.created_at.isoformat() if review.created_at else None
+        }
+    }
+
+
+@router.post("/reviews/{review_id}/like")
+async def like_club_review(review_id: str, db: AsyncSession = Depends(get_db)):
+    """پسندیدن دیدگاه یک بازیکن"""
+    stmt = select(ClubReview).where(ClubReview.id == review_id)
+    res = await db.execute(stmt)
+    review = res.scalar_one_or_none()
+    if not review:
+        raise HTTPException(status_code=404, detail="دیدگاه یافت نشد.")
+
+    review.likes_count += 1
+    await db.commit()
+    await db.refresh(review)
+    return {"success": True, "likes_count": review.likes_count}
 

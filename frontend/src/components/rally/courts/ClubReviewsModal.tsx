@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { X, Star, ThumbsUp, CheckCircle2, MessageSquare, Send, Sparkles } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Star, ThumbsUp, CheckCircle2, MessageSquare, Send, Sparkles, Loader2, AlertCircle } from 'lucide-react';
 import { CourtClub } from '../../../types/rally';
+import { rallyApi } from '../../../services/rallyApi';
 
 interface ClubReviewsModalProps {
   isOpen: boolean;
@@ -8,7 +9,7 @@ interface ClubReviewsModalProps {
   club: CourtClub;
 }
 
-interface ClubReview {
+interface ClubReviewItem {
   id: string;
   userName: string;
   rating: number;
@@ -20,65 +21,129 @@ interface ClubReview {
   likesCount: number;
 }
 
-const INITIAL_REVIEWS: Record<string, ClubReview[]> = {
-  default: [
-    {
-      id: 'cr-1',
-      userName: 'کیانوش اسدی',
-      rating: 5,
-      date: '۳ روز پیش',
-      turfScore: 5,
-      lightScore: 5,
-      amenitiesScore: 4,
-      comment: 'چمن آبی فوق‌العاده تمیز و استاندارد WPT. شیشه‌ها کاملاً شفاف بود و هیچ خطای دیدی نداشت. پارکینگ هم راحت جا داشت.',
-      likesCount: 14,
-    },
-    {
-      id: 'cr-2',
-      userName: 'مهسا تهرانی',
-      rating: 4.8,
-      date: 'هفته گذشته',
-      turfScore: 5,
-      lightScore: 4,
-      amenitiesScore: 5,
-      comment: 'لانژ کافه عالیه و برخورد پرسنل کلوپ بسیار حرفه‌ای بود. برای سانس‌های شب نور پروژکتور عالی تنظیم شده.',
-      likesCount: 9,
-    },
-  ],
-};
+const FALLBACK_REVIEWS: ClubReviewItem[] = [
+  {
+    id: 'cr-1',
+    userName: 'کیانوش اسدی',
+    rating: 5,
+    date: '۳ روز پیش',
+    turfScore: 5,
+    lightScore: 5,
+    amenitiesScore: 4,
+    comment: 'چمن آبی فوق‌العاده تمیز و استاندارد WPT. شیشه‌ها کاملاً شفاف بود و هیچ خطای دیدی نداشت. پارکینگ هم راحت جا داشت.',
+    likesCount: 14,
+  },
+  {
+    id: 'cr-2',
+    userName: 'مهسا تهرانی',
+    rating: 4.8,
+    date: 'هفته گذشته',
+    turfScore: 5,
+    lightScore: 4,
+    amenitiesScore: 5,
+    comment: 'لانژ کافه عالیه و برخورد پرسنل کلوپ بسیار حرفه‌ای بود. برای سانس‌های شب نور پروژکتور عالی تنظیم شده.',
+    likesCount: 9,
+  },
+];
 
 export const ClubReviewsModal: React.FC<ClubReviewsModalProps> = ({
   isOpen,
   onClose,
   club,
 }) => {
-  const [reviews, setReviews] = useState<ClubReview[]>(INITIAL_REVIEWS.default);
+  const [reviews, setReviews] = useState<ClubReviewItem[]>(FALLBACK_REVIEWS);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [newRating, setNewRating] = useState(5);
   const [newComment, setNewComment] = useState('');
+  const [authorName, setAuthorName] = useState('شما (بازیکن تاییدشده)');
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isOpen || !club?.id) return;
+    let isMounted = true;
+    const fetchClubReviews = async () => {
+      setIsLoading(true);
+      try {
+        const data = await rallyApi.getClubReviews(club.id);
+        if (isMounted && Array.isArray(data) && data.length > 0) {
+          const mapped: ClubReviewItem[] = data.map((r: any) => ({
+            id: r.id,
+            userName: r.user_name || 'کاربر رالی',
+            rating: Number(r.rating) || 5,
+            date: r.created_at ? new Date(r.created_at).toLocaleDateString('fa-IR') : 'به تازگی',
+            turfScore: Number(r.turf_score) || 5,
+            lightScore: Number(r.light_score) || 5,
+            amenitiesScore: Number(r.amenities_score) || 5,
+            comment: r.comment || '',
+            likesCount: Number(r.likes_count) || 0,
+          }));
+          setReviews(mapped);
+        }
+      } catch (err) {
+        // Fallback to initial reviews on network offline
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    };
+    fetchClubReviews();
+    return () => {
+      isMounted = false;
+    };
+  }, [isOpen, club?.id]);
 
   if (!isOpen) return null;
 
-  const handleSubmitReview = (e: React.FormEvent) => {
+  const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newComment.trim()) return;
+    if (!newComment.trim() || isSubmitting) return;
 
-    const newRev: ClubReview = {
-      id: `rev-${Date.now()}`,
-      userName: 'شما (بازیکن تاییدشده)',
-      rating: newRating,
-      date: 'هم‌اکنون',
-      turfScore: newRating,
-      lightScore: newRating,
-      amenitiesScore: newRating,
-      comment: newComment.trim(),
-      likesCount: 1,
-    };
+    setIsSubmitting(true);
+    setErrorMessage(null);
 
-    setReviews([newRev, ...reviews]);
-    setNewComment('');
-    setIsSubmitted(true);
-    setTimeout(() => setIsSubmitted(false), 3000);
+    try {
+      const res = await rallyApi.submitClubReview(club.id, {
+        user_name: authorName.trim() || 'بازیکن رالی',
+        rating: newRating,
+        turf_score: newRating,
+        light_score: newRating,
+        amenities_score: newRating,
+        comment: newComment.trim(),
+      });
+
+      const createdReview: ClubReviewItem = {
+        id: res?.review?.id || `rev-${Date.now()}`,
+        userName: authorName.trim() || 'شما (بازیکن تاییدشده)',
+        rating: newRating,
+        date: 'هم‌اکنون',
+        turfScore: newRating,
+        lightScore: newRating,
+        amenitiesScore: newRating,
+        comment: newComment.trim(),
+        likesCount: 0,
+      };
+
+      setReviews((prev) => [createdReview, ...prev]);
+      setNewComment('');
+      setIsSubmitted(true);
+      setTimeout(() => setIsSubmitted(false), 3500);
+    } catch (err: any) {
+      setErrorMessage(err?.response?.data?.detail || 'ثبت نظر با خطا مواجه شد.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleLike = async (reviewId: string) => {
+    setReviews((prev) =>
+      prev.map((r) => (r.id === reviewId ? { ...r, likesCount: r.likesCount + 1 } : r))
+    );
+    try {
+      await rallyApi.likeClubReview(reviewId);
+    } catch (e) {
+      // Optimistic update retained
+    }
   };
 
   return (
@@ -144,16 +209,26 @@ export const ClubReviewsModal: React.FC<ClubReviewsModalProps> = ({
 
               <div className="pt-2 border-t border-gray-100 flex items-center justify-between text-[11px] text-gray-400">
                 <span>تایید بازی در کورت سنترال</span>
-                <span className="flex items-center gap-1 text-slate-500">
+                <button
+                  type="button"
+                  onClick={() => handleLike(r.id)}
+                  className="flex items-center gap-1 text-slate-500 hover:text-rally-primary transition-colors cursor-pointer"
+                >
                   <ThumbsUp className="w-3 h-3" /> {r.likesCount} نفر مفید دانستند
-                </span>
+                </button>
               </div>
             </div>
           ))}
         </div>
 
         {/* Submit Review Form */}
-        <form onSubmit={handleSubmitReview} className="p-4 bg-white border-t border-gray-200 space-y-2.5">
+        <form onSubmit={handleSubmitReview} className="p-4 bg-white border-t border-gray-200 space-y-2">
+          {errorMessage && (
+            <p className="text-[11px] text-rose-600 font-bold flex items-center gap-1">
+              <AlertCircle className="w-3.5 h-3.5" /> {errorMessage}
+            </p>
+          )}
+
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-700">ثبت تجربه شما از این کلوپ:</span>
             <div className="flex items-center gap-1">
@@ -184,18 +259,22 @@ export const ClubReviewsModal: React.FC<ClubReviewsModalProps> = ({
             />
             <button
               type="submit"
-              disabled={!newComment.trim()}
+              disabled={!newComment.trim() || isSubmitting}
               className="px-4 h-10 rounded-xl bg-rally-primary hover:bg-rally-primary-light disabled:opacity-40 text-white text-xs font-black flex items-center gap-1 cursor-pointer shrink-0 transition-all"
             >
-              <Send className="w-3.5 h-3.5 rotate-180" />
-              <span>ثبت نظر</span>
+              {isSubmitting ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                <Send className="w-3.5 h-3.5 rotate-180" />
+              )}
+              <span>{isSubmitting ? '...' : 'ثبت'}</span>
             </button>
           </div>
 
           {isSubmitted && (
             <p className="text-[11px] text-emerald-700 font-bold flex items-center gap-1">
               <CheckCircle2 className="w-3.5 h-3.5" />
-              نظر شما با موفقیت ثبت شد و پس از بررسی منتشر می‌گردد.
+              نظر شما با موفقیت ثبت شد و منتشر گردید.
             </p>
           )}
         </form>

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { UserCheck, Calendar, Check, X, Clock, Award, Star, Phone, Package, Plus, DollarSign, Save } from 'lucide-react';
 import { CoachAccountingTab } from '../../../components/rally/portal/accounting/CoachAccountingTab';
+import { rallyApi } from '../../../services/rallyApi';
 
 interface StudentRequest {
   id: string;
@@ -20,30 +21,9 @@ interface CoachPackage {
 }
 
 const INITIAL_REQUESTS: StudentRequest[] = [
-  {
-    id: 'REQ-1',
-    studentName: 'محمدرضا صادقی',
-    studentPhone: '۰۹۱۲۵۵۵۶۶۷۷',
-    requestedDate: 'پنجشنبه ۱۸:۰۰ تا ۱۹:۳۰',
-    level: 'مبتدی (اولین جلسه)',
-    status: 'PENDING',
-  },
-  {
-    id: 'REQ-2',
-    studentName: 'نگین مرادی',
-    studentPhone: '۰۹۱۲۴۴۴۳۳۲۲',
-    requestedDate: 'جمعه ۱۰:۰۰ تا ۱۱:۳۰',
-    level: 'متوسط (اصلاح بکهند و باندخا)',
-    status: 'ACCEPTED',
-  },
-  {
-    id: 'REQ-3',
-    studentName: 'کیان افشار',
-    studentPhone: '۰۹۳۰۹۹۹۸۸۷۷',
-    requestedDate: 'شنبه ۱۹:۳۰ تا ۲۱:۰۰',
-    level: 'پیشرفته (تاکتیک مسابقه)',
-    status: 'PENDING',
-  },
+  { id: 'REQ-1', studentName: 'محمدرضا صادقی', studentPhone: '۰۹۱۲۵۵۵۶۶۷۷', requestedDate: 'پنجشنبه ۱۸:۰۰ تا ۱۹:۳۰', level: 'مبتدی (اولین جلسه)', status: 'PENDING' },
+  { id: 'REQ-2', studentName: 'نگین مرادی', studentPhone: '۰۹۱۲۴۴۴۳۳۲۲', requestedDate: 'جمعه ۱۰:۰۰ تا ۱۱:۳۰', level: 'متوسط (اصلاح بکهند)', status: 'ACCEPTED' },
+  { id: 'REQ-3', studentName: 'کیان افشار', studentPhone: '۰۹۳۰۹۹۹۸۸۷۷', requestedDate: 'شنبه ۱۹:۳۰ تا ۲۱:۰۰', level: 'پیشرفته (تاکتیک مسابقه)', status: 'PENDING' },
 ];
 
 const INITIAL_PACKAGES: CoachPackage[] = [
@@ -61,8 +41,29 @@ export const PortalCoachTab: React.FC = () => {
   const [tempRate, setTempRate] = useState(1500000);
   const [rateSavedNotice, setRateSavedNotice] = useState(false);
 
-  const handleAction = (id: string, status: 'ACCEPTED' | 'DECLINED') => {
+  useEffect(() => {
+    let isMounted = true;
+    rallyApi.getCoachRequests('coach-1').then((data) => {
+      if (isMounted && Array.isArray(data) && data.length > 0) {
+        const mapped: StudentRequest[] = data.map((r: any) => ({
+          id: r.id,
+          studentName: r.student_name,
+          studentPhone: r.student_phone,
+          requestedDate: r.requested_date,
+          level: r.skill_level || 'متوسط',
+          status: r.status,
+        }));
+        setRequests(mapped);
+      }
+    }).catch(() => {});
+    return () => { isMounted = false; };
+  }, []);
+
+  const handleAction = async (id: string, status: 'ACCEPTED' | 'DECLINED') => {
     setRequests((prev) => prev.map((r) => (r.id === id ? { ...r, status } : r)));
+    try {
+      await rallyApi.updateCoachRequestStatus(id, status);
+    } catch (e) {}
   };
 
   const handleSaveRate = () => {

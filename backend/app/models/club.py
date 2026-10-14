@@ -46,3 +46,20 @@ class Court(Base):
 
     club: Mapped["Club"] = relationship("Club", back_populates="courts")
     slots: Mapped[list["TimeSlot"]] = relationship("TimeSlot", back_populates="court", cascade="all, delete-orphan")
+
+
+class ClubReview(Base):
+    __tablename__ = "club_reviews"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    club_id: Mapped[str] = mapped_column(String(50), nullable=False, index=True)
+    user_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
+    user_name: Mapped[str] = mapped_column(String(150), nullable=False)
+    rating: Mapped[float] = mapped_column(Numeric(3, 1), default=5.0)
+    turf_score: Mapped[float] = mapped_column(Numeric(3, 1), default=5.0)
+    light_score: Mapped[float] = mapped_column(Numeric(3, 1), default=5.0)
+    amenities_score: Mapped[float] = mapped_column(Numeric(3, 1), default=5.0)
+    comment: Mapped[str] = mapped_column(Text, nullable=False)
+    likes_count: Mapped[int] = mapped_column(BigInteger, default=0)
+    is_approved: Mapped[bool] = mapped_column(Boolean, default=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
