@@ -4,6 +4,7 @@ import { rallyApi } from '../../../../services/rallyApi';
 import { SupplySourceList } from './SupplySourceList';
 import { SupplySourceAddForm } from './SupplySourceAddForm';
 import { SupplyBestPriceReport } from './SupplyBestPriceReport';
+import { SupplySchedulerCard } from './SupplySchedulerCard';
 
 export interface SupplyRuleItem {
   id: string;
@@ -228,6 +229,12 @@ export const SupplyRulesModal: React.FC<SupplyRulesModalProps> = ({
               گام ۵۰۰,۰۰۰ تومان (Ceil)
             </span>
           </div>
+
+          {/* Daily Auto-Pricing Crawler & Scheduler */}
+          <SupplySchedulerCard
+            onRefreshRules={loadRules}
+            showToast={showToast}
+          />
 
           {notification && (
             <div className="p-3 rounded-xl bg-sky-950/60 border border-sky-800/80 text-sky-200 text-xs font-bold flex items-center gap-2 animate-fadeIn">

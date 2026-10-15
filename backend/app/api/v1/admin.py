@@ -1,7 +1,7 @@
 import uuid
 from typing import List, Optional, Dict, Any
 from datetime import datetime, date, time
-from fastapi import APIRouter, Depends, HTTPException, status, Request, Query
+from fastapi import APIRouter, Depends, HTTPException, status, Request, Query, Body
 from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, desc, func
@@ -1234,6 +1234,8 @@ async def reject_role_upgrade_request(
 # ==================== Dynamic Supply Rules & Auto-Pricing Endpoints ====================
 from backend.app.services.supply_rules_service import SupplyRulesService, SupplySourceRule
 from backend.app.services.sunsport_scraper import scrape_sunsport_nox_rackets
+from backend.app.services.multi_source_scraper import fetch_source_prices
+from backend.app.services.daily_pricing_scheduler import DailyPricingScheduler
 
 class SupplyRulePayload(BaseModel):
     source_name: str
@@ -1255,6 +1257,7 @@ class SupplyRuleUpdatePayload(BaseModel):
     is_active: Optional[bool] = None
 
 supply_rules_service = SupplyRulesService()
+daily_pricing_scheduler = DailyPricingScheduler(supply_rules_service=supply_rules_service)
 
 @router.get("/supply-rules")
 async def get_supply_rules(admin: dict = Depends(get_current_admin)):
@@ -1329,17 +1332,17 @@ async def sync_supply_rule(rule_id: str, admin: dict = Depends(get_current_admin
     if not rule:
         raise HTTPException(status_code=404, detail="قانون تامین مورد نظر یافت نشد.")
 
-    scraped_items = []
-    if "sunsport" in rule.base_url.lower():
-        scraped_items = scrape_sunsport_nox_rackets(category_url=rule.base_url, markup_percent=rule.markup_percent)
-    
-    # Update rule status
+    scraped_items = fetch_source_prices(rule)
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    for item in scraped_items:
+        rule.latest_prices[item["product_id"]] = item["raw_price"]
+
     status_str = "SUCCESS" if scraped_items or not rule.is_active else "READY"
     supply_rules_service.update_rule(rule_id, {
         "last_sync_at": now_str,
         "last_sync_status": status_str,
-        "synced_products_count": len(scraped_items)
+        "synced_products_count": len(scraped_items),
+        "latest_prices": rule.latest_prices
     })
 
     return {
@@ -1367,15 +1370,16 @@ async def sync_all_supply_rules(
     for rule in all_rules:
         if not rule.is_active:
             continue
-        scraped_items = []
-        if "sunsport" in rule.base_url.lower():
-            scraped_items = scrape_sunsport_nox_rackets(category_url=rule.base_url, markup_percent=rule.markup_percent)
+        scraped_items = fetch_source_prices(rule)
+        for item in scraped_items:
+            rule.latest_prices[item["product_id"]] = item["raw_price"]
         
         status_str = "SUCCESS" if scraped_items else "READY"
         supply_rules_service.update_rule(rule.id, {
             "last_sync_at": now_str,
             "last_sync_status": status_str,
-            "synced_products_count": len(scraped_items)
+            "synced_products_count": len(scraped_items),
+            "latest_prices": rule.latest_prices
         })
         synced_rules_count += 1
         total_products_checked += len(scraped_items)
@@ -1387,6 +1391,25 @@ async def sync_all_supply_rules(
         "total_products_checked": total_products_checked,
         "message": f"همگام‌سازی {synced_rules_count} سورس با موفقیت انجام شد."
     }
+
+@router.get("/supply-rules/scheduler/status")
+async def get_supply_scheduler_status(admin: dict = Depends(get_current_admin)):
+    """دریافت وضعیت زمان‌بند روزانه خودکار استعلام قیمت‌ها"""
+    status = daily_pricing_scheduler.get_status()
+    return {"success": True, "status": status}
+
+@router.post("/supply-rules/scheduler/toggle")
+async def toggle_supply_scheduler(payload: dict = Body(...), admin: dict = Depends(get_current_admin)):
+    """فعال یا غیرفعال‌سازی فرآیند خودکار روزانه استعلام قیمت‌ها"""
+    enabled = bool(payload.get("enabled", True))
+    status = daily_pricing_scheduler.toggle_scheduler(enabled)
+    return {"success": True, "status": status}
+
+@router.post("/supply-rules/scheduler/run-now")
+async def trigger_supply_scheduler_now(admin: dict = Depends(get_current_admin)):
+    """اجرای فوری کرولر روزانه تمام سایت‌های رفرنس در پس‌زمینه"""
+    result = daily_pricing_scheduler.run_daily_sync()
+    return {"success": True, "result": result}
 
 @router.get("/supply-rules/best-prices")
 async def get_best_prices(

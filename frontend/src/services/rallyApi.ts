@@ -684,6 +684,47 @@ export const rallyApi = {
     }
   },
 
+  async getSupplySchedulerStatus() {
+    try {
+      const res = await fetch(`${API_BASE}/admin/supply-rules/scheduler/status`, {
+        headers: this.getAdminAuthHeaders(),
+      });
+      if (!res.ok) return { success: false, enabled: true, is_running: false };
+      return await res.json();
+    } catch {
+      return { success: false, enabled: true, is_running: false };
+    }
+  },
+
+  async toggleSupplyScheduler(enabled: boolean) {
+    try {
+      const res = await fetch(`${API_BASE}/admin/supply-rules/scheduler/toggle`, {
+        method: 'POST',
+        headers: this.getAdminAuthHeaders(),
+        body: JSON.stringify({ enabled }),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در تغییر وضعیت زمان‌بند' };
+      return { success: true, data };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در شبکه' };
+    }
+  },
+
+  async runSupplySchedulerNow() {
+    try {
+      const res = await fetch(`${API_BASE}/admin/supply-rules/scheduler/run-now`, {
+        method: 'POST',
+        headers: this.getAdminAuthHeaders(),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در اجرای فوری استعلام قیمت‌ها' };
+      return { success: true, data };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در شبکه' };
+    }
+  },
+
   async getBestPrices(productId?: string, supplyMode?: 'INSTANT' | 'EUROPE') {
     try {
       const params = new URLSearchParams();

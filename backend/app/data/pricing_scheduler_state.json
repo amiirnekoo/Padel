@@ -1,0 +1,10 @@
+{
+  "is_enabled": true,
+  "interval_hours": 24,
+  "last_run_at": null,
+  "last_run_status": "READY",
+  "last_rules_scanned": 0,
+  "last_prices_updated": 0,
+  "next_run_at": null,
+  "logs": []
+}
