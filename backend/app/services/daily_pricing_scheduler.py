@@ -7,6 +7,10 @@ from typing import Dict, Any, Optional, List
 
 from backend.app.services.supply_rules_service import SupplyRulesService
 from backend.app.services.multi_source_scraper import fetch_source_prices
+try:
+    from backend.app.services.price_alert_service import PriceAlertService
+except ImportError:
+    from app.services.price_alert_service import PriceAlertService
 
 SCHEDULER_DEFAULT_STATE_PATH = os.path.join(
     os.path.dirname(os.path.dirname(__file__)), "data", "pricing_scheduler_state.json"
@@ -26,6 +30,7 @@ class DailyPricingScheduler:
         self.supply_rules_service = supply_rules_service
         self.state_file = state_file
         self.interval_hours = interval_hours
+        self.price_alert_service = PriceAlertService()
         self._is_running = False
         self._thread: Optional[threading.Thread] = None
         self._state: Dict[str, Any] = {
@@ -84,16 +89,29 @@ class DailyPricingScheduler:
         details = []
 
         for rule in rules:
+            old_prices = dict(rule.latest_prices or {})
             scraped = fetch_source_prices(rule)
             rules_scanned += 1
             rule_updated_count = 0
 
+            new_prices = {}
             for item in scraped:
                 pid = item["product_id"]
                 price = item["raw_price"]
+                new_prices[pid] = price
                 rule.latest_prices[pid] = price
                 prices_updated += 1
                 rule_updated_count += 1
+
+            # ارزیابی جهش‌های قیمت و ناموجودی
+            if old_prices:
+                self.price_alert_service.evaluate_price_changes(
+                    rule_id=rule.id,
+                    source_name=rule.source_name,
+                    old_prices=old_prices,
+                    new_prices=new_prices if new_prices else rule.latest_prices,
+                    surge_threshold_percent=15.0,
+                )
 
             # ذخیره وضعیت سورس
             status_str = "SUCCESS" if (rule_updated_count > 0 or not rule.base_url.startswith("http")) else "FAILED"

@@ -1236,6 +1236,7 @@ from backend.app.services.supply_rules_service import SupplyRulesService, Supply
 from backend.app.services.sunsport_scraper import scrape_sunsport_nox_rackets
 from backend.app.services.multi_source_scraper import fetch_source_prices
 from backend.app.services.daily_pricing_scheduler import DailyPricingScheduler
+from backend.app.services.price_alert_service import PriceAlertService
 
 class SupplyRulePayload(BaseModel):
     source_name: str
@@ -1258,6 +1259,7 @@ class SupplyRuleUpdatePayload(BaseModel):
 
 supply_rules_service = SupplyRulesService()
 daily_pricing_scheduler = DailyPricingScheduler(supply_rules_service=supply_rules_service)
+price_alert_service = PriceAlertService()
 
 @router.get("/supply-rules")
 async def get_supply_rules(admin: dict = Depends(get_current_admin)):
@@ -1332,10 +1334,21 @@ async def sync_supply_rule(rule_id: str, admin: dict = Depends(get_current_admin
     if not rule:
         raise HTTPException(status_code=404, detail="قانون تامین مورد نظر یافت نشد.")
 
+    old_prices = dict(rule.latest_prices or {})
     scraped_items = fetch_source_prices(rule)
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    new_prices = {}
     for item in scraped_items:
+        new_prices[item["product_id"]] = item["raw_price"]
         rule.latest_prices[item["product_id"]] = item["raw_price"]
+
+    if old_prices:
+        price_alert_service.evaluate_price_changes(
+            rule_id=rule.id,
+            source_name=rule.source_name,
+            old_prices=old_prices,
+            new_prices=new_prices if new_prices else rule.latest_prices,
+        )
 
     status_str = "SUCCESS" if scraped_items or not rule.is_active else "READY"
     supply_rules_service.update_rule(rule_id, {
@@ -1436,4 +1449,35 @@ async def get_best_prices(
             results[pid] = best
 
     return {"success": True, "results": results}
+
+@router.get("/supply-rules/alerts")
+async def get_supply_price_alerts(
+    unacknowledged_only: bool = False,
+    admin: dict = Depends(get_current_admin)
+):
+    """دریافت هشدارهای جهش قیمت و ناموجودی کالاها در سایت‌های رفرنس تامین"""
+    alerts = price_alert_service.get_alerts(unacknowledged_only=unacknowledged_only)
+    unack_count = len([a for a in alerts if not a.get("is_acknowledged")])
+    return {
+        "success": True,
+        "alerts": alerts,
+        "unacknowledged_count": unack_count
+    }
+
+@router.post("/supply-rules/alerts/{alert_id}/acknowledge")
+async def acknowledge_supply_price_alert(
+    alert_id: str,
+    admin: dict = Depends(get_current_admin)
+):
+    """تایید و خوانده شدن یک هشدار توسط ادمین"""
+    success = price_alert_service.acknowledge_alert(alert_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="هشدار مورد نظر یافت نشد.")
+    return {"success": True, "message": "هشدار با موفقیت تایید شد."}
+
+@router.delete("/supply-rules/alerts/clear-acknowledged")
+async def clear_acknowledged_alerts(admin: dict = Depends(get_current_admin)):
+    """پاکسازی هشدارهای تاییدشده از تاریخچه"""
+    cleared = price_alert_service.clear_acknowledged()
+    return {"success": True, "cleared_count": cleared}
 

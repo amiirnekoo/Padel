@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { X, Sliders, RefreshCw, Plus, CheckCircle2, Award } from 'lucide-react';
+import { X, Sliders, RefreshCw, Plus, CheckCircle2, Award, AlertTriangle } from 'lucide-react';
 import { rallyApi } from '../../../../services/rallyApi';
 import { SupplySourceList } from './SupplySourceList';
 import { SupplySourceAddForm } from './SupplySourceAddForm';
 import { SupplyBestPriceReport } from './SupplyBestPriceReport';
 import { SupplySchedulerCard } from './SupplySchedulerCard';
+import { SupplyAlertsView } from './SupplyAlertsView';
 
 export interface SupplyRuleItem {
   id: string;
@@ -34,7 +35,8 @@ export const SupplyRulesModal: React.FC<SupplyRulesModalProps> = ({
   onRulesUpdated,
 }) => {
   const [rules, setRules] = useState<SupplyRuleItem[]>([]);
-  const [activeTab, setActiveTab] = useState<'INSTANT' | 'EUROPE' | 'BEST_PRICE'>('INSTANT');
+  const [activeTab, setActiveTab] = useState<'INSTANT' | 'EUROPE' | 'BEST_PRICE' | 'ALERTS'>('INSTANT');
+  const [unackAlertsCount, setUnackAlertsCount] = useState<number>(0);
   const [loading, setLoading] = useState(false);
   const [syncingId, setSyncingId] = useState<string | null>(null);
   const [syncingAll, setSyncingAll] = useState(false);
@@ -46,6 +48,10 @@ export const SupplyRulesModal: React.FC<SupplyRulesModalProps> = ({
     const res = await rallyApi.getSupplyRules();
     if (res?.rules && res.rules.length > 0) {
       setRules(res.rules);
+    }
+    const alertRes = await rallyApi.getSupplyPriceAlerts(true);
+    if (alertRes?.success) {
+      setUnackAlertsCount(alertRes.unacknowledged_count || 0);
     }
     setLoading(false);
   };
@@ -76,7 +82,7 @@ export const SupplyRulesModal: React.FC<SupplyRulesModalProps> = ({
 
   const handleSyncAll = async () => {
     setSyncingAll(true);
-    const targetMode = activeTab === 'BEST_PRICE' ? undefined : activeTab;
+    const targetMode = (activeTab === 'INSTANT' || activeTab === 'EUROPE') ? activeTab : undefined;
     const res = await rallyApi.syncAllSupplyRules(targetMode);
     setSyncingAll(false);
     if (res?.success) {
@@ -192,6 +198,23 @@ export const SupplyRulesModal: React.FC<SupplyRulesModalProps> = ({
               <Award className="w-3.5 h-3.5" />
               <span>نتایج ارزان‌ترین قیمت‌ها</span>
             </button>
+
+            <button
+              onClick={() => { setActiveTab('ALERTS'); setIsAdding(false); }}
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                activeTab === 'ALERTS'
+                  ? 'bg-rose-600 text-white shadow-lg shadow-rose-900/40'
+                  : 'bg-slate-800/60 text-slate-400 hover:text-white hover:bg-slate-800'
+              }`}
+            >
+              <AlertTriangle className="w-3.5 h-3.5" />
+              <span>هشدارهای جهش و موجودی</span>
+              {unackAlertsCount > 0 && (
+                <span className="px-1.5 py-0.2 rounded-full bg-rose-500 text-white text-[10px] font-bold animate-pulse">
+                  {unackAlertsCount}
+                </span>
+              )}
+            </button>
           </div>
 
           <div className="flex items-center gap-2">
@@ -253,6 +276,8 @@ export const SupplyRulesModal: React.FC<SupplyRulesModalProps> = ({
 
           {activeTab === 'BEST_PRICE' ? (
             <SupplyBestPriceReport mode="INSTANT" />
+          ) : activeTab === 'ALERTS' ? (
+            <SupplyAlertsView showToast={showToast} onAlertCountChange={setUnackAlertsCount} />
           ) : (
             <SupplySourceList
               rules={displayedRules}

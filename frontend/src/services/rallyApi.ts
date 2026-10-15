@@ -741,6 +741,46 @@ export const rallyApi = {
     }
   },
 
+  async getSupplyPriceAlerts(unacknowledgedOnly: boolean = false) {
+    try {
+      const res = await fetch(`${API_BASE}/admin/supply-rules/alerts?unacknowledged_only=${unacknowledgedOnly}`, {
+        headers: this.getAdminAuthHeaders(),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, alerts: [], unacknowledged_count: 0 };
+      return { success: true, ...data };
+    } catch {
+      return { success: false, alerts: [], unacknowledged_count: 0 };
+    }
+  },
+
+  async acknowledgeSupplyPriceAlert(alertId: string) {
+    try {
+      const res = await fetch(`${API_BASE}/admin/supply-rules/alerts/${alertId}/acknowledge`, {
+        method: 'POST',
+        headers: this.getAdminAuthHeaders(),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در تایید هشدار' };
+      return { success: true, ...data };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در شبکه' };
+    }
+  },
+
+  async clearAcknowledgedSupplyAlerts() {
+    try {
+      const res = await fetch(`${API_BASE}/admin/supply-rules/alerts/clear-acknowledged`, {
+        method: 'DELETE',
+        headers: this.getAdminAuthHeaders(),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در پاکسازی هشدارها' };
+      return { success: true, ...data };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در شبکه' };
+    }
+  },
 
   async getAdminCategories() {
     try {
