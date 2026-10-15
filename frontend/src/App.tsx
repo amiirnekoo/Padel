@@ -21,6 +21,7 @@ import {
 } from './routes/lazyRoutes';
 import { MOCK_CLUBS } from './data/mockRallyData';
 import { applySavedLocationsToClubs } from './utils/clubLocationStorage';
+import { useRallyDataSync } from './hooks/useRallyDataSync';
 
 export const App: React.FC = () => {
   const [selectedCity] = useState('تهران');
@@ -46,7 +47,9 @@ export const App: React.FC = () => {
   const [courtFilterParam, setCourtFilterParam] = useState<{ sport?: SportType; area?: string }>({});
   const [coachFilterParam, setCoachFilterParam] = useState<{ sport?: SportType; level?: string }>({});
   const [productsList, setProductsList] = useState<ShopProduct[]>(getInitialShopProducts);
-  const [clubsList] = useState<CourtClub[]>(() => applySavedLocationsToClubs(MOCK_CLUBS));
+  const [clubsList, setClubsList] = useState<CourtClub[]>(() => applySavedLocationsToClubs(MOCK_CLUBS));
+
+  useRallyDataSync(setProductsList, setClubsList);
 
   const {
     notifications,

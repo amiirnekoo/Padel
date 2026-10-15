@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Building2, Plus, CheckCircle, XCircle, MapPin, Sliders, Shield } from 'lucide-react';
+import { Building2, Plus, CheckCircle, XCircle, MapPin, Sliders, Shield, Info } from 'lucide-react';
 import { MOCK_CLUBS } from '../../../data/mockRallyData';
 import { CourtClub } from '../../../types/rally';
 import { applySavedLocationsToClubs } from '../../../utils/clubLocationStorage';
 import { AdminClubLocationModal } from './AdminClubLocationModal';
+import { AdminNewClubModal } from './AdminNewClubModal';
 
 export const AdminClubsTab: React.FC = () => {
   const [clubs, setClubs] = useState<CourtClub[]>(() => applySavedLocationsToClubs(MOCK_CLUBS));
@@ -13,6 +14,8 @@ export const AdminClubsTab: React.FC = () => {
     'club-viva': true
   });
   const [selectedClubForLocation, setSelectedClubForLocation] = useState<CourtClub | null>(null);
+  const [isAddClubOpen, setIsAddClubOpen] = useState(false);
+  const [activeNotice, setActiveNotice] = useState<string | null>(null);
 
   // Sync saved locations on mount & events
   useEffect(() => {
@@ -35,8 +38,22 @@ export const AdminClubsTab: React.FC = () => {
     );
   };
 
+  const handleClubAdded = (newClub: CourtClub) => {
+    setClubs((prev) => [newClub, ...prev]);
+    setActiveNotice(`مجموعه ${newClub.name} با موفقیت به فهرست باشگاه‌ها افزوده شد.`);
+    setTimeout(() => setActiveNotice(null), 3500);
+  };
+
   return (
     <div className="space-y-6" dir="rtl">
+      {/* Notice Banner */}
+      {activeNotice && (
+        <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl flex items-center gap-2 text-emerald-400 text-xs">
+          <Info className="w-4 h-4 shrink-0" />
+          <span>{activeNotice}</span>
+        </div>
+      )}
+
       {/* Header and Add Club Button */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-4 rounded-2xl">
         <div>
@@ -50,7 +67,7 @@ export const AdminClubsTab: React.FC = () => {
         </div>
 
         <button
-          onClick={() => alert('فرم افزودن باشگاه جدید به زودی در اتصال به دیتابیس فعال می‌شود')}
+          onClick={() => setIsAddClubOpen(true)}
           className="px-4 py-2 bg-rally-primary hover:bg-rally-primary-hover text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md transition-all cursor-pointer"
         >
           <Plus className="w-4 h-4" />
@@ -138,7 +155,10 @@ export const AdminClubsTab: React.FC = () => {
                   دارای تاییدیه فنی استاندارد WPT
                 </span>
                 <button
-                  onClick={() => alert(`تنظیمات سانس‌های ${club.name}`)}
+                  onClick={() => {
+                    setActiveNotice(`سانس‌های فعال مجموعه ${club.name} (${club.slots.length} سانس) در تب زمان‌بندی قابل ویرایش و مسدودسازی آنی هستند.`);
+                    setTimeout(() => setActiveNotice(null), 4000);
+                  }}
                   className="text-rally-primary hover:text-white font-bold text-xs flex items-center gap-1 cursor-pointer transition-colors"
                 >
                   <Sliders className="w-3.5 h-3.5" />
@@ -159,6 +179,13 @@ export const AdminClubsTab: React.FC = () => {
           onSaveSuccess={handleLocationSaved}
         />
       )}
+
+      {/* Add New Club Modal */}
+      <AdminNewClubModal
+        isOpen={isAddClubOpen}
+        onClose={() => setIsAddClubOpen(false)}
+        onClubAdded={handleClubAdded}
+      />
     </div>
   );
 };

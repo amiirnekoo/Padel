@@ -49,15 +49,27 @@ export const ClubSettlementModal: React.FC<ClubSettlementModalProps> = ({
 }) => {
   const [balance, setBalance] = useState(8700000);
   const [isRequested, setIsRequested] = useState(false);
+  const [settlements, setSettlements] = useState<SettlementRecord[]>(MOCK_SETTLEMENTS);
+  const [successNotice, setSuccessNotice] = useState<string | null>(null);
 
   const handleRequestPayout = () => {
-    if (balance <= 0) return;
+    if (balance <= 0 || isRequested) return;
     setIsRequested(true);
     setTimeout(() => {
-      alert('درخواست تسویه حساب به شماره شبای باشگاه با موفقیت در سیکل پایا ثبت شد.');
+      const tracking = `PAYA-${Math.floor(1000000 + Math.random() * 9000000)}`;
+      const newRec: SettlementRecord = {
+        id: `SET-${Date.now()}`,
+        trackingCode: tracking,
+        amount: balance,
+        date: 'هم‌اکنون',
+        iban: 'IR82-0120-0000-0000-1234-5678',
+        status: 'PROCESSING',
+      };
+      setSettlements((prev) => [newRec, ...prev]);
+      setSuccessNotice(`درخواست تسویه با کد پیگیری ${tracking} با موفقیت در سیکل پایا ثبت گردید.`);
       setBalance(0);
       setIsRequested(false);
-    }, 800);
+    }, 700);
   };
 
   return (
@@ -84,6 +96,13 @@ export const ClubSettlementModal: React.FC<ClubSettlementModalProps> = ({
 
         {/* Content Body */}
         <div className="p-6 space-y-6">
+          {successNotice && (
+            <div className="p-3.5 bg-emerald-500/15 border border-emerald-500/30 rounded-2xl flex items-center gap-2.5 text-emerald-400 text-xs font-bold animate-in fade-in">
+              <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-400" />
+              <span>{successNotice}</span>
+            </div>
+          )}
+
           {/* Balance & Action Box */}
           <div className="p-5 rounded-2xl bg-[#0B1724] border border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
@@ -148,7 +167,7 @@ export const ClubSettlementModal: React.FC<ClubSettlementModalProps> = ({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5 text-slate-300 text-[11px]">
-                  {MOCK_SETTLEMENTS.map((s) => (
+                  {settlements.map((s) => (
                     <tr key={s.id} className="hover:bg-white/5 transition-colors">
                       <td className="p-3 text-slate-400">{toPersianDigits(s.trackingCode)}</td>
                       <td className="p-3 font-bold text-white">

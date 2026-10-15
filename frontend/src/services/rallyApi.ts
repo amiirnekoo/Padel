@@ -1793,6 +1793,71 @@ export const rallyApi = {
     } catch {
       return null;
     }
+  },
+
+  /**
+   * دریافت لیست محصولات آنلاین فروشگاه از بک‌اند
+   */
+  async getProducts(params?: { category?: string; sport?: string; brand?: string; search?: string }): Promise<any[]> {
+    try {
+      const query = new URLSearchParams();
+      if (params?.category && params.category !== 'ALL') query.append('category', params.category);
+      if (params?.sport && params.sport !== 'ALL') query.append('sport', params.sport);
+      if (params?.brand && params.brand !== 'ALL') query.append('brand', params.brand);
+      if (params?.search) query.append('search', params.search);
+
+      const qs = query.toString() ? `?${query.toString()}` : '';
+      const res = await fetch(`${API_BASE}/shop/products${qs}`);
+      if (!res.ok) return [];
+      return await res.json();
+    } catch {
+      return [];
+    }
+  },
+
+
+  /**
+   * ثبت و آنبوردینگ مجموعه یا کورت جدید در بک‌اند
+   */
+  async createVenue(payload: {
+    owner_id?: string;
+    name: string;
+    province?: string;
+    city?: string;
+    address: string;
+    phone: string;
+    sports_supported?: string;
+    amenities?: string;
+    courts_count?: number;
+    default_hourly_rate?: number;
+    iban?: string;
+  }): Promise<{ success: boolean; club_id?: string; error?: string }> {
+    try {
+      const headers = this.getUserAuthHeaders();
+      const body = {
+        owner_id: payload.owner_id || 'admin-root',
+        name: payload.name,
+        province: payload.province || 'تهران',
+        city: payload.city || 'تهران',
+        address: payload.address,
+        phone: payload.phone,
+        sports_supported: payload.sports_supported || 'PADEL',
+        amenities: payload.amenities || 'پارکینگ، کافه، رختکن',
+        courts_count: payload.courts_count || 2,
+        default_hourly_rate: payload.default_hourly_rate || 3000000,
+        iban: payload.iban || 'IR000000000000000000000000',
+      };
+      const res = await fetch(`${API_BASE}/venues/onboard`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در ثبت مجموعه' };
+      return { success: true, club_id: data.club_id };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در برقراری ارتباط با سرور' };
+    }
   }
 };
 

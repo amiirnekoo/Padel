@@ -39,9 +39,34 @@ const MOCK_PAYOUTS: PayoutRequest[] = [
 
 export const AdminFinancesTab: React.FC = () => {
   const [payouts, setPayouts] = useState<PayoutRequest[]>(MOCK_PAYOUTS);
+  const [downloadSuccess, setDownloadSuccess] = useState(false);
 
   const handleMarkAsPaid = (id: string) => {
     setPayouts((prev) => prev.map((p) => (p.id === id ? { ...p, status: 'PAID' } : p)));
+  };
+
+  const handleExportExcel = () => {
+    const headers = ['شناسه پرداخت', 'نام مجموعه', 'شماره شبا مقصد', 'مبلغ واریزی (تومان)', 'زمان ثبت', 'وضعیت'];
+    const rows = payouts.map((p) => [
+      p.id,
+      `"${p.clubName.replace(/"/g, '""')}"`,
+      `"${p.accountNumber}"`,
+      p.amount,
+      `"${p.date}"`,
+      p.status === 'PAID' ? 'واریز شده' : 'در صف حواله',
+    ]);
+    const csvContent = '\uFEFF' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `rally_settlements_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    setDownloadSuccess(true);
+    setTimeout(() => setDownloadSuccess(false), 3000);
   };
 
   return (
@@ -103,13 +128,20 @@ export const AdminFinancesTab: React.FC = () => {
             <h4 className="font-bold text-white text-sm">لیست تسویه‌حساب‌های هفتگی با باشگاه‌ها</h4>
             <p className="text-[11px] text-slate-400">محاسبه خودکار سهم ۹۰٪ باشگاه‌ها پس از کسر کارمزد ۱۰٪ رالی</p>
           </div>
-          <button
-            onClick={() => alert('خروجی اکسل در حال آماده‌سازی')}
-            className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer border border-slate-700"
-          >
-            <Download className="w-3.5 h-3.5" />
-            <span>خروجی اکسل</span>
-          </button>
+          <div className="flex items-center gap-2">
+            {downloadSuccess && (
+              <span className="text-[11px] text-emerald-400 font-bold bg-emerald-500/10 px-2 py-1 rounded-lg border border-emerald-500/20">
+                فایل اکسل دانلود شد
+              </span>
+            )}
+            <button
+              onClick={handleExportExcel}
+              className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer border border-slate-700"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>خروجی اکسل</span>
+            </button>
+          </div>
         </div>
 
         <div className="overflow-x-auto">
