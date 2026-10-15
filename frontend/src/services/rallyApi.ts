@@ -1090,9 +1090,9 @@ export const rallyApi = {
   },
 
   // ==================== PUBLIC CONTENT READS ====================
-  async getPublicArticles(categoryId?: string) {
+  async getPublicArticles(categoryId?: string): Promise<any[]> {
     try {
-      const q = categoryId ? `?category_id=${categoryId}` : '';
+      const q = categoryId && categoryId !== 'ALL' ? `?category_id=${categoryId}` : '';
       const res = await fetch(`${API_BASE}/content/articles${q}`);
       if (!res.ok) return [];
       return await res.json();
@@ -1111,6 +1111,16 @@ export const rallyApi = {
     }
   },
 
+  async getPublicArticleDetail(slugOrId: string): Promise<any | null> {
+    try {
+      const res = await fetch(`${API_BASE}/content/articles/${slugOrId}`);
+      if (!res.ok) return null;
+      return await res.json();
+    } catch {
+      return null;
+    }
+  },
+
   async getPublicBanners(bannerType?: string) {
     try {
       const q = bannerType ? `?banner_type=${bannerType}` : '';
@@ -1122,10 +1132,10 @@ export const rallyApi = {
     }
   },
 
-  async getPublicTournaments(status?: string) {
+  async getPublicTournaments(sportOrStatus?: string): Promise<any[]> {
     try {
-      const q = status ? `?status=${status}` : '';
-      const res = await fetch(`${API_BASE}/content/tournaments${q}`);
+      const q = sportOrStatus && sportOrStatus !== 'ALL' ? `?sport=${sportOrStatus}` : '';
+      const res = await fetch(`${API_BASE}/tournaments/public${q}`);
       if (!res.ok) return [];
       return await res.json();
     } catch {
@@ -1133,10 +1143,10 @@ export const rallyApi = {
     }
   },
 
-  async getPublicRankings(category?: string) {
+  async getPublicRankings(category?: string): Promise<any[]> {
     try {
-      const q = category ? `?category=${category}` : '';
-      const res = await fetch(`${API_BASE}/content/rankings${q}`);
+      const cat = category || 'MEN_PRO';
+      const res = await fetch(`${API_BASE}/content/rankings?category=${cat}`);
       if (!res.ok) return [];
       return await res.json();
     } catch {
@@ -1857,6 +1867,71 @@ export const rallyApi = {
       return { success: true, club_id: data.club_id };
     } catch (err: any) {
       return { success: false, error: err?.message || 'خطا در برقراری ارتباط با سرور' };
+    }
+  },
+
+  /**
+   * دریافت مربیان رسمی تاییدشده از بک‌اند
+   */
+  async getPublicCoaches(sport?: string, level?: string): Promise<any[]> {
+    try {
+      const params = new URLSearchParams();
+      if (sport && sport !== 'ALL') params.append('sport', sport);
+      if (level && level !== 'ALL') params.append('level', level);
+      const qs = params.toString() ? `?${params.toString()}` : '';
+      const res = await fetch(`${API_BASE}/coaches/public${qs}`);
+      if (!res.ok) return [];
+      return await res.json();
+    } catch {
+      return [];
+    }
+  },
+
+  /**
+   * دریافت تمامی مربیان برای پنل مدیریت ادمین
+   */
+  async getAdminCoachesAll(): Promise<any[]> {
+    try {
+      const res = await fetch(`${API_BASE}/coaches/admin/all`, {
+        headers: this.getAdminAuthHeaders(),
+      });
+      if (!res.ok) return [];
+      return await res.json();
+    } catch {
+      return [];
+    }
+  },
+
+  /**
+   * تغییر و ذخیره وضعیت تایید صلاحیت مربی در پنل ادمین
+   */
+  async updateAdminCoachStatus(coachId: string, is_verified: boolean): Promise<{ success: boolean; is_verified?: boolean; error?: string }> {
+    try {
+      const res = await fetch(`${API_BASE}/coaches/admin/${coachId}/status`, {
+        method: 'POST',
+        headers: this.getAdminAuthHeaders(),
+        body: JSON.stringify({ is_verified }),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.detail || 'خطا در ثبت وضعیت مربی' };
+      return { success: true, is_verified: data.is_verified };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'خطا در شبکه' };
+    }
+  },
+
+  /**
+   * دریافت لیست کلیه کورت‌ها و باشگاه‌ها برای زمان‌بندی ادمین
+   */
+  async getAdminCourtsList(): Promise<any[]> {
+    try {
+      const res = await fetch(`${API_BASE}/admin/courts`, {
+        headers: this.getAdminAuthHeaders(),
+      });
+      if (!res.ok) return [];
+      return await res.json();
+    } catch {
+      return [];
     }
   }
 };

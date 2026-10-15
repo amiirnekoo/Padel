@@ -1,5 +1,5 @@
 import pytest
-from datetime import date, time
+from datetime import date, time, timedelta
 from sqlalchemy import select
 from backend.app.models.user import User
 from backend.app.models.slot import TimeSlot
@@ -21,7 +21,7 @@ async def test_waitlist_lifecycle_and_in_app_notification(db_session, seed_data)
     """
     court = seed_data["court"]
     user = seed_data["user"]
-    test_date = date(2026, 10, 15)
+    test_date = date.today() + timedelta(days=2)
 
     # ۱. عضویت در لیست انتظار
     entry = await WaitlistService.join_waitlist(

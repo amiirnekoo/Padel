@@ -25,6 +25,23 @@ export const AdminSchedulerTab: React.FC = () => {
     { id: 'court-viva-1', name: 'کورت ۱ پانورامیک (ویوا مینی‌سیتی)', club_id: 'club-viva' }
   ]);
   const [selectedCourtId, setSelectedCourtId] = useState<string>('court-fgb-1');
+
+  useEffect(() => {
+    let isMounted = true;
+    rallyApi.getAdminCourtsList().then((data) => {
+      if (!isMounted || !Array.isArray(data) || data.length === 0) return;
+      const mapped: CourtItem[] = data.map((c: any) => ({
+        id: c.id,
+        name: c.name || `کورت ${c.court_number || ''}`,
+        club_id: c.club_id || 'club-enghelab',
+      }));
+      setCourts(mapped);
+      if (mapped.length > 0 && !mapped.some((item) => item.id === selectedCourtId)) {
+        setSelectedCourtId(mapped[0].id);
+      }
+    }).catch(() => {});
+    return () => { isMounted = false; };
+  }, []);
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [slots, setSlots] = useState<SlotItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);

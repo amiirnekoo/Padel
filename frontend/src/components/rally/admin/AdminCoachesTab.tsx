@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { UserCheck, Search, Award, Check, X, ShieldAlert, Star } from 'lucide-react';
 import { MOCK_COACHES } from '../../../data/mockRallyData';
 import { Coach } from '../../../types/rally';
+import { rallyApi } from '../../../services/rallyApi';
 
 export const AdminCoachesTab: React.FC = () => {
   const [coaches, setCoaches] = useState<Coach[]>(MOCK_COACHES);
@@ -12,8 +13,51 @@ export const AdminCoachesTab: React.FC = () => {
     'c-3': 'PENDING'
   });
 
-  const handleSetApproval = (coachId: string, status: 'APPROVED' | 'REJECTED') => {
+  const loadCoaches = async () => {
+    try {
+      const data = await rallyApi.getAdminCoachesAll();
+      if (Array.isArray(data) && data.length > 0) {
+        const mapped: Coach[] = data.map((c: any) => ({
+          id: c.id,
+          name: c.name || c.full_name || 'مربی رسمی',
+          title: c.title || c.headline || 'مربی فدراسیون',
+          sport: c.sport || 'PADEL',
+          experienceYears: Number(c.experience_years || 5),
+          certificate: c.certificate || 'مدرک رسمی',
+          rating: Number(c.rating || 5.0),
+          sessionsCount: Number(c.sessions_count || 30),
+          city: c.city || 'تهران',
+          clubs: Array.isArray(c.clubs) ? c.clubs : ['کلوپ انقلاب'],
+          levels: Array.isArray(c.levels) ? c.levels : ['BEGINNER', 'INTERMEDIATE', 'ADVANCED'],
+          hourlyRate: Number(c.hourly_rate || 8000000),
+          avatarUrl: c.avatar_url || '/images/rally_coach.jpg',
+          bio: c.bio || '',
+          bookingType: c.booking_type || 'APPROVAL_REQUIRED',
+          specialties: Array.isArray(c.specialties) ? c.specialties : ['تکنیک والیه'],
+        }));
+        setCoaches(mapped);
+        const newApprovals: Record<string, 'APPROVED' | 'PENDING' | 'REJECTED'> = {};
+        data.forEach((c: any) => {
+          newApprovals[c.id] = c.status || (c.is_verified ? 'APPROVED' : 'PENDING');
+        });
+        setApprovals((prev) => ({ ...prev, ...newApprovals }));
+      }
+    } catch {
+      // Keep resilient fallback
+    }
+  };
+
+  useEffect(() => {
+    loadCoaches();
+  }, []);
+
+  const handleSetApproval = async (coachId: string, status: 'APPROVED' | 'REJECTED') => {
     setApprovals((prev) => ({ ...prev, [coachId]: status }));
+    try {
+      await rallyApi.updateAdminCoachStatus(coachId, status === 'APPROVED');
+    } catch {
+      // Revert or fallback
+    }
   };
 
   const filtered = coaches.filter((c) => c.name.includes(searchTerm) || c.title.includes(searchTerm));

@@ -4,6 +4,7 @@ import { IRAN_PADEL_RANKINGS, WORLD_PADEL_RANKINGS, RankingPlayer } from '../../
 import { rallyApi } from '../../services/rallyApi';
 import { EloPlayerLeaderboardItem } from '../../types/rally';
 import { EloLeaderboardTable } from '../../components/rally/rankings/EloLeaderboardTable';
+import { RankingsPodium } from '../../components/rally/rankings/RankingsPodium';
 import { PlayerProfileModal } from '../../components/rally/player/PlayerProfileModal';
 
 interface RallyRankingsPageProps {
@@ -18,6 +19,8 @@ export const RallyRankingsPage: React.FC<RallyRankingsPageProps> = ({
   const [activeTab, setActiveTab] = useState<'IRAN' | 'WORLD' | 'LIVE_ELO'>('IRAN');
   const [searchQuery, setSearchQuery] = useState('');
   const [liveEloPlayers, setLiveEloPlayers] = useState<EloPlayerLeaderboardItem[]>([]);
+  const [iranRankings, setIranRankings] = useState<RankingPlayer[]>(IRAN_PADEL_RANKINGS);
+  const [worldRankings, setWorldRankings] = useState<RankingPlayer[]>(WORLD_PADEL_RANKINGS);
   const [eloLoading, setEloLoading] = useState(false);
   const [selectedPlayerId, setSelectedPlayerId] = useState<string | null>(initialPlayerId || null);
 
@@ -29,27 +32,43 @@ export const RallyRankingsPage: React.FC<RallyRankingsPageProps> = ({
   }, [initialPlayerId]);
 
   useEffect(() => {
+    let isMounted = true;
     if (activeTab === 'LIVE_ELO') {
       setEloLoading(true);
       rallyApi.getEloLeaderboard().then((data) => {
-        if (data && data.length > 0) {
-          setLiveEloPlayers(data);
-        } else {
-          // Fallback initial seeded Elo leaderboard
-          setLiveEloPlayers([
-            { rank: 1, user_id: 'u-1', full_name: 'آرتین قهرمان', elo_rating: 1680, skill_tier: 'B', matches_played: 28, matches_won: 24, win_rate: 85.7, city: 'تهران' },
-            { rank: 2, user_id: 'u-2', full_name: 'سهراب محمدی', elo_rating: 1540, skill_tier: 'C+', matches_played: 22, matches_won: 17, win_rate: 77.2, city: 'تهران' },
-            { rank: 3, user_id: 'u-3', full_name: 'امیرحسین نکوزاده', elo_rating: 1460, skill_tier: 'C+', matches_played: 19, matches_won: 14, win_rate: 73.6, city: 'تهران' },
-            { rank: 4, user_id: 'u-4', full_name: 'کیان رضایی', elo_rating: 1390, skill_tier: 'C', matches_played: 15, matches_won: 10, win_rate: 66.6, city: 'کرج' },
-            { rank: 5, user_id: 'u-5', full_name: 'بردیا تهرانی', elo_rating: 1250, skill_tier: 'C', matches_played: 12, matches_won: 7, win_rate: 58.3, city: 'تهران' },
-          ]);
-        }
+        if (!isMounted) return;
+        if (data && data.length > 0) setLiveEloPlayers(data);
         setEloLoading(false);
-      });
+      }).catch(() => setEloLoading(false));
+    } else {
+      const cat = activeTab === 'IRAN' ? 'IRAN_PADEL' : 'WORLD_PADEL';
+      rallyApi.getPublicRankings(cat).then((data) => {
+        if (!isMounted || !Array.isArray(data) || data.length === 0) return;
+        const mapped: RankingPlayer[] = data.map((p: any, idx: number) => ({
+          id: p.id || `p-${idx + 1}`,
+          rank: p.rank || idx + 1,
+          previousRank: Number(p.previous_rank || p.rank || idx + 1),
+          name: p.name || p.full_name || 'بازیکن پدل',
+          englishName: p.english_name || p.name || 'Padel Player',
+          country: p.country || (activeTab === 'IRAN' ? 'ایران' : 'اسپانیا'),
+          countryFlag: p.country_flag || (activeTab === 'IRAN' ? '🇮🇷' : '🇪🇸'),
+          points: Number(p.points || 1000),
+          tournamentsCount: Number(p.tournaments_count || 5),
+          winRate: p.win_rate ? `${p.win_rate}%` : '75%',
+          trend: p.trend || 'STABLE',
+          club: p.club || 'باشگاه پدل',
+          hand: p.hand || 'راست‌دست',
+          avatarUrl: p.avatar_url || '',
+          category: activeTab === 'IRAN' ? 'IRAN' : 'WORLD',
+        }));
+        if (activeTab === 'IRAN') setIranRankings(mapped);
+        else setWorldRankings(mapped);
+      }).catch(() => {});
     }
+    return () => { isMounted = false; };
   }, [activeTab]);
 
-  const currentList = activeTab === 'IRAN' ? IRAN_PADEL_RANKINGS : WORLD_PADEL_RANKINGS;
+  const currentList = activeTab === 'IRAN' ? iranRankings : (activeTab === 'WORLD' ? worldRankings : []);
 
   const filteredPlayers = currentList.filter(
     (p) =>
@@ -63,13 +82,6 @@ export const RallyRankingsPage: React.FC<RallyRankingsPageProps> = ({
   );
 
   const topThree = currentList.slice(0, 3);
-
-  const getRankBadge = (rank: number) => {
-    if (rank === 1) return { bg: 'bg-[#FFD700]', text: 'text-amber-950', label: 'طلا' };
-    if (rank === 2) return { bg: 'bg-[#C0C0C0]', text: 'text-slate-900', label: 'نقره' };
-    if (rank === 3) return { bg: 'bg-[#CD7F32]', text: 'text-amber-950', label: 'برنز' };
-    return { bg: 'bg-gray-100', text: 'text-gray-700', label: '' };
-  };
 
   return (
     <div className="space-y-6" dir="rtl">
@@ -126,51 +138,7 @@ export const RallyRankingsPage: React.FC<RallyRankingsPageProps> = ({
       </div>
 
       {/* Top 3 Podium Highlights */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {topThree.map((player) => {
-          const badge = getRankBadge(player.rank);
-          return (
-            <div
-              key={player.id}
-              className={`bg-white rounded-2xl p-4 border relative overflow-hidden flex flex-col items-center text-center shadow-xs transition-transform hover:-translate-y-1 ${
-                player.rank === 1 ? 'border-amber-300 ring-2 ring-amber-300/40 order-first md:order-2' : 'border-gray-200 order-2 md:order-1'
-              }`}
-            >
-              <div className="absolute top-3 right-3">
-                <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black ${badge.bg} ${badge.text}`}>
-                  رتبه {player.rank.toLocaleString('fa-IR')}
-                </span>
-              </div>
-
-              {/* Player Avatar Placeholder */}
-              <div className="relative mt-2 mb-3">
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#172320]/10 to-[#172320]/25 border-2 border-white shadow-md flex items-center justify-center text-2xl font-black text-rally-charcoal overflow-hidden">
-                  {player.avatarUrl ? (
-                    <img src={player.avatarUrl} alt={player.name} className="w-full h-full object-cover" />
-                  ) : (
-                    <span>{player.name.slice(0, 2)}</span>
-                  )}
-                </div>
-                <span className="absolute -bottom-1 -left-1 text-base">{player.countryFlag}</span>
-              </div>
-
-              <h3 className="text-base font-black text-rally-charcoal">{player.name}</h3>
-              <p className="text-[11px] text-gray-400 font-medium mb-3">{player.englishName} • {player.club}</p>
-
-              <div className="w-full grid grid-cols-2 gap-2 bg-[#F5F4EF] p-2.5 rounded-xl text-xs">
-                <div>
-                  <span className="text-[10px] text-gray-500 block">امتیاز کل</span>
-                  <span className="font-black text-rally-primary">{player.points.toLocaleString('fa-IR')}</span>
-                </div>
-                <div>
-                  <span className="text-[10px] text-gray-500 block">درصد برد</span>
-                  <span className="font-black text-emerald-700">{player.winRate}</span>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+      <RankingsPodium topThree={topThree} />
 
       {/* Search and Table Section */}
       <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-xs">

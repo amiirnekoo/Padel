@@ -4,9 +4,14 @@ from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, desc
 from backend.app.models.base import get_db_session
-from backend.app.models.coach import CoachBookingRequest
+from backend.app.models.coach import CoachBookingRequest, CoachProfile
+from backend.app.models.user import User
 
 router = APIRouter(prefix="/coaches", tags=["Coaches"])
+
+
+class CoachStatusUpdateRequest(BaseModel):
+    is_verified: bool = Field(..., description="وضعیت تایید صلاحیت مربی")
 
 
 class CreateCoachBookingRequest(BaseModel):
@@ -115,4 +120,142 @@ async def update_coach_request_status(
             "id": req_item.id,
             "status": req_item.status
         }
+    }
+
+
+DEFAULT_COACHES = [
+    {
+        "id": "coach-1",
+        "name": "کاوه آریا",
+        "title": "مربی رسمی سطح ۲ فدراسیون جهانی پدل (FIP)",
+        "sport": "PADEL",
+        "experienceYears": 7,
+        "certificate": "مدرک بین‌المللی FIP و عضو سابق تیم ملی تنیس",
+        "rating": 4.95,
+        "sessionsCount": 640,
+        "city": "تهران",
+        "clubs": ["مجموعه پدل FGB انقلاب", "باشگاه پدل لفور"],
+        "levels": ["BEGINNER", "INTERMEDIATE", "ADVANCED"],
+        "hourlyRate": 950000,
+        "avatarUrl": "/images/rally_coach.jpg",
+        "bio": "تمرکز ویژه بر بازیکنان مبتدی و متوسط جهت آموزش پایه، ضربات دیوار شیشه‌ای (Bandeja و Vibora) و بازی جایگیری اصولی در زمین.",
+        "bookingType": "APPROVAL_REQUIRED",
+        "specialties": ["اصلاح تکنیک والیه", "بازی با دیواره‌های شیشه‌ای", "آمادگی مسابقاتی"]
+    },
+    {
+        "id": "coach-2",
+        "name": "سارا رهنما",
+        "title": "مربی تخصصی پدل بانوان و رده‌های پایه",
+        "sport": "PADEL",
+        "experienceYears": 5,
+        "certificate": "مدرک ملی مربیگری و کارشناس ارشد فیزیولوژی ورزشی",
+        "rating": 4.9,
+        "sessionsCount": 420,
+        "city": "تهران",
+        "clubs": ["مجموعه پدل FGB انقلاب", "باشگاه پدل ویوا"],
+        "levels": ["BEGINNER", "INTERMEDIATE"],
+        "hourlyRate": 850000,
+        "avatarUrl": "/images/rally_coach.jpg",
+        "bio": "طراحی جلسات با رویکرد ارگونومی، ایجاد آمادگی بدنی هوازی و یادگیری سریع قوانین پدل برای کسانی که نخستین بار راکت به دست می‌گیرند.",
+        "bookingType": "INSTANT",
+        "specialties": ["مبتدیان بدون سابقه قبلی", "تاکتیک بازی دونفره", "تقویت سرویس"]
+    }
+]
+
+
+@router.get("/public")
+async def list_public_coaches(
+    sport: Optional[str] = None,
+    level: Optional[str] = None,
+    db: AsyncSession = Depends(get_db_session)
+):
+    """لیست عمومی مربیان تاییدشده جهت نمایش در صفحه مربیان رالی"""
+    stmt = (
+        select(CoachProfile, User)
+        .join(User, CoachProfile.user_id == User.id)
+        .where(CoachProfile.is_verified == True)
+    )
+    if sport and sport != "ALL":
+        stmt = stmt.where(CoachProfile.sport_types.contains(sport))
+    res = await db.execute(stmt)
+    rows = res.all()
+
+    if not rows:
+        filtered = DEFAULT_COACHES
+        if sport and sport != "ALL":
+            filtered = [c for c in filtered if c["sport"] == sport]
+        if level and level != "ALL":
+            filtered = [c for c in filtered if level in c["levels"]]
+        return filtered
+
+    items = []
+    for profile, user in rows:
+        items.append({
+            "id": profile.id,
+            "name": user.full_name or "مربی رسمی رالی",
+            "title": f"مربی رسمی {profile.sport_types}",
+            "sport": profile.sport_types,
+            "experienceYears": 3,
+            "certificate": profile.certification_id,
+            "rating": 4.9,
+            "sessionsCount": 50,
+            "city": user.city or "تهران",
+            "clubs": ["مجموعه پدل FGB انقلاب", "باشگاه پدل لفور"],
+            "levels": ["BEGINNER", "INTERMEDIATE", "ADVANCED"],
+            "hourlyRate": profile.hourly_rate,
+            "avatarUrl": "/images/rally_coach.jpg",
+            "bio": profile.bio or "مربی رسمی و دارای کارت مربیگری فدراسیون",
+            "bookingType": "APPROVAL_REQUIRED",
+            "specialties": ["آموزش تکنیک پایه", "بازی با شیشه", "تاکتیک مسابقه"]
+        })
+    return items
+
+
+@router.get("/admin/all")
+async def list_admin_coaches(
+    db: AsyncSession = Depends(get_db_session)
+):
+    """لیست کلیه مربیان (تاییدشده و در انتظار) برای پنل مدیریت ادمین"""
+    stmt = select(CoachProfile, User).join(User, CoachProfile.user_id == User.id)
+    res = await db.execute(stmt)
+    rows = res.all()
+
+    coaches_list = []
+    for profile, user in rows:
+        coaches_list.append({
+            "id": profile.id,
+            "user_id": user.id,
+            "name": user.full_name or "نامشخص",
+            "phone_number": user.phone_number,
+            "title": f"مربی {profile.sport_types}",
+            "certification_id": profile.certification_id,
+            "sport_types": profile.sport_types,
+            "bio": profile.bio,
+            "hourly_rate": profile.hourly_rate,
+            "is_verified": profile.is_verified,
+            "avatarUrl": "/images/rally_coach.jpg",
+            "created_at": profile.created_at.isoformat() if profile.created_at else None
+        })
+    return coaches_list
+
+
+@router.post("/admin/{coach_id}/status")
+async def update_admin_coach_status(
+    coach_id: str,
+    payload: CoachStatusUpdateRequest,
+    db: AsyncSession = Depends(get_db_session)
+):
+    """تغییر و ذخیره قطعی وضعیت تایید صلاحیت مربی توسط ادمین"""
+    stmt = select(CoachProfile).where(CoachProfile.id == coach_id)
+    res = await db.execute(stmt)
+    profile = res.scalar_one_or_none()
+    if not profile:
+        raise HTTPException(status_code=404, detail="مربی یافت نشد.")
+    profile.is_verified = payload.is_verified
+    await db.commit()
+    await db.refresh(profile)
+    return {
+        "success": True,
+        "coach_id": profile.id,
+        "is_verified": profile.is_verified
     }

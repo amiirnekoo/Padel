@@ -1,10 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Newspaper, BookOpen, Calendar, Clock, User, Tag, ChevronLeft, X, Sparkles } from 'lucide-react';
 import { MOCK_ARTICLES, ArticleItem } from '../../data/mockNewsData';
+import { rallyApi } from '../../services/rallyApi';
 
 export const RallyMagazinePage: React.FC = () => {
+  const [articles, setArticles] = useState<ArticleItem[]>(MOCK_ARTICLES);
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [activeArticle, setActiveArticle] = useState<ArticleItem | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    rallyApi.getPublicArticles().then((data) => {
+      if (isMounted && Array.isArray(data) && data.length > 0) {
+        const catMap: Record<string, { cat: 'NATIONAL_TEAM' | 'WORLD_PADEL' | 'TUTORIAL' | 'EVENTS'; label: string }> = {
+          'cat-national-team': { cat: 'NATIONAL_TEAM', label: 'تیم ملی ایران' },
+          'cat-world-padel': { cat: 'WORLD_PADEL', label: 'پدل جهان' },
+          'cat-tutorial': { cat: 'TUTORIAL', label: 'آموزش و تکنیک' },
+          'cat-events': { cat: 'EVENTS', label: 'رویدادها و مسترکلاس‌ها' },
+        };
+        const mapped: ArticleItem[] = data.map((a: any, idx: number) => {
+          const catInfo = catMap[a.category_id] || { cat: 'NATIONAL_TEAM', label: 'اخبار رالی' };
+          return {
+            id: a.id || `art-${idx}`,
+            title: a.title,
+            category: catInfo.cat,
+            categoryLabel: catInfo.label,
+            date: a.published_at ? new Date(a.published_at).toLocaleDateString('fa-IR') : 'به‌تازگی',
+            readTime: `${a.reading_time_minutes || 5} دقیقه`,
+            imageUrl: a.cover_image || '/images/news/news_national_team.jpg',
+            author: a.author_name || 'تحریریه رالی',
+            summary: a.summary,
+            content: a.content_html ? [a.content_html] : [a.summary],
+            tags: ['پدل', 'اخبار', 'رالی'],
+            featured: idx === 0,
+          };
+        });
+        setArticles(mapped);
+      }
+    }).catch(() => {});
+    return () => { isMounted = false; };
+  }, []);
 
   const categories = [
     { id: 'ALL', label: 'همه مطالب' },
@@ -15,10 +50,10 @@ export const RallyMagazinePage: React.FC = () => {
   ];
 
   const filteredArticles = selectedCategory === 'ALL'
-    ? MOCK_ARTICLES
-    : MOCK_ARTICLES.filter((a) => a.category === selectedCategory);
+    ? articles
+    : articles.filter((a) => a.category === selectedCategory);
 
-  const featuredArticle = MOCK_ARTICLES.find((a) => a.featured) || MOCK_ARTICLES[0];
+  const featuredArticle = articles.find((a) => a.featured) || articles[0];
 
   return (
     <div className="space-y-6" dir="rtl">

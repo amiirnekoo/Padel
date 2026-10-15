@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Trophy, Calendar, MapPin, Users2, ChevronLeft, ShieldAlert, Sparkles, Play } from 'lucide-react';
 import { Tournament, SportType } from '../../types/rally';
 import { MOCK_TOURNAMENTS } from '../../data/mockRallyData';
 import { AmericanoGeneratorModal } from '../../components/rally/tournaments/americano/AmericanoGeneratorModal';
+import { rallyApi } from '../../services/rallyApi';
 
 interface RallyTournamentsPageProps {
   onSelectTournament: (tournament: Tournament) => void;
@@ -14,7 +15,40 @@ export const RallyTournamentsPage: React.FC<RallyTournamentsPageProps> = ({
   initialFilters
 }) => {
   const [filterSport, setFilterSport] = useState<SportType | 'ALL'>('ALL');
+  const [tournaments, setTournaments] = useState<any[]>(MOCK_TOURNAMENTS);
   const [isAmericanoOpen, setIsAmericanoOpen] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    rallyApi.getPublicTournaments(filterSport === 'ALL' ? undefined : filterSport).then((data) => {
+      if (isMounted && Array.isArray(data) && data.length > 0) {
+        const mapped = data.map((t: any) => ({
+          id: t.id,
+          title: t.title,
+          sport: t.sport_type || 'PADEL',
+          format: t.tournament_format === 'OPEN_KNOCKOUT' ? 'SINGLES' : 'DOUBLES',
+          category: t.gender || 'OPEN',
+          level: t.level || 'سطح آزاد',
+          organizer: 'رالی پدل',
+          isOfficial: true,
+          city: 'تهران',
+          venueName: t.venue_name,
+          startDate: t.start_date || 'به‌زودی',
+          endDate: t.end_date || 'به‌زودی',
+          entryFee: t.entry_fee || 0,
+          prizePool: typeof t.prize_pool === 'number' ? t.prize_pool : 500000000,
+          prizePoolDisplay: typeof t.prize_pool === 'string' ? t.prize_pool : `${((t.prize_pool || 0) / 10).toLocaleString('fa-IR')} تومان`,
+          maxTeams: t.max_teams || 16,
+          registeredTeams: t.registered_teams_count || 0,
+          status: t.status || 'REGISTRATION_OPEN',
+          bannerUrl: t.cover_image || '/images/rally_tournament.jpg',
+          rules: [t.rules_summary || 'قوانین رسمی فدراسیون جهانی پدل (FIP) و نظارت داوران رسمی رالی.'],
+        }));
+        setTournaments(mapped);
+      }
+    }).catch(() => {});
+    return () => { isMounted = false; };
+  }, [filterSport]);
 
   return (
     <div className="space-y-6" dir="rtl">
@@ -59,7 +93,7 @@ export const RallyTournamentsPage: React.FC<RallyTournamentsPageProps> = ({
 
       {/* Tournaments Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {MOCK_TOURNAMENTS.map((t) => (
+        {tournaments.map((t) => (
           <div
             key={t.id}
             className="bg-white rounded-3xl border border-gray-200 overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col justify-between"

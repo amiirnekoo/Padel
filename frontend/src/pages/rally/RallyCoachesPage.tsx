@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Award, Star, MapPin, CheckCircle2, Shield, ChevronLeft } from 'lucide-react';
 import { Coach, StudentLevel, SportType } from '../../types/rally';
 import { MOCK_COACHES } from '../../data/mockRallyData';
+import { rallyApi } from '../../services/rallyApi';
 
 interface RallyCoachesPageProps {
   onSelectCoach: (coach: Coach) => void;
@@ -13,8 +14,38 @@ export const RallyCoachesPage: React.FC<RallyCoachesPageProps> = ({
   initialFilters
 }) => {
   const [levelFilter, setLevelFilter] = useState<string>(initialFilters?.level || 'ALL');
+  const [coaches, setCoaches] = useState<Coach[]>(MOCK_COACHES);
 
-  const filteredCoaches = MOCK_COACHES.filter((c) => {
+  useEffect(() => {
+    let isMounted = true;
+    rallyApi.getPublicCoaches(initialFilters?.sport, levelFilter).then((data) => {
+      if (!isMounted) return;
+      if (Array.isArray(data) && data.length > 0) {
+        const mapped: Coach[] = data.map((c: any) => ({
+          id: c.id,
+          name: c.name || c.full_name || 'مربی رسمی',
+          title: c.title || c.headline || 'مربی رسمی فدراسیون',
+          sport: c.sport || initialFilters?.sport || 'PADEL',
+          experienceYears: Number(c.experience_years || 5),
+          certificate: c.certificate || (Array.isArray(c.certifications) ? c.certifications[0] : 'مدرک رسمی مربیگری'),
+          rating: Number(c.rating || c.rating_avg || 4.9),
+          sessionsCount: Number(c.sessions_count || c.reviews_count || 32),
+          city: c.city || 'تهران',
+          clubs: Array.isArray(c.clubs) ? c.clubs : ['کلوپ انقلاب'],
+          levels: Array.isArray(c.levels) ? c.levels : ['BEGINNER', 'INTERMEDIATE', 'ADVANCED'],
+          hourlyRate: Number(c.hourly_rate || c.hourlyRate || 8000000),
+          avatarUrl: c.avatar_url || c.avatarUrl || '/images/rally_coach.jpg',
+          bio: c.bio || 'مربی رسمی با تجربه آموزش گام به گام و پیشرفته.',
+          bookingType: c.booking_type || 'APPROVAL_REQUIRED',
+          specialties: Array.isArray(c.specialties) ? c.specialties : ['تکنیک والیه', 'اصلاح سرویس'],
+        }));
+        setCoaches(mapped);
+      }
+    }).catch(() => {});
+    return () => { isMounted = false; };
+  }, [initialFilters?.sport, levelFilter]);
+
+  const filteredCoaches = coaches.filter((c) => {
     if (levelFilter === 'ALL') return true;
     return c.levels.includes(levelFilter as StudentLevel);
   });
